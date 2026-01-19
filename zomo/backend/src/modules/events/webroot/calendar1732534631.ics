@@ -1,0 +1,16 @@
+BEGIN:VCALENDAR
+                                                        VERSION:2.0
+                                                        PRODID:-//hacksw/handcal//NONSGML v1.0//EN
+                                                        BEGIN:VEVENT
+                                                        UID:example.com
+                                                        DTSTAMP:20241125T113711Z
+                                                        DTSTART:2024-12-31T03:00:00
+                                                        DTEND:2024-12-31T04:00:00
+                                                        LOCATION:MR 
+                                    A, A, Brooklyn, NY, 11201, United States 
+                                    Brooklyn, 
+                                    NY
+                                                        SUMMARY:Fitness Internal Event :  Single Registration.
+                                                        DESCRIPTION:The benefits of physical fitness extend beyond the individual to have a positive impact on society as a whole. A fit and healthy population tends to have lower healthcare costs, reduced absenteeism from work, and a greater overall productivity. Moreover, fitness can promote a sense of community as people come together in group activities like sports, fitness classes, or team workouts.
+                                                        END:VEVENT
+                                                        END:VCALENDAR

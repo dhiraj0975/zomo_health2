@@ -1,0 +1,20 @@
+{
+	"Connected": "Connected",
+	"Dashboard": "Dashboard",
+	"Disconnect": "Disconnect",
+	"Email Address": "Email Address",
+	"Fitbit Devices": "Fitbit Devices",
+	"Fitbit Sync": "Fitbit Sync",
+	"Linked Email": "Linked Email",
+	"Please provide your email login for your Fitbit account and click on Sync to import your Fitbit log information": "Please provide your email login for your Fitbit account and click on Sync to import your Fitbit log information",
+	"Sync": "Sync",
+	"Trackers": "Trackers",
+	"Success": "Success",
+	"Account synced successfully": "Account synced successfully",
+	"Error": "Error",
+	"Account synced failed": "Account sync failed. Please try again.",
+	"You are now synced with your Fitbit account": "You are now synced with your Fitbit account",
+	"You are disconnected successfully": "You are disconnected successfully",
+	"Fitbit account already register. Please use different fitbit account": "This Fitbit account is already registered. Please use a different Fitbit account.",
+	"Email already registered": "Email already registered."
+}

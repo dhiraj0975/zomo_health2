@@ -1,0 +1,35 @@
+import { Allow } from 'class-validator';
+export class BillboardReportInput {
+    @Allow() role_id?: number;
+    @Allow() auto_request?: number;
+    @Allow() org_id?: number;
+    @Allow() form_id?: number;
+    @Allow() device_type?: number;
+    @Allow() activity_id?: number;
+    @Allow() type?: string;
+    @Allow() userDetails?: any;
+    @Allow() membership_code?: string;
+    @Allow() location?: string;
+    @Allow() start_date?: string;
+    @Allow() end_date?: string;
+    @Allow() search_str?: string;
+    @Allow() department_id?: string | string[] | number[];
+    @Allow() location_id?: number[] | string[] | string;
+    @Allow() country?: number[] | string[] | string;
+    @Allow() state?: number[] | string[] | string;
+    @Allow() city?: number[] | string[] | string;
+    @Allow() result_type?: number;
+    @Allow() page?: number;
+    @Allow() limit?: number;
+    @Allow() eligibletowork?: number;
+    @Allow() vaccinated?: number;
+    @Allow() rtype?: number;
+    @Allow() terminated_users?: number;
+    @Allow() access_type?: number;
+    @Allow() access?: number;
+    @Allow() is_detail?: number;
+    @Allow() login_type?: number;
+    @Allow() platform?: number;
+    @Allow() custom_field?: object | string;
+    @Allow() auto_request_id?: number;
+}

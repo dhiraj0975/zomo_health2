@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Health Report - {{organization_name}}</title>
+    <style>
+      /* All previous CSS same rakho */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Arial', sans-serif;
+        font-size: 12px;
+        line-height: 1.4;
+        color: #333;
+        background: #ffffff;
+        position: relative;
+        min-height: 100vh;
+      }
+
+      .content-wrapper {
+        padding: 20px 40px 100px 40px;
+        min-height: 100vh;
+      }
+
+      .page-footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 80px;
+        background-color: white;
+        border-top: 1px solid #cccccc;
+        padding: 15px 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 100;
+        page-break-after: always;
+      }
+
+      .footer-content {
+        flex: 1;
+      }
+
+      .footer-contact {
+        font-size: 10px;
+        color: #333333;
+        margin-bottom: 5px;
+        line-height: 1.3;
+      }
+
+      .footer-copyright {
+        font-size: 9px;
+        color: #888888;
+        line-height: 1.3;
+      }
+
+      .footer-logo-container {
+        padding: 6px 10px;
+        border-radius: 3px;
+        background-color: #ffffff;
+        max-width: 120px;
+      }
+
+      .footer-logo {
+        height: 25px;
+        width: auto;
+        display: block;
+      }
+
+      .report-header {
+        background-color: white;
+        border: 3px solid #000000;
+        padding: 15px 20px;
+        margin-bottom: 20px;
+        border-radius: 4px;
+        page-break-after: avoid;
+      }
+
+      .report-main-title {
+        font-size: 20px;
+        font-weight: bold;
+        color: #000000;
+        margin: 0 0 8px 0;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .report-org-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #333333;
+        margin: 0;
+      }
+
+      .section-container {
+        background-color: #e8f5f0;
+        padding: 15px;
+        border-radius: 6px;
+        margin-bottom: 15px;
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      .section-heading {
+        font-size: 16px;
+        font-weight: bold;
+        color: #2d8b6f;
+        margin-bottom: 15px;
+        break-after: avoid;
+        page-break-after: avoid;
+      }
+
+      .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: white;
+        font-size: 10px;
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      .data-table th {
+        background-color: #e8f5f0;
+        color: #2d8b6f;
+        font-weight: 600;
+        padding: 6px 4px;
+        text-align: left;
+        border-bottom: 2px solid #2d8b6f;
+      }
+
+      .data-table td {
+        padding: 6px 4px;
+        border-bottom: 1px solid #e0e0e0;
+      }
+
+      .data-table tr {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      .avoid-break {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      .new-page {
+        page-break-before: always;
+        margin-top: 20px;
+      }
+
+      .question-block {
+        background-color: white;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      /* For long question blocks - check in JavaScript instead of helper */
+      .question-block.long-content {
+        break-inside: auto;
+      }
+
+      .question-title {
+        font-size: 11px;
+        color: #2d8b6f;
+        font-weight: 600;
+        margin-bottom: 5px;
+      }
+
+      .question-count {
+        font-size: 10px;
+        color: #666;
+        margin-bottom: 8px;
+      }
+
+      .summary-image {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin: 10px auto;
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      .measurement-cell {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .color-indicator {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        display: inline-block;
+      }
+
+      .metric-badge {
+        background-color: #2d8b6f;
+        color: white;
+        padding: 2px 5px;
+        border-radius: 2px;
+        font-size: 9px;
+        font-weight: bold;
+      }
+
+      @media print {
+        @page {
+          margin: 20mm 15mm 25mm 15mm;
+          size: A4 portrait;
+        }
+
+        body {
+          margin: 0;
+          padding: 0;
+        }
+
+        .content-wrapper {
+          padding: 0;
+          min-height: calc(100vh - 80px);
+        }
+
+        .page-footer {
+          position: fixed;
+          bottom: 0;
+          left: 15mm;
+          right: 15mm;
+          height: 25mm;
+        }
+
+        .section-container:last-child {
+          margin-bottom: 30px;
+        }
+
+        table {
+          page-break-inside: avoid;
+        }
+
+        p, h1, h2, h3, h4 {
+          orphans: 3;
+          widows: 3;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Main Content Area -->
+    <div class="content-wrapper">
+      <!-- Report Header -->
+      <div class="report-header avoid-break">
+        <div class="report-main-title">HEALTH REPORT</div>
+        <div class="report-org-title">{{organization_name}} - HEALTH REPORT</div>
+      </div>
+
+      <!-- Image Section -->
+      {{#if summary_image}}
+      <div class="section-container avoid-break">
+        <img src="{{summary_image}}" alt="Summary Chart" class="summary-image">
+      </div>
+      {{/if}}
+
+      <!-- HRA Result Section -->
+      {{#if HRA_result}}
+      <div class="section-container avoid-break">
+        <div class="hra-result-container">
+          <div class="average-score-section">
+            <div class="hra-title">Average Score</div>
+            <div class="hra-percentage">{{HRA_result.0.percentage}}</div>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Assessment Summary</th>
+                <th>Section Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each HRA_result}}
+                {{#unless (eq @key "0")}}
+                <tr>
+                  <td>{{this.title}}</td>
+                  <td>{{this.percentage}}</td>
+                </tr>
+                {{/unless}}
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {{/if}}
+
+      <!-- HRA Summary Result Section -->
+      {{#if hra_summary_result}}
+      <div class="section-container avoid-break">
+        <div class="section-heading">HRA Summary Result</div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Doing Great (Low Risk)</th>
+              <th>Almost There (Moderate Risk)</th>
+              <th>We Can Help (High Risk)</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each hra_summary_result}}
+            <tr>
+              <td>
+                <div class="measurement-cell">
+                  <span class="color-indicator" style="background-color: #2d8b6f;"></span>
+                  {{this.title}}
+                </div>
+              </td>
+              <td>{{this.low_risk.total}} / {{this.low_risk.percentage}}</td>
+              <td>{{this.moderate_risk.total}} / {{this.moderate_risk.percentage}}</td>
+              <td>{{this.high_risk.total}} / {{this.high_risk.percentage}}</td>
+              <td>
+                <span class="average-value">{{this.total}}</span>
+              </td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+      {{/if}}
+
+      <!-- Biometric Summary Section -->
+      {{#if biometric_data}}
+      <div class="section-container avoid-break">
+        <div class="section-heading">Biometric Summary</div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Biometric Measurement</th>
+              <th>Average</th>
+              <th>Low Risk</th>
+              <th>Moderate Risk</th>
+              <th>High Risk</th>
+              <th>Very High Risk</th>
+              <th>Total %</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each biometric_data}}
+            <tr>
+              <td>
+                <div class="measurement-cell">
+                  <span class="color-indicator" style="background-color: {{this.color}};"></span>
+                  {{#if (eq this.measurement "B M I")}}
+                    <span class="metric-badge">BMI</span>
+                  {{else}}
+                    {{this.measurement}}
+                  {{/if}}
+                </div>
+              </td>
+              <td>
+                <span class="average-value">{{this.average}}</span>
+                {{#if this.unit}}
+                  <span class="unit">{{this.unit}}</span>
+                {{/if}}
+              </td>
+              <td>{{this.lowRisk.count}} / {{this.lowRisk.percentage}}</td>
+              <td>{{this.moderateRisk.count}} / {{this.moderateRisk.percentage}}</td>
+              <td>{{this.highRisk.count}} / {{this.highRisk.percentage}}</td>
+              <td>{{this.veryHighRisk.count}} / {{this.veryHighRisk.percentage}}</td>
+              <td>{{this.total.count}} / {{this.total.percentage}}</td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+      {{/if}}
+
+      <!-- Health Assessment Summary Section -->
+      {{#if EHA_result}}
+      <div class="section-container avoid-break">
+        <div class="section-heading">Health Assessment Summary</div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              {{#with EHA_result.[0]}}
+                {{#each this}}
+                  {{#unless (eq @key "marker_color")}}
+                    <th>{{@key}}</th>
+                  {{/unless}}
+                {{/each}}
+              {{/with}}
+            </tr>
+          </thead>
+          <tbody>
+            {{#each EHA_result}}
+            <tr>
+              {{#each this}}
+                {{#unless (eq @key "marker_color")}}
+                  <td>{{this}}</td>
+                {{/unless}}
+              {{/each}}
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+      {{/if}}
+
+      <!-- HRA Questions Detail Section -->
+      {{#if HRA_assessment}}
+      <div class="section-container question-section">
+        <div class="section-heading">Health Risk Assessment Questions Detail</div>
+        {{#each HRA_assessment}}
+        <div class="question-block">
+          <div class="question-title">{{this.question}}</div>
+          <div class="question-count">Total Users: {{this.total_users}} | Percentage: {{this.total_percentage}}</div>
+          {{#if this.options}}
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width: 60%;">Option</th>
+                <th>Count</th>
+                <th>Percentage(%)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each this.options}}
+              <tr>
+                <td>{{this.option}}</td>
+                <td>{{this.count}}</td>
+                <td>{{this.percentage}}</td>
+              </tr>
+              {{/each}}
+            </tbody>
+          </table>
+          {{/if}}
+        </div>
+        {{/each}}
+      </div>
+      {{/if}}
+
+      <!-- EHA Questions Detail Section -->
+      {{#if EHA_data}}
+      <div class="section-container question-section new-page">
+        <div class="section-heading">Health Assessment Questions Detail</div>
+        {{#each EHA_data}}
+        <div class="question-block">
+          <div class="question-title">{{this.question}}</div>
+          <div class="question-count">Count: {{this.count}} | Percentage: {{this.percentage}}</div>
+          {{#if this.options}}
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width: 60%;">Option</th>
+                <th>Count</th>
+                <th>Percentage(%)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each this.options}}
+              <tr>
+                <td>{{this.option}}</td>
+                <td>{{this.count}}</td>
+                <td>{{this.percentage}}</td>
+              </tr>
+              {{/each}}
+            </tbody>
+          </table>
+          {{/if}}
+        </div>
+        {{/each}}
+      </div>
+      {{/if}}
+    </div>
+
+    <!-- Footer Section -->
+    <div class="page-footer">
+      <div class="footer-content">
+        <div class="footer-contact">
+          For questions, please contact 1-877-506-5885 or email support@zomohealth.com
+        </div>
+        <div class="footer-copyright">
+          Copyright © <span id="currentYear"></span> Zomo Health
+        </div>
+      </div>
+      {{#if organization_logo}}
+      <div class="footer-logo-container">
+        <img src="{{organization_logo}}" alt="Company Logo" class="footer-logo">
+      </div>
+      {{/if}}
+    </div>
+
+    <script>
+      // Set current year dynamically
+      document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+      // Apply long-content class based on number of options
+      document.addEventListener('DOMContentLoaded', function() {
+        const questionBlocks = document.querySelectorAll('.question-block');
+        questionBlocks.forEach(block => {
+          const table = block.querySelector('table');
+          if (table) {
+            const rowCount = table.querySelectorAll('tbody tr').length;
+            if (rowCount > 5) {
+              block.classList.add('long-content');
+            }
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

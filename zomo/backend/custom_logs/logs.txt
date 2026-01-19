@@ -1,0 +1,2 @@
+authModule, false, auth/reset-password, {"encrypted_assertion":"b4NJDpj+SS25up49oaBiMFdI3YldfY9eyckKP/ezBWMkNK9OHFtP5yuiZMpDU3sC","decrypt_data":["CUI256356422","256356","ABCCHIRAG1991"]}, 2024-12-04T07:29:14.491Z
+authModule, false, auth/reset-password, {"encrypted_assertion":"b4NJDpj+SS25up49oaBiMFdI3YldfY9eyckKP/ezBWMkNK9OHFtP5yuiZMpDU3sC","decrypt_data":["CUI256356422","256356","ABCCHIRAG1991"]}, 2024-12-04T07:29:56.066Z

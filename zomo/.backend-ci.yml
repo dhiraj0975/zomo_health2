@@ -1,0 +1,45 @@
+services:
+  - docker:24.0.5-dind
+
+stages:
+  - package-s3
+
+
+# ---------- package-s3 ----------
+# Make sure the following GitLab CI/CD variables are set: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_DEFAULT_REGION, DEPLOYMENT_ARTIFACTS_S3_BUCKET
+create-s3-package:
+  stage: package-s3
+  image: python:3.9
+  only:
+    - "aws"
+    - "demo"
+    - "master"
+    - "dev2"
+  before_script:
+    - "pip install awscli --upgrade --user"
+    - "export PATH=~/.local/bin:$PATH"
+    - "aws --version"
+    - "apt-get update"
+    - "apt-get install -y zip"
+  script:
+    - "echo CI_COMMIT_SHA $CI_COMMIT_SHA"
+    - "echo CI_PROJECT_NAME $CI_PROJECT_NAME"
+    - "echo CI_COMMIT_BRANCH $CI_COMMIT_BRANCH" 
+    #- "export STAGE=dev" #make dev  the default stage ## Implementing autmated logic for the branch and STAGE Selection
+    #- "if [$CI_COMMIT_BRANCH == 'master'];then export STAGE=prod;fi"  ## already mentioned in the above condition.
+    - |
+      # Set STAGE based on the branch name
+      if [ "$CI_COMMIT_BRANCH" == "master" ]; then
+        export STAGE=prod
+      elif [ "$CI_COMMIT_BRANCH" == "demo" ]; then
+        export STAGE=demo
+      elif [ "$CI_COMMIT_BRANCH" == "dev2" ]; then
+        export STAGE=dev
+      fi
+    - "echo STAGE $STAGE"
+    - "echo Creating code package and putting it in $DEPLOYMENT_ARTIFACTS_S3_BUCKET ..."
+    - "zip zomohealth-backend-code-package.zip * -r --exclude=*.git/*"
+    - "zip -rv zomohealth-backend-code-package.zip .platform"
+    - "aws s3 cp zomohealth-backend-code-package.zip s3://$DEPLOYMENT_ARTIFACTS_S3_BUCKET/zomohealth/$STAGE/code/zomohealth-backend-code-package.zip --metadata commitid=$CI_COMMIT_SHA --acl bucket-owner-full-control"
+    - "rm zomohealth-backend-code-package.zip"
+

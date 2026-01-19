@@ -1,0 +1,1 @@
+export * from './fitness-challenge-report.interface';

@@ -1,0 +1,1 @@
+export * from './createassessmenthrabiometric.input';

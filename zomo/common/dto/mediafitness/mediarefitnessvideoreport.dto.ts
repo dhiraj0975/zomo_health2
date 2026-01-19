@@ -1,0 +1,38 @@
+import { Transform, Type, Expose } from 'class-transformer';
+export class MediaReFitnessVideoReportDto {
+    @Expose() id: number;
+    @Expose() org_id: number;
+    @Expose() user_id: number;
+    @Expose() user_role: number;
+    @Expose() membership_code: string;
+    @Expose() condition: string;
+    @Expose() report_type : string;
+    @Expose() file_name: string;
+    @Expose() total_download: string;
+    @Expose() request_date: string;
+    @Expose() email: string;
+    @Expose() is_range: number;
+    @Expose() start_date_range: string;
+    @Expose() end_date_range: string;
+    @Expose() status: string;
+    @Expose() camp_id: string;
+    @Expose() created_date: string;
+    @Expose() updated_date: string;
+    @Expose() request_source: number;
+    @Expose() email_status: number;
+    @Expose() report_setting_id: number;
+    @Expose() auto_report_type: number;
+    @Expose() auto_report_zip_password: string;
+    @Expose() report_item_status: number;
+    @Expose() report_item_type: string;
+    @Expose() send_cc_emails: string;
+    @Expose() request_timezone: string;
+    @Expose() request_timezone_time: string;
+    @Expose() otheroptions: string;
+    @Expose() report_fields: string;
+    @Expose() department_id: string;
+    @Expose()
+    location: string;
+    @Expose()
+    error_message: string;
+}

@@ -1,0 +1,2 @@
+export * from './createmediafitnessseries.input';
+

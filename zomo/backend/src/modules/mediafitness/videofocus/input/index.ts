@@ -1,0 +1,2 @@
+export * from './createmediafitnessvideofocus.input';
+

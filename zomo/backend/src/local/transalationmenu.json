@@ -1,0 +1,998 @@
+[
+    {
+        "id": 1,
+        "menu": "Common",
+        "sub_menu": [
+            {
+                "id": 1,
+                "menu": "Common",
+                "value": "Common",
+                "type": 1
+            },
+            {
+                "id": 2,
+                "menu": "Menu",
+                "value": "Menu",
+                "type": 2
+            },
+            {
+                "id": 3,
+                "menu": "Login Agreement",
+                "value": "Agreement",
+                "type": 3
+            },
+            {
+                "id": 4,
+                "menu": "Month",
+                "value": "Month",
+                "type": 1
+            },
+            {
+                "id": 5,
+                "menu": "Timezone",
+                "value": "Timezone",
+                "type": 1
+            },
+            {
+                "id": 6,
+                "menu": "Information Popup",
+                "value": "InformationPopup",
+                "type": 2
+            },
+            {
+                "id": 7,
+                "menu": "Survey Popup",
+                "value": "SurveyPopup",
+                "type": 3
+            },
+            {
+                "id": 8,
+                "menu": "Covid Popup",
+                "value": "CovidPopup",
+                "type": 3
+            },
+            {
+                "id": 9,
+                "menu": "Login Popup",
+                "value": "LoginPopup",
+                "type": 3
+            },
+            {
+                "id": 10,
+                "menu": "Questionnaire Popup",
+                "value": "QuestionnairePopup",
+                "type": 3
+            },
+            {
+                "id": 11,
+                "menu": "Spouse Authorized Popup",
+                "value": "SpouseAuthorizedPopup",
+                "type": 3
+            },
+            {
+                "id": 12,
+                "menu": "Spouse Email",
+                "value": "SpouseEmail",
+                "type": 1
+            },
+            {
+                "id": 13,
+                "menu": "Point Leaderboard Popup",
+                "value": "PointLeaderboardPopup",
+                "type": 3
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "menu": "Dashboard",
+        "sub_menu": [
+            {
+                "id": 1,
+                "menu": "Participation Summary",
+                "value": "ParticipationSummary",
+                "type": 1
+            },
+            {
+                "id": 2,
+                "menu": "Profile",
+                "value": "Profile",
+                "type": 1
+            },
+            {
+                "id": 3,
+                "menu": "Current Points",
+                "value": "CurrentPoints",
+                "type": 1
+            },
+            {
+                "id": 4,
+                "menu": "Upcoming Activities",
+                "value": "UpcomingActivities",
+                "type": 3
+            },
+            {
+                "id": 5,
+                "menu": "Spouse Registration",
+                "value": "SpouseRegistration",
+                "type": 1
+            },
+            {
+                "id": 6,
+                "menu": "Chat",
+                "value": "Chat",
+                "type": 1
+            },
+            {
+                "id": 7,
+                "menu": "Challenge Progress",
+                "value": "ChallengeProgress",
+                "type": 1
+            },
+            {
+                "id": 8,
+                "menu": "Quick Links",
+                "value": "QuickLinks",
+                "type": 1
+            },
+            {
+                "id": 9,
+                "menu": "Healthy Biometrics Program",
+                "value": "HealthyBiometricsProgram",
+                "type": 1
+            },
+            {
+                "id": 10,
+                "menu": "Supports",
+                "value": "Supports",
+                "type": 1
+            },
+            {
+                "id": 11,
+                "menu": "My Plans",
+                "value": "MyPlans",
+                "type": 1
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "menu": "Activities",
+        "sub_menu": [
+            {
+                "id": 1,
+                "menu": "Activities",
+                "value": "Activities",
+                "type": 3
+            }
+        ]
+    },
+    {
+        "id": 4,
+        "menu": "ActivityForms",
+        "sub_menu": [
+            {
+                "id": 1,
+                "menu": "Submit Form",
+                "value": "SubmitForm",
+                "type": 3
+            },
+            {
+                "id": 2,
+                "menu": "Submitted Forms",
+                "value": "SubmittedForms",
+                "type": 1
+            },
+            {
+                "id": 3,
+                "menu": "Activities",
+                "value": "Activities",
+                "type": 2
+            }
+        ]
+    },
+    {
+        "id": 5,
+        "menu": "Reimbursements",
+        "sub_menu": [
+            {
+                "id": 1,
+                "menu": "Submit Form",
+                "value": "SubmitForm",
+                "type": 3
+            },
+            {
+                "id": 2,
+                "menu": "Submitted Forms",
+                "value": "SubmittedForms",
+                "type": 1
+            },
+            {
+                "id": 3,
+                "menu": "Activities",
+                "value": "Activities",
+                "type": 2
+            }
+        ]
+    },
+    {
+        "id": 6,
+        "menu": "HealthForms",
+        "sub_menu": [
+            {
+                "id": 1,
+                "menu": "Submit Form",
+                "value": "SubmitForm",
+                "type": 3
+            },
+            {
+                "id": 2,
+                "menu": "Submitted Forms",
+                "value": "SubmittedForms",
+                "type": 1
+            }
+        ]
+    },
+    {
+        "id": 7,
+        "menu": "DeviceSync",
+        "sub_menu": [
+            {
+                "id": 1,
+                "menu": "Device Sync",
+                "value": "DeviceSync",
+                "type": 1
+            }
+        ]
+    },
+    {
+        "id": 8,
+        "menu": "MyHealth",
+        "sub_menu": [
+            {
+                "id": 1,
+                "menu": "Assessment",
+                "value": "Assessment",
+                "type": 3
+            },
+            {
+                "id": 2,
+                "menu": "Health Data",
+                "value": "HealthData",
+                "type": 1
+            },
+            {
+                "id": 3,
+                "menu": "Results",
+                "value": "Results",
+                "type": 1
+            }
+        ]
+    },
+    {
+        "id": 9,
+        "menu": "Trackers",
+        "sub_menu": [
+            {
+                "id": 1,
+                "menu": "Nutrition",
+                "value": "Nutrition",
+                "type": 3
+            },
+            {
+                "id": 2,
+                "menu": "Exercise",
+                "value": "Exercise",
+                "type": 1
+            },
+            {
+                "id": 3,
+                "menu": "Measurements",
+                "value": "Measurements",
+                "type": 1
+            },
+            {
+                "id": 4,
+                "menu": "Biometrics",
+                "value": "Biometrics",
+                "type": 1
+            },
+            {
+                "id": 5,
+                "menu": "Fitbit Sync",
+                "value": "FitbitSync",
+                "type": 1
+            },
+            {
+                "id": 6,
+                "menu": "Covid Passport",
+                "value": "CovidPassport",
+                "type": 3
+            }
+        ]
+    },
+    {
+        "id": 10,
+        "menu": "Events",
+        "sub_menu": [
+            {
+                "id": 1,
+                "menu": "Events",
+                "value": "Events",
+                "type": 3
+            },
+            {
+                "id": 2,
+                "menu": "Category",
+                "value": "Category",
+                "type": 2
+            }
+        ]
+    },
+    {
+        "id": 11,
+        "menu": "Challenge",
+        "sub_menu": [
+            {
+                "id": 1,
+                "menu": "Challenges",
+                "value": "MyChallenges",
+                "type": 3
+            },
+            {
+                "id": 2,
+                "menu": "Activity",
+                "value": "Activity",
+                "type": 2
+            }
+        ]
+    },
+    {
+        "id": 12,
+        "menu": "Campaign",
+        "sub_menu": [
+            {
+                "id": 1,
+                "menu": "Campaign Lists",
+                "value": "Campaigns",
+                "type": 3
+            },
+            {
+                "id": 2,
+                "menu": "Category",
+                "value": "Category",
+                "type": 2
+            }
+        ]
+    },
+    {
+        "id": 13,
+        "menu": "Quizzes",
+        "sub_menu": [
+            {
+                "id": 1,
+                "menu": "Quiz",
+                "value": "Quizzes",
+                "type": 3
+            },
+            {
+                "id": 2,
+                "menu": "Category",
+                "value": "Categories",
+                "type": 3
+            }
+        ]
+    },
+    {
+        "id": 14,
+        "menu": "MyPlan",
+        "sub_menu": [
+            {
+                "id": 1,
+                "menu": "Plan",
+                "value": "MyPlan",
+                "type": 3
+            },
+            {
+                "id": 2,
+                "menu": "Plan Label",
+                "value": "PlanLabel",
+                "type": 3
+            }
+        ]
+    },
+    {
+        "id": 15,
+        "menu": "Media",
+        "sub_menu": [
+            {
+                "id": 1,
+                "menu": "Media",
+                "value": "Media",
+                "type": 3
+            },
+            {
+                "id": 2,
+                "menu": "Fitness Videos",
+                "value": "Fitnessvideos",
+                "type": 3
+            }
+        ]
+    },
+    {
+        "id": 16,
+        "menu": "Emotionalwellbeing",
+        "sub_menu": [
+            {
+                "id": 1,
+                "menu": "Emotional Wellbeing",
+                "value": "Emotionalwellbeing",
+                "type": 3
+            }
+        ]
+    },
+    {
+        "id": 17,
+        "menu": "Support",
+        "sub_menu": [
+            {
+                "id": 1,
+                "menu": "Support Contacts",
+                "value": "Support",
+                "type": 3
+            }
+        ]
+    },
+    {
+        "id": 18,
+        "menu": "QuickLink",
+        "sub_menu": [
+            {
+                "id": 1,
+                "menu": "QuickLink",
+                "value": "QuickLink",
+                "type": 3
+            }
+        ]
+    },
+    {
+        "id": 19,
+        "menu": "Pagination",
+        "sub_menu": [
+            {
+                "id": 1,
+                "menu": "Front Pagination",
+                "value": "FrontPagination",
+                "type": 1
+            }
+        ]
+    },
+    {
+        "id": 20,
+        "menu": "Api",
+        "sub_menu": [
+            {
+                "id": 1,
+                "menu": "Common",
+                "value": "Common",
+                "type": 1
+            },
+            {
+                "id": 2,
+                "menu": "Dashboard",
+                "value": "Dashboard",
+                "type": 1
+            },
+            {
+                "id": 3,
+                "menu": "Activity",
+                "value": "Activity",
+                "type": 1
+            },
+            {
+                "id": 4,
+                "menu": "Activity Form",
+                "value": "ActivityForm",
+                "type": 1
+            },
+            {
+                "id": 5,
+                "menu": "Category",
+                "value": "Category",
+                "type": 1
+            },
+            {
+                "id": 6,
+                "menu": "Challenge Detail",
+                "value": "ChallengeDetail",
+                "type": 1
+            },
+            {
+                "id": 7,
+                "menu": "Challenge",
+                "value": "Challenge",
+                "type": 1
+            },
+            {
+                "id": 8,
+                "menu": "Challenge Teams",
+                "value": "ChallengeTeams",
+                "type": 1
+            },
+            {
+                "id": 9,
+                "menu": "Chat",
+                "value": "Chat",
+                "type": 1
+            },
+            {
+                "id": 10,
+                "menu": "Chat Message",
+                "value": "ChatMessage",
+                "type": 1
+            },
+            {
+                "id": 11,
+                "menu": "Covid19 Detail",
+                "value": "covid19Detail",
+                "type": 1
+            },
+            {
+                "id": 12,
+                "menu": "Covid Passport",
+                "value": "covidPassport",
+                "type": 1
+            },
+            {
+                "id": 13,
+                "menu": "Categories",
+                "value": "Categories",
+                "type": 1
+            },
+            {
+                "id": 14,
+                "menu": "Sub Category",
+                "value": "SubCategory",
+                "type": 1
+            },
+            {
+                "id": 15,
+                "menu": "Event",
+                "value": "Event",
+                "type": 1
+            },
+            {
+                "id": 16,
+                "menu": "Forgot Pass",
+                "value": "ForgotPass",
+                "type": 1
+            },
+            {
+                "id": 17,
+                "menu": "Form",
+                "value": "Form",
+                "type": 1
+            },
+            {
+                "id": 18,
+                "menu": "Fitbit",
+                "value": "fitbit",
+                "type": 1
+            },
+            {
+                "id": 19,
+                "menu": "Health",
+                "value": "Health",
+                "type": 1
+            },
+            {
+                "id": 20,
+                "menu": "Health Assessment",
+                "value": "HealthAssessment",
+                "type": 1
+            },
+            {
+                "id": 21,
+                "menu": "Health Fit",
+                "value": "HealthFit",
+                "type": 1
+            },
+            {
+                "id": 22,
+                "menu": "Health Form",
+                "value": "HealthForm",
+                "type": 1
+            },
+            {
+                "id": 23,
+                "menu": "HealthKit",
+                "value": "HealthKit",
+                "type": 1
+            },
+            {
+                "id": 24,
+                "menu": "Incentive",
+                "value": "Incentive",
+                "type": 1
+            },
+            {
+                "id": 25,
+                "menu": "Incentive Main",
+                "value": "IncentiveMain",
+                "type": 1
+            },
+            {
+                "id": 26,
+                "menu": "Media",
+                "value": "Media",
+                "type": 1
+            },
+            {
+                "id": 27,
+                "menu": "MyPlan",
+                "value": "MyPlan",
+                "type": 1
+            },
+            {
+                "id": 28,
+                "menu": "Notification",
+                "value": "Notification",
+                "type": 1
+            },
+            {
+                "id": 29,
+                "menu": "Profile",
+                "value": "Profile",
+                "type": 1
+            },
+            {
+                "id": 30,
+                "menu": "Questions",
+                "value": "Questions",
+                "type": 1
+            },
+            {
+                "id": 31,
+                "menu": "Questions New",
+                "value": "QuestionsNew",
+                "type": 1
+            },
+            {
+                "id": 32,
+                "menu": "Quiz",
+                "value": "Quiz",
+                "type": 1
+            },
+            {
+                "id": 33,
+                "menu": "Quiz Result",
+                "value": "QuizResult",
+                "type": 1
+            },
+            {
+                "id": 34,
+                "menu": "Rewards",
+                "value": "Rewards",
+                "type": 1
+            },
+            {
+                "id": 35,
+                "menu": "Support",
+                "value": "Support",
+                "type": 1
+            },
+            {
+                "id": 36,
+                "menu": "Tracker Main",
+                "value": "TrackerMain",
+                "type": 1
+            },
+            {
+                "id": 37,
+                "menu": "Video Detail",
+                "value": "VideoDetail",
+                "type": 1
+            },
+            {
+                "id": 38,
+                "menu": "Add Team Members",
+                "value": "addTeamMembers",
+                "type": 1
+            },
+            {
+                "id": 39,
+                "menu": "Agreement",
+                "value": "agreement",
+                "type": 1
+            },
+            {
+                "id": 40,
+                "menu": "Baton Popup",
+                "value": "batonPopup",
+                "type": 1
+            },
+            {
+                "id": 41,
+                "menu": "Challenge Commitment",
+                "value": "challengeCommitment",
+                "type": 1
+            },
+            {
+                "id": 42,
+                "menu": "Challenge Message",
+                "value": "ChallengeMessage",
+                "type": 1
+            },
+            {
+                "id": 43,
+                "menu": "Challenge Task Verificaion",
+                "value": "challengeTaskVerificaion",
+                "type": 1
+            },
+            {
+                "id": 44,
+                "menu": "Covid19",
+                "value": "covid19",
+                "type": 1
+            },
+            {
+                "id": 45,
+                "menu": "Decline Form",
+                "value": "declineForm",
+                "type": 1
+            },
+            {
+                "id": 46,
+                "menu": "Forgot Password",
+                "value": "forgotPassword",
+                "type": 1
+            },
+            {
+                "id": 47,
+                "menu": "Greeting",
+                "value": "greeting",
+                "type": 1
+            },
+            {
+                "id": 48,
+                "menu": "Groups",
+                "value": "groups",
+                "type": 1
+            },
+            {
+                "id": 49,
+                "menu": "Hra Success",
+                "value": "HraSuccess",
+                "type": 1
+            },
+            {
+                "id": 50,
+                "menu": "Kindness Token",
+                "value": "KindnessToken",
+                "type": 1
+            },
+            {
+                "id": 51,
+                "menu": "LeaderBoard Permission",
+                "value": "LeaderBoardPermission",
+                "type": 1
+            },
+            {
+                "id": 52,
+                "menu": "Login Agreement",
+                "value": "LoginAgreement",
+                "type": 1
+            },
+            {
+                "id": 53,
+                "menu": "NewUser Login",
+                "value": "NewUserLogin",
+                "type": 1
+            },
+            {
+                "id": 54,
+                "menu": "RelayRace Popup",
+                "value": "RelayRacePopup",
+                "type": 1
+            },
+            {
+                "id": 55,
+                "menu": "ScoreCard",
+                "value": "ScoreCard",
+                "type": 1
+            },
+            {
+                "id": 56,
+                "menu": "Update Exercise Data",
+                "value": "updateExerciseData",
+                "type": 1
+            },
+            {
+                "id": 57,
+                "menu": "Update Nutrition Data",
+                "value": "updateNutritionData",
+                "type": 1
+            },
+            {
+                "id": 58,
+                "menu": "Biometric Form",
+                "value": "BiometricForm",
+                "type": 1
+            },
+            {
+                "id": 59,
+                "menu": "BloodGlucose Tracker",
+                "value": "BloodGlucoseTracker",
+                "type": 1
+            },
+            {
+                "id": 60,
+                "menu": "BP Tracker",
+                "value": "BPTracker",
+                "type": 1
+            },
+            {
+                "id": 61,
+                "menu": "Cholesterol Tracker",
+                "value": "CholesterolTracker",
+                "type": 1
+            },
+            {
+                "id": 62,
+                "menu": "Event Join Success",
+                "value": "EventJoinSuccess",
+                "type": 1
+            },
+            {
+                "id": 63,
+                "menu": "Event Registration",
+                "value": "EventRegistration",
+                "type": 1
+            },
+            {
+                "id": 64,
+                "menu": "Exercise Tracker",
+                "value": "ExerciseTracker",
+                "type": 1
+            },
+            {
+                "id": 65,
+                "menu": "HealthResult Block",
+                "value": "HealthResultBlock",
+                "type": 1
+            },
+            {
+                "id": 66,
+                "menu": "Nutrition Block",
+                "value": "NutritionBlock",
+                "type": 1
+            },
+            {
+                "id": 67,
+                "menu": "Nutrition Tracker",
+                "value": "NutritionTracker",
+                "type": 1
+            },
+            {
+                "id": 68,
+                "menu": "Quicklink Block",
+                "value": "QuicklinkBlock",
+                "type": 1
+            },
+            {
+                "id": 69,
+                "menu": "Sendmail Block",
+                "value": "SendmailBlock",
+                "type": 1
+            },
+            {
+                "id": 70,
+                "menu": "Uploadform Block",
+                "value": "UploadformBlock",
+                "type": 1
+            },
+            {
+                "id": 71,
+                "menu": "Image Picker",
+                "value": "imagePicker",
+                "type": 1
+            },
+            {
+                "id": 72,
+                "menu": "MyPlan ReadMore",
+                "value": "myPlanReadMore",
+                "type": 1
+            },
+            {
+                "id": 73,
+                "menu": "SideMenu",
+                "value": "SideMenu",
+                "type": 1
+            },
+            {
+                "id": 74,
+                "menu": "Emotional Journey Videos",
+                "value": "EmotionalJourneyVideos",
+                "type": 1
+            }
+        ]
+    },
+    {
+        "id": 21,
+        "menu": "OrgAdmin",
+        "sub_menu": [
+            {
+                "id": 1,
+                "menu": "Menu",
+                "value": "Menu",
+                "type": 1
+            },
+            {
+                "id": 2,
+                "menu": "Organization",
+                "value": "Organization",
+                "type": 1
+            },
+            {
+                "id": 3,
+                "menu": "Dashboard",
+                "value": "Dashboard",
+                "type": 1
+            },
+            {
+                "id": 4,
+                "menu": "Contact Us",
+                "value": "ContactUs",
+                "type": 1
+            },
+            {
+                "id": 5,
+                "menu": "Department",
+                "value": "Department",
+                "type": 1
+            },
+            {
+                "id": 6,
+                "menu": "Location",
+                "value": "Location",
+                "type": 1
+            },
+            {
+                "id": 7,
+                "menu": "Registration Option",
+                "value": "RegistrationOption",
+                "type": 1
+            },
+            {
+                "id": 8,
+                "menu": "Theme Settings",
+                "value": "ThemeSettings",
+                "type": 1
+            },
+            {
+                "id": 9,
+                "menu": "Dashboard Image Settings",
+                "value": "DashboardImageSettings",
+                "type": 1
+            },
+            {
+                "id": 10,
+                "menu": "User",
+                "value": "User",
+                "type": 1
+            },
+            {
+                "id": 11,
+                "menu": "Reports",
+                "value": "Reports",
+                "type": 1
+            },
+            {
+                "id": 12,
+                "menu": "Programs",
+                "value": "Programs",
+                "type": 1
+            }
+        ]
+    }
+]

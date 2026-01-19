@@ -1,0 +1,12 @@
+{
+    "New Department":"New Department Information",
+    "Edit Department":"Edit Department Information",
+    "Manage Departments":"Manage Departments",
+    "Add Department":"Add Department",
+    "Name":"Department Name",
+    "ID":"Department ID",
+    "Description":"Department Description",
+    "Delete Toast":"Department successfully deleted.",
+    "Update Toast":"Organization Department updated Successfully",
+    "Add Toast":"Organization Department added Successfully"
+}

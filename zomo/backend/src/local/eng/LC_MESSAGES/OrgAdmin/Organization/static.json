@@ -1,0 +1,15 @@
+{
+    "Information":"Organization Information",
+    "Update Toast":"Organization Information Updated Successfully",
+    "Name":"Organization Name",
+    "Logo":"Organization Logo",
+    "Logo Ins":"(Size : 200x50 px :: Type : PNG only.)",
+    "Employee Welcome Email":"Employee Welcome Email",
+    "Welcome Email Ins":"Customize the email which your employees will see after registration",
+    "Phone Number":"Phone Number",
+    "Website":"Website",
+    "Street Address":"Street Address",
+    "Wellness Program Name":"Wellness Program Name",
+    "SSN":"SSN",
+    "Employee ID":"Employee ID"
+}

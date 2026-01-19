@@ -1,0 +1,48 @@
+{
+  "name": "zomohealth-timezones-service",
+  "version": "0.0.1",
+  "description": "",
+  "author": "",
+  "private": true,
+  "license": "UNLICENSED",
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "build": "nest build",
+    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "start": "nest start",
+    "start:dev": "set NODE_ENV=PROD&&nest start --watch",
+    "start:local": "set NODE_ENV=PROD&&nest start --watch",
+    "start:debug": "nest start --debug --watch",
+    "start:prod": "set NODE_ENV=PROD&&node dist/main",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "test": "cucumber-js features/permission/role-permission.feature",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage",
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "docs": "apidoc -i src -o public/apidoc"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "rootDir": "src",
+    "testRegex": ".*\\.spec\\.ts$",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "collectCoverageFrom": [
+      "**/*.(t|j)s"
+    ],
+    "coverageDirectory": "../coverage",
+    "testEnvironment": "node"
+  },
+  "apidoc": {
+    "title": "Custom apiDoc browser title",
+    "sampleUrl": "http://localhost:3000/"
+  }
+}

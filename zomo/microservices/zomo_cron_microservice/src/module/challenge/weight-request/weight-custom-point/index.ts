@@ -1,0 +1,1 @@
+export * from './weight-point-upload.service';

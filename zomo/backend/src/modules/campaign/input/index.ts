@@ -1,0 +1,1 @@
+export * from './paginateWithCampaign.input';

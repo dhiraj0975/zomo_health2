@@ -1,0 +1,1 @@
+export * from './admin-assign-plan.input';

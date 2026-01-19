@@ -1,0 +1,12 @@
+{
+  "collection": "@nestjs/schematics",
+  "entryFile": "backend/src/main",
+  "sourceRoot": "src",
+  "root": "dist",
+  "compilerOptions": {
+    "deleteOutDir": true,
+    "assets": [
+      { "include": "local/**/*", "watchAssets": true, "outDir": "./dist/backend/src" }
+    ]
+  }
+}

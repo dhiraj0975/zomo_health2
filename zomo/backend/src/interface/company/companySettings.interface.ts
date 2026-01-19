@@ -1,0 +1,69 @@
+export interface CompanySettingsInterface {
+  id: number;
+  org_id: number;
+  broker_code: string;
+  eligibility: number;
+  img_option: number;
+  img_area: number;
+  slider_limit: number;
+  ssn: number;
+  is_reqd_ssn: number;
+  employee_id: number;
+  is_reqd_empid: number;
+  allow_username: number;
+  allow_password: number;
+  first_login_by: number;
+  pre_first_login_by: string;
+  block_registration: number;
+  lock_username: number;
+  spouse_widget: number;
+  spouse_option: number;
+  wellnessprog_name: string;
+  editable_pdf: number;
+  e_timezone_setting: number;
+  user_form_setting: number;
+  chat_setting: number;
+  video_setting: number;
+  video_action: number;
+  agreement_status: number;
+  passport_menu: number;
+  covid_menu: number;
+  allow_du_login: number;
+  allow_ds_login: number;
+  chat_with_coach: number;
+  chat_type: number;
+  form_limit: number;
+  data_limit: number;
+  show_quicklink_in_sidebar: number;
+  is_emo_health_asssessments: number;
+  pointsleaderboard: number;
+  pointsleaderboardmin: number;
+  user_popup_status: number;
+  dashboard_point_leaboard: number;
+  campaign_id: number;
+  health_a_based_on: number;
+  ha_biomatricstep_hs: number;
+  spouse_email_collection_on_off: number;
+  spouse_email_collection_required: number;
+  census_status: number;
+  plan_order: number;
+  health_form_popup: number;
+  health_form_mail: number;
+  hide_assessment: number;
+  is_internationalization: number;
+  pointsleaderboardpopup: number;
+  enable_popup: number;
+  enable_logo: number;
+  logo_image?: string;
+  title?: string;
+  start_date?: string; // Use Date if converted
+  frequency_type: number;
+  end_date?: string; // Use Date if converted
+  popup_based_on: number;
+  reset_password_mandatory: number;
+  is_zomo_on: number;
+  created_by: number;
+  updated_by: number;
+  created: string; // timestamp, can convert to Date
+  updated: string; // timestamp, can convert to Date
+}

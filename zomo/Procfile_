@@ -1,0 +1,4 @@
+web: npm run start:prod --prefix backend
+web2: npm run start:prod  --prefix microservices/zomo_postcode_microservice
+web3: npm run start:prod  --prefix microservices/zomo_communication_microservice
+web4: npm run start:prod  --prefix microservices/zomo_usda26_food_microservice

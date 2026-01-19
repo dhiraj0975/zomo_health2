@@ -1,0 +1,32 @@
+import { Allow } from 'class-validator';
+export class CreateAssessmentOptionsInput {
+    @Allow() id: number;
+    @Allow() user_id: number;
+    @Allow() org_id: number;
+    @Allow() question_id: number;
+    @Allow() parent_id: number;
+    @Allow() sort_order: number;
+    @Allow() range_type: number;
+    @Allow() start_value: number;
+    @Allow() end_value: number;
+    @Allow() risk_rating: number;
+    @Allow() type: number;
+    @Allow() message_add: string;
+    @Allow() status: number;
+    @Allow() health_a_based_on: number;
+    @Allow() date: any;
+    @Allow() activity_id: number;
+    @Allow() hra_status: number;
+    @Allow() 1 : string;
+    @Allow() 2: string;
+    @Allow() 3: string;
+    @Allow() 4: string;
+    @Allow() 5: string;
+    @Allow() question_title: string;
+    @Allow() option_title: string;
+    @Allow() main_option_id: number;
+    @Allow() language_id: number;
+    @Allow() organization_id: number;
+    @Allow() language_set: number;
+    @Allow() hra_reset: number;
+}

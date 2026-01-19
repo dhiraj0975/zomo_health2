@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "entryFile": "microservices/zomo_census_microservice/src/main",
+  "sourceRoot": "src",
+  "root": "dist",
+  "compilerOptions": {
+    "deleteOutDir": true
+  }
+}
