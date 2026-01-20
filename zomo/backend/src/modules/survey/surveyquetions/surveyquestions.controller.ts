@@ -52,9 +52,9 @@ export class SurveyQuestionsController {
             if (resultedData['list'] && resultedData['list'].length) {
                 await Promise.all(resultedData['list'].map(async (ele) => {
                     if (ele.title) {
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `question_title_${ele['org_id']}_${ele['popup_id']}_${ele['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${ele.org_id}/${ele.popup_id}`, `dynamic`);
-                        if (customeName != `question_title_${ele['org_id']}_${ele['popup_id']}_${ele['id']}`) {
-                            ele.title = customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `question_title_${ele['org_id']}_${ele['popup_id']}_${ele['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${ele.org_id}/${ele.popup_id}`, `dynamic`);
+                        if (customName != `question_title_${ele['org_id']}_${ele['popup_id']}_${ele['id']}`) {
+                            ele.title = customName;
                         }
                     }
                 }));
@@ -212,9 +212,9 @@ export class SurveyQuestionsController {
             if (resultedData && resultedData.length) {
                 await Promise.all(resultedData.map(async (ele) => {
                     if (ele.title) {
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `question_title_${ele['org_id']}_${ele['popup_id']}_${ele['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${ele.org_id}/${ele.popup_id}`, `dynamic`);
-                        if (customeName != `question_title_${ele['org_id']}_${ele['popup_id']}_${ele['id']}`) {
-                            ele.title = customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `question_title_${ele['org_id']}_${ele['popup_id']}_${ele['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${ele.org_id}/${ele.popup_id}`, `dynamic`);
+                        if (customName != `question_title_${ele['org_id']}_${ele['popup_id']}_${ele['id']}`) {
+                            ele.title = customName;
                         }
                     }
                 }));
@@ -265,9 +265,9 @@ export class SurveyQuestionsController {
                 await this.commonArrayService.formatToDto(SurveyQuestionsDto, recordDetails, req.lang)
             );
             if (recordDetails.title) {
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang, `question_title_${recordDetails['org_id']}_${recordDetails['popup_id']}_${recordDetails['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${recordDetails.org_id}/${recordDetails.popup_id}`, `dynamic`);
-                if (customeName != `question_title_${recordDetails['org_id']}_${recordDetails['popup_id']}_${recordDetails['id']}`) {
-                    recordDetails.title = customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang, `question_title_${recordDetails['org_id']}_${recordDetails['popup_id']}_${recordDetails['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${recordDetails.org_id}/${recordDetails.popup_id}`, `dynamic`);
+                if (customName != `question_title_${recordDetails['org_id']}_${recordDetails['popup_id']}_${recordDetails['id']}`) {
+                    recordDetails.title = customName;
                 }
             }
             return res.status(HttpStatus.OK).json({

@@ -54,9 +54,9 @@ export class PassportSettingsController {
             if(resultedData['list'] && resultedData['list'].length){
                 await Promise.all(resultedData['list'].map(async (ele)=>{
                     if(ele.description){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `settings_description_${ele['org_id']}`, `/LC_MESSAGES/Trackers/CovidPassport/${req.tokenUser?.org_id}`,`dynamic`);
-                        if (customeName != `settings_description_${ele['org_id']}`) {
-                            ele.description = customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `settings_description_${ele['org_id']}`, `/LC_MESSAGES/Trackers/CovidPassport/${req.tokenUser?.org_id}`,`dynamic`);
+                        if (customName != `settings_description_${ele['org_id']}`) {
+                            ele.description = customName;
                         }
                     }
                 }));
@@ -106,9 +106,9 @@ export class PassportSettingsController {
                     await this.commonArrayService.formatToDto(CovidPassportSettingsDto, settingDetails, req.lang)
                 );
                 if(settingDetails.description){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang, `settings_description_${settingDetails['org_id']}`, `/LC_MESSAGES/Trackers/CovidPassport/${req.tokenUser?.org_id}`,`dynamic`);
-                        if (customeName != `settings_description_${settingDetails['org_id']}`) {
-                            settingDetails.description = customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang, `settings_description_${settingDetails['org_id']}`, `/LC_MESSAGES/Trackers/CovidPassport/${req.tokenUser?.org_id}`,`dynamic`);
+                        if (customName != `settings_description_${settingDetails['org_id']}`) {
+                            settingDetails.description = customName;
                         }
                 }
                 return res.status(HttpStatus.OK).json({
@@ -272,9 +272,9 @@ export class PassportSettingsController {
             if(resultedData && resultedData.length){
                 await Promise.all(resultedData.map(async (ele)=>{
                     if(ele.description){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `settings_description_${ele['org_id']}`, `/LC_MESSAGES/Trackers/CovidPassport/${req.tokenUser?.org_id}`,`dynamic`);
-                        if (customeName != `settings_description_${ele['org_id']}`) {
-                            ele.description = customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `settings_description_${ele['org_id']}`, `/LC_MESSAGES/Trackers/CovidPassport/${req.tokenUser?.org_id}`,`dynamic`);
+                        if (customName != `settings_description_${ele['org_id']}`) {
+                            ele.description = customName;
                         }
                     }
                 }));

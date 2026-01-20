@@ -115,7 +115,7 @@ export class SleepChallengeReportService {
                     );
                     totalUsersJoined = pagedUserIdsFind.totalUserCount || 0;
                     let pagedUserIds = pagedUserIdsFind.usersIds || [];
-                    let where = ` AND User.id IN (${pagedUserIds.length > 0 ? pagedUserIds.join(',') : 0}) AND User.status = 1`;
+                    let where = ` AND User.id IN (${pagedUserIds.length > 0 ? pagedUserIds.join(',') : 0})`;
                     //Rank Wise user pagination
                     allgetteams = await this.teamsService.getTeamAllReport(
                         `team.org_id = ${schedule?.org_id} AND scj.schedule_id = ${schedule?.id} ${teamCondition != '' ? ' AND ' + teamCondition : ''} ${groupCondition != '' ? ' AND ' + groupCondition : ''}`,
@@ -197,7 +197,7 @@ export class SleepChallengeReportService {
                     );
                     totalUsersJoined = pagedUserIdsFind.totalUserCount || 0;
                     let pagedUserIds = pagedUserIdsFind.usersIds || [];
-                    let where = ` AND User.id IN (${pagedUserIds.length > 0 ? pagedUserIds.join(',') : 0}) AND User.status = 1`;
+                    let where = ` AND User.id IN (${pagedUserIds.length > 0 ? pagedUserIds.join(',') : 0})`;
                     getUser = await this.userService.challengeReportPaginate(
                         `${condition}${where} AND User.org_id = ${schedule?.org_id}`,
                         null,

@@ -90,8 +90,8 @@ export class MediaCategoryController {
             if(resultedData['list'] && resultedData['list'].length){
                 await Promise.all(resultedData['list'].map(async (ele)=>{
                     if(ele.title){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`category_title_${ele['id']}`, `/LC_MESSAGES/Media/Media/${ele['org_id']}/${ele['id']}`,`dynamic`);
-                        ele.title = (customeName == '' || customeName == `category_title_${ele['id']}`) ? ele['title'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`category_title_${ele['id']}`, `/LC_MESSAGES/Media/Media/${ele['org_id']}/${ele['id']}`,`dynamic`);
+                        ele.title = (customName == '' || customName == `category_title_${ele['id']}`) ? ele['title'] : customName;
                     }
                 }));
             }
@@ -142,8 +142,8 @@ export class MediaCategoryController {
                 await this.commonArrayService.formatToDto(MediaCategoryDto, mediaCategory, req.lang)
             );
             if(mediaCategory.title){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`category_title_${mediaCategory['id']}`, `/LC_MESSAGES/Media/Media/${mediaCategory['org_id']}/${mediaCategory['id']}`,`dynamic`);
-                mediaCategory.title = (customeName == '' || customeName == `category_title_${mediaCategory['id']}`) ? mediaCategory['title'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`category_title_${mediaCategory['id']}`, `/LC_MESSAGES/Media/Media/${mediaCategory['org_id']}/${mediaCategory['id']}`,`dynamic`);
+                mediaCategory.title = (customName == '' || customName == `category_title_${mediaCategory['id']}`) ? mediaCategory['title'] : customName;
             }
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
@@ -510,8 +510,8 @@ export class MediaCategoryController {
                 if (resultedData && resultedData.length) {
                     await Promise.all(resultedData.map(async (ele) => {
                         if (ele.title) {
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang, `category_title_${ele['id']}`, `/LC_MESSAGES/Media/Media/${ele['org_id']}/${ele['id']}`, `dynamic`);
-                            ele.title = (customeName == '' || customeName == `category_title_${ele['id']}`) ? ele['title'] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang, `category_title_${ele['id']}`, `/LC_MESSAGES/Media/Media/${ele['org_id']}/${ele['id']}`, `dynamic`);
+                            ele.title = (customName == '' || customName == `category_title_${ele['id']}`) ? ele['title'] : customName;
                         }
                     }));
                 }
@@ -631,8 +631,8 @@ export class MediaCategoryController {
                         if(resultedData && resultedData.length){
                             await Promise.all(resultedData.map(async (ele)=>{
                                 if(ele.title){
-                                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`category_title_${ele['id']}`, `/LC_MESSAGES/Media/Media/${ele['org_id']}/${ele['id']}`,`dynamic`);
-                                    ele.title = (customeName == '' || customeName == `category_title_${ele['id']}`) ? ele['title'] : customeName;
+                                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`category_title_${ele['id']}`, `/LC_MESSAGES/Media/Media/${ele['org_id']}/${ele['id']}`,`dynamic`);
+                                    ele.title = (customName == '' || customName == `category_title_${ele['id']}`) ? ele['title'] : customName;
                                 }
                             }));
                         }
@@ -649,8 +649,8 @@ export class MediaCategoryController {
                         if(resultedData && resultedData.length){
                             await Promise.all(resultedData.map(async (ele)=>{
                                 if(ele.title){
-                                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`category_title_${ele['id']}`, `/LC_MESSAGES/Media/Media/${ele['org_id']}/${ele['id']}`,`dynamic`);
-                                    ele.title = (customeName == '' || customeName == `category_title_${ele['id']}`) ? ele['title'] : customeName;
+                                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`category_title_${ele['id']}`, `/LC_MESSAGES/Media/Media/${ele['org_id']}/${ele['id']}`,`dynamic`);
+                                    ele.title = (customName == '' || customName == `category_title_${ele['id']}`) ? ele['title'] : customName;
                                 }
                             }));
                         }
@@ -677,20 +677,20 @@ export class MediaCategoryController {
                                             post.time = `${post.time.split(':')[0]} ${hourTrans} : ${post.time.split(':')[1]} ${minuteTrans}`
                                         }
                                         if(post.title){
-                                            let customeName = await this.translatorService.frontendReadTranslation(req.lang,`post_title_${id}_${post.id}`, `/LC_MESSAGES/Media/Media/${postData?.org_id}/${id}`,`dynamic`);
-                                            post.title = (customeName == '' || customeName == `post_title_${id}_${post.id}`) ? post.title : customeName;
+                                            let customName = await this.translatorService.frontendReadTranslation(req.lang,`post_title_${id}_${post.id}`, `/LC_MESSAGES/Media/Media/${postData?.org_id}/${id}`,`dynamic`);
+                                            post.title = (customName == '' || customName == `post_title_${id}_${post.id}`) ? post.title : customName;
                                         }
                                         if(post.link_title){
-                                            let customeName = await this.translatorService.frontendReadTranslation(req.lang,`post_linktitle_${id}_${post.id}`, `/LC_MESSAGES/Media/Media/${postData?.org_id}/${id}`,`dynamic`);
-                                            post.link_title = (customeName == '' || customeName == `post_linktitle_${id}_${post.id}`) ? post.link_title : customeName;
+                                            let customName = await this.translatorService.frontendReadTranslation(req.lang,`post_linktitle_${id}_${post.id}`, `/LC_MESSAGES/Media/Media/${postData?.org_id}/${id}`,`dynamic`);
+                                            post.link_title = (customName == '' || customName == `post_linktitle_${id}_${post.id}`) ? post.link_title : customName;
                                         }
                                         if(post.short_desc){
-                                            let customeName = await this.translatorService.frontendReadTranslation(req.lang,`post_shortdesc_${id}_${post.id}`, `/LC_MESSAGES/Media/Media/${postData?.org_id}/${id}`,`dynamic`);
-                                            post.short_desc = (customeName == '' || customeName == `post_shortdesc_${id}_${post.id}`) ? post.short_desc : customeName;
+                                            let customName = await this.translatorService.frontendReadTranslation(req.lang,`post_shortdesc_${id}_${post.id}`, `/LC_MESSAGES/Media/Media/${postData?.org_id}/${id}`,`dynamic`);
+                                            post.short_desc = (customName == '' || customName == `post_shortdesc_${id}_${post.id}`) ? post.short_desc : customName;
                                         }
                                         if(post.more_desc){
-                                            let customeName = await this.translatorService.frontendReadTranslation(req.lang,`post_moredesc_${id}_${post.id}`, `/LC_MESSAGES/Media/Media/${postData?.org_id}/${id}`,`dynamic`);
-                                            post.more_desc = (customeName == '' || customeName == `post_moredesc_${id}_${post.id}`) ? post.more_desc : customeName;
+                                            let customName = await this.translatorService.frontendReadTranslation(req.lang,`post_moredesc_${id}_${post.id}`, `/LC_MESSAGES/Media/Media/${postData?.org_id}/${id}`,`dynamic`);
+                                            post.more_desc = (customName == '' || customName == `post_moredesc_${id}_${post.id}`) ? post.more_desc : customName;
                                         }
                                     }
                                 }
@@ -721,8 +721,8 @@ export class MediaCategoryController {
             const categoryData = async (data) =>  {
                 for (let result of data) {
                     if(result.title){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`category_title_${result.id}`, `/LC_MESSAGES/Media/Media/${postData?.org_id}/${result['id']}`,`dynamic`);
-                        result.title = (customeName == '' || customeName == `category_title_${result.id}`) ? result['title'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`category_title_${result.id}`, `/LC_MESSAGES/Media/Media/${postData?.org_id}/${result['id']}`,`dynamic`);
+                        result.title = (customName == '' || customName == `category_title_${result.id}`) ? result['title'] : customName;
                     }
                     let status = await addSubmenu(array, result.parent_id, [{ title: result.title, id: result.id }]);
                     if (status === false) {
@@ -758,8 +758,8 @@ export class MediaCategoryController {
             const record =  await this.mediaCategoryService.findOne({ id: id });
             if (record) {
                 if(record.title){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`category_title_${record['id']}`, `/LC_MESSAGES/Media/Media/${record['org_id']}/${record['id']}`,`dynamic`);
-                    record.title = (customeName == '' || customeName == `category_title_${record['id']}`) ? record['title'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`category_title_${record['id']}`, `/LC_MESSAGES/Media/Media/${record['org_id']}/${record['id']}`,`dynamic`);
+                    record.title = (customName == '' || customName == `category_title_${record['id']}`) ? record['title'] : customName;
                 }
                 if (record.parent_id) {
                     concatenatedString.push(record?.title ?? '')

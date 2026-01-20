@@ -143,32 +143,32 @@ export class EventController {
                     ele['companies'] = ele['companies'].filter(company => company.company != null || company.company_name != undefined);
                 }
                 if(ele.event_name){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`event_name_${ele['id']}`, `/LC_MESSAGES/Events/Events/${ele['organization_id'] || 0}/${ele['id']}`,`dynamic`);
-                    ele.event_name = (customeName == '' || customeName == `event_name_${ele['id']}`) ? ele['event_name'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`event_name_${ele['id']}`, `/LC_MESSAGES/Events/Events/${ele['organization_id'] || 0}/${ele['id']}`,`dynamic`);
+                    ele.event_name = (customName == '' || customName == `event_name_${ele['id']}`) ? ele['event_name'] : customName;
                 }
                 if(ele.event_description){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`event_description_${ele['id']}`, `/LC_MESSAGES/Events/Events/${ele['organization_id'] || 0}/${ele['id']}`,`dynamic`);
-                    ele.event_description = (customeName == '' || customeName == `event_description_${ele['id']}`) ? ele['event_description'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`event_description_${ele['id']}`, `/LC_MESSAGES/Events/Events/${ele['organization_id'] || 0}/${ele['id']}`,`dynamic`);
+                    ele.event_description = (customName == '' || customName == `event_description_${ele['id']}`) ? ele['event_description'] : customName;
                 }
                 if(ele.event_address){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`event_address_${ele['id']}`, `/LC_MESSAGES/Events/Events/${ele['organization_id'] || 0}/${ele['id']}`,`dynamic`);
-                    ele.event_address = (customeName == '' || customeName == `event_address_${ele['id']}`) ? ele['event_address'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`event_address_${ele['id']}`, `/LC_MESSAGES/Events/Events/${ele['organization_id'] || 0}/${ele['id']}`,`dynamic`);
+                    ele.event_address = (customName == '' || customName == `event_address_${ele['id']}`) ? ele['event_address'] : customName;
                 }
                 if(ele.event_city){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`event_city_${ele['id']}`, `/LC_MESSAGES/Events/Events/${ele['organization_id'] || 0}/${ele['id']}`,`dynamic`);
-                    ele.event_city = (customeName == '' || customeName == `event_city_${ele['id']}`) ? ele['event_city'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`event_city_${ele['id']}`, `/LC_MESSAGES/Events/Events/${ele['organization_id'] || 0}/${ele['id']}`,`dynamic`);
+                    ele.event_city = (customName == '' || customName == `event_city_${ele['id']}`) ? ele['event_city'] : customName;
                 }
                 if(ele.event_state){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`event_state_${ele['id']}`, `/LC_MESSAGES/Events/Events/${ele['organization_id'] || 0}/${ele['id']}`,`dynamic`);
-                    ele.event_state = (customeName == '' || customeName == `event_state_${ele['id']}`) ? ele['event_state'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`event_state_${ele['id']}`, `/LC_MESSAGES/Events/Events/${ele['organization_id'] || 0}/${ele['id']}`,`dynamic`);
+                    ele.event_state = (customName == '' || customName == `event_state_${ele['id']}`) ? ele['event_state'] : customName;
                 }
                 if(ele.user_id){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`selectedName_${ele['id']}`, `/LC_MESSAGES/Events/Events/${ele['organization_id'] || 0}/${ele['id']}`,`dynamic`);
-                    ele.user_id = (customeName == '' || customeName == `selectedName_${ele['id']}`) ? ele['user_id'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`selectedName_${ele['id']}`, `/LC_MESSAGES/Events/Events/${ele['organization_id'] || 0}/${ele['id']}`,`dynamic`);
+                    ele.user_id = (customName == '' || customName == `selectedName_${ele['id']}`) ? ele['user_id'] : customName;
                 }
                 if(ele.event_location){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`event_location_${ele['id']}`, `/LC_MESSAGES/Events/Events/${ele['organization_id'] || 0}/${ele['id']}`,`dynamic`);
-                    ele.event_location = (customeName == '' || customeName == `event_location_${ele['id']}`) ? ele['event_location'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`event_location_${ele['id']}`, `/LC_MESSAGES/Events/Events/${ele['organization_id'] || 0}/${ele['id']}`,`dynamic`);
+                    ele.event_location = (customName == '' || customName == `event_location_${ele['id']}`) ? ele['event_location'] : customName;
                 }
             }));
             return res.status(HttpStatus.OK).json({
@@ -305,32 +305,32 @@ export class EventController {
                     item['companies'] = item['companies'].filter(company => company.company != null || company.company_name != undefined);
                 }
                 if(item.event_name){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`event_name_${item['id']}`, `/LC_MESSAGES/Events/Events/${item['organization_id'] || 0}/${item['id']}`,`dynamic`);
-                    item.event_name = (customeName == '' || customeName == `event_name_${item['id']}`) ? item['event_name'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`event_name_${item['id']}`, `/LC_MESSAGES/Events/Events/${item['organization_id'] || 0}/${item['id']}`,`dynamic`);
+                    item.event_name = (customName == '' || customName == `event_name_${item['id']}`) ? item['event_name'] : customName;
                 }
                 if(item.event_description){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`event_description_${item['id']}`, `/LC_MESSAGES/Events/Events/${item['organization_id'] || 0}/${item['id']}`,`dynamic`);
-                    item.event_description = (customeName == '' || customeName == `event_description_${item['id']}`) ? item['event_description'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`event_description_${item['id']}`, `/LC_MESSAGES/Events/Events/${item['organization_id'] || 0}/${item['id']}`,`dynamic`);
+                    item.event_description = (customName == '' || customName == `event_description_${item['id']}`) ? item['event_description'] : customName;
                 }
                 if(item.event_address){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`event_address_${item['id']}`, `/LC_MESSAGES/Events/Events/${item['organization_id'] || 0}/${item['id']}`,`dynamic`);
-                    item.event_address = (customeName == '' || customeName == `event_address_${item['id']}`) ? item['event_address'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`event_address_${item['id']}`, `/LC_MESSAGES/Events/Events/${item['organization_id'] || 0}/${item['id']}`,`dynamic`);
+                    item.event_address = (customName == '' || customName == `event_address_${item['id']}`) ? item['event_address'] : customName;
                 }
                 if(item.event_city){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`event_city_${item['id']}`, `/LC_MESSAGES/Events/Events/${item['organization_id'] || 0}/${item['id']}`,`dynamic`);
-                    item.event_city = (customeName == '' || customeName == `event_city_${item['id']}`) ? item['event_city'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`event_city_${item['id']}`, `/LC_MESSAGES/Events/Events/${item['organization_id'] || 0}/${item['id']}`,`dynamic`);
+                    item.event_city = (customName == '' || customName == `event_city_${item['id']}`) ? item['event_city'] : customName;
                 }
                 if(item.event_state){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`event_state_${item['id']}`, `/LC_MESSAGES/Events/Events/${item['organization_id'] || 0}/${item['id']}`,`dynamic`);
-                    item.event_state = (customeName == '' || customeName == `event_state_${item['id']}`) ? item['event_state'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`event_state_${item['id']}`, `/LC_MESSAGES/Events/Events/${item['organization_id'] || 0}/${item['id']}`,`dynamic`);
+                    item.event_state = (customName == '' || customName == `event_state_${item['id']}`) ? item['event_state'] : customName;
                 }
                 if(item.user_id){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`selectedName_${item['id']}`, `/LC_MESSAGES/Events/Events/${item['organization_id'] || 0}/${item['id']}`,`dynamic`);
-                    item.user_id = (customeName == '' || customeName == `selectedName_${item['id']}`) ? item['user_id'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`selectedName_${item['id']}`, `/LC_MESSAGES/Events/Events/${item['organization_id'] || 0}/${item['id']}`,`dynamic`);
+                    item.user_id = (customName == '' || customName == `selectedName_${item['id']}`) ? item['user_id'] : customName;
                 }
                 if(item.event_location){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`event_location_${item['id']}`, `/LC_MESSAGES/Events/Events/${item['organization_id'] || 0}/${item['id']}`,`dynamic`);
-                    item.event_location = (customeName == '' || customeName == `event_location_${item['id']}`) ? item['event_location'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`event_location_${item['id']}`, `/LC_MESSAGES/Events/Events/${item['organization_id'] || 0}/${item['id']}`,`dynamic`);
+                    item.event_location = (customName == '' || customName == `event_location_${item['id']}`) ? item['event_location'] : customName;
                 }
             }));
             return res.status(HttpStatus.OK).json({
@@ -838,32 +838,32 @@ export class EventController {
                 if (resultedData && resultedData.length) {
                     await Promise.all(resultedData.map(async (ele) => {
                         if (ele.event_name) {
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang, `event_name_${ele['id']}`, `/LC_MESSAGES/Events/Events/${ele['organization_id'] || 0}/${ele['id']}`, `dynamic`);
-                            ele.event_name = (customeName == '' || customeName == `event_name_${ele['id']}`) ? ele['event_name'] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang, `event_name_${ele['id']}`, `/LC_MESSAGES/Events/Events/${ele['organization_id'] || 0}/${ele['id']}`, `dynamic`);
+                            ele.event_name = (customName == '' || customName == `event_name_${ele['id']}`) ? ele['event_name'] : customName;
                         }
                         if (ele.event_description) {
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang, `event_description_${ele['id']}`, `/LC_MESSAGES/Events/Events/${ele['organization_id'] || 0}/${ele['id']}`, `dynamic`);
-                            ele.event_description = (customeName == '' || customeName == `event_description_${ele['id']}`) ? ele['event_description'] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang, `event_description_${ele['id']}`, `/LC_MESSAGES/Events/Events/${ele['organization_id'] || 0}/${ele['id']}`, `dynamic`);
+                            ele.event_description = (customName == '' || customName == `event_description_${ele['id']}`) ? ele['event_description'] : customName;
                         }
                         if (ele.event_address) {
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang, `event_address_${ele['id']}`, `/LC_MESSAGES/Events/Events/${ele['organization_id'] || 0}/${ele['id']}`, `dynamic`);
-                            ele.event_address = (customeName == '' || customeName == `event_address_${ele['id']}`) ? ele['event_address'] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang, `event_address_${ele['id']}`, `/LC_MESSAGES/Events/Events/${ele['organization_id'] || 0}/${ele['id']}`, `dynamic`);
+                            ele.event_address = (customName == '' || customName == `event_address_${ele['id']}`) ? ele['event_address'] : customName;
                         }
                         if (ele.event_city) {
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang, `event_city_${ele['id']}`, `/LC_MESSAGES/Events/Events/${ele['organization_id'] || 0}/${ele['id']}`, `dynamic`);
-                            ele.event_city = (customeName == '' || customeName == `event_city_${ele['id']}`) ? ele['event_city'] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang, `event_city_${ele['id']}`, `/LC_MESSAGES/Events/Events/${ele['organization_id'] || 0}/${ele['id']}`, `dynamic`);
+                            ele.event_city = (customName == '' || customName == `event_city_${ele['id']}`) ? ele['event_city'] : customName;
                         }
                         if (ele.event_state) {
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang, `event_state_${ele['id']}`, `/LC_MESSAGES/Events/Events/${ele['organization_id'] || 0}/${ele['id']}`, `dynamic`);
-                            ele.event_state = (customeName == '' || customeName == `event_state_${ele['id']}`) ? ele['event_state'] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang, `event_state_${ele['id']}`, `/LC_MESSAGES/Events/Events/${ele['organization_id'] || 0}/${ele['id']}`, `dynamic`);
+                            ele.event_state = (customName == '' || customName == `event_state_${ele['id']}`) ? ele['event_state'] : customName;
                         }
                         if (ele.user_id) {
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang, `selectedName_${ele['id']}`, `/LC_MESSAGES/Events/Events/${ele['organization_id'] || 0}/${ele['id']}`, `dynamic`);
-                            ele.user_id = (customeName == '' || customeName == `selectedName_${ele['id']}`) ? ele['user_id'] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang, `selectedName_${ele['id']}`, `/LC_MESSAGES/Events/Events/${ele['organization_id'] || 0}/${ele['id']}`, `dynamic`);
+                            ele.user_id = (customName == '' || customName == `selectedName_${ele['id']}`) ? ele['user_id'] : customName;
                         }
                         if (ele.event_location) {
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang, `event_location_${ele['id']}`, `/LC_MESSAGES/Events/Events/${ele['organization_id'] || 0}/${ele['id']}`, `dynamic`);
-                            ele.event_location = (customeName == '' || customeName == `event_location_${ele['id']}`) ? ele['event_location'] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang, `event_location_${ele['id']}`, `/LC_MESSAGES/Events/Events/${ele['organization_id'] || 0}/${ele['id']}`, `dynamic`);
+                            ele.event_location = (customName == '' || customName == `event_location_${ele['id']}`) ? ele['event_location'] : customName;
                         }
                     }));
                 }
@@ -1154,32 +1154,32 @@ export class EventController {
                 resultedData['event_statecode'] = state?.['statecode'];
             }
             if(resultedData?.event_name){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`event_name_${resultedData['id']}`, `/LC_MESSAGES/Events/Events/${resultedData['organization_id'] || 0}/${resultedData['id']}`,`dynamic`);
-                resultedData.event_name = (customeName == '' || customeName == `event_name_${resultedData['id']}`) ? resultedData['event_name'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`event_name_${resultedData['id']}`, `/LC_MESSAGES/Events/Events/${resultedData['organization_id'] || 0}/${resultedData['id']}`,`dynamic`);
+                resultedData.event_name = (customName == '' || customName == `event_name_${resultedData['id']}`) ? resultedData['event_name'] : customName;
             }
             if(resultedData?.event_description){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`event_description_${resultedData['id']}`, `/LC_MESSAGES/Events/Events/${resultedData['organization_id'] || 0}/${resultedData['id']}`,`dynamic`);
-                resultedData.event_description = (customeName == '' || customeName == `event_description_${resultedData['id']}`) ? resultedData['event_description'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`event_description_${resultedData['id']}`, `/LC_MESSAGES/Events/Events/${resultedData['organization_id'] || 0}/${resultedData['id']}`,`dynamic`);
+                resultedData.event_description = (customName == '' || customName == `event_description_${resultedData['id']}`) ? resultedData['event_description'] : customName;
             }
             if(resultedData?.event_address){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`event_address_${resultedData['id']}`, `/LC_MESSAGES/Events/Events/${resultedData['organization_id'] || 0}/${resultedData['id']}`,`dynamic`);
-                resultedData.event_address = (customeName == '' || customeName == `event_address_${resultedData['id']}`) ? resultedData['event_address'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`event_address_${resultedData['id']}`, `/LC_MESSAGES/Events/Events/${resultedData['organization_id'] || 0}/${resultedData['id']}`,`dynamic`);
+                resultedData.event_address = (customName == '' || customName == `event_address_${resultedData['id']}`) ? resultedData['event_address'] : customName;
             }
             if(resultedData?.event_city){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`event_city_${resultedData['id']}`, `/LC_MESSAGES/Events/Events/${resultedData['organization_id'] || 0}/${resultedData['id']}`,`dynamic`);
-                resultedData.event_city = (customeName == '' || customeName == `event_city_${resultedData['id']}`) ? resultedData['event_city'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`event_city_${resultedData['id']}`, `/LC_MESSAGES/Events/Events/${resultedData['organization_id'] || 0}/${resultedData['id']}`,`dynamic`);
+                resultedData.event_city = (customName == '' || customName == `event_city_${resultedData['id']}`) ? resultedData['event_city'] : customName;
             }
             if(resultedData?.event_state){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`event_state_${resultedData['id']}`, `/LC_MESSAGES/Events/Events/${resultedData['organization_id'] || 0}/${resultedData['id']}`,`dynamic`);
-                resultedData.event_state = (customeName == '' || customeName == `event_state_${resultedData['id']}`) ? resultedData['event_state'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`event_state_${resultedData['id']}`, `/LC_MESSAGES/Events/Events/${resultedData['organization_id'] || 0}/${resultedData['id']}`,`dynamic`);
+                resultedData.event_state = (customName == '' || customName == `event_state_${resultedData['id']}`) ? resultedData['event_state'] : customName;
             }
             if(resultedData?.user_id){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`selectedName_${resultedData['id']}`, `/LC_MESSAGES/Events/Events/${resultedData['organization_id'] || 0}/${resultedData['id']}`,`dynamic`);
-                resultedData.user_id = (customeName == '' || customeName == `selectedName_${resultedData['id']}`) ? resultedData['user_id'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`selectedName_${resultedData['id']}`, `/LC_MESSAGES/Events/Events/${resultedData['organization_id'] || 0}/${resultedData['id']}`,`dynamic`);
+                resultedData.user_id = (customName == '' || customName == `selectedName_${resultedData['id']}`) ? resultedData['user_id'] : customName;
             }
             if(resultedData?.event_location){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`event_location_${resultedData['id']}`, `/LC_MESSAGES/Events/Events/${resultedData['organization_id'] || 0}/${resultedData['id']}`,`dynamic`);
-                resultedData.event_location = (customeName == '' || customeName == `event_location_${resultedData['id']}`) ? resultedData['event_location'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`event_location_${resultedData['id']}`, `/LC_MESSAGES/Events/Events/${resultedData['organization_id'] || 0}/${resultedData['id']}`,`dynamic`);
+                resultedData.event_location = (customName == '' || customName == `event_location_${resultedData['id']}`) ? resultedData['event_location'] : customName;
             }
             if (!resultedData.all_departments) {
                 const all_departments = await this.eventDepartmentService.list(`ev_departments.ev_events_id = ${resultedData['id']} AND  ev_departments.organization_id = ${resultedData.organization_id} AND ev_departments.status !=2 `);
@@ -1396,13 +1396,13 @@ export class EventController {
                 const transFields = ['event_name', 'event_description', 'event_address', 'event_city', 'event_state', 'user_id', 'event_location'];
                 for (const field of transFields) {
                     if (ele[field]) {
-                        const customeName = await this.translatorService.frontendReadTranslation(
+                        const customName = await this.translatorService.frontendReadTranslation(
                             req.lang,
                             `${field}_${ele.id}`,
                             `/LC_MESSAGES/Events/Events/${ele.organization_id || 0}/${ele.id}`,
                             'dynamic'
                         );
-                        ele[field] = (customeName === '' || customeName === `${field}_${ele.id}`) ? ele[field] : customeName;
+                        ele[field] = (customName === '' || customName === `${field}_${ele.id}`) ? ele[field] : customName;
                     }
                 }
 
@@ -1438,13 +1438,13 @@ export class EventController {
                 if (resultedData && resultedData.length) {
                     await Promise.all(resultedData.map(async (ele) => {
                         if (ele.category_name) {
-                            const customeName = await this.translatorService.frontendReadTranslation(
+                            const customName = await this.translatorService.frontendReadTranslation(
                                 req.lang,
                                 `category_name_${ele.id}`,
                                 `/LC_MESSAGES/Events/Category/${ele.c_companies_id}/${ele.id}`,
                                 'dynamic'
                             );
-                            ele.category_name = (customeName === '' || customeName === `category_name_${ele.id}`) ? ele.category_name : customeName;
+                            ele.category_name = (customName === '' || customName === `category_name_${ele.id}`) ? ele.category_name : customName;
                         }
                     }));
                 }

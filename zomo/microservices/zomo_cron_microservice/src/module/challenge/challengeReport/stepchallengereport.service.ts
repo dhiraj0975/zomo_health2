@@ -27,13 +27,15 @@ export class StepsChallengeReportService {
         private readonly stepCheckpointsService: StepCheckpointsService,
     ) {}
 
-    async stepChallengeReport(schedule: Partial<ScheduleChallengeEntity>,condition: string = '',result_type: number = 1,paginateObj: any = null) {
+    async stepChallengeReport(schedule: Partial<ScheduleChallengeEntity>,condition: string = '',result_type: number = 1,paginateObj: any = null,teamCondition: string = '',groupCondition: string = '') {
         try {
             let result = await this.stepChallengeReportHelper(
                 schedule,
                 condition.replace(/User/gi, "user"),
                 result_type,
-                paginateObj
+                paginateObj,
+                teamCondition,
+                groupCondition
             );
             return result;
         } catch (error) {
@@ -41,7 +43,7 @@ export class StepsChallengeReportService {
         }
     }
 
-    async stepChallengeReportHelper(schedule: Partial<ScheduleChallengeEntity>, condition: string = '', result_type: number = 1, paginateObj: any = null) {
+    async stepChallengeReportHelper(schedule: Partial<ScheduleChallengeEntity>, condition: string = '', result_type: number = 1, paginateObj: any = null,teamCondition: string = '',groupCondition: string = '') {
         try {
             let actTrackId, stepId, wakingId, runningId, cyclingId, swimmingId;
             let totalDays = 0, uptoDays = 0;
@@ -118,7 +120,14 @@ export class StepsChallengeReportService {
                 {'alias':'group', 'table' : tableConstant.CHALLENGE.TBL_CH_GROUPS, 'on' : `group.id = team.group_id` , 'connect' : 'team', 'type' : 'LEFT' },
             ];
             fields = ['team.id','team.tname','team.logo','team.team_size','team.group_id','group.id','group.name','company.id','company.company_name'];
-            let teamList: any = await this.teamsService.list(`team.org_id = ${schedule?.org_id} AND teamSchedule.schedule_id = ${schedule?.id} AND team.status != 2`, null,fields,null,joinTable);
+            let teamWhere = `team.org_id = ${schedule?.org_id} AND teamSchedule.schedule_id = ${schedule?.id} AND team.status != 2`;
+            if(teamCondition !== ''){
+                teamWhere += teamCondition;
+            }
+            if(groupCondition !== ''){
+                teamWhere += groupCondition;
+            }
+            let teamList: any = await this.teamsService.list(teamWhere, null,fields,null,joinTable);
             let result;
             if(teamList.length){
                 const allTeams = [];
@@ -144,7 +153,7 @@ export class StepsChallengeReportService {
                         {'alias':'company', 'table' : tableConstant.COMPANIES.TBL_COMPANY, 'on' : `company.id = user.org_id AND company.status = 1`, 'connect' : 'user', 'type' : 'LEFT' },
                     ];
                     fields = ['teamMember.id','teamMember.user_id','teamMember.iscaptain','teamMember.baton_status','department.dept_name','Location.location_name','Location.city','Location.state','Location.lname',
-                    'user.id','user.status','user.employeeid','user.first_name','user.last_name','user.email','user.profile_image','user.code','user.on_insurance_plan','user.insurance_plan_name','user.gender','user.role_id','user.date_of_hire','user.dob'];
+                    'user.id','user.status','user.employeeid','user.first_name','user.middle_name','user.last_name','user.email','user.profile_image','user.code','user.on_insurance_plan','user.insurance_plan_name','user.gender','user.role_id','user.date_of_hire','user.dob'];
                     const teamMembers = await this.teamMembersService.list(`teamMember.org_id = ${schedule?.org_id} AND teamMember.team_id = ${teamId} AND teamMember.status != 2 AND team.status != 2 AND user.status != 2 AND ${condition}`, null,fields,null,joinTable);
                     let teamData = [];
                     let totalPercentage = 0;
@@ -259,7 +268,7 @@ export class StepsChallengeReportService {
                             }
                         }
                         allDailyStepsForAll += stepsDaily;
-                        let remainSteps = 0
+                        let remainSteps = schedule?.numberofsteps ? schedule?.numberofsteps * totalDays : 0; //ZOMO-4437
                         if (stepsWalks) {
                             remainSteps = totalSteps - stepsWalks;
                             if (remainSteps < 0) {
@@ -284,7 +293,7 @@ export class StepsChallengeReportService {
                             averageStep = uptoDays != 0 ? Number((stepsWalks / uptoDays).toFixed(2)) : 0;
                         } else {
                             // averageStep = uptoDays != 0 ? Math.round(stepsWalks / uptoDays) : 0;
-                            averageStep = uptoDays != 0 ? Math.round(stepsWalks / uptoDays) : 0;
+                            averageStep = totalDays != 0 ? Math.round(stepsWalks / totalDays) : 0;
                         }
                         teamData.push({
                             userId: userid,

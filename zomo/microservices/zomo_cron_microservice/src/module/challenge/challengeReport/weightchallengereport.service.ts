@@ -86,17 +86,15 @@ export class WeightChallengeReportService {
                 {'alias':'companySetting', 'table' : tableConstant.COMPANIES.TBL_COMPANY_SETTINGS, 'on' : `companySetting.org_id = user.org_id`, 'connect' : 'user', 'type' : 'LEFT' },
                 {'alias':'department', 'table' : tableConstant.COMPANIES.TBL_DEPARTMENT, 'on' : `department.id = user.department_id`, 'connect' : 'user', 'type' : 'LEFT' },
                 {'alias':'Location', 'table' : tableConstant.COMPANIES.TBL_LOCATION, 'on' : `Location.id = user.location`, 'connect' : 'user', 'type' : 'LEFT' },
-                // {'alias':'sc', 'table' : tableConstant.CHALLENGE.TBL_CH_SCHEDULE_CHALLENGE, 'on' : `sc.id = ${schedule?.id} and sc.status !=2` , 'connect' : 'user', 'type' : 'LEFT' },
-                {'alias':'sc', 'table' : tableConstant.CHALLENGE.TBL_CH_SCHEDULE_CHALLENGE, 'on' : `sc.id = ${schedule?.id}` , 'connect' : 'user', 'type' : 'LEFT' },
-                // {'alias':'teamSchedule', 'table' : tableConstant.CHALLENGE.TBL_CH_TEAM_SCHEDULE, 'on' : `sc.id = teamSchedule.schedule_id` , 'connect' : 'user', 'type' : 'LEFT' },
-                // {'alias':'teamMember', 'table' : tableConstant.CHALLENGE.TBL_CH_TEAM_MEMBERS, 'on' : `teamMember.user_id = user.id and teamMember.team_id = teamSchedule.team_id`, 'connect' : 'user', 'type' : 'LEFT' },
-                {'alias':'scj', 'table' : tableConstant.CHALLENGE.TBL_CH_SCHEDULE_CHALLENGE_JOIN_USERS, 'on' : `scj.schedule_id = sc.id And scj.user_id = user.id` , 'connect' : 'user', 'type' : 'LEFT' },
-                // {'alias':'team', 'table' : tableConstant.CHALLENGE.TBL_CH_TEAMS, 'on' : `teamMember.team_id= team.id` , 'connect' : 'user', 'type' : 'LEFT' },
+                {'alias':'teamMember', 'table' : tableConstant.CHALLENGE.TBL_CH_TEAM_MEMBERS, 'on' : `teamMember.user_id = user.id`, 'connect' : 'user', 'type' : 'LEFT' },
+                {'alias':'teamSchedule', 'table' : tableConstant.CHALLENGE.TBL_CH_TEAM_SCHEDULE, 'on' : `teamMember.team_id = teamSchedule.team_id` , 'connect' : 'user', 'type' : 'LEFT' },
+                {'alias':'scj', 'table' : tableConstant.CHALLENGE.TBL_CH_SCHEDULE_CHALLENGE_JOIN_USERS, 'on' : `teamSchedule.schedule_id = scj.schedule_id` , 'connect' : 'user', 'type' : 'LEFT' },
+                {'alias':'team', 'table' : tableConstant.CHALLENGE.TBL_CH_TEAMS, 'on' : `teamMember.team_id= team.id` , 'connect' : 'user', 'type' : 'LEFT' },
             ];
-            // let fields = ['User','Location','department.id','department.dept_name','company.id','company.company_name','companySetting.spouse_option',
-            //     'teamMember.id','teamMember.user_id','teamMember.team_id','teamSchedule.id','teamSchedule.team_id','scj.id','scj.schedule_id',
-            //     'scj.challenge_id','team.id','team.tname','team.group_id'];
-            let fields = ['user','Location','department.id','department.dept_name','company.id','company.company_name','companySetting.spouse_option','scj.id','scj.schedule_id','scj.challenge_id'];
+            let fields = ['user','Location','department.id','department.dept_name','company.id','company.company_name','companySetting.spouse_option',
+                'teamMember.id','teamMember.user_id','teamMember.team_id','teamSchedule.id','teamSchedule.team_id','scj.id','scj.schedule_id',
+                'scj.challenge_id','team.id','team.tname','team.group_id'];
+            // let fields = ['user','Location','department.id','department.dept_name','company.id','company.company_name','companySetting.spouse_option','scj.id','scj.schedule_id','scj.challenge_id'];
             userList = await this.userService.list(condition.replace(/User/gi, "user"),null,fields,null,joinTable);
             
             
@@ -389,7 +387,7 @@ export class WeightChallengeReportService {
                     {'alias':'companySetting', 'table' : tableConstant.COMPANIES.TBL_COMPANY_SETTINGS, 'on' : `companySetting.org_id = user.org_id`, 'connect' : 'user', 'type' : 'LEFT' },
                     {'alias':'department', 'table' : tableConstant.COMPANIES.TBL_DEPARTMENT, 'on' : `department.id = user.department_id`, 'connect' : 'user', 'type' : 'LEFT' },
                     {'alias':'Location', 'table' : tableConstant.COMPANIES.TBL_LOCATION, 'on' : `Location.id = user.location`, 'connect' : 'user', 'type' : 'LEFT' },
-                    {'alias':'scj', 'table' : tableConstant.CHALLENGE.TBL_CH_SCHEDULE_CHALLENGE_JOIN_USERS, 'on' : `scj.user_id = user.id AND scj.status = 1` , 'connect' : 'user', 'type' : 'INNER' },
+                    {'alias':'scj', 'table' : tableConstant.CHALLENGE.TBL_CH_SCHEDULE_CHALLENGE_JOIN_USERS, 'on' : `scj.user_id = user.id` , 'connect' : 'user', 'type' : 'INNER' },
                     {'alias':'bioweight', 'table' : tableConstant.CHALLENGE.TBL_CH_BIO_WEIGHT, 'on' : `bioweight.id = scj.user_id` , 'connect' : 'user', 'type' : 'LEFT' },
                 ];
                 let fields = ['user.email','user.id','user.code','user.role_id','user.relationship_id','user.username','user.first_name','user.middle_name','user.last_name',
@@ -397,11 +395,12 @@ export class WeightChallengeReportService {
                     'userSetting.id','userSetting.jobtitle','userSetting.wphone','userSetting.wphone_ext',
                     'Location.lname','Location.location_name','Location.id','department.id','department.dept_name','company.id','company.company_name','companySetting.spouse_option',
                     'bioweight.user_id','bioweight.added_date','scj.id','scj.schedule_id','scj.challenge_id',];
-                userList = await this.userService.list(`${condition} AND User.org_id = ${schedule?.org_id}`.replace(/User/gi, "user"),{'bioweight.added_date' : 'DESC'},fields,null,joinTable);
+                userList = await this.userService.list(`${condition}`.replace(/User/gi, "user"),{'bioweight.added_date' : 'DESC'},fields,null,joinTable);
 
                 let k = 0;
                 for (let tuser of userList) {
                     let users_id = tuser.id;
+                    let totalWeightLoss = 0;
                     if (bioWeightUsers.hasOwnProperty(users_id)) {
                         // bioWeightUsers[users_id] = bioWeightUsers[users_id].filter(item => item.weight && item.weight != '' && item.weight != null);
                         tuser.weightInfo = bioWeightUsers[users_id];
@@ -415,8 +414,11 @@ export class WeightChallengeReportService {
                             diffWeight = 0;
                         }
                         tuser.score = diffWeight;
+                        totalWeightLoss += diffWeight;
+                        totalWeightLoss = Number(totalWeightLoss.toFixed(2));
                         tuser.firstWeightValue = firstWeight;
                         tuser.lastWeightValue = lastWeight;
+                        tuser.totalweightloss = totalWeightLoss;
                         let weightLossPercent = 0;
                         if (diffWeight !== 0) {
                             weightLossPercent = Math.round((diffWeight * 100 / firstWeight) * 100) / 100;
@@ -426,6 +428,7 @@ export class WeightChallengeReportService {
                         result[k] = tuser;
                     } else {
                         tuser.weightloosper = 0;
+                        tuser.totalweightloss = 0;
                         tuser.score = 0;
                         tuser.weightInfo = [];
                         result[k] = tuser;

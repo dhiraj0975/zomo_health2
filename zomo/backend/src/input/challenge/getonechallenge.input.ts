@@ -1,5 +1,5 @@
 import { Allow } from 'class-validator';
-export class GetoneChallengeInput {
+export class GetOneChallengeInput {
     @Allow() id: number;
     @Allow() user_id: number;
     @Allow() team_id: number;

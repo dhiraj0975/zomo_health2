@@ -101,8 +101,8 @@ export class AssessmentSettingsController {
             if(resultedData['list'] && resultedData['list'].length){
                 await Promise.all(resultedData['list'].map(async (ele)=>{
                     if(ele.banner_title){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_banner_title_${ele.organization_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele.organization_id}`,`dynamic`);
-                        ele.banner_title = (customeName == '' || customeName == `assessment_banner_title_${ele.organization_id}_${ele['id']}`) ? ele['banner_title'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_banner_title_${ele.organization_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele.organization_id}`,`dynamic`);
+                        ele.banner_title = (customName == '' || customName == `assessment_banner_title_${ele.organization_id}_${ele['id']}`) ? ele['banner_title'] : customName;
                     }
                 }));
             }
@@ -161,20 +161,20 @@ export class AssessmentSettingsController {
             );
             if (assessmentSetting.status === 1 && appConstant.ROLE.REGISTERED == req.tokenUser?.role_id) {
                 if(assessmentSetting.banner_title){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_banner_title_${assessmentSetting.organization_id}_${assessmentSetting['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${assessmentSetting.organization_id}`,`dynamic`);
-                    assessmentSetting.banner_title = (customeName == '' || customeName == `assessment_banner_title_${assessmentSetting.organization_id}_${assessmentSetting['id']}`) ? assessmentSetting['banner_title'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_banner_title_${assessmentSetting.organization_id}_${assessmentSetting['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${assessmentSetting.organization_id}`,`dynamic`);
+                    assessmentSetting.banner_title = (customName == '' || customName == `assessment_banner_title_${assessmentSetting.organization_id}_${assessmentSetting['id']}`) ? assessmentSetting['banner_title'] : customName;
                 }
                 if(assessmentSetting?.banner_description){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_banner_description_${assessmentSetting.organization_id}_${assessmentSetting['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${assessmentSetting.organization_id}`,`dynamic`);
-                    assessmentSetting.banner_description = (customeName == '' || customeName == `assessment_banner_description_${assessmentSetting.organization_id}_${assessmentSetting['id']}`) ? assessmentSetting.banner_description : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_banner_description_${assessmentSetting.organization_id}_${assessmentSetting['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${assessmentSetting.organization_id}`,`dynamic`);
+                    assessmentSetting.banner_description = (customName == '' || customName == `assessment_banner_description_${assessmentSetting.organization_id}_${assessmentSetting['id']}`) ? assessmentSetting.banner_description : customName;
                 }
                 if(assessmentSetting?.result_top_decscription){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_result_top_decscription_${assessmentSetting.organization_id}_${assessmentSetting['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${assessmentSetting.organization_id}`,`dynamic`);
-                    assessmentSetting.result_top_decscription = (customeName == '' || customeName == `assessment_result_top_decscription_${assessmentSetting.organization_id}_${assessmentSetting['id']}`) ? assessmentSetting.result_top_decscription : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_result_top_decscription_${assessmentSetting.organization_id}_${assessmentSetting['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${assessmentSetting.organization_id}`,`dynamic`);
+                    assessmentSetting.result_top_decscription = (customName == '' || customName == `assessment_result_top_decscription_${assessmentSetting.organization_id}_${assessmentSetting['id']}`) ? assessmentSetting.result_top_decscription : customName;
                 }
                 if(assessmentSetting?.result_bottom_decscription){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_result_bottom_decscription_${assessmentSetting.organization_id}_${assessmentSetting['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${assessmentSetting.organization_id}`,`dynamic`);
-                    assessmentSetting.result_bottom_decscription = (customeName == '' || customeName == `assessment_result_bottom_decscription_${assessmentSetting.organization_id}_${assessmentSetting['id']}`) ? assessmentSetting.result_bottom_decscription : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_result_bottom_decscription_${assessmentSetting.organization_id}_${assessmentSetting['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${assessmentSetting.organization_id}`,`dynamic`);
+                    assessmentSetting.result_bottom_decscription = (customName == '' || customName == `assessment_result_bottom_decscription_${assessmentSetting.organization_id}_${assessmentSetting['id']}`) ? assessmentSetting.result_bottom_decscription : customName;
                 }
             }
             return res.status(HttpStatus.OK).json({
@@ -403,8 +403,8 @@ export class AssessmentSettingsController {
             if(resultedData && resultedData.length){
                 await Promise.all(resultedData.map(async (ele)=>{
                     if(ele.banner_title){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_banner_title_${ele.organization_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele.organization_id}`,`dynamic`);
-                        ele.banner_title = (customeName == '' || customeName == `assessment_banner_title_${ele.organization_id}_${ele['id']}`) ? ele['banner_title'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_banner_title_${ele.organization_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele.organization_id}`,`dynamic`);
+                        ele.banner_title = (customName == '' || customName == `assessment_banner_title_${ele.organization_id}_${ele['id']}`) ? ele['banner_title'] : customName;
                     }
                 }));
             }

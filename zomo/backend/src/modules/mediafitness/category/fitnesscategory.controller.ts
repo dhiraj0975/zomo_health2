@@ -58,8 +58,8 @@ export class FitnessCategoryController {
             if(resultedData['list'] && resultedData['list'].length){
                 await Promise.all(resultedData['list'].map(async (ele)=>{
                     if(ele.name){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_category_${ele['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${ele['org_id']}/category}`,`dynamic`);
-                        ele.name = (customeName == '' || customeName == `fitness_category_${ele['id']}`) ? ele['name'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_category_${ele['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${ele['org_id']}/category}`,`dynamic`);
+                        ele.name = (customName == '' || customName == `fitness_category_${ele['id']}`) ? ele['name'] : customName;
                     }
                 }));
             }
@@ -109,8 +109,8 @@ export class FitnessCategoryController {
                 await this.commonArrayService.formatToDto(MediaFitnessCategoryDto, categoryData, req.lang)
             );
             if(categoryData.name){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_category_${categoryData['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${categoryData['org_id']}/category}`,`dynamic`);
-                categoryData.name = (customeName == '' || customeName == `fitness_category_${categoryData['id']}`) ? categoryData['name'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_category_${categoryData['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${categoryData['org_id']}/category}`,`dynamic`);
+                categoryData.name = (customName == '' || customName == `fitness_category_${categoryData['id']}`) ? categoryData['name'] : customName;
             }
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
@@ -297,8 +297,8 @@ export class FitnessCategoryController {
             if(categoryData && categoryData.length){
                 await Promise.all(categoryData.map(async (ele)=>{
                     if(ele.name){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_category_${ele['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${ele['org_id']}/category`,`dynamic`);
-                        ele.name = (customeName == '' || customeName == `fitness_category_${ele['id']}`) ? ele['name'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_category_${ele['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${ele['org_id']}/category`,`dynamic`);
+                        ele.name = (customName == '' || customName == `fitness_category_${ele['id']}`) ? ele['name'] : customName;
                     }
                 }));
             }
@@ -307,8 +307,8 @@ export class FitnessCategoryController {
             if(focusData && focusData.length){
                 await Promise.all(focusData.map(async (ele)=>{
                     if(ele.name){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_focus_${ele['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${ele['org_id']}/focus`,`dynamic`);
-                        ele.name = (customeName == '' || customeName == `fitness_focus_${ele['id']}`) ? ele['name'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_focus_${ele['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${ele['org_id']}/focus`,`dynamic`);
+                        ele.name = (customName == '' || customName == `fitness_focus_${ele['id']}`) ? ele['name'] : customName;
                     }
                 }));
             }
@@ -317,8 +317,8 @@ export class FitnessCategoryController {
             if(equipmentData && equipmentData.length){
                 await Promise.all(equipmentData.map(async (ele)=>{
                     if(ele.name){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_equipment_${ele['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${ele['org_id']}/equipment`,`dynamic`);
-                        ele.name = (customeName == '' || customeName == `fitness_equipment_${ele['id']}`) ? ele['name'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_equipment_${ele['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${ele['org_id']}/equipment`,`dynamic`);
+                        ele.name = (customName == '' || customName == `fitness_equipment_${ele['id']}`) ? ele['name'] : customName;
                     }
                 }));
             }

@@ -16,7 +16,7 @@ import { AccessGuard, RoleGuard, TokenGuard } from '../../../guard';
 import {
     CreateFitnessUsersActivityInput,
     DeleteChallengeInput,
-    GetoneChallengeInput,
+    GetOneChallengeInput,
     UpdateFitnessUsersActivityInput
 } from "../../../input";
 import { TranslationService } from "../../translation/translation.service";
@@ -129,7 +129,7 @@ export class FitnessUsersActivityController {
         }
     }
     @Post('get-one')
-    async getOne(@Req() req: Request, @Res() res: Response, @Body() postData: GetoneChallengeInput) {
+    async getOne(@Req() req: Request, @Res() res: Response, @Body() postData: GetOneChallengeInput) {
         try {
             if (!postData?.id || !postData?.user_id) {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang,'ERR_REQUIRED_PARAM_MISSING'));

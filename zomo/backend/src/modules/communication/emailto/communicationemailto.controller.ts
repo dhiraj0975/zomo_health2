@@ -15,15 +15,19 @@ import { AccessGuard, RoleGuard, TokenGuard } from "../../../guard";
 import { CreateCommunicationEmailToInput, PaginateWithCommunicationInput } from "../../../input";
 import { TranslationService } from "../../translation/translation.service";
 import { CommunicationEmailToService } from "./communicationemailto.service";
+import { getEmailCountInput } from './input';
+import { CommunicationEmailService } from '../email/communicationemail.service';
+import { CommunicationHelperService } from '../communicationHelper.service';
 @Controller('communication/email-to')
 @UseGuards(TokenGuard, RoleGuard, AccessGuard)
 export class CommunicationEmailToController {
     constructor(
-        private readonly communicationEmailService: CommunicationEmailToService,
+        private readonly communicationEmailToService: CommunicationEmailToService,
         private readonly commonService: CommonService,
         private readonly commonArrayService: CommonArrayService,
         private readonly translatorService: TranslationService,
         private readonly activityLogService: ActivityLogService,
+        private readonly communicationHelperService: CommunicationHelperService,
     ) {
     }
     @Post('paginate')
@@ -31,13 +35,13 @@ export class CommunicationEmailToController {
         try {
             postData = this.commonService.sanitizePayload(postData);
             let where = `communication.id !=0 `;
-            if(postData?.user_id){
-                where +=`AND communication.user_id = '${postData?.user_id}' `;
+            if (postData?.user_id) {
+                where += `AND communication.user_id = '${postData?.user_id}' `;
             }
             if (postData?.search_str) {
                 where += `AND(communication.state LIKE '%${postData?.search_str}%' OR communication.city LIKE '%${postData?.search_str}%')`;
             }
-            const resultedData = await this.communicationEmailService.paginateList(
+            const resultedData = await this.communicationEmailToService.paginateList(
                 where,
                 postData,
             );
@@ -52,14 +56,14 @@ export class CommunicationEmailToController {
                 message: 'success',
             });
         } catch (error) {
-            this.activityLogService.error_log(req.tokenUser?.id,req?.originalUrl, error?.message, error, req);
+            this.activityLogService.error_log(req.tokenUser?.id, req?.originalUrl, error?.message, error, req);
             throw new HttpException(
                 {
-                  statusCode: 401,
-                  success: 0,
-                  error: 1,
-                  message: error?.message,
-                  data: [],
+                    statusCode: 401,
+                    success: 0,
+                    error: 1,
+                    message: error?.message,
+                    data: [],
                 },
                 HttpStatus.BAD_REQUEST,
             );
@@ -72,7 +76,7 @@ export class CommunicationEmailToController {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_REQUIRED_PARAM_MISSING"));
             }
             const where = { id: postData?.id };
-            let biometricDetails = await this.communicationEmailService.findOne(where);
+            let biometricDetails = await this.communicationEmailToService.findOne(where);
             if (!biometricDetails) {
                 let errorMessage = await this.translatorService.frontendReadTranslation(req.lang, "ERR_RECORD_NOT_FOUND");
                 return res.status(HttpStatus.OK).json({
@@ -94,14 +98,14 @@ export class CommunicationEmailToController {
                 message: 'success',
             });
         } catch (error) {
-            this.activityLogService.error_log(req.tokenUser?.id,req?.originalUrl, error?.message, error, req);
+            this.activityLogService.error_log(req.tokenUser?.id, req?.originalUrl, error?.message, error, req);
             throw new HttpException(
                 {
-                  statusCode: 401,
-                  success: 0,
-                  error: 1,
-                  message: error?.message,
-                  data: null,
+                    statusCode: 401,
+                    success: 0,
+                    error: 1,
+                    message: error?.message,
+                    data: null,
                 },
                 HttpStatus.BAD_REQUEST,
             );
@@ -120,7 +124,7 @@ export class CommunicationEmailToController {
             ) {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_REQUIRED_PARAM_MISSING"));
             }
-            await this.communicationEmailService.save(postData);
+            await this.communicationEmailToService.save(postData);
             return res.status(HttpStatus.CREATED).json({
                 statusCode: 201,
                 success: 1,
@@ -129,14 +133,14 @@ export class CommunicationEmailToController {
                 message: 'success',
             });
         } catch (error) {
-            this.activityLogService.error_log(req.tokenUser?.id,req?.originalUrl, error?.message, error, req);
+            this.activityLogService.error_log(req.tokenUser?.id, req?.originalUrl, error?.message, error, req);
             throw new HttpException(
                 {
-                  statusCode: 401,
-                  success: 0,
-                  error: 1,
-                  message: error?.message,
-                  data: null,
+                    statusCode: 401,
+                    success: 0,
+                    error: 1,
+                    message: error?.message,
+                    data: null,
                 },
                 HttpStatus.BAD_REQUEST,
             );
@@ -148,8 +152,8 @@ export class CommunicationEmailToController {
             if (!postData?.id) {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_REQUIRED_PARAM_MISSING"));
             }
-            const where = {id: postData?.id};
-            const recordDetails = await this.communicationEmailService.findOne(where);
+            const where = { id: postData?.id };
+            const recordDetails = await this.communicationEmailToService.findOne(where);
             if (!recordDetails) {
                 let errorMessage = await this.translatorService.frontendReadTranslation(req.lang, "ERR_RECORD_NOT_FOUND");
                 return res.status(HttpStatus.OK).json({
@@ -160,8 +164,8 @@ export class CommunicationEmailToController {
                     message: errorMessage,
                 });
             }
-            await this.communicationEmailService.update(where,{status:2});
-            this.activityLogService.create(recordDetails, {status:2}, tableConstant.COMMUNICATION.TBL_COM_EMAIL_TO, req.tokenUser?.id, 'delete');
+            await this.communicationEmailToService.update(where, { status: 2 });
+            this.activityLogService.create(recordDetails, { status: 2 }, tableConstant.COMMUNICATION.TBL_COM_EMAIL_TO, req.tokenUser?.id, 'delete');
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
                 success: 1,
@@ -170,14 +174,14 @@ export class CommunicationEmailToController {
                 message: 'success',
             });
         } catch (error) {
-            this.activityLogService.error_log(req.tokenUser?.id,req?.originalUrl, error?.message, error, req);
+            this.activityLogService.error_log(req.tokenUser?.id, req?.originalUrl, error?.message, error, req);
             throw new HttpException(
                 {
-                  statusCode: 401,
-                  success: 0,
-                  error: 1,
-                  message: error?.message,
-                  data: null,
+                    statusCode: 401,
+                    success: 0,
+                    error: 1,
+                    message: error?.message,
+                    data: null,
                 },
                 HttpStatus.BAD_REQUEST,
             );
@@ -191,14 +195,14 @@ export class CommunicationEmailToController {
             ) {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_REQUIRED_PARAM_MISSING"));
             }
-            const where = {id: postData?.id};
-            const recordDetails = await this.communicationEmailService.findOne(where);
+            const where = { id: postData?.id };
+            const recordDetails = await this.communicationEmailToService.findOne(where);
             if (!recordDetails) {
-                await this.communicationEmailService.save(
+                await this.communicationEmailToService.save(
                     postData
                 );
             }
-            await this.communicationEmailService.update(where, postData);
+            await this.communicationEmailToService.update(where, postData);
             this.activityLogService.create(recordDetails, postData, tableConstant.COMMUNICATION.TBL_COM_EMAIL_TO, req.tokenUser?.id);
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
@@ -208,14 +212,14 @@ export class CommunicationEmailToController {
                 message: 'success',
             });
         } catch (error) {
-            this.activityLogService.error_log(req.tokenUser?.id,req?.originalUrl, error?.message, error, req);
+            this.activityLogService.error_log(req.tokenUser?.id, req?.originalUrl, error?.message, error, req);
             throw new HttpException(
                 {
-                  statusCode: 401,
-                  success: 0,
-                  error: 1,
-                  message: error?.message,
-                  data: null,
+                    statusCode: 401,
+                    success: 0,
+                    error: 1,
+                    message: error?.message,
+                    data: null,
                 },
                 HttpStatus.BAD_REQUEST,
             );
@@ -224,8 +228,8 @@ export class CommunicationEmailToController {
     @Post('list')
     async list(@Req() req: Request, @Res() res: Response, @Body() postData: any) {
         try {
-            const where = { };
-            let resultedData = await this.communicationEmailService.listRecord(where);
+            const where = {};
+            let resultedData = await this.communicationEmailToService.listRecord(where);
             resultedData = <any>(
                 await this.commonArrayService.formatToDto(CommunicationEmailToDto, resultedData, req.lang)
             );
@@ -237,14 +241,44 @@ export class CommunicationEmailToController {
                 message: 'success',
             });
         } catch (error) {
-            this.activityLogService.error_log(req.tokenUser?.id,req?.originalUrl, error?.message, error, req);
+            this.activityLogService.error_log(req.tokenUser?.id, req?.originalUrl, error?.message, error, req);
             throw new HttpException(
                 {
-                  statusCode: 401,
-                  success: 0,
-                  error: 1,
-                  message: error?.message,
-                  data: [],
+                    statusCode: 401,
+                    success: 0,
+                    error: 1,
+                    message: error?.message,
+                    data: [],
+                },
+                HttpStatus.BAD_REQUEST,
+            );
+        }
+    }
+    @Post('get-email-count')
+    async getEmailCount(@Req() req: Request, @Res() res: Response, @Body() postData: getEmailCountInput) {
+        try {
+            let coachId = postData?.coach_id;
+            if (!coachId) {
+                throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_REQUIRED_PARAM_MISSING"));
+            }
+            const result = await this.communicationHelperService.getEmailCounting(postData, req);
+            return res.status(HttpStatus.OK).json({
+                statusCode: 200,
+                success: 1,
+                error: 0,
+                data: result,
+                message: 'success',
+            });
+        }
+        catch (error) {
+            this.activityLogService.error_log(req.tokenUser?.id, req?.originalUrl, error?.message, error, req);
+            throw new HttpException(
+                {
+                    statusCode: 401,
+                    success: 0,
+                    error: 1,
+                    message: error?.message,
+                    data: [],
                 },
                 HttpStatus.BAD_REQUEST,
             );

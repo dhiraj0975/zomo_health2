@@ -116,8 +116,8 @@ export class QuickLinkFoldersController {
             if(resultedData['list'] && resultedData['list'].length){
                 await Promise.all(resultedData['list'].map(async (ele)=>{
                     if(ele.folder_name){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`folder_name_${ele['id']}`, `/LC_MESSAGES/QuickLink/QuickLink/${ele['c_companies_id']}`,`dynamic`);
-                        ele.folder_name = (customeName == '' || customeName == `folder_name_${ele['id']}`) ? ele['folder_name'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`folder_name_${ele['id']}`, `/LC_MESSAGES/QuickLink/QuickLink/${ele['c_companies_id']}`,`dynamic`);
+                        ele.folder_name = (customName == '' || customName == `folder_name_${ele['id']}`) ? ele['folder_name'] : customName;
                         ele.folder_name = await this.quickLinkService.replacePreventionCloudLinks(
                             ele.folder_name
                         );
@@ -333,8 +333,8 @@ export class QuickLinkFoldersController {
                 await this.commonArrayService.formatToDto(QuicklinkfoldersDto, resultedData, req.lang)
             );
             if(resultedData.folder_name){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`folder_name_${resultedData['id']}`, `/LC_MESSAGES/QuickLink/QuickLink/${resultedData['c_companies_id']}`,`dynamic`);
-                resultedData.folder_name = (customeName == '' || customeName == `folder_name_${resultedData['id']}`) ? resultedData['folder_name'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`folder_name_${resultedData['id']}`, `/LC_MESSAGES/QuickLink/QuickLink/${resultedData['c_companies_id']}`,`dynamic`);
+                resultedData.folder_name = (customName == '' || customName == `folder_name_${resultedData['id']}`) ? resultedData['folder_name'] : customName;
             }
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
@@ -382,8 +382,8 @@ export class QuickLinkFoldersController {
             if(quicklinkfolders && quicklinkfolders.length){
                 await Promise.all(quicklinkfolders.map(async (ele)=>{
                     if(ele.folder_name){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`folder_name_${ele['id']}`, `/LC_MESSAGES/QuickLink/QuickLink/${ele['c_companies_id']}`,`dynamic`);
-                        ele.folder_name = (customeName == '' || customeName == `folder_name_${ele['id']}`) ? ele['folder_name'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`folder_name_${ele['id']}`, `/LC_MESSAGES/QuickLink/QuickLink/${ele['c_companies_id']}`,`dynamic`);
+                        ele.folder_name = (customName == '' || customName == `folder_name_${ele['id']}`) ? ele['folder_name'] : customName;
                     }
                 }));
             }

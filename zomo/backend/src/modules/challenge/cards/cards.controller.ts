@@ -17,7 +17,7 @@ import { AccessGuard, RoleGuard, TokenGuard } from '../../../guard';
 import {
     CreateCardsInput,
     DeleteChallengeInput,
-    GetoneChallengeInput,
+    GetOneChallengeInput,
     PaginateWithChallengeInput,
     UpdateCardsInput
 } from "../../../input";
@@ -66,12 +66,12 @@ export class CardsController {
             if(![appConstant.ROLE.ADMIN,appConstant.ROLE.GLOBALCLIENTENGAGEMENTMANAGER].includes(req.tokenUser?.role_id)){
                 await Promise.all(resultedData['list'].map(async (ele) => {
                     if(ele.name){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`card_name_${ele.schedule_id}_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele.schedule_id}`,`dynamic`);
-                        ele.name = (customeName == '' || customeName == `card_name_${ele.schedule_id}_${ele['id']}`) ? ele['name'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`card_name_${ele.schedule_id}_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele.schedule_id}`,`dynamic`);
+                        ele.name = (customName == '' || customName == `card_name_${ele.schedule_id}_${ele['id']}`) ? ele['name'] : customName;
                     }
                     if(ele.description){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`card_description_${ele.schedule_id}_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele.schedule_id}`,`dynamic`);
-                        ele.description = (customeName == '' || customeName == `card_description_${ele.schedule_id}_${ele['id']}`) ? ele['description'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`card_description_${ele.schedule_id}_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele.schedule_id}`,`dynamic`);
+                        ele.description = (customName == '' || customName == `card_description_${ele.schedule_id}_${ele['id']}`) ? ele['description'] : customName;
                     }
                 }));
             }
@@ -244,7 +244,7 @@ export class CardsController {
         }
     }
     @Post('get-one')
-    async getOne(@Req() req: Request, @Res() res: Response, @Body() postData: GetoneChallengeInput) {
+    async getOne(@Req() req: Request, @Res() res: Response, @Body() postData: GetOneChallengeInput) {
         try {
             if (!postData?.id || (postData?.schedule_id == undefined || postData?.schedule_id == null)) {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang,'ERR_REQUIRED_PARAM_MISSING'));
@@ -258,12 +258,12 @@ export class CardsController {
                 await this.commonArrayService.formatToDto(CardsDto, resultedData, req.lang)
             );
             if(resultedData.name){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`card_name_${resultedData.schedule_id}_${resultedData['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${resultedData.org_id}/${resultedData.schedule_id}`,`dynamic`);
-                resultedData.name = (customeName == '' || customeName == `card_name_${resultedData.schedule_id}_${resultedData['id']}`) ? resultedData['name'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`card_name_${resultedData.schedule_id}_${resultedData['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${resultedData.org_id}/${resultedData.schedule_id}`,`dynamic`);
+                resultedData.name = (customName == '' || customName == `card_name_${resultedData.schedule_id}_${resultedData['id']}`) ? resultedData['name'] : customName;
             }
             if(resultedData.description){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`card_description_${resultedData.schedule_id}_${resultedData['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${resultedData.org_id}/${resultedData.schedule_id}`,`dynamic`);
-                resultedData.description = (customeName == '' || customeName == `card_description_${resultedData.schedule_id}_${resultedData['id']}`) ? resultedData['description'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`card_description_${resultedData.schedule_id}_${resultedData['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${resultedData.org_id}/${resultedData.schedule_id}`,`dynamic`);
+                resultedData.description = (customName == '' || customName == `card_description_${resultedData.schedule_id}_${resultedData['id']}`) ? resultedData['description'] : customName;
             }
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
@@ -299,22 +299,22 @@ export class CardsController {
             const result = await this.cardsService.listRecord(where);
             await Promise.all(result.map(async (ele) => {
                 if(ele.name){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`card_name_${ele.schedule_id}_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele.schedule_id}`,`dynamic`);
-                    ele.name = (customeName == '' || customeName == `card_name_${ele.schedule_id}_${ele['id']}`) ? ele['name'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`card_name_${ele.schedule_id}_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele.schedule_id}`,`dynamic`);
+                    ele.name = (customName == '' || customName == `card_name_${ele.schedule_id}_${ele['id']}`) ? ele['name'] : customName;
                 }
                 if(ele.description){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`card_description_${ele.schedule_id}_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele.schedule_id}`,`dynamic`);
-                    ele.description = (customeName == '' || customeName == `card_description_${ele.schedule_id}_${ele['id']}`) ? ele['description'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`card_description_${ele.schedule_id}_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele.schedule_id}`,`dynamic`);
+                    ele.description = (customName == '' || customName == `card_description_${ele.schedule_id}_${ele['id']}`) ? ele['description'] : customName;
                 }
                 if(ele['square'] && ele['square'].length){
                     await Promise.all(ele['square'].map(async (square) => {
                         if(square.name){
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang,`square_name_${ele.schedule_id}_${square['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele.schedule_id}`,`dynamic`);
-                            square.name = (customeName == '' || customeName == `square_name_${ele.schedule_id}_${square['id']}`) ? square['name'] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang,`square_name_${ele.schedule_id}_${square['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele.schedule_id}`,`dynamic`);
+                            square.name = (customName == '' || customName == `square_name_${ele.schedule_id}_${square['id']}`) ? square['name'] : customName;
                         }
                         if(square.description){
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang,`square_description_${ele.schedule_id}_${square['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele.schedule_id}`,`dynamic`);
-                            square.description = (customeName == '' || customeName == `square_description_${ele.schedule_id}_${square['id']}`) ? square['description'] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang,`square_description_${ele.schedule_id}_${square['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele.schedule_id}`,`dynamic`);
+                            square.description = (customName == '' || customName == `square_description_${ele.schedule_id}_${square['id']}`) ? square['description'] : customName;
                         }
                     }));
                 }

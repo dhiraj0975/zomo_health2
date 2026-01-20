@@ -109,12 +109,12 @@ export class MyPlanActivityController {
             );
             await Promise.all(resultedData['list'].map(async (ele) => {
                 if(ele['csc'] && ele['csc'].custom_cname){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`custom_cname_${ele['csc']['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele['csc'].org_id}/${ele['csc']['id']}`,`dynamic`);
-                    ele['csc'].custom_cname = (customeName == '' || customeName == `custom_cname_${ele['csc']['id']}`) ? ele['csc']['custom_cname'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`custom_cname_${ele['csc']['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele['csc'].org_id}/${ele['csc']['id']}`,`dynamic`);
+                    ele['csc'].custom_cname = (customName == '' || customName == `custom_cname_${ele['csc']['id']}`) ? ele['csc']['custom_cname'] : customName;
                 }
                 if(ele['csc'] && ele['csc'].custom_desc){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`custom_desc_${ele['csc']['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele['csc'].org_id}/${ele['csc']['id']}`,`dynamic`);
-                    ele['csc'].custom_desc = (customeName == '' || customeName == `custom_desc_${ele['csc']['id']}`) ? ele['csc']['custom_desc'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`custom_desc_${ele['csc']['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele['csc'].org_id}/${ele['csc']['id']}`,`dynamic`);
+                    ele['csc'].custom_desc = (customName == '' || customName == `custom_desc_${ele['csc']['id']}`) ? ele['csc']['custom_desc'] : customName;
                 }
             }));
             resultedData['list'] = resultedData['list'].reduce((acc, {icon, days,status, order_id, ac, acAge, ep, qz, ql, har, csc, eec, ee, id, module_id, is_category, org_activity_id, block_id}, index) => {

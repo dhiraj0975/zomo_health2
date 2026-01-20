@@ -187,28 +187,28 @@ export class QuizMultipleChoiceQuestionController {
                 await this.commonArrayService.formatToDto(QuizMultipleChoiceQuestionsDto, resultedData, req.lang)
             );
             if(resultedData.opt_1){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`multiplechoice_option_${resultedData.question_id}_opt1_${resultedData['id']}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${resultedData['question_id']}`,`dynamic`);
-                resultedData.opt_1 = (customeName == '' || customeName == `multiplechoice_option_${resultedData.question_id}_opt1_${resultedData['id']}`) ? resultedData['opt_1'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`multiplechoice_option_${resultedData.question_id}_opt1_${resultedData['id']}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${resultedData['question_id']}`,`dynamic`);
+                resultedData.opt_1 = (customName == '' || customName == `multiplechoice_option_${resultedData.question_id}_opt1_${resultedData['id']}`) ? resultedData['opt_1'] : customName;
             }
             if(resultedData.opt_2){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`multiplechoice_option_${resultedData.question_id}_opt2_${resultedData['id']}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${resultedData['question_id']}`,`dynamic`);
-                resultedData.opt_2 = (customeName == '' || customeName == `multiplechoice_option_${resultedData.question_id}_opt2_${resultedData['id']}`) ? resultedData['opt_2'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`multiplechoice_option_${resultedData.question_id}_opt2_${resultedData['id']}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${resultedData['question_id']}`,`dynamic`);
+                resultedData.opt_2 = (customName == '' || customName == `multiplechoice_option_${resultedData.question_id}_opt2_${resultedData['id']}`) ? resultedData['opt_2'] : customName;
             }
             if(resultedData.opt_3){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`multiplechoice_option_${resultedData.question_id}_opt3_${resultedData['id']}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${resultedData['question_id']}`,`dynamic`);
-                resultedData.opt_3 = (customeName == '' || customeName == `multiplechoice_option_${resultedData.question_id}_opt3_${resultedData['id']}`) ? resultedData['opt_3'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`multiplechoice_option_${resultedData.question_id}_opt3_${resultedData['id']}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${resultedData['question_id']}`,`dynamic`);
+                resultedData.opt_3 = (customName == '' || customName == `multiplechoice_option_${resultedData.question_id}_opt3_${resultedData['id']}`) ? resultedData['opt_3'] : customName;
             }
             if(resultedData.opt_4){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`multiplechoice_option_${resultedData.question_id}_opt4_${resultedData['id']}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${resultedData['question_id']}`,`dynamic`);
-                resultedData.opt_4 = (customeName == '' || customeName == `multiplechoice_option_${resultedData.question_id}_opt4_${resultedData['id']}`) ? resultedData['opt_4'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`multiplechoice_option_${resultedData.question_id}_opt4_${resultedData['id']}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${resultedData['question_id']}`,`dynamic`);
+                resultedData.opt_4 = (customName == '' || customName == `multiplechoice_option_${resultedData.question_id}_opt4_${resultedData['id']}`) ? resultedData['opt_4'] : customName;
             }
             if(resultedData.opt_5){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`multiplechoice_option_${resultedData.question_id}_opt5_${resultedData['id']}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${resultedData['question_id']}`,`dynamic`);
-                resultedData.opt_5 = (customeName == '' || customeName == `multiplechoice_option_${resultedData.question_id}_opt5_${resultedData['id']}`) ? resultedData['opt_5'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`multiplechoice_option_${resultedData.question_id}_opt5_${resultedData['id']}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${resultedData['question_id']}`,`dynamic`);
+                resultedData.opt_5 = (customName == '' || customName == `multiplechoice_option_${resultedData.question_id}_opt5_${resultedData['id']}`) ? resultedData['opt_5'] : customName;
             }
             if(resultedData.opt_6){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`multiplechoice_option_${resultedData.question_id}_opt6_${resultedData['id']}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${resultedData['question_id']}`,`dynamic`);
-                resultedData.opt_6 = (customeName == '' || customeName == `multiplechoice_option_${resultedData.question_id}_opt6_${resultedData['id']}`) ? resultedData['opt_6'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`multiplechoice_option_${resultedData.question_id}_opt6_${resultedData['id']}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${resultedData['question_id']}`,`dynamic`);
+                resultedData.opt_6 = (customName == '' || customName == `multiplechoice_option_${resultedData.question_id}_opt6_${resultedData['id']}`) ? resultedData['opt_6'] : customName;
             }
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,

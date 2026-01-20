@@ -1,3 +1,4 @@
+import { AssessmentEmotionalAssessmentService } from "@/modules/healthassessment/assessmentemotionalassessment/assessmentemotionalassessment.service";
 import {
     AssessmentTabsDto,
     CommonArrayService,
@@ -28,7 +29,6 @@ import {
 import { TranslationService } from "../../translation/translation.service";
 import { FrontService } from "../front/front.service";
 import { AssessmentTabsService } from "./assessmenttabs.service";
-import { AssessmentEmotionalAssessmentService } from "@/modules/healthassessment/assessmentemotionalassessment/assessmentemotionalassessment.service";
 @Controller('health-assessment/tabs')
 @UseGuards(TokenGuard, RoleGuard, AccessGuard)
 export class AssessmentTabsController {
@@ -66,8 +66,8 @@ export class AssessmentTabsController {
             if(resultedData['list'] && resultedData['list'].length){
                 await Promise.all(resultedData['list'].map(async (ele)=>{
                     if(ele.title){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_tabs_title_${ele['organization_id']}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele['organization_id']}`,`dynamic`);
-                        ele.title = (customeName == '' || customeName == `assessment_tabs_title_${ele['organization_id']}_${ele['id']}`) ? ele['title'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_tabs_title_${ele['organization_id']}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele['organization_id']}`,`dynamic`);
+                        ele.title = (customName == '' || customName == `assessment_tabs_title_${ele['organization_id']}_${ele['id']}`) ? ele['title'] : customName;
                     }
                 }));
             }
@@ -117,8 +117,8 @@ export class AssessmentTabsController {
                 await this.commonArrayService.formatToDto(AssessmentTabsDto, assessmenttabs, req.lang)
             );
             if(assessmenttabs.title){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_tabs_title_${assessmenttabs['organization_id']}_${assessmenttabs['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${assessmenttabs['organization_id']}`,`dynamic`);
-                assessmenttabs.title = (customeName == '' || customeName == `assessment_tabs_title_${assessmenttabs['organization_id']}_${assessmenttabs['id']}`) ? assessmenttabs['title'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_tabs_title_${assessmenttabs['organization_id']}_${assessmenttabs['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${assessmenttabs['organization_id']}`,`dynamic`);
+                assessmenttabs.title = (customName == '' || customName == `assessment_tabs_title_${assessmenttabs['organization_id']}_${assessmenttabs['id']}`) ? assessmenttabs['title'] : customName;
             }
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
@@ -283,8 +283,8 @@ export class AssessmentTabsController {
             if(resultedData && resultedData.length){
                 await Promise.all(resultedData.map(async (ele)=>{
                     if(ele.title){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_tabs_title_${postData?.org_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${postData?.org_id}`,`dynamic`);
-                        ele.title = (customeName == '' || customeName == `assessment_tabs_title_${postData?.org_id}_${ele['id']}`) ? ele['title'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_tabs_title_${postData?.org_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${postData?.org_id}`,`dynamic`);
+                        ele.title = (customName == '' || customName == `assessment_tabs_title_${postData?.org_id}_${ele['id']}`) ? ele['title'] : customName;
                     }
                 }));
             }
@@ -343,9 +343,9 @@ export class AssessmentTabsController {
                 await Promise.all(resultedData.map(async (ele)=>{
                     if(ele.title){
                         console.log("`assessment_tabs_title_${postData?.org_id}_${ele['id']}`",`assessment_tabs_title_${postData?.org_id}_${ele['id']}`);
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_tabs_title_${postData?.org_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${postData?.org_id}`,`dynamic`);
-                        console.log("customeName",customeName);
-                        ele.title = (customeName == '' || customeName == `assessment_tabs_title_${postData?.org_id}_${ele['id']}`) ? ele['title'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_tabs_title_${postData?.org_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${postData?.org_id}`,`dynamic`);
+                        console.log("customName",customName);
+                        ele.title = (customName == '' || customName == `assessment_tabs_title_${postData?.org_id}_${ele['id']}`) ? ele['title'] : customName;
                     }
                     let id = ele['id'];
                     if (ele?.aq?.length) {
@@ -355,15 +355,15 @@ export class AssessmentTabsController {
                             console.log("ele.question_title",ele.question_title);
                             if(ele.question_title){
                                 console.log("`assessment_question_title_${id}_${questionId}`",`assessment_question_title_${id}_${questionId}`);
-                                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_question_title_${id}_${questionId}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${postData?.org_id}`,`dynamic`);
-                                console.log("customeName",customeName);
-                                ele.question_title = (customeName == '' || customeName == `assessment_question_title_${id}_${questionId}`) ? ele['question_title'] : customeName;
+                                let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_question_title_${id}_${questionId}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${postData?.org_id}`,`dynamic`);
+                                console.log("customName",customName);
+                                ele.question_title = (customName == '' || customName == `assessment_question_title_${id}_${questionId}`) ? ele['question_title'] : customName;
                             }
                             if (ele?.submenu?.length) {
                                 await Promise.all(ele.submenu.map(async (ele)=>{
                                     if(ele.option_title){
-                                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_option_title_${questionId}_${ele['option_id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${postData?.org_id}`,`dynamic`);
-                                        ele.option_title = (customeName == '' || customeName == `assessment_option_title_${questionId}_${ele['option_id']}`) ? ele['option_title'] : customeName;
+                                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_option_title_${questionId}_${ele['option_id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${postData?.org_id}`,`dynamic`);
+                                        ele.option_title = (customName == '' || customName == `assessment_option_title_${questionId}_${ele['option_id']}`) ? ele['option_title'] : customName;
                                     }
                                 }));
                             }

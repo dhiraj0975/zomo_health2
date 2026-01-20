@@ -1,3 +1,4 @@
+import { CampaignActivityService } from '@/modules/campaign/campaignactivity/campaignactivity.service';
 import { ActivitiesDto, appConstant, CommonArrayService, CommonFileService, CommonService, tableConstant } from '@common-constants';
 import {
     Body,
@@ -26,7 +27,6 @@ import {
 } from '../../../input';
 import { TranslationService } from "../../translation/translation.service";
 import { ActivityService } from './activity.service';
-import { CampaignActivityService } from '@/modules/campaign/campaignactivity/campaignactivity.service';
 @Controller('activity')
 @UseGuards(TokenGuard, RoleGuard, AccessGuard)
 export class ActivityController {
@@ -130,12 +130,12 @@ export class ActivityController {
                 await Promise.all(resultedData['list'].map(async (ele)=>{
                     let activity_type = ele.enable_reimbursement ? 'Reimbursements': 'ActivityForms';
                     if(ele.activity_name){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`activity_name_${ele['id']}`, `/LC_MESSAGES/${activity_type}/Activities/${ele['accebility']}/${ele['id']}`,`dynamic`);
-                        ele.activity_name = (customeName == '' || customeName == `activity_name_${ele['id']}`) ? ele['activity_name'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`activity_name_${ele['id']}`, `/LC_MESSAGES/${activity_type}/Activities/${ele['accebility']}/${ele['id']}`,`dynamic`);
+                        ele.activity_name = (customName == '' || customName == `activity_name_${ele['id']}`) ? ele['activity_name'] : customName;
                     }
                     if(ele.category && ele.category.category_name){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`category_name_${ele.category['id']}`, `/LC_MESSAGES/Campaign/Category/${ele.category['id']}`,`dynamic`);
-                        ele.category.category_name = (customeName == '' || customeName == `category_name_${ele.category['id']}`) ? ele.category['category_name'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`category_name_${ele.category['id']}`, `/LC_MESSAGES/Campaign/Category/${ele.category['id']}`,`dynamic`);
+                        ele.category.category_name = (customName == '' || customName == `category_name_${ele.category['id']}`) ? ele.category['category_name'] : customName;
                     }
                 }));
             }
@@ -336,12 +336,12 @@ export class ActivityController {
                     await Promise.all(resultedData.map(async (ele) => {
                         let activity_type = ele.enable_reimbursement ? 'Reimbursements' : 'ActivityForms';
                         if (ele.activity_name) {
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang, `activity_name_${ele['id']}`, `/LC_MESSAGES/${activity_type}/Activities/${ele['accebilitytranslation']}/${ele['id']}`, `dynamic`);
-                            ele.activity_name = (customeName == '' || customeName == `activity_name_${ele['id']}`) ? ele['activity_name'] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang, `activity_name_${ele['id']}`, `/LC_MESSAGES/${activity_type}/Activities/${ele['accebilitytranslation']}/${ele['id']}`, `dynamic`);
+                            ele.activity_name = (customName == '' || customName == `activity_name_${ele['id']}`) ? ele['activity_name'] : customName;
                         }
                         if (ele.category && ele.category.category_name) {
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang, `category_name_${ele.category['id']}`, `/LC_MESSAGES/Campaign/Category/${ele.category['id']}`, `dynamic`);
-                            ele.category.category_name = (customeName == '' || customeName == `category_name_${ele.category['id']}`) ? ele.category['category_name'] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang, `category_name_${ele.category['id']}`, `/LC_MESSAGES/Campaign/Category/${ele.category['id']}`, `dynamic`);
+                            ele.category.category_name = (customName == '' || customName == `category_name_${ele.category['id']}`) ? ele.category['category_name'] : customName;
                         }
                     }));
                 }
@@ -506,12 +506,12 @@ export class ActivityController {
             );
             let activity_type = recordDetails.enable_reimbursement ? 'Reimbursements': 'ActivityForms';
             if(recordDetails.activity_name){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`activity_name_${recordDetails['id']}`, `/LC_MESSAGES/${activity_type}/Activities/${recordDetails['accebility']}/${recordDetails['id']}`,`dynamic`);
-                recordDetails.activity_name = (customeName == '' || customeName == `activity_name_${recordDetails['id']}`) ? recordDetails['activity_name'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`activity_name_${recordDetails['id']}`, `/LC_MESSAGES/${activity_type}/Activities/${recordDetails['accebility']}/${recordDetails['id']}`,`dynamic`);
+                recordDetails.activity_name = (customName == '' || customName == `activity_name_${recordDetails['id']}`) ? recordDetails['activity_name'] : customName;
             }
             if(recordDetails['category'] && recordDetails['category'].category_name){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`category_name_${recordDetails['category']['id']}`, `/LC_MESSAGES/Campaign/Category/${recordDetails['category']['id']}`,`dynamic`);
-                recordDetails['category'].category_name = (customeName == '' || customeName == `category_name_${recordDetails['category']['id']}`) ? recordDetails['category']['category_name'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`category_name_${recordDetails['category']['id']}`, `/LC_MESSAGES/Campaign/Category/${recordDetails['category']['id']}`,`dynamic`);
+                recordDetails['category'].category_name = (customName == '' || customName == `category_name_${recordDetails['category']['id']}`) ? recordDetails['category']['category_name'] : customName;
             } 
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
@@ -629,12 +629,12 @@ export class ActivityController {
                 await Promise.all(resultedData.map(async (ele)=>{
                     let activity_type = ele.enable_reimbursement ? 'Reimbursements': 'ActivityForms';
                     if(ele.activity_name){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`activity_name_${ele['id']}`, `/LC_MESSAGES/${activity_type}/Activities/${ele['accebility']}/${ele['id']}`,`dynamic`);
-                        ele.activity_name = (customeName == '' || customeName == `activity_name_${ele['id']}`) ? ele['activity_name'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`activity_name_${ele['id']}`, `/LC_MESSAGES/${activity_type}/Activities/${ele['accebility']}/${ele['id']}`,`dynamic`);
+                        ele.activity_name = (customName == '' || customName == `activity_name_${ele['id']}`) ? ele['activity_name'] : customName;
                     }
                     if(ele.category && ele.category.category_name){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`category_name_${ele.category['id']}`, `/LC_MESSAGES/Campaign/Category/${ele.category['id']}`,`dynamic`);
-                        ele.category.category_name = (customeName == '' || customeName == `category_name_${ele.category['id']}`) ? ele.category['category_name'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`category_name_${ele.category['id']}`, `/LC_MESSAGES/Campaign/Category/${ele.category['id']}`,`dynamic`);
+                        ele.category.category_name = (customName == '' || customName == `category_name_${ele.category['id']}`) ? ele.category['category_name'] : customName;
                     }
                 }));
             }

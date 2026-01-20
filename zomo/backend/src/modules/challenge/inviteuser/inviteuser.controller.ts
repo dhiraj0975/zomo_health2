@@ -16,7 +16,7 @@ import { AccessGuard, RoleGuard, TokenGuard } from '../../../guard';
 import {
     CreateInviteUserInput,
     DeleteChallengeInput,
-    GetoneChallengeInput,
+    GetOneChallengeInput,
     UpdateInviteUserInput,
 } from "../../../input";
 import { TranslationService } from "../../translation/translation.service";
@@ -129,7 +129,7 @@ export class InviteUserController {
         }
     }
     @Post('get-one')
-    async getOne(@Req() req: Request, @Res() res: Response, @Body() postData: GetoneChallengeInput) {
+    async getOne(@Req() req: Request, @Res() res: Response, @Body() postData: GetOneChallengeInput) {
         try {
             if (!postData?.id || !postData?.user_id) {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang,'ERR_REQUIRED_PARAM_MISSING'));
@@ -160,7 +160,7 @@ export class InviteUserController {
         }
     }
     @Post('get-user-list')
-    async getUserList(@Req() req: Request, @Res() res: Response, @Body() postData: GetoneChallengeInput) {
+    async getUserList(@Req() req: Request, @Res() res: Response, @Body() postData: GetOneChallengeInput) {
         try {
             if (!postData?.schedule_id || !postData?.team_id) {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang,'ERR_REQUIRED_PARAM_MISSING'));

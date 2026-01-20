@@ -90,32 +90,32 @@ export class LocationController {
                 }
                 if (req.lang != 'eng') {
                     if (ele.location_name) {
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_name_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${postData?.company_id}/${ele['id']}`, `dynamic`);
-                        ele.location_name = (customeName == '' || customeName == `location_name_${ele['id']}`) ? ele['location_name'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_name_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${postData?.company_id}/${ele['id']}`, `dynamic`);
+                        ele.location_name = (customName == '' || customName == `location_name_${ele['id']}`) ? ele['location_name'] : customName;
                     }
                     if (ele.address1) {
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_address1_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${postData?.company_id}/${ele['id']}`, `dynamic`);
-                        ele.address1 = (customeName == '' || customeName == `location_address1_${ele['id']}`) ? ele['address1'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_address1_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${postData?.company_id}/${ele['id']}`, `dynamic`);
+                        ele.address1 = (customName == '' || customName == `location_address1_${ele['id']}`) ? ele['address1'] : customName;
                     }
                     if (ele.address2) {
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_address2_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${postData?.company_id}/${ele['id']}`, `dynamic`);
-                        ele.address2 = (customeName == '' || customeName == `location_address2_${ele['id']}`) ? ele['address2'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_address2_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${postData?.company_id}/${ele['id']}`, `dynamic`);
+                        ele.address2 = (customName == '' || customName == `location_address2_${ele['id']}`) ? ele['address2'] : customName;
                     }
                     if (ele.lname) {
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_lname_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${postData?.company_id}/${ele['id']}`, `dynamic`);
-                        ele.lname = (customeName == '' || customeName == `location_lname_${ele['id']}`) ? ele['lname'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_lname_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${postData?.company_id}/${ele['id']}`, `dynamic`);
+                        ele.lname = (customName == '' || customName == `location_lname_${ele['id']}`) ? ele['lname'] : customName;
                     }
                     if (ele.city) {
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_city_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${postData?.company_id}/${ele['id']}`, `dynamic`);
-                        ele.city = (customeName == '' || customeName == `location_city_${ele['id']}`) ? ele['city'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_city_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${postData?.company_id}/${ele['id']}`, `dynamic`);
+                        ele.city = (customName == '' || customName == `location_city_${ele['id']}`) ? ele['city'] : customName;
                     }
                     if (ele.state) {
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_state_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${postData?.company_id}/${ele['id']}`, `dynamic`);
-                        ele.state = (customeName == '' || customeName == `location_state_${ele['id']}`) ? ele['state'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_state_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${postData?.company_id}/${ele['id']}`, `dynamic`);
+                        ele.state = (customName == '' || customName == `location_state_${ele['id']}`) ? ele['state'] : customName;
                     }
                     if (ele.country) {
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_country_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${postData?.company_id}/${ele['id']}`, `dynamic`);
-                        ele.country = (customeName == '' || customeName == `location_country_${ele['id']}`) ? ele['country'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_country_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${postData?.company_id}/${ele['id']}`, `dynamic`);
+                        ele.country = (customName == '' || customName == `location_country_${ele['id']}`) ? ele['country'] : customName;
                     }
                 }
             }));
@@ -180,32 +180,32 @@ export class LocationController {
             }
             if (req.lang != 'eng') {
                 if (locationDetails.location_name) {
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_name_${locationDetails['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${locationDetails?.company_id}/${locationDetails['id']}`, `dynamic`);
-                    locationDetails.location_name = (customeName == '' || customeName == `location_name_${locationDetails['id']}`) ? locationDetails['location_name'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_name_${locationDetails['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${locationDetails?.company_id}/${locationDetails['id']}`, `dynamic`);
+                    locationDetails.location_name = (customName == '' || customName == `location_name_${locationDetails['id']}`) ? locationDetails['location_name'] : customName;
                 }
                 if (locationDetails.address1) {
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_address1_${locationDetails['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${locationDetails?.company_id}/${locationDetails['id']}`, `dynamic`);
-                    locationDetails.address1 = (customeName == '' || customeName == `location_address1_${locationDetails['id']}`) ? locationDetails['address1'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_address1_${locationDetails['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${locationDetails?.company_id}/${locationDetails['id']}`, `dynamic`);
+                    locationDetails.address1 = (customName == '' || customName == `location_address1_${locationDetails['id']}`) ? locationDetails['address1'] : customName;
                 }
                 if (locationDetails.address2) {
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_address2_${locationDetails['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${locationDetails?.company_id}/${locationDetails['id']}`, `dynamic`);
-                    locationDetails.address2 = (customeName == '' || customeName == `location_address2_${locationDetails['id']}`) ? locationDetails['address2'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_address2_${locationDetails['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${locationDetails?.company_id}/${locationDetails['id']}`, `dynamic`);
+                    locationDetails.address2 = (customName == '' || customName == `location_address2_${locationDetails['id']}`) ? locationDetails['address2'] : customName;
                 }
                 if (locationDetails.lname) {
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_lname_${locationDetails['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${locationDetails?.company_id}/${locationDetails['id']}`, `dynamic`);
-                    locationDetails.lname = (customeName == '' || customeName == `location_lname_${locationDetails['id']}`) ? locationDetails['lname'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_lname_${locationDetails['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${locationDetails?.company_id}/${locationDetails['id']}`, `dynamic`);
+                    locationDetails.lname = (customName == '' || customName == `location_lname_${locationDetails['id']}`) ? locationDetails['lname'] : customName;
                 }
                 if (locationDetails.city) {
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_city_${locationDetails['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${locationDetails?.company_id}/${locationDetails['id']}`, `dynamic`);
-                    locationDetails.city = (customeName == '' || customeName == `location_city_${locationDetails['id']}`) ? locationDetails['city'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_city_${locationDetails['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${locationDetails?.company_id}/${locationDetails['id']}`, `dynamic`);
+                    locationDetails.city = (customName == '' || customName == `location_city_${locationDetails['id']}`) ? locationDetails['city'] : customName;
                 }
                 if (locationDetails.state) {
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_state_${locationDetails['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${locationDetails?.company_id}/${locationDetails['id']}`, `dynamic`);
-                    locationDetails.state = (customeName == '' || customeName == `location_state_${locationDetails['id']}`) ? locationDetails['state'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_state_${locationDetails['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${locationDetails?.company_id}/${locationDetails['id']}`, `dynamic`);
+                    locationDetails.state = (customName == '' || customName == `location_state_${locationDetails['id']}`) ? locationDetails['state'] : customName;
                 }
                 if (locationDetails.country) {
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_country_${locationDetails['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${locationDetails?.company_id}/${locationDetails['id']}`, `dynamic`);
-                    locationDetails.country = (customeName == '' || customeName == `location_country_${locationDetails['id']}`) ? locationDetails['country'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_country_${locationDetails['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${locationDetails?.company_id}/${locationDetails['id']}`, `dynamic`);
+                    locationDetails.country = (customName == '' || customName == `location_country_${locationDetails['id']}`) ? locationDetails['country'] : customName;
                 }
             }
             return res.status(HttpStatus.OK).json({
@@ -332,32 +332,32 @@ export class LocationController {
                     if (locationResult && locationResult.length && req.lang != 'eng') {
                         await Promise.all(locationResult.map(async (ele) => {
                             if (ele.location_name) {
-                                let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_name_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${postData?.company_id}/${ele['id']}`, `dynamic`);
-                                ele.location_name = (customeName == '' || customeName == `location_name_${ele['id']}`) ? ele['location_name'] : customeName;
+                                let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_name_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${postData?.company_id}/${ele['id']}`, `dynamic`);
+                                ele.location_name = (customName == '' || customName == `location_name_${ele['id']}`) ? ele['location_name'] : customName;
                             }
                             if (ele.address1) {
-                                let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_address1_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${postData?.company_id}/${ele['id']}`, `dynamic`);
-                                ele.address1 = (customeName == '' || customeName == `location_address1_${ele['id']}`) ? ele['address1'] : customeName;
+                                let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_address1_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${postData?.company_id}/${ele['id']}`, `dynamic`);
+                                ele.address1 = (customName == '' || customName == `location_address1_${ele['id']}`) ? ele['address1'] : customName;
                             }
                             if (ele.address2) {
-                                let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_address2_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${postData?.company_id}/${ele['id']}`, `dynamic`);
-                                ele.address2 = (customeName == '' || customeName == `location_address2_${ele['id']}`) ? ele['address2'] : customeName;
+                                let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_address2_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${postData?.company_id}/${ele['id']}`, `dynamic`);
+                                ele.address2 = (customName == '' || customName == `location_address2_${ele['id']}`) ? ele['address2'] : customName;
                             }
                             if (ele.lname) {
-                                let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_lname_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${postData?.company_id}/${ele['id']}`, `dynamic`);
-                                ele.lname = (customeName == '' || customeName == `location_lname_${ele['id']}`) ? ele['lname'] : customeName;
+                                let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_lname_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${postData?.company_id}/${ele['id']}`, `dynamic`);
+                                ele.lname = (customName == '' || customName == `location_lname_${ele['id']}`) ? ele['lname'] : customName;
                             }
                             if (ele.city) {
-                                let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_city_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${postData?.company_id}/${ele['id']}`, `dynamic`);
-                                ele.city = (customeName == '' || customeName == `location_city_${ele['id']}`) ? ele['city'] : customeName;
+                                let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_city_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${postData?.company_id}/${ele['id']}`, `dynamic`);
+                                ele.city = (customName == '' || customName == `location_city_${ele['id']}`) ? ele['city'] : customName;
                             }
                             if (ele.state) {
-                                let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_state_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${postData?.company_id}/${ele['id']}`, `dynamic`);
-                                ele.state = (customeName == '' || customeName == `location_state_${ele['id']}`) ? ele['state'] : customeName;
+                                let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_state_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${postData?.company_id}/${ele['id']}`, `dynamic`);
+                                ele.state = (customName == '' || customName == `location_state_${ele['id']}`) ? ele['state'] : customName;
                             }
                             if (ele.country) {
-                                let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_country_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${postData?.company_id}/${ele['id']}`, `dynamic`);
-                                ele.country = (customeName == '' || customeName == `location_country_${ele['id']}`) ? ele['country'] : customeName;
+                                let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_country_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${postData?.company_id}/${ele['id']}`, `dynamic`);
+                                ele.country = (customName == '' || customName == `location_country_${ele['id']}`) ? ele['country'] : customName;
                             }
                         }));
                     }
@@ -425,32 +425,32 @@ export class LocationController {
             if (result && result.length && req.lang != 'eng') {
                 await Promise.all(result.map(async (ele) => {
                     if (ele.location_name) {
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_name_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${postData?.company_id}/${ele['id']}`, `dynamic`);
-                        ele.location_name = (customeName == '' || customeName == `location_name_${ele['id']}`) ? ele['location_name'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_name_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${postData?.company_id}/${ele['id']}`, `dynamic`);
+                        ele.location_name = (customName == '' || customName == `location_name_${ele['id']}`) ? ele['location_name'] : customName;
                     }
                     if (ele.address1) {
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_address1_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${postData?.company_id}/${ele['id']}`, `dynamic`);
-                        ele.address1 = (customeName == '' || customeName == `location_address1_${ele['id']}`) ? ele['address1'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_address1_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${postData?.company_id}/${ele['id']}`, `dynamic`);
+                        ele.address1 = (customName == '' || customName == `location_address1_${ele['id']}`) ? ele['address1'] : customName;
                     }
                     if (ele.address2) {
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_address2_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${postData?.company_id}/${ele['id']}`, `dynamic`);
-                        ele.address2 = (customeName == '' || customeName == `location_address2_${ele['id']}`) ? ele['address2'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_address2_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${postData?.company_id}/${ele['id']}`, `dynamic`);
+                        ele.address2 = (customName == '' || customName == `location_address2_${ele['id']}`) ? ele['address2'] : customName;
                     }
                     if (ele.lname) {
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_lname_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${postData?.company_id}/${ele['id']}`, `dynamic`);
-                        ele.lname = (customeName == '' || customeName == `location_lname_${ele['id']}`) ? ele['lname'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_lname_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${postData?.company_id}/${ele['id']}`, `dynamic`);
+                        ele.lname = (customName == '' || customName == `location_lname_${ele['id']}`) ? ele['lname'] : customName;
                     }
                     if (ele.city) {
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_city_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${postData?.company_id}/${ele['id']}`, `dynamic`);
-                        ele.city = (customeName == '' || customeName == `location_city_${ele['id']}`) ? ele['city'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_city_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${postData?.company_id}/${ele['id']}`, `dynamic`);
+                        ele.city = (customName == '' || customName == `location_city_${ele['id']}`) ? ele['city'] : customName;
                     }
                     if (ele.state) {
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_state_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${postData?.company_id}/${ele['id']}`, `dynamic`);
-                        ele.state = (customeName == '' || customeName == `location_state_${ele['id']}`) ? ele['state'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_state_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${postData?.company_id}/${ele['id']}`, `dynamic`);
+                        ele.state = (customName == '' || customName == `location_state_${ele['id']}`) ? ele['state'] : customName;
                     }
                     if (ele.country) {
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_country_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${postData?.company_id}/${ele['id']}`, `dynamic`);
-                        ele.country = (customeName == '' || customeName == `location_country_${ele['id']}`) ? ele['country'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_country_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${postData?.company_id}/${ele['id']}`, `dynamic`);
+                        ele.country = (customName == '' || customName == `location_country_${ele['id']}`) ? ele['country'] : customName;
                     }
                 }));
             }

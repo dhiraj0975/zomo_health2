@@ -35,7 +35,7 @@ import { diskStorage } from 'multer';
 import { lastValueFrom } from 'rxjs';
 import { CommunicationTemplateTextsService } from 'src/modules/communication/templatetexts/communicationtemplatetexts.service';
 import { ActivityLogService } from 'src/modules/master/activitylog/activitylog.service';
-import {In, Not, Raw} from 'typeorm';
+import { In, Not, Raw } from 'typeorm';
 import { AccessGuard, RoleGuard, TokenGuard } from '../../../guard';
 import {
     CreateUserFormInput,
@@ -184,9 +184,9 @@ export class UserFormsController {
                         }
                     }
                     if (ele?.decline_reason) {
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`decline_reason_${ele.id}`, `/LC_MESSAGES/HealthForms/SubmittedForms/${ele.org_id}/${ele.form_id}/${ele.user_id}`,`dynamic`);
-                        if (!customeName.includes('decline_reason_')) {
-                            ele.decline_reason = customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`decline_reason_${ele.id}`, `/LC_MESSAGES/HealthForms/SubmittedForms/${ele.org_id}/${ele.form_id}/${ele.user_id}`,`dynamic`);
+                        if (!customName.includes('decline_reason_')) {
+                            ele.decline_reason = customName;
                         }
                     }
                 })

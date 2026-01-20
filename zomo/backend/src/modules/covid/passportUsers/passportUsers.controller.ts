@@ -354,9 +354,9 @@ export class passportUsersController {
                 let covid_passport_setting = await this.passportSettingsService.findOne({org_id: postData?.org_id, status: Not(2)});
                 if (req.tokenUser?.role_id != appConstant.ROLE.ADMIN) {
                     if (covid_passport_setting?.description) {
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `settings_description_${covid_passport_setting?.org_id}`, `/LC_MESSAGES/Trackers/CovidPassport/${covid_passport_setting?.org_id}`, `dynamic`);
-                        if (customeName != `settings_description_${covid_passport_setting?.org_id}`) {
-                            covid_passport_setting.description = customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `settings_description_${covid_passport_setting?.org_id}`, `/LC_MESSAGES/Trackers/CovidPassport/${covid_passport_setting?.org_id}`, `dynamic`);
+                        if (customName != `settings_description_${covid_passport_setting?.org_id}`) {
+                            covid_passport_setting.description = customName;
                         }
                     }
                 }

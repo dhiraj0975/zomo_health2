@@ -75,12 +75,12 @@ export class ManualUpComingsController {
             if(resultedData['list'] && resultedData['list'].length){
                 await Promise.all(resultedData['list'].map(async (ele)=>{
                     if(ele.title){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`title_${ele['id']}`, `/LC_MESSAGES/Dashboard/UpcomingActivities/${ele['org_id']}/${ele['id']}`,`dynamic`);
-                        ele.title = (customeName == '' || customeName == `title_${ele['id']}`) ? ele['title'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`title_${ele['id']}`, `/LC_MESSAGES/Dashboard/UpcomingActivities/${ele['org_id']}/${ele['id']}`,`dynamic`);
+                        ele.title = (customName == '' || customName == `title_${ele['id']}`) ? ele['title'] : customName;
                     }
                     if(ele.description){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`description_${ele['id']}`, `/LC_MESSAGES/Dashboard/UpcomingActivities/${ele['org_id']}/${ele['id']}`,`dynamic`);
-                        ele.description = (customeName == '' || customeName == `description_${ele['id']}`) ? ele['description'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`description_${ele['id']}`, `/LC_MESSAGES/Dashboard/UpcomingActivities/${ele['org_id']}/${ele['id']}`,`dynamic`);
+                        ele.description = (customName == '' || customName == `description_${ele['id']}`) ? ele['description'] : customName;
                     }
                 }));
             }
@@ -295,12 +295,12 @@ export class ManualUpComingsController {
                 await this.commonArrayService.formatToDto(UcaManualUpcomingsDto, resultedData, req.lang)
             );
             if(resultedData.title){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`title_${resultedData['id']}`, `/LC_MESSAGES/Dashboard/UpcomingActivities/${resultedData['org_id']}/${resultedData['id']}`,`dynamic`);
-                resultedData.title = (customeName == '' || customeName == `title_${resultedData['id']}`) ? resultedData['title'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`title_${resultedData['id']}`, `/LC_MESSAGES/Dashboard/UpcomingActivities/${resultedData['org_id']}/${resultedData['id']}`,`dynamic`);
+                resultedData.title = (customName == '' || customName == `title_${resultedData['id']}`) ? resultedData['title'] : customName;
             }
             if(resultedData.description){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`description_${resultedData['id']}`, `/LC_MESSAGES/Dashboard/UpcomingActivities/${resultedData['org_id']}/${resultedData['id']}`,`dynamic`);
-                resultedData.description = (customeName == '' || customeName == `description_${resultedData['id']}`) ? resultedData['description'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`description_${resultedData['id']}`, `/LC_MESSAGES/Dashboard/UpcomingActivities/${resultedData['org_id']}/${resultedData['id']}`,`dynamic`);
+                resultedData.description = (customName == '' || customName == `description_${resultedData['id']}`) ? resultedData['description'] : customName;
             }
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
@@ -357,12 +357,12 @@ export class ManualUpComingsController {
                 if (resultedData && resultedData.length) {
                     await Promise.all(resultedData.map(async (ele) => {
                         if (ele.title) {
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang, `title_${ele['id']}`, `/LC_MESSAGES/Dashboard/UpcomingActivities/${ele['org_id']}/${ele['id']}`, `dynamic`);
-                            ele.title = (customeName == '' || customeName == `title_${ele['id']}`) ? ele['title'] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang, `title_${ele['id']}`, `/LC_MESSAGES/Dashboard/UpcomingActivities/${ele['org_id']}/${ele['id']}`, `dynamic`);
+                            ele.title = (customName == '' || customName == `title_${ele['id']}`) ? ele['title'] : customName;
                         }
                         if (ele.description) {
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang, `description_${ele['id']}`, `/LC_MESSAGES/Dashboard/UpcomingActivities/${ele['org_id']}/${ele['id']}`, `dynamic`);
-                            ele.description = (customeName == '' || customeName == `description_${ele['id']}`) ? ele['description'] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang, `description_${ele['id']}`, `/LC_MESSAGES/Dashboard/UpcomingActivities/${ele['org_id']}/${ele['id']}`, `dynamic`);
+                            ele.description = (customName == '' || customName == `description_${ele['id']}`) ? ele['description'] : customName;
                         }
                     }));
                 }

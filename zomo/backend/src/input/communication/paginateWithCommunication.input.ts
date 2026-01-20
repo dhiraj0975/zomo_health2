@@ -13,7 +13,7 @@ export class PaginateWithCommunicationInput {
     @Allow() role_id: number;
     @Allow() campaign_id: number;
     @Allow() status: any;
-    @Allow() type: any;
+    @Allow() type: any | string;
     @Allow() temp_type: any;
     @Allow() date: any;
     @Allow() created_by: any;

@@ -17,7 +17,7 @@ import { AccessGuard, RoleGuard, TokenGuard } from '../../../guard';
 import {
     CreateBannedWordInput,
     DeleteChallengeInput,
-    GetoneChallengeInput,
+    GetOneChallengeInput,
     PaginateWithChallengeInput,
     UpdateBannedWordInput
 } from "../../../input";
@@ -192,7 +192,7 @@ export class BannedWordController {
         }
     }
     @Post('get-one')
-    async getOne(@Req() req: Request, @Res() res: Response, @Body() postData: GetoneChallengeInput) {
+    async getOne(@Req() req: Request, @Res() res: Response, @Body() postData: GetOneChallengeInput) {
         try {
             if ((!postData?.id || !postData?.org_id) && req?.tokenUser?.role_id != appConstant.ROLE.ADMIN) {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang,'ERR_REQUIRED_PARAM_MISSING'));

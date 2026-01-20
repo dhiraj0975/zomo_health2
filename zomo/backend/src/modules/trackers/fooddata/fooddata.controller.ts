@@ -17,7 +17,6 @@ import { TranslationService } from 'src/modules/translation/translation.service'
 import { AccessGuard, RoleGuard, TokenGuard } from '../../../guard';
 import { ActivityLogService } from "../../master/activitylog/activitylog.service";
 import { PaginateWithFoodInput } from '../input';
-import {Not} from "typeorm";
 @Controller('tracker/food-data')
 @UseGuards(TokenGuard, RoleGuard, AccessGuard)
 export class FoodDataController {
@@ -56,8 +55,8 @@ export class FoodDataController {
                 await Promise.all(foodRequests['list'].map(async (ele)=>{
                     if(ele.Long_Desc){
                         let NDBNo: number = Number(ele?.NDB_No)
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`${ele.Long_Desc}`, `/LC_MESSAGES/Trackers/Nutrition/${NDBNo}`,`dynamic`);
-                        ele.Long_Desc = (customeName == '' || customeName == `${ele.Long_Desc}`) ? ele.Long_Desc : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`${ele.Long_Desc}`, `/LC_MESSAGES/Trackers/Nutrition/${NDBNo}`,`dynamic`);
+                        ele.Long_Desc = (customName == '' || customName == `${ele.Long_Desc}`) ? ele.Long_Desc : customName;
                     }
                 }));
             }

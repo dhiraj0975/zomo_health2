@@ -54,8 +54,8 @@ export class FitnessDurationRangeController {
             if(resultedData['list'] && resultedData['list'].length){
                 await Promise.all(resultedData['list'].map(async (ele)=>{
                     if(ele.name){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_durationrange_${ele['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${ele['org_id']}/durationrange}`,`dynamic`);
-                        ele.name = (customeName == '' || customeName == `fitness_durationrange_${ele['id']}`) ? ele['name'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_durationrange_${ele['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${ele['org_id']}/durationrange}`,`dynamic`);
+                        ele.name = (customName == '' || customName == `fitness_durationrange_${ele['id']}`) ? ele['name'] : customName;
                     }
                 }));
             }
@@ -105,8 +105,8 @@ export class FitnessDurationRangeController {
                 await this.commonArrayService.formatToDto(MediaFitnessDurationRangeDto, durationRange, req.lang)
             );
             if(durationRange.name){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_durationrange_${durationRange['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${durationRange['org_id']}/durationrange}`,`dynamic`);
-                durationRange.name = (customeName == '' || customeName == `fitness_durationrange_${durationRange['id']}`) ? durationRange['name'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_durationrange_${durationRange['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${durationRange['org_id']}/durationrange}`,`dynamic`);
+                durationRange.name = (customName == '' || customName == `fitness_durationrange_${durationRange['id']}`) ? durationRange['name'] : customName;
             }
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
@@ -289,8 +289,8 @@ export class FitnessDurationRangeController {
             if(resultedData && resultedData.length){
                 await Promise.all(resultedData.map(async (ele)=>{
                     if(ele.name){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_durationrange_${ele['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${ele['org_id']}/durationrange}`,`dynamic`);
-                        ele.name = (customeName == '' || customeName == `fitness_durationrange_${ele['id']}`) ? ele['name'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_durationrange_${ele['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${ele['org_id']}/durationrange}`,`dynamic`);
+                        ele.name = (customName == '' || customName == `fitness_durationrange_${ele['id']}`) ? ele['name'] : customName;
                     }
                 }));
             }

@@ -1,3 +1,4 @@
+import { CompanyService } from '@/modules/company/companies/company.service';
 import { appConstant, CommonArrayService, CommonService, QuicklinkDto, tableConstant } from '@common-constants';
 import {
     Body,
@@ -28,7 +29,6 @@ import { TranslationService } from "../../translation/translation.service";
 import { QuickLinkClicksService } from '../quicklinkclicks/quicklinkclicks.service';
 import { QuicklinkOrglistsService } from '../quicklinkorglists/quicklinkorglists.service';
 import { QuickLinkService } from './quicklink.service';
-import { CompanyService } from '@/modules/company/companies/company.service';
 
 const path = require('path');
 const moment = require('moment-timezone');
@@ -184,12 +184,12 @@ export class QuickLinkController {
                 await Promise.all(resultedData['list'].map(async (ele: any, index: number)=>{
                     ele.sr_no = startIndex + index + 1;
                     if(ele.title){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`title_${ele['id']}`, `/LC_MESSAGES/QuickLink/QuickLink/${ele['c_companies_id']}`,`dynamic`);
-                        ele.title = (customeName == '' || customeName == `title_${ele['id']}`) ? ele['title'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`title_${ele['id']}`, `/LC_MESSAGES/QuickLink/QuickLink/${ele['c_companies_id']}`,`dynamic`);
+                        ele.title = (customName == '' || customName == `title_${ele['id']}`) ? ele['title'] : customName;
                     }
                     if(ele.description){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`description_${ele['id']}`, `/LC_MESSAGES/QuickLink/QuickLink/${ele['c_companies_id']}`,`dynamic`);
-                        ele.description = (customeName == '' || customeName == `description_${ele['id']}`) ? ele['description'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`description_${ele['id']}`, `/LC_MESSAGES/QuickLink/QuickLink/${ele['c_companies_id']}`,`dynamic`);
+                        ele.description = (customName == '' || customName == `description_${ele['id']}`) ? ele['description'] : customName;
                     }
                     let checkUrl = process.env.DOMAIN + '/download-document/15/';
                     let checkpUrl = process.env.DOMAIN + '/download-pdocument/15/';
@@ -501,12 +501,12 @@ export class QuickLinkController {
                 await this.commonArrayService.formatToDto(QuicklinkDto, resultedData, req.lang)
             );
             if(resultedData?.title){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`title_${resultedData['id']}`, `/LC_MESSAGES/QuickLink/QuickLink/${resultedData['c_companies_id']}`,`dynamic`);
-                resultedData.title = (customeName == '' || customeName == `title_${resultedData['id']}`) ? resultedData['title'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`title_${resultedData['id']}`, `/LC_MESSAGES/QuickLink/QuickLink/${resultedData['c_companies_id']}`,`dynamic`);
+                resultedData.title = (customName == '' || customName == `title_${resultedData['id']}`) ? resultedData['title'] : customName;
             }
             if(resultedData?.description){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`description_${resultedData['id']}`, `/LC_MESSAGES/QuickLink/QuickLink/${resultedData['c_companies_id']}`,`dynamic`);
-                resultedData.description = (customeName == '' || customeName == `description_${resultedData['id']}`) ? resultedData['description'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`description_${resultedData['id']}`, `/LC_MESSAGES/QuickLink/QuickLink/${resultedData['c_companies_id']}`,`dynamic`);
+                resultedData.description = (customName == '' || customName == `description_${resultedData['id']}`) ? resultedData['description'] : customName;
             }
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
@@ -740,13 +740,13 @@ export class QuickLinkController {
                         const folderId = item.folder_id;
                         if (!data[folderId]) {
                             if (item.folder?.folder_name) {
-                                let customeName = await this.translatorService.frontendReadTranslation(
+                                let customName = await this.translatorService.frontendReadTranslation(
                                     req.lang,
                                     `folder_name_${folderId}`,
                                     `/LC_MESSAGES/QuickLink/QuickLink/${item.folder['c_companies_id']}`,
                                     `dynamic`
                                 );
-                                item.folder.folder_name = (customeName == '' || customeName == `folder_name_${folderId}`) ? item.folder.folder_name : customeName;
+                                item.folder.folder_name = (customName == '' || customName == `folder_name_${folderId}`) ? item.folder.folder_name : customName;
                                 item.folder.folder_name = await this.quickLinkService.replacePreventionCloudLinks(
                                     item.folder.folder_name
                                 );
@@ -759,24 +759,24 @@ export class QuickLinkController {
                             resultedData.push(data[folderId]);
                         }
                         if (item?.title) {
-                            let customeName = await this.translatorService.frontendReadTranslation(
+                            let customName = await this.translatorService.frontendReadTranslation(
                                 req.lang,
                                 `title_${item['id']}`,
                                 `/LC_MESSAGES/QuickLink/QuickLink/${item['c_companies_id']}`,
                                 `dynamic`
                             );
 
-                            item.title = (customeName == '' || customeName == `title_${item['id']}`) ? item['title'] : customeName;
+                            item.title = (customName == '' || customName == `title_${item['id']}`) ? item['title'] : customName;
                             item.title = await this.quickLinkService.replacePreventionCloudLinks(item.title);
                         }
                         if (item?.description) {
-                            let customeName = await this.translatorService.frontendReadTranslation(
+                            let customName = await this.translatorService.frontendReadTranslation(
                                 req.lang,
                                 `description_${item['id']}`,
                                 `/LC_MESSAGES/QuickLink/QuickLink/${item['c_companies_id']}`,
                                 `dynamic`
                             );
-                            item.description = (customeName == '' || customeName == `description_${item['id']}`) ? item['description'] : customeName;
+                            item.description = (customName == '' || customName == `description_${item['id']}`) ? item['description'] : customName;
                         }
                         data[folderId].folders.push({
                             id: item.id,
@@ -794,24 +794,24 @@ export class QuickLinkController {
                         });
                     } else {
                         if (item?.title) {
-                            let customeName = await this.translatorService.frontendReadTranslation(
+                            let customName = await this.translatorService.frontendReadTranslation(
                                 req.lang,
                                 `title_${item['id']}`,
                                 `/LC_MESSAGES/QuickLink/QuickLink/${item['c_companies_id']}`,
                                 `dynamic`
                             );
 
-                            item.title = (customeName == '' || customeName == `title_${item['id']}`) ? item['title'] : customeName;
+                            item.title = (customName == '' || customName == `title_${item['id']}`) ? item['title'] : customName;
                             item.title = await this.quickLinkService.replacePreventionCloudLinks(item.title);
                         }
                         if (item?.description) {
-                            let customeName = await this.translatorService.frontendReadTranslation(
+                            let customName = await this.translatorService.frontendReadTranslation(
                                 req.lang,
                                 `description_${item['id']}`,
                                 `/LC_MESSAGES/QuickLink/QuickLink/${item['c_companies_id']}`,
                                 `dynamic`
                             );
-                            item.description = (customeName == '' || customeName == `description_${item['id']}`) ? item['description'] : customeName;
+                            item.description = (customName == '' || customName == `description_${item['id']}`) ? item['description'] : customName;
                         }
                         resultedData.push({
                             id: item.id,
@@ -886,12 +886,12 @@ export class QuickLinkController {
                 await this.commonArrayService.formatToDto(QuicklinkDto, resultedData, req.lang)
             );
             if(resultedData?.title){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`title_${resultedData['id']}`, `/LC_MESSAGES/QuickLink/QuickLink/${resultedData['c_companies_id']}`,`dynamic`);
-                resultedData.title = (customeName == '' || customeName == `title_${resultedData['id']}`) ? resultedData['title'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`title_${resultedData['id']}`, `/LC_MESSAGES/QuickLink/QuickLink/${resultedData['c_companies_id']}`,`dynamic`);
+                resultedData.title = (customName == '' || customName == `title_${resultedData['id']}`) ? resultedData['title'] : customName;
             }
             if(resultedData?.description){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`description_${resultedData['id']}`, `/LC_MESSAGES/QuickLink/QuickLink/${resultedData['c_companies_id']}`,`dynamic`);
-                resultedData.description = (customeName == '' || customeName == `description_${resultedData['id']}`) ? resultedData['description'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`description_${resultedData['id']}`, `/LC_MESSAGES/QuickLink/QuickLink/${resultedData['c_companies_id']}`,`dynamic`);
+                resultedData.description = (customName == '' || customName == `description_${resultedData['id']}`) ? resultedData['description'] : customName;
             }
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
@@ -924,8 +924,8 @@ export class QuickLinkController {
             if(resultedData && resultedData.length){
                 await Promise.all(resultedData.map(async (ele)=>{
                     if(ele.title){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`title_${ele['id']}`, `/LC_MESSAGES/QuickLink/QuickLink/${ele['c_companies_id']}`,`dynamic`);
-                        ele.title = (customeName == '' || customeName == `title_${ele['id']}`) ? ele['title'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`title_${ele['id']}`, `/LC_MESSAGES/QuickLink/QuickLink/${ele['c_companies_id']}`,`dynamic`);
+                        ele.title = (customName == '' || customName == `title_${ele['id']}`) ? ele['title'] : customName;
                     }
                 }));
             }

@@ -74,10 +74,12 @@ export class AuthController {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_INVALID_LOGIN"));
             }
             postData['remember_me'] = postData['remember_me'] ? 1 : 0;
-            if(postData?.role_id == 1 && appConstant.ADMIN_ROLE.includes(userDetails.role_id)){
-            }else{
-                if(!postData?.role_id && !appConstant.ADMIN_ROLE.includes(userDetails.role_id)){
-                }else{
+            if (appConstant.ADMIN_ROLE.includes(userDetails.role_id)) {
+                if (postData?.role_id && postData?.role_id != 1 && postData?.role_id != userDetails.role_id) {
+                    throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_ACCESS_DENIED"));
+                }
+            } else {
+                if (postData?.role_id && postData?.role_id != userDetails.role_id) {
                     throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_ACCESS_DENIED"));
                 }
             }
@@ -306,8 +308,8 @@ export class AuthController {
                     userDetails['company']['setting']['enable_widget'] = userDetails['company']?.['meta']?.['enable_widget'].includes('{') ? JSON.parse(userDetails['company']?.['meta']?.['enable_widget']): userDetails['company']?.['meta']?.['enable_widget'];
                 }
                 if(userDetails['company']?.['meta']?.['user_popup_title']){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang, `user_popup_title_${userDetails['org_id']}`, `/LC_MESSAGES/Common/LoginPopup/${userDetails?.['company']?.['id'] || userDetails['org_id']}`,`dynamic`);
-                    userDetails['company']['meta']['user_popup_title'] = !customeName.includes('user_popup_title_') ? customeName : userDetails['company']?.['meta']?.['user_popup_title'];
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang, `user_popup_title_${userDetails['org_id']}`, `/LC_MESSAGES/Common/LoginPopup/${userDetails?.['company']?.['id'] || userDetails['org_id']}`,`dynamic`);
+                    userDetails['company']['meta']['user_popup_title'] = !customName.includes('user_popup_title_') ? customName : userDetails['company']?.['meta']?.['user_popup_title'];
                 }
                 userDetails['company']['setting']['a_popup_status'] = userDetails['company']?.['meta']?.['a_popup_status'];
                 userDetails['company']['setting']['user_popup_title'] = userDetails['company']?.['meta']?.['user_popup_title'];
@@ -358,6 +360,7 @@ export class AuthController {
                 appConstant.ROLE.COACH,
                 appConstant.ROLE.DATAMANAGER,
                 appConstant.ROLE.GLOBALDATAMANAGER,
+                appConstant.ROLE.GLOBALMARKETINGMANAGER,
             ].includes(userDetails['role_id'])) {
                 let sideMenuFileName = `side_menu_${userDetails['org_id']}.json`;
                 sideMenuFilePath = `local/sidemenu/${userDetails['org_id']}/${sideMenuFileName}`;

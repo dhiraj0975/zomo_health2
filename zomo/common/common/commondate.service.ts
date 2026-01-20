@@ -1075,8 +1075,8 @@ export class CommonDateService {
                     if (myActivity['add_image'] === 0) {
                         result['uploadText'] = `<p><b>${await this.frontendReadTranslation(req?.headers?.x_lang,'Please submit a screenshot for this activity to be marked as complete', `/LC_MESSAGES/MyPlan/MyPlan`,`static`)}</b></p>`;
                         if (myActivity['upload_text']) {
-                            let customeName = await this.frontendReadTranslation(req?.headers?.x_lang,`upload_text_${myActivity['assign_block_id']}_${myActivity['maa']?.['id']}_${req?.tokenUser?.org_id}`, `/LC_MESSAGES/MyPlan/MyPlan/${req?.tokenUser?.org_id}/${myPlan['id']}`,`dynamic`);
-                            myActivity['button_text'] = `<p><b>${(customeName == '' || customeName == `upload_text_${myActivity['assign_block_id']}_${myActivity['maa']?.['id']}_${req?.tokenUser?.org_id}`) ? myActivity['button_text'] : customeName}</b></p>`;
+                            let customName = await this.frontendReadTranslation(req?.headers?.x_lang,`upload_text_${myActivity['assign_block_id']}_${myActivity['maa']?.['id']}_${req?.tokenUser?.org_id}`, `/LC_MESSAGES/MyPlan/MyPlan/${req?.tokenUser?.org_id}/${myPlan['id']}`,`dynamic`);
+                            myActivity['button_text'] = `<p><b>${(customName == '' || customName == `upload_text_${myActivity['assign_block_id']}_${myActivity['maa']?.['id']}_${req?.tokenUser?.org_id}`) ? myActivity['button_text'] : customName}</b></p>`;
                         }
                     }
                 } else if ([6, -3].includes(categoryId)) {
@@ -1098,8 +1098,8 @@ export class CommonDateService {
                             result['internalLink'] = await this.manageAllURL('plan',{'url': myActivity['link']},interLinksData)
                             result['activityButtonText'] = `${await this.frontendReadTranslation(req?.headers?.x_lang,'Link', `/LC_MESSAGES/MyPlan/MyPlan`,`static`)}`
                             if (displayButtonData && myActivity['button_text'] != 'Click here' && myActivity['button_text']) {
-                                let customeName = await this.frontendReadTranslation(req?.headers?.x_lang,`button_text_${myActivity['assign_block_id']}_${myActivity['maa']?.['id']}_${req?.tokenUser?.org_id}`,`/LC_MESSAGES/MyPlan/MyPlan/${req?.tokenUser?.org_id}/${myPlan['map']['id']}`,`dynamic`);
-                                myActivity['button_text'] = (customeName == '' || customeName == `button_text_${myActivity['assign_block_id']}_${myActivity['maa']?.['id']}_${req?.tokenUser?.org_id}`) ? myActivity['button_text'] : customeName;
+                                let customName = await this.frontendReadTranslation(req?.headers?.x_lang,`button_text_${myActivity['assign_block_id']}_${myActivity['maa']?.['id']}_${req?.tokenUser?.org_id}`,`/LC_MESSAGES/MyPlan/MyPlan/${req?.tokenUser?.org_id}/${myPlan['map']['id']}`,`dynamic`);
+                                myActivity['button_text'] = (customName == '' || customName == `button_text_${myActivity['assign_block_id']}_${myActivity['maa']?.['id']}_${req?.tokenUser?.org_id}`) ? myActivity['button_text'] : customName;
                                 result['activityButtonText'] = myActivity['button_text']
                             }
                         }
@@ -1109,8 +1109,8 @@ export class CommonDateService {
                             result['internalLink'] = await this.manageAllURL('plan',{'inLinkId': myActivity['link_id']},tempLinks)
                             result['activityButtonText'] = `${await this.frontendReadTranslation(req?.headers?.x_lang,tempLinks[myActivity['link_id']]['linktitle'], `/LC_MESSAGES/MyPlan/MyPlan`,`static`)}`
                             if (displayButtonData && myActivity['button_text'] != 'Click here' && myActivity['button_text']) {
-                                let customeName = await this.frontendReadTranslation(req?.headers?.x_lang,`button_text_${myActivity['assign_block_id']}_${myActivity['maa']?.['id']}_${req?.tokenUser?.org_id}`,`/LC_MESSAGES/MyPlan/MyPlan/${req?.tokenUser?.org_id}/${myPlan['map']['id']}`,`dynamic`);
-                                myActivity['button_text'] = (customeName == '' || customeName == `button_text_${myActivity['assign_block_id']}_${myActivity['maa']?.['id']}_${req?.tokenUser?.org_id}`) ? myActivity['button_text'] : customeName;
+                                let customName = await this.frontendReadTranslation(req?.headers?.x_lang,`button_text_${myActivity['assign_block_id']}_${myActivity['maa']?.['id']}_${req?.tokenUser?.org_id}`,`/LC_MESSAGES/MyPlan/MyPlan/${req?.tokenUser?.org_id}/${myPlan['map']['id']}`,`dynamic`);
+                                myActivity['button_text'] = (customName == '' || customName == `button_text_${myActivity['assign_block_id']}_${myActivity['maa']?.['id']}_${req?.tokenUser?.org_id}`) ? myActivity['button_text'] : customName;
                                 result['activityButtonText'] = myActivity['button_text']
                             }
                         }
@@ -1233,7 +1233,7 @@ export class CommonDateService {
     }
     isValidDate(dateString: string) {
         try{
-            const formats = ['YYYY-MM-DD', 'MM-DD-YYYY', 'MMM DD, YYYY', 'MM/DD/YYYY'];
+            const formats = ['YYYY-MM-DD', 'MM-DD-YYYY', 'MMM DD, YYYY', 'MMMM DD, YYYY', 'MM/DD/YYYY', 'MMM D, YYYY', 'MMMM D, YYYY'];
             return moment(dateString, formats, true).isValid();  
         }catch(err){
             throw new Error(err.message);

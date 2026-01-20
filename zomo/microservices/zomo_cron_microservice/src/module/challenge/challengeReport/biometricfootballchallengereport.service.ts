@@ -50,6 +50,7 @@ export class FootballChallengeReportService {
             let rangeEndDate;
             let weightWhere;
             let result = [];
+            let yard = schedule?.yard;
             startDate = this.commonDateService.DateTimeFormat(schedule?.['start_date'],'timestamp');
             endDate = this.commonDateService.DateTimeFormat(schedule?.['end_date'],'timestamp',);
             let now: any = this.commonDateService.DateTimeFormat('now','timestamp',);
@@ -133,30 +134,29 @@ export class FootballChallengeReportService {
                         return acc;
                     }, {});
                 let k = 0;
-                let yard = schedule?.yard;
                 for (let i = 0; i < userList.length; i++) {
-                    const tuser = userList[i];
+                    const tUser = userList[i];
                     let totalWeightLoss = 0;
                     let usersScore = 0;
-                    const users_id = tuser.id;
-                    const team_id = tuser?.team?.id;
-                    tuser.weightinfo = bioWeightUsers[users_id] || [];
+                    const users_id = tUser.id;
+                    const team_id = tUser?.team?.id;
+                    tUser.weightinfo = bioWeightUsers[users_id] || [];
                     if (bioWeightUsers.hasOwnProperty(users_id)) {
                         let firstWeight = 0;
                         let lastWeight = 0;
                         if (bioWeightUsers[users_id].length > 0) {
                             const userWeights = [...bioWeightUsers[users_id]]; 
                             const firstWeightArr = userWeights.pop();
-                            firstWeight = firstWeightArr.weight;
+                            firstWeight = Number(firstWeightArr.weight);
                             if (userWeights.length > 0) {
-                                lastWeight = userWeights[0].weight;
+                                lastWeight = Number(userWeights[0].weight);
                             }
                         }
                         let diffWeight = firstWeight - lastWeight;
                         if (bioWeightUsers[users_id].length < 1 || diffWeight <= 0) {
                             diffWeight = 0;
                         }
-                        tuser.diffweight = diffWeight;
+                        tUser.diffweight = diffWeight;
                         totalWeightLoss += diffWeight;
                         totalWeightLoss = parseFloat(totalWeightLoss.toFixed(2));
                         usersScore = Math.round(diffWeight * yard);
@@ -165,18 +165,18 @@ export class FootballChallengeReportService {
                         if (diffWeight !== 0 && firstWeight !== 0) {
                             weightLoosPer = Math.round((diffWeight * 100 / firstWeight) * 100) / 100;
                         }
-                        tuser.weightloosper = weightLoosPer;
-                        tuser.score = usersScore;
-                        tuser.totalweightloss = totalWeightLoss;
-                        tuser.touchdown = Math.floor(touchdowns);
-                        result[k] = tuser;
+                        tUser.weightloosper = weightLoosPer;
+                        tUser.score = usersScore;
+                        tUser.totalweightloss = totalWeightLoss;
+                        tUser.touchdown = Math.floor(touchdowns);
+                        result[k] = tUser;
                         k++;
                     } else {
-                        tuser.weightloosper = 0;
-                        tuser.score = 0;
-                        tuser.totalweightloss = 0;
-                        tuser.touchdown = 0;
-                        result[k] = tuser;
+                        tUser.weightloosper = 0;
+                        tUser.score = 0;
+                        tUser.totalweightloss = 0;
+                        tUser.touchdown = 0;
+                        result[k] = tUser;
                         k++;
                     }
                     if(!teamData[team_id]) {
@@ -188,11 +188,11 @@ export class FootballChallengeReportService {
                             teammember: 0,
                         };
                     }
-                    teamData[team_id]['weightloss'] += tuser.totalweightloss;
-                    teamData[team_id]['touchdown'] += tuser.touchdown;
-                    teamData[team_id]['score'] += tuser.score;
-                    teamData[team_id]['weightloosper'] += tuser.weightloosper;
-                    teamData[team_id]['teammember'] += 1;
+                    teamData[team_id]['weightloss'] += tUser.totalweightloss;
+                    teamData[team_id]['touchdown'] += tUser.touchdown;
+                    teamData[team_id]['score'] += tUser.score;
+                    teamData[team_id]['weightloosper'] += tUser.weightloosper;
+                    teamData[team_id]['teammember'] += tUser?.weightinfo?.length ? 1 : 0; //ZOMO-4445
                 }
                 for (const team of allTeams) {
                     const id = team?.id;
@@ -356,8 +356,8 @@ export class FootballChallengeReportService {
                         row.push(item?.tname)
                         row.push(item?.team_size)
                         row.push(item?.['teammember'])
-                        row.push(item?.['weightloss'] ?? 0)
-                        row.push(item?.['weightloss'] ?? 0)
+                        row.push(item?.['weightloss'] && yard > 0 ? item?.['weightloss'] * yard :  0)
+                        row.push(item?.['weightloss'])
                         row.push(item?.['touchdown'] ?? 0)
                         row.push(rank++)
                         return row;

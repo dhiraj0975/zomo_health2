@@ -504,11 +504,27 @@ export class ChallengeReportService {
                             }
                         }
                         if (scheduleChallenge?.['ac']?.['activity_name'].trim() == "Steps" && bioType != "Football_step" && bioType != "Trek_step" && bioType != "Move_more" && bioType != "Random_Acts_of_Kindness" && bioType != "Relay_race") {
+                            if (postData?.team_id) {
+                                teamCondition = ` AND(${this.commonArrayService.formatInClauseCondition(
+                                    postData?.team_id,
+                                    'team.id',
+                                )})`;
+                                condition += ` ${teamCondition}`;
+                            }
+                            if (postData?.group_id) {
+                                groupCondition = ` AND(${this.commonArrayService.formatInClauseCondition(
+                                    postData?.group_id,
+                                    'team.group_id',
+                                )})`;
+                                condition += ` ${groupCondition}`;
+                            }
                             resultedData = await this.stepsChallengeReportService.stepChallengeReport(
                                 scheduleChallenge,
                                 condition,
                                 result_type,
                                 result_type == 1 ? paginateObj : null,
+                                scheduleChallenge?.team == 1 ? teamCondition : '',
+                                scheduleChallenge?.group_status == 1 ? groupCondition : '',
                             );
                             if (result_type == 2) {
                                 userList = resultedData?.user ?? [];

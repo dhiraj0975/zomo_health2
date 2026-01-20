@@ -791,16 +791,16 @@ export class AssessmentsController {
                                                     tobaccoVaping['tobacco'] ??= {};
                                                     tobaccoVaping['tobacco'][resultType] ??= {};
                                                     let orgId = assessmentQuestion['assessment_results']['organization_id'] ? assessmentQuestion['assessment_results']['organization_id'] : postData?.org_id;
-                                                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markercommon_${assessmentQuestion['assessment_results']?.organization_id}_${assessmentQuestion['assessment_results']?.id}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${orgId}`,`dynamic`);
-                                                    customeName = (customeName == '' || customeName == `assessment_markercommon_${assessmentQuestion['assessment_results']?.organization_id}_${assessmentQuestion['assessment_results']?.id}`) ? assessmentQuestion['assessment_results']["marker-common"] : customeName;
-                                                    tobaccoVaping['tobacco'][resultType][-1] = customeName;
+                                                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markercommon_${assessmentQuestion['assessment_results']?.organization_id}_${assessmentQuestion['assessment_results']?.id}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${orgId}`,`dynamic`);
+                                                    customName = (customName == '' || customName == `assessment_markercommon_${assessmentQuestion['assessment_results']?.organization_id}_${assessmentQuestion['assessment_results']?.id}`) ? assessmentQuestion['assessment_results']["marker-common"] : customName;
+                                                    tobaccoVaping['tobacco'][resultType][-1] = customName;
                                                 }
                                                 if (emotionalAssessmentsAnswers['assessment_options']['message_add'] != '') {
                                                     tobaccoVaping['tobacco'] ??= {};
                                                     tobaccoVaping['tobacco'][resultType] ??= {};
-                                                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_message_${emotionalAssessmentsAnswers['assessment_options']?.question_id}_${emotionalAssessmentsAnswers['assessment_options']?.id}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${postData?.org_id}`,`dynamic`);
-                                                    customeName = (customeName == '' || customeName == `assessment_message_${emotionalAssessmentsAnswers['assessment_options']?.question_id}_${emotionalAssessmentsAnswers['assessment_options']?.id}`) ? emotionalAssessmentsAnswers['assessment_options']['message_add'] : customeName;
-                                                    tobaccoVaping['tobacco'][resultType][emotionalAssessmentsAnswers['assessment_options']['sort_order']] = customeName;
+                                                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_message_${emotionalAssessmentsAnswers['assessment_options']?.question_id}_${emotionalAssessmentsAnswers['assessment_options']?.id}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${postData?.org_id}`,`dynamic`);
+                                                    customName = (customName == '' || customName == `assessment_message_${emotionalAssessmentsAnswers['assessment_options']?.question_id}_${emotionalAssessmentsAnswers['assessment_options']?.id}`) ? emotionalAssessmentsAnswers['assessment_options']['message_add'] : customName;
+                                                    tobaccoVaping['tobacco'][resultType][emotionalAssessmentsAnswers['assessment_options']['sort_order']] = customName;
                                                     let start: number;
                                                     if (tobaccoVaping['tobacco'][resultType][1]) {
                                                         start = 2;
@@ -821,17 +821,17 @@ export class AssessmentsController {
                                                     tobaccoVaping['tobacco'] ??= {};
                                                     tobaccoVaping['tobacco'][resultType] ??= {};
                                                 let orgId = assessmentQuestion['assessment_results']['organization_id'] ? assessmentQuestion['assessment_results']['organization_id'] : postData?.org_id;
-                                                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markercommon_${assessmentQuestion['assessment_results']?.organization_id}_${assessmentQuestion['assessment_results']?.id}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${orgId}`,`dynamic`);
-                                                    customeName = (customeName == '' || customeName == `assessment_markercommon_${assessmentQuestion['assessment_results']?.organization_id}_${assessmentQuestion['assessment_results']?.id}`) ? assessmentQuestion['assessment_results']["marker-common_last"] : customeName;
-                                                    tobaccoVaping['tobacco'][resultType][100] = customeName;
+                                                let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markercommon_${assessmentQuestion['assessment_results']?.organization_id}_${assessmentQuestion['assessment_results']?.id}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${orgId}`,`dynamic`);
+                                                    customName = (customName == '' || customName == `assessment_markercommon_${assessmentQuestion['assessment_results']?.organization_id}_${assessmentQuestion['assessment_results']?.id}`) ? assessmentQuestion['assessment_results']["marker-common_last"] : customName;
+                                                    tobaccoVaping['tobacco'][resultType][100] = customName;
                                                 }
                                             } else {
                                                 if (emotionalAssessmentsAnswers['assessment_options']['message_add'] != '') {
                                                     tobaccoVaping[resultType] ??= {};
                                                   let orgId = emotionalAssessmentsAnswers['assessment_options']['organization_id'] ? emotionalAssessmentsAnswers['assessment_options']['organization_id'] : postData?.org_id;
-                                                  let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_message_${emotionalAssessmentsAnswers['assessment_options']?.question_id}_${emotionalAssessmentsAnswers['assessment_options']?.id}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${orgId}`,`dynamic`);
-                                                    customeName = (customeName == '' || customeName == `assessment_message_${emotionalAssessmentsAnswers['assessment_options']?.question_id}_${emotionalAssessmentsAnswers['assessment_options']?.id}`) ? emotionalAssessmentsAnswers['assessment_options']['message_add'] : customeName;
-                                                    tobaccoVaping[resultType][emotionalAssessmentsAnswers['assessment_options']['sort_order']] = customeName;
+                                                  let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_message_${emotionalAssessmentsAnswers['assessment_options']?.question_id}_${emotionalAssessmentsAnswers['assessment_options']?.id}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${orgId}`,`dynamic`);
+                                                    customName = (customName == '' || customName == `assessment_message_${emotionalAssessmentsAnswers['assessment_options']?.question_id}_${emotionalAssessmentsAnswers['assessment_options']?.id}`) ? emotionalAssessmentsAnswers['assessment_options']['message_add'] : customName;
+                                                    tobaccoVaping[resultType][emotionalAssessmentsAnswers['assessment_options']['sort_order']] = customName;
                                                 }
                                             }
                                         }
@@ -858,28 +858,28 @@ export class AssessmentsController {
                 if(ehaAssessmentResults && ehaAssessmentResults.length){
                     await Promise.all(ehaAssessmentResults.map(async (ele)=>{
                         if(ele.title){
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_title_${ele.organization_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele['organization_id']}`,`dynamic`);
-                            ele.title = (customeName == '' || customeName == `assessment_title_${ele.organization_id}_${ele['id']}`) ? ele['title'] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_title_${ele.organization_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele['organization_id']}`,`dynamic`);
+                            ele.title = (customName == '' || customName == `assessment_title_${ele.organization_id}_${ele['id']}`) ? ele['title'] : customName;
                         }
                         if(ele['marker-low']){
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markerlow_${ele.organization_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele['organization_id']}`,`dynamic`);
-                            ele['marker-low'] = (customeName == '' || customeName == `assessment_markerlow_${ele.organization_id}_${ele['id']}`) ? ele['marker-low'] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markerlow_${ele.organization_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele['organization_id']}`,`dynamic`);
+                            ele['marker-low'] = (customName == '' || customName == `assessment_markerlow_${ele.organization_id}_${ele['id']}`) ? ele['marker-low'] : customName;
                         }
                         if(ele['marker-mod']){
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markermod_${ele.organization_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele['organization_id']}`,`dynamic`);
-                            ele['marker-mod'] = (customeName == '' || customeName == `assessment_markermod_${ele.organization_id}_${ele['id']}`) ? ele['marker-mod'] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markermod_${ele.organization_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele['organization_id']}`,`dynamic`);
+                            ele['marker-mod'] = (customName == '' || customName == `assessment_markermod_${ele.organization_id}_${ele['id']}`) ? ele['marker-mod'] : customName;
                         }
                         if(ele['marker-high']){
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markerhigh_${ele.organization_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele['organization_id']}`,`dynamic`);
-                            ele['marker-high'] = (customeName == '' || customeName == `assessment_markerhigh_${ele.organization_id}_${ele['id']}`) ? ele['marker-high'] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markerhigh_${ele.organization_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele['organization_id']}`,`dynamic`);
+                            ele['marker-high'] = (customName == '' || customName == `assessment_markerhigh_${ele.organization_id}_${ele['id']}`) ? ele['marker-high'] : customName;
                         }
                         if(ele['marker-common']){
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markercommon_${ele.organization_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele['organization_id']}`,`dynamic`);
-                            ele['marker-common'] = (customeName == '' || customeName == `assessment_markercommon_${ele.organization_id}_${ele['id']}`) ? ele['marker-common'] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markercommon_${ele.organization_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele['organization_id']}`,`dynamic`);
+                            ele['marker-common'] = (customName == '' || customName == `assessment_markercommon_${ele.organization_id}_${ele['id']}`) ? ele['marker-common'] : customName;
                         }
                         if(ele['marker-common_last']){
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markercommonlast_${ele.organization_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele['organization_id']}`,`dynamic`);
-                            ele['marker-common_last'] = (customeName == '' || customeName == `assessment_markercommonlast_${ele.organization_id}_${ele['id']}`) ? ele['marker-common_last'] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markercommonlast_${ele.organization_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele['organization_id']}`,`dynamic`);
+                            ele['marker-common_last'] = (customName == '' || customName == `assessment_markercommonlast_${ele.organization_id}_${ele['id']}`) ? ele['marker-common_last'] : customName;
                         }
                     }));
                 }

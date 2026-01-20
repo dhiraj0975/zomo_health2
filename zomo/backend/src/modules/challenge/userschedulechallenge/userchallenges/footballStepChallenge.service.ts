@@ -949,8 +949,9 @@ export class FootballStepChallengeService {
             let userId = req.tokenUser?.id;
             let schedule_id = schedule['sc']['id'];
             let orgId = schedule['sc']['org_id'];
-            result.touchdown = result.totalweightlossinpound = result.lastweight = result.weightdiff = result.secondlastweight = result.totalweightloss = 0;
-            result.bteamid = result.bteamname = result.created_by = result.minutes =result.bio_weight= '';
+            let yard = schedule?.sc?.yard;
+            result.touchdown ,result.totalweightlossinpound ,result.lastweight ,result.weightdiff , result.secondlastweight , result.totalweightloss = 0;
+            result.bteamid , result.bteamname , result.created_by , result.minutes ,result.bio_weight= '';
             result.userweight=[]
             
             let myGroupID: any = '';
@@ -1149,7 +1150,7 @@ export class FootballStepChallengeService {
                                 getMember['weightloosper'] = weightloosper;
                                 totalweightloss = totalweightloss + diffweight;
                                 totalweightloss = parseFloat(totalweightloss.toFixed(2))
-                                let userscore = diffweight * schedule.sc.yard;
+                                let userscore = diffweight * yard;
                                 getMember.score = Math.round(userscore);
                                 teammemberscore.push(getMember);
                                 if (teamuserid != null) {
@@ -1161,9 +1162,9 @@ export class FootballStepChallengeService {
                                 topusers[teamuserid]['name'] = getMember['userdetail']['name'];
                                 topusers[teamuserid]['profile_image'] = getMember['userdetail']['profile_image'];
                                 topusers[teamuserid]['tname'] = teamName;
-                                topusers[teamuserid]['touchdown'] = (diffweight / schedule.sc.yard).toFixed(2);
-                                topusers[teamuserid]['score'] = Math.round(getMember.score);
-                                getMember['touchdown'] = Math.floor(((getMember.score * schedule.sc.yard) / 100));
+                                topusers[teamuserid]['touchdown'] = Number(((diffweight * yard) / 100).toFixed(2));
+                                topusers[teamuserid]['score'] = getMember.score;
+                                getMember['touchdown'] = Number((getMember.score / 100).toFixed(2));
                                 if (teamuserid === userId) {
                                     result.lastweight = lastweight;
                                     result.weightdiff = diffweight > 0 ? `+${diffweight.toFixed(2)}` : `${diffweight.toFixed(2)}`;
@@ -1175,7 +1176,7 @@ export class FootballStepChallengeService {
                                     result.mypoundlost = diffweight;
                                 }
                                 if (result.bteamid == teamId) {    
-                                    usersindividulweight[teamuserid] = (schedule.sc.yard != 0 ? (diffweight / schedule.sc.yard) : 0).toFixed(2);
+                                    usersindividulweight[teamuserid] = (yard != 0 ? (diffweight / yard) : 0).toFixed(2);
                                 }
                             }
                             keyM++;
@@ -1185,19 +1186,22 @@ export class FootballStepChallengeService {
                         }
                         if (result.bteamid == teamId) {
                             result.totalweightlossinpound = totalweightloss;
-                            result.totalweightloss = (totalweightloss * schedule.sc.yard) % 100;
-                            result.touchdown = Math.floor((totalweightloss * schedule.sc.yard) / 100);
+                            result.totalweightloss = (totalweightloss * yard) % 100;
+                            result.touchdown = Math.floor((totalweightloss * yard) / 100);
                         }
-                        totalweightloss *= schedule.sc.yard;
+                        totalweightloss *= yard;
                         if (schedule.sc.group_status == 1 && groupId != 0) {
                             if (!allTeams['Teams'][key]) {
                                 allTeams['Teams'][key] = Object.create(null);
                             }
-                            allTeams['Teams'][key]['weightloss'] = (totalweightloss / schedule.sc.yard).toFixed(2);
+                            allTeams['Teams'][key]['weightloss'] = Number((totalweightloss / yard).toFixed(2));
                             allTeams['Teams'][key]['touchdown'] = Math.floor((totalweightloss / 100));
                         }
-                        allTeams['Teams'][teamId]['weightloss'] = (totalweightloss / schedule.sc.yard).toFixed(2);
+                        allTeams['Teams'][teamId]['weightloss'] = Number((totalweightloss / yard).toFixed(2));
                         allTeams['Teams'][teamId]['touchdown'] = Math.floor((totalweightloss / 100));
+                        allTeams['Teams'][teamId]['score'] = allTeams['Teams'][teamId]['teamMember']?.reduce((sum, item) => {
+                            return sum + (item?.score ?? 0);
+                        }, 0);
                         if (allUsersIdArray.includes(userId)) {
                             result['myTeamDetails']['teamMember'] = allTeams['Teams'][teamId]['teamMember'];
                         }
@@ -1210,17 +1214,17 @@ export class FootballStepChallengeService {
                 let sortedTeams = [];
                 if (allTeams['Teams']) {
                     if (schedule['sc']['rank_type'] == "weight_loss_per") {
-                        sortedTeams = this.teamsService.sortTeamsByOnField(allTeams['Teams'], 'teamtouchdown');
+                        sortedTeams = this.teamsService.sortTeamsByOnField(allTeams['Teams'], 'touchdown');
                     } else {
-                        sortedTeams = this.teamsService.sortTeamsByOnField(allTeams['Teams'], 'teamweightloss');
+                        sortedTeams = this.teamsService.sortTeamsByOnField(allTeams['Teams'], 'weightloss');
                     }
                 }
                 let sortedGroups = [];
                 if (allgroups['Groups']) {
                     if (schedule['sc']['rank_type'] == "weight_loss_per") {
-                        sortedGroups = this.teamsService.sortTeamsByOnField(allgroups['Groups'], 'grouptouchdown');
+                        sortedGroups = this.teamsService.sortTeamsByOnField(allgroups['Groups'], 'touchdown');
                     } else {
-                        sortedGroups = this.teamsService.sortTeamsByOnField(allgroups['Groups'], 'groupweightloss');
+                        sortedGroups = this.teamsService.sortTeamsByOnField(allgroups['Groups'], 'weightloss');
                     }
                 }
                 if (sortedGroups) {

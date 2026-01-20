@@ -516,15 +516,15 @@ export class UserPopupController {
                                     a_popup_text: recordDetails['company']['meta']?.a_popup_text
                                 }
                                 if(loginAgreement.a_popup_title){
-                                    let customeName = await this.translatorService.frontendReadTranslation(req.lang, `agreement_title_content_${recordDetails['company']['id']}`, `/LC_MESSAGES/Common/Agreement/${user.org_id}`,`dynamic`);
-                                    if (!customeName.includes('agreement_title_content_')) {
-                                        loginAgreement.a_popup_title = customeName;
+                                    let customName = await this.translatorService.frontendReadTranslation(req.lang, `agreement_title_content_${recordDetails['company']['id']}`, `/LC_MESSAGES/Common/Agreement/${user.org_id}`,`dynamic`);
+                                    if (!customName.includes('agreement_title_content_')) {
+                                        loginAgreement.a_popup_title = customName;
                                     }
                                 }
                                 if(loginAgreement.a_popup_text){
-                                    let customeName = await this.translatorService.frontendReadTranslation(req.lang, `agreement_text_content_${recordDetails['company']['id']}`, `/LC_MESSAGES/Common/Agreement/${user.org_id}`,`dynamic`);
-                                    if (!customeName.includes('agreement_text_content_')) {
-                                        loginAgreement.a_popup_text = customeName;
+                                    let customName = await this.translatorService.frontendReadTranslation(req.lang, `agreement_text_content_${recordDetails['company']['id']}`, `/LC_MESSAGES/Common/Agreement/${user.org_id}`,`dynamic`);
+                                    if (!customName.includes('agreement_text_content_')) {
+                                        loginAgreement.a_popup_text = customName;
                                     }
                                 }
                                 result['popup_name'] = 'loginaggrement'
@@ -554,8 +554,8 @@ export class UserPopupController {
                                 if (Covidpassportsetting) {
                                     passport_description = Covidpassportsetting['setting']['description'];
                                     if(passport_description){
-                                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`settings_description_${user.org_id}`, `/LC_MESSAGES/Trackers/CovidPassport/${user.org_id}`,`dynamic`);
-                                        passport_description = (customeName == '' || customeName == `settings_description_${user.org_id}`) ? passport_description : customeName;
+                                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`settings_description_${user.org_id}`, `/LC_MESSAGES/Trackers/CovidPassport/${user.org_id}`,`dynamic`);
+                                        passport_description = (customName == '' || customName == `settings_description_${user.org_id}`) ? passport_description : customName;
                                     }
                                 }
                                 let approval_status_text = '';
@@ -750,13 +750,13 @@ export class UserPopupController {
                                                     // Translate question title
                                                     let questionTitle = question?.title;
                                                     if(questionTitle) {
-                                                        let customeName = await this.translatorService.frontendReadTranslation(
+                                                        let customName = await this.translatorService.frontendReadTranslation(
                                                             req.lang,
                                                             `covidquestion_title_${question?.id}`,
                                                             `/LC_MESSAGES/Common/CovidPopup/${req.tokenUser?.org_id}dynamic`
                                                         );
-                                                        if (customeName != `covidquestion_title_${question?.id}`) {
-                                                            questionTitle = customeName;
+                                                        if (customName != `covidquestion_title_${question?.id}`) {
+                                                            questionTitle = customName;
                                                         }
                                                     }
 
@@ -765,13 +765,13 @@ export class UserPopupController {
                                                         question.CovidAnswer?.map(async answer => {
                                                             let answerTitle = answer?.title;
                                                             if(answerTitle) {
-                                                                let customeName = await this.translatorService.frontendReadTranslation(
+                                                                let customName = await this.translatorService.frontendReadTranslation(
                                                                     req.lang,
                                                                     `covidanswer_${question?.id}_${answer?.id}`,
                                                                     `/LC_MESSAGES/Common/CovidPopup/${req.tokenUser?.org_id}dynamic`
                                                                 );
-                                                                if (customeName != `covidanswer_${question?.id}_${answer?.id}`) {
-                                                                    answerTitle = customeName;
+                                                                if (customName != `covidanswer_${question?.id}_${answer?.id}`) {
+                                                                    answerTitle = customName;
                                                                 }
                                                             }
 
@@ -830,12 +830,12 @@ export class UserPopupController {
                                 if (Questionnairesetting['eligibility'] == 0 || showQuestionnairesetting) {
                                     company_logo=`${S3_URL}companylogos/${recordDetails?.['company'].id}/${recordDetails?.['company'].company_logo}`;
                                     if(Questionnairesetting?.title){
-                                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`title_${Questionnairesetting.org_id}`, `/LC_MESSAGES/Common/QuestionnairePopup/${Questionnairesetting['org_id']}`,`dynamic`);
-                                        Questionnairesetting.title = (customeName == '' || customeName == `title_${Questionnairesetting.org_id}`) ? Questionnairesetting['title'] : customeName;
+                                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`title_${Questionnairesetting.org_id}`, `/LC_MESSAGES/Common/QuestionnairePopup/${Questionnairesetting['org_id']}`,`dynamic`);
+                                        Questionnairesetting.title = (customName == '' || customName == `title_${Questionnairesetting.org_id}`) ? Questionnairesetting['title'] : customName;
                                     }
                                     if(Questionnairesetting?.header_text){
-                                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`header_text_${Questionnairesetting.org_id}`, `/LC_MESSAGES/Common/QuestionnairePopup/${Questionnairesetting['org_id']}`,`dynamic`);
-                                        Questionnairesetting.header_text = (customeName == '' || customeName == `header_text_${Questionnairesetting.org_id}`) ? Questionnairesetting['header_text'] : customeName;
+                                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`header_text_${Questionnairesetting.org_id}`, `/LC_MESSAGES/Common/QuestionnairePopup/${Questionnairesetting['org_id']}`,`dynamic`);
+                                        Questionnairesetting.header_text = (customName == '' || customName == `header_text_${Questionnairesetting.org_id}`) ? Questionnairesetting['header_text'] : customName;
                                     }
                                     Questionnaire_title = Questionnairesetting?.title;
                                     Questionnaire_text = Questionnairesetting.header_text;
@@ -909,15 +909,15 @@ export class UserPopupController {
                             }
                         }
                         if(recordDetails['company']?.meta?.title){
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang, `inpo_pop_title_${recordDetails['company']?.meta['org_id']}_${recordDetails['company']?.meta['id']}`, `/LC_MESSAGES/Common/InformationPopup/${req.tokenUser?.org_id}`,`dynamic`);
-                            if (customeName != `inpo_pop_title_${recordDetails['company']?.meta['org_id']}_${recordDetails['company']?.meta['id']}`) {
-                                recordDetails['company'].meta.title = customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang, `inpo_pop_title_${recordDetails['company']?.meta['org_id']}_${recordDetails['company']?.meta['id']}`, `/LC_MESSAGES/Common/InformationPopup/${req.tokenUser?.org_id}`,`dynamic`);
+                            if (customName != `inpo_pop_title_${recordDetails['company']?.meta['org_id']}_${recordDetails['company']?.meta['id']}`) {
+                                recordDetails['company'].meta.title = customName;
                             }
                         }
                         if(recordDetails['company']?.meta?.setting_dic){
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang, `inpo_setting_dic_${recordDetails['company']?.meta['org_id']}_${recordDetails['company']?.meta['id']}`, `/LC_MESSAGES/Common/InformationPopup/${req.tokenUser?.org_id}`,`dynamic`);
-                            if (customeName != `inpo_setting_dic_${recordDetails['company']?.meta['org_id']}_${recordDetails['company']?.meta['id']}`) {
-                                recordDetails['company'].meta.setting_dic = customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang, `inpo_setting_dic_${recordDetails['company']?.meta['org_id']}_${recordDetails['company']?.meta['id']}`, `/LC_MESSAGES/Common/InformationPopup/${req.tokenUser?.org_id}`,`dynamic`);
+                            if (customName != `inpo_setting_dic_${recordDetails['company']?.meta['org_id']}_${recordDetails['company']?.meta['id']}`) {
+                                recordDetails['company'].meta.setting_dic = customName;
                             }
                         }
                         if(info_pop_status == 1 && information_popup_logo == 0){
@@ -1002,9 +1002,9 @@ export class UserPopupController {
                             }
                             result['popup_name'] = 'health_popup'
                             if(hc_submitform_data && hc_submitform_data.decline_reason){
-                                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`decline_reason_${hc_submitform_data.id}`, `/LC_MESSAGES/HealthForms/SubmittedForms/${hc_submitform_data.org_id}/${hc_submitform_data.form_id}/${hc_submitform_data.user_id}`,`dynamic`);
-                                if (!customeName.includes('decline_reason_')) {
-                                    hc_submitform_data.decline_reason = customeName;
+                                let customName = await this.translatorService.frontendReadTranslation(req.lang,`decline_reason_${hc_submitform_data.id}`, `/LC_MESSAGES/HealthForms/SubmittedForms/${hc_submitform_data.org_id}/${hc_submitform_data.form_id}/${hc_submitform_data.user_id}`,`dynamic`);
+                                if (!customName.includes('decline_reason_')) {
+                                    hc_submitform_data.decline_reason = customName;
                                 }
                             }
                             result['details'] = {status:health_popup,title:msg,decline_reason:hc_submitform_data?.decline_reason}
@@ -1044,15 +1044,15 @@ export class UserPopupController {
                             );
                             if(ac_userformData){
                                 if(ac_userformData && ac_userformData?.title){
-                                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`title_${ac_userformData.id}`, `/LC_MESSAGES/ActivityForms/SubmitForm/${user.org_id}/${ac_userformData.id}`,`dynamic`);
-                                    if (!customeName.includes('title_')) {
-                                        ac_userformData.title = customeName;
+                                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`title_${ac_userformData.id}`, `/LC_MESSAGES/ActivityForms/SubmitForm/${user.org_id}/${ac_userformData.id}`,`dynamic`);
+                                    if (!customName.includes('title_')) {
+                                        ac_userformData.title = customName;
                                     }
                                 }
                                 if(ac_userformData && ac_userformData.description){
-                                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`description_${ac_userformData.id}`, `/LC_MESSAGES/ActivityForms/SubmitForm/${user.org_id}/${ac_userformData.id}`,`dynamic`);
-                                    if (!customeName.includes('description_')) {
-                                        ac_userformData.description = customeName;
+                                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`description_${ac_userformData.id}`, `/LC_MESSAGES/ActivityForms/SubmitForm/${user.org_id}/${ac_userformData.id}`,`dynamic`);
+                                    if (!customName.includes('description_')) {
+                                        ac_userformData.description = customName;
                                     }
                                 }
                                 let msg = 'Unknown';
@@ -1065,9 +1065,9 @@ export class UserPopupController {
                                 }
                                 result['popup_name'] = 'activity_popup'
                                 if(ac_submitform_data && ac_submitform_data.decline_reason){
-                                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`decline_reason_${ac_submitform_data.id}`, `/LC_MESSAGES/ActivityForms/SubmittedForms/${ac_submitform_data.org_id}/${ac_submitform_data.form_id}/${ac_submitform_data.user_id}`,`dynamic`);
-                                    if (!customeName.includes('decline_reason_')) {
-                                        ac_submitform_data.decline_reason = customeName;
+                                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`decline_reason_${ac_submitform_data.id}`, `/LC_MESSAGES/ActivityForms/SubmittedForms/${ac_submitform_data.org_id}/${ac_submitform_data.form_id}/${ac_submitform_data.user_id}`,`dynamic`);
+                                    if (!customName.includes('decline_reason_')) {
+                                        ac_submitform_data.decline_reason = customName;
                                     }
                                 }
                                 result['details'] = {activity_popup:activity_popup,title:msg,decline_reason:ac_submitform_data.decline_reason}
@@ -1108,15 +1108,15 @@ export class UserPopupController {
                             )
                             if(ac_userformData){
                                 if(ac_userformData && ac_userformData?.title){
-                                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`title_${ac_userformData.id}`, `/LC_MESSAGES/Reimbursements/SubmitForm/${user.org_id}/${ac_userformData.id}`,`dynamic`);
-                                    if (!customeName.includes('title_')) {
-                                        ac_userformData.title = customeName;
+                                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`title_${ac_userformData.id}`, `/LC_MESSAGES/Reimbursements/SubmitForm/${user.org_id}/${ac_userformData.id}`,`dynamic`);
+                                    if (!customName.includes('title_')) {
+                                        ac_userformData.title = customName;
                                     }
                                 }
                                 if(ac_userformData && ac_userformData.description){
-                                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`description_${ac_userformData.id}`, `/LC_MESSAGES/Reimbursements/SubmitForm/${user.org_id}/${ac_userformData.id}`,`dynamic`);
-                                    if (!customeName.includes('description_')) {
-                                        ac_userformData.description = customeName;
+                                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`description_${ac_userformData.id}`, `/LC_MESSAGES/Reimbursements/SubmitForm/${user.org_id}/${ac_userformData.id}`,`dynamic`);
+                                    if (!customName.includes('description_')) {
+                                        ac_userformData.description = customName;
                                     }
                                 }
                                 let msg = 'Unknown';
@@ -1127,9 +1127,9 @@ export class UserPopupController {
                                 }
                                 result['popup_name'] = 'reimbursement_form'
                                 if(rc_submitform_data && rc_submitform_data.decline_reason){
-                                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`decline_reason_${rc_submitform_data.id}`, `/LC_MESSAGES/Reimbursements/SubmittedForms/${rc_submitform_data.org_id}/${rc_submitform_data.form_id}/${rc_submitform_data.user_id}`,`dynamic`);
-                                    if (!customeName.includes('decline_reason_')) {
-                                        rc_submitform_data.decline_reason = customeName;
+                                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`decline_reason_${rc_submitform_data.id}`, `/LC_MESSAGES/Reimbursements/SubmittedForms/${rc_submitform_data.org_id}/${rc_submitform_data.form_id}/${rc_submitform_data.user_id}`,`dynamic`);
+                                    if (!customName.includes('decline_reason_')) {
+                                        rc_submitform_data.decline_reason = customName;
                                     }
                                 }
                                 result['details'] = {activity_popup:activity_popup,title:msg,decline_reason:rc_submitform_data.decline_reason}
@@ -1365,9 +1365,9 @@ export class UserPopupController {
                         let spouseAgreement = await this.spouseAgreementService.findOne({org_id:user.org_id,user_id:user.id,status: Not('2')})
                         if(!spouseAgreement){
                             if(recordDetails['company'] && recordDetails['company']?.meta && recordDetails['company']?.meta?.agreement_text){
-                                let customeName = await this.translatorService.frontendReadTranslation(req.lang, `agreement_text_${user.org_id}`, `/LC_MESSAGES/Common/SpouseAuthorizedPopup/${req.tokenUser?.org_id}`,`dynamic`);
-                                if (customeName != `agreement_text_${user.org_id}`) {
-                                    recordDetails['company'].meta.agreement_text = customeName;
+                                let customName = await this.translatorService.frontendReadTranslation(req.lang, `agreement_text_${user.org_id}`, `/LC_MESSAGES/Common/SpouseAuthorizedPopup/${req.tokenUser?.org_id}`,`dynamic`);
+                                if (customName != `agreement_text_${user.org_id}`) {
+                                    recordDetails['company'].meta.agreement_text = customName;
                                 }
                             }
                             let spaousAgreement={
@@ -1430,16 +1430,16 @@ export class UserPopupController {
                                         let totalDays = endDay.diff(startDay, 'days');
                                         let daysLabel = totalDays < 2 ? 'day' : 'days';
                                         if (booking['ev_event'].event_name) {
-                                            let customeName = await this.translatorService.frontendReadTranslation(
+                                            let customName = await this.translatorService.frontendReadTranslation(
                                                 req.lang,
                                                 `event_name_${booking['ev_events_id']}`,
                                                 `/LC_MESSAGES/Events/Events/${booking['organization_id'] || 0}/${booking['ev_events_id']}`,
                                                 `dynamic`
                                             );
                                             booking['ev_event'].event_name =
-                                                customeName == '' || customeName == `event_name_${booking['ev_event']['id']}`
+                                                customName == '' || customName == `event_name_${booking['ev_event']['id']}`
                                                     ? booking['ev_event']['event_name']
-                                                    : customeName;
+                                                    : customName;
                                         }
 
                                         const eventDName = booking['ev_event'].event_name;
@@ -1834,47 +1834,47 @@ export class UserPopupController {
                            let title,survey_popup_id, description, additional_note, pass_need_text, pass_need_desc, fail_need_text, fail_need_desc, survey_image, survey_questions;
                            let SurveyRequired=0;
                            if (ServeyPopup && ServeyPopup['status'] == 1) {
-                               let customeName;
+                               let customName;
                                if(ServeyPopup.title){
-                                   customeName = await this.translatorService.frontendReadTranslation(req.lang, `survey_popup_title_${ServeyPopup['org_id']}_${ServeyPopup['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${ServeyPopup.org_id}/${ServeyPopup.id}`,`dynamic`);
-                                   if (customeName != `survey_popup_title_${ServeyPopup['org_id']}_${ServeyPopup['id']}`) {
-                                       ServeyPopup.title = customeName;
+                                   customName = await this.translatorService.frontendReadTranslation(req.lang, `survey_popup_title_${ServeyPopup['org_id']}_${ServeyPopup['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${ServeyPopup.org_id}/${ServeyPopup.id}`,`dynamic`);
+                                   if (customName != `survey_popup_title_${ServeyPopup['org_id']}_${ServeyPopup['id']}`) {
+                                       ServeyPopup.title = customName;
                                    }
                                }
                                if(ServeyPopup.description){
-                                   customeName = await this.translatorService.frontendReadTranslation(req.lang, `survey_popup_description_${ServeyPopup['org_id']}_${ServeyPopup['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${ServeyPopup.org_id}/${ServeyPopup.id}`,`dynamic`);
-                                   if (customeName != `survey_popup_description_${ServeyPopup['org_id']}_${ServeyPopup['id']}`) {
-                                       ServeyPopup.description = customeName;
+                                   customName = await this.translatorService.frontendReadTranslation(req.lang, `survey_popup_description_${ServeyPopup['org_id']}_${ServeyPopup['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${ServeyPopup.org_id}/${ServeyPopup.id}`,`dynamic`);
+                                   if (customName != `survey_popup_description_${ServeyPopup['org_id']}_${ServeyPopup['id']}`) {
+                                       ServeyPopup.description = customName;
                                    }
                                }
                                if(ServeyPopup.additional_note){
-                                   customeName = await this.translatorService.frontendReadTranslation(req.lang, `survey_popup_note_${ServeyPopup['org_id']}_${ServeyPopup['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${ServeyPopup.org_id}/${ServeyPopup.id}`,`dynamic`);
-                                   if (customeName != `survey_popup_note_${ServeyPopup['org_id']}_${ServeyPopup['id']}`) {
-                                       ServeyPopup.additional_note = customeName;
+                                   customName = await this.translatorService.frontendReadTranslation(req.lang, `survey_popup_note_${ServeyPopup['org_id']}_${ServeyPopup['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${ServeyPopup.org_id}/${ServeyPopup.id}`,`dynamic`);
+                                   if (customName != `survey_popup_note_${ServeyPopup['org_id']}_${ServeyPopup['id']}`) {
+                                       ServeyPopup.additional_note = customName;
                                    }
                                }
                                if(ServeyPopup.pass_need_text){
-                                   customeName = await this.translatorService.frontendReadTranslation(req.lang, `pass_need_text_${ServeyPopup['org_id']}_${ServeyPopup['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${ServeyPopup.org_id}/${ServeyPopup.id}`,`dynamic`);
-                                   if (customeName != `pass_need_text_${ServeyPopup['org_id']}_${ServeyPopup['id']}`) {
-                                       ServeyPopup.pass_need_text = customeName;
+                                   customName = await this.translatorService.frontendReadTranslation(req.lang, `pass_need_text_${ServeyPopup['org_id']}_${ServeyPopup['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${ServeyPopup.org_id}/${ServeyPopup.id}`,`dynamic`);
+                                   if (customName != `pass_need_text_${ServeyPopup['org_id']}_${ServeyPopup['id']}`) {
+                                       ServeyPopup.pass_need_text = customName;
                                    }
                                }
                                if(ServeyPopup.pass_need_desc){
-                                   customeName = await this.translatorService.frontendReadTranslation(req.lang, `pass_need_desc_${ServeyPopup['org_id']}_${ServeyPopup['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${ServeyPopup.org_id}/${ServeyPopup.id}`,`dynamic`);
-                                   if (customeName != `pass_need_desc_${ServeyPopup['org_id']}_${ServeyPopup['id']}`) {
-                                       ServeyPopup.pass_need_desc = customeName;
+                                   customName = await this.translatorService.frontendReadTranslation(req.lang, `pass_need_desc_${ServeyPopup['org_id']}_${ServeyPopup['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${ServeyPopup.org_id}/${ServeyPopup.id}`,`dynamic`);
+                                   if (customName != `pass_need_desc_${ServeyPopup['org_id']}_${ServeyPopup['id']}`) {
+                                       ServeyPopup.pass_need_desc = customName;
                                    }
                                }
                                if(ServeyPopup.fail_need_text){
-                                   customeName = await this.translatorService.frontendReadTranslation(req.lang, `fail_need_text_${ServeyPopup['org_id']}_${ServeyPopup['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${ServeyPopup.org_id}/${ServeyPopup.id}`,`dynamic`);
-                                   if (customeName != `fail_need_text_${ServeyPopup['org_id']}_${ServeyPopup['id']}`) {
-                                       ServeyPopup.fail_need_text = customeName;
+                                   customName = await this.translatorService.frontendReadTranslation(req.lang, `fail_need_text_${ServeyPopup['org_id']}_${ServeyPopup['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${ServeyPopup.org_id}/${ServeyPopup.id}`,`dynamic`);
+                                   if (customName != `fail_need_text_${ServeyPopup['org_id']}_${ServeyPopup['id']}`) {
+                                       ServeyPopup.fail_need_text = customName;
                                    }
                                }
                                if(ServeyPopup.fail_need_desc){
-                                   customeName = await this.translatorService.frontendReadTranslation(req.lang, `fail_need_desc_${ServeyPopup['org_id']}_${ServeyPopup['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${ServeyPopup.org_id}/${ServeyPopup.id}`,`dynamic`);
-                                   if (customeName != `fail_need_desc_${ServeyPopup['org_id']}_${ServeyPopup['id']}`) {
-                                       ServeyPopup.fail_need_desc = customeName;
+                                   customName = await this.translatorService.frontendReadTranslation(req.lang, `fail_need_desc_${ServeyPopup['org_id']}_${ServeyPopup['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${ServeyPopup.org_id}/${ServeyPopup.id}`,`dynamic`);
+                                   if (customName != `fail_need_desc_${ServeyPopup['org_id']}_${ServeyPopup['id']}`) {
+                                       ServeyPopup.fail_need_desc = customName;
                                    }
                                }
                                survey_popup_id=ServeyPopup?.['id']
@@ -2000,10 +2000,11 @@ export class UserPopupController {
             )
             let SurveyRequired = 0
             let UserServeyPopupShow = 0
-            let surveyQueAns = ServeyPopup['Surveyquestions'].map((que) => {
+            let surveyQueAns = [];
+            for (let que of ServeyPopup['Surveyquestions']) {
                 const correctAnswers = que.SurveyAnswers?.filter((answer) => answer.correct_ans == 1) || [];
-                return { [que.id]: correctAnswers.map((answer) => answer.id) };
-            });
+                surveyQueAns.push({ [que.id]: correctAnswers.map((answer) => answer.id) });
+            }
             if (ServeyPopup && ServeyPopup['status'] == 1) {
                 SurveyRequired = ServeyPopup['show_required'];
                 const surveyPopupData = ServeyPopup;
@@ -2218,9 +2219,9 @@ export class UserPopupController {
                                     if(surveyPopupData['pass_need_text'])
                                     {
                                         if(surveyPopupData.pass_need_text){
-                                            let customeName = await this.translatorService.frontendReadTranslation(req.lang, `pass_need_text_${surveyPopupData['org_id']}_${surveyPopupData['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${surveyPopupData.org_id}/${surveyPopupData.id}`,`dynamic`);
-                                            if (customeName != `pass_need_text_${surveyPopupData['org_id']}_${surveyPopupData['id']}`) {
-                                                surveyPopupData.pass_need_text = customeName;
+                                            let customName = await this.translatorService.frontendReadTranslation(req.lang, `pass_need_text_${surveyPopupData['org_id']}_${surveyPopupData['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${surveyPopupData.org_id}/${surveyPopupData.id}`,`dynamic`);
+                                            if (customName != `pass_need_text_${surveyPopupData['org_id']}_${surveyPopupData['id']}`) {
+                                                surveyPopupData.pass_need_text = customName;
                                             }
                                         }
                                         message = surveyPopupData['pass_need_text'];
@@ -2229,9 +2230,9 @@ export class UserPopupController {
                                     if(surveyPopupData['pass_need_desc'] || surveyPopupData['pass_need_desc'] == '')
                                     {
                                         if(surveyPopupData.pass_need_desc){
-                                            let customeName = await this.translatorService.frontendReadTranslation(req.lang, `pass_need_desc_${surveyPopupData['org_id']}_${surveyPopupData['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${surveyPopupData.org_id}/${surveyPopupData.id}`,`dynamic`);
-                                            if (customeName != `pass_need_desc_${surveyPopupData['org_id']}_${surveyPopupData['id']}`) {
-                                                surveyPopupData.pass_need_desc = customeName;
+                                            let customName = await this.translatorService.frontendReadTranslation(req.lang, `pass_need_desc_${surveyPopupData['org_id']}_${surveyPopupData['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${surveyPopupData.org_id}/${surveyPopupData.id}`,`dynamic`);
+                                            if (customName != `pass_need_desc_${surveyPopupData['org_id']}_${surveyPopupData['id']}`) {
+                                                surveyPopupData.pass_need_desc = customName;
                                             }
                                         }
                                         messagedis = surveyPopupData['pass_need_desc'];
@@ -2242,9 +2243,9 @@ export class UserPopupController {
                                     if(surveyPopupData['fail_need_text'])
                                     {
                                         if(surveyPopupData.fail_need_text){
-                                            let customeName = await this.translatorService.frontendReadTranslation(req.lang, `fail_need_text_${surveyPopupData['org_id']}_${surveyPopupData['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${surveyPopupData.org_id}/${surveyPopupData.id}`,`dynamic`);
-                                            if (customeName != `fail_need_text_${surveyPopupData['org_id']}_${surveyPopupData['id']}`) {
-                                                surveyPopupData.fail_need_text = customeName;
+                                            let customName = await this.translatorService.frontendReadTranslation(req.lang, `fail_need_text_${surveyPopupData['org_id']}_${surveyPopupData['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${surveyPopupData.org_id}/${surveyPopupData.id}`,`dynamic`);
+                                            if (customName != `fail_need_text_${surveyPopupData['org_id']}_${surveyPopupData['id']}`) {
+                                                surveyPopupData.fail_need_text = customName;
                                             }
                                         }
                                         message = surveyPopupData['fail_need_text'];
@@ -2253,9 +2254,9 @@ export class UserPopupController {
                                     if(surveyPopupData['fail_need_desc'] || surveyPopupData['fail_need_desc'] == '')
                                     {
                                         if(surveyPopupData.fail_need_desc){
-                                            let customeName = await this.translatorService.frontendReadTranslation(req.lang, `fail_need_desc_${surveyPopupData['org_id']}_${surveyPopupData['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${surveyPopupData.org_id}/${surveyPopupData.id}`,`dynamic`);
-                                            if (customeName != `fail_need_desc_${surveyPopupData['org_id']}_${surveyPopupData['id']}`) {
-                                                surveyPopupData.fail_need_desc = customeName;
+                                            let customName = await this.translatorService.frontendReadTranslation(req.lang, `fail_need_desc_${surveyPopupData['org_id']}_${surveyPopupData['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${surveyPopupData.org_id}/${surveyPopupData.id}`,`dynamic`);
+                                            if (customName != `fail_need_desc_${surveyPopupData['org_id']}_${surveyPopupData['id']}`) {
+                                                surveyPopupData.fail_need_desc = customName;
                                             }
                                         }
                                         messagedis = surveyPopupData['fail_need_desc'];
@@ -2307,16 +2308,16 @@ export class UserPopupController {
             const teams = allgetteams.filter(team => team['ch'] != null && team['ch']['bio_challenge_type']=='Relay_race');
             for (const schedule of teams) {
                 if(schedule['schedule']?.custom_cname){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`custom_cname_${schedule['schedule']['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${schedule['schedule'].org_id}/${schedule['schedule']['id']}`,`dynamic`);
-                    schedule['schedule'].custom_cname = (customeName == '' || customeName == `custom_cname_${schedule['schedule']['id']}`) ? schedule['schedule']['custom_cname'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`custom_cname_${schedule['schedule']['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${schedule['schedule'].org_id}/${schedule['schedule']['id']}`,`dynamic`);
+                    schedule['schedule'].custom_cname = (customName == '' || customName == `custom_cname_${schedule['schedule']['id']}`) ? schedule['schedule']['custom_cname'] : customName;
                 }
                 if(schedule['schedule']?.custom_desc){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`custom_desc_${schedule['schedule']['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${schedule['schedule'].org_id}/${schedule['schedule']['id']}`,`dynamic`);
-                    schedule['schedule'].custom_desc = (customeName == '' || customeName == `custom_desc_${schedule['schedule']['id']}`) ? schedule['schedule']['custom_desc'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`custom_desc_${schedule['schedule']['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${schedule['schedule'].org_id}/${schedule['schedule']['id']}`,`dynamic`);
+                    schedule['schedule'].custom_desc = (customName == '' || customName == `custom_desc_${schedule['schedule']['id']}`) ? schedule['schedule']['custom_desc'] : customName;
                 }
                 if(schedule['selfTeam']?.tname){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`team_name_${schedule['selfTeam']['schedule_id']}_${schedule['selfTeam']['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${schedule['schedule'].org_id}/${schedule['selfTeam'].schedule_id}`,`dynamic`);
-                    schedule['selfTeam'].tname = (customeName == '' || customeName == `team_name_${schedule['selfTeam']['schedule_id']}_${schedule['selfTeam']['id']}`) ? schedule['selfTeam']['tname'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`team_name_${schedule['selfTeam']['schedule_id']}_${schedule['selfTeam']['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${schedule['schedule'].org_id}/${schedule['selfTeam'].schedule_id}`,`dynamic`);
+                    schedule['selfTeam'].tname = (customName == '' || customName == `team_name_${schedule['selfTeam']['schedule_id']}_${schedule['selfTeam']['id']}`) ? schedule['selfTeam']['tname'] : customName;
                 }
                 item.Schedule_id = schedule['schedule']?.id;
                 item.challenge_name = schedule['schedule'].custom_cname;

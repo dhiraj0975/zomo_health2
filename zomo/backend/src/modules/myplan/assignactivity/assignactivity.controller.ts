@@ -204,12 +204,12 @@ export class MyPlanAssignActivityController {
             let resultedData = await this.myPlanAssignActivityService.listRecord(where,["maa.id","maa.block_id","maa.name","ma.id","ma.activity_id","ma.module_id","ma.is_category","ma.org_activity_id","ac.id","ac.activity_name","acAge.id","acAge.activity_name","ep.id","ep.title","qz.id","qz.quiz_name","ql.id","ql.title","har.id","har.title","csc.id","csc.org_id","csc.custom_cname","eec.id","eec.category_name","ee.id","ee.event_name"], { [orderBy]: order },[tableConstant.MY_PLAN.TBL_MP_ACTIVITY,tableConstant.ACTIVITIES.TBL_ACTIVITIES,tableConstant.EMOTIONAL_WELLBEING.TBL_EM_POST,tableConstant.QUIZ.TBL_QZ_QUIZZES,tableConstant.QUICK_LINK.TBL_QUICK_LINK,tableConstant.HEALTH_ASSESSMENT.TBL_HA_ASSESSMENT_RESULTS,tableConstant.CHALLENGE.TBL_CH_SCHEDULE_CHALLENGE,tableConstant.EVENTS.TBL_EV_EVENT_CATEGORY,tableConstant.EVENTS.TBL_EV_EVENTS]);
             await Promise.all(resultedData.map(async (ele) => {
                 if(ele['csc']?.custom_cname){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`custom_cname_${ele['csc']['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele['csc'].org_id}/${ele['csc']['id']}`,`dynamic`);
-                    ele['csc'].custom_cname = (customeName == '' || customeName == `custom_cname_${ele['csc']['id']}`) ? ele['csc']['custom_cname'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`custom_cname_${ele['csc']['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele['csc'].org_id}/${ele['csc']['id']}`,`dynamic`);
+                    ele['csc'].custom_cname = (customName == '' || customName == `custom_cname_${ele['csc']['id']}`) ? ele['csc']['custom_cname'] : customName;
                 }
                 if(ele['csc']?.custom_desc){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`custom_desc_${ele['csc']['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele['csc'].org_id}/${ele['csc']['id']}`,`dynamic`);
-                    ele['csc'].custom_desc = (customeName == '' || customeName == `custom_desc_${ele['csc']['id']}`) ? ele['csc']['custom_desc'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`custom_desc_${ele['csc']['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele['csc'].org_id}/${ele['csc']['id']}`,`dynamic`);
+                    ele['csc'].custom_desc = (customName == '' || customName == `custom_desc_${ele['csc']['id']}`) ? ele['csc']['custom_desc'] : customName;
                 }
             }));
             let responseData = resultedData.reduce((acc, {name, ma}) => {

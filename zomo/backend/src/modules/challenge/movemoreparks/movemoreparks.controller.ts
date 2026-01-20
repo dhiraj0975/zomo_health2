@@ -21,7 +21,7 @@ import { AccessGuard, RoleGuard, TokenGuard } from '../../../guard';
 import {
     CreateMoveMoreParksInput,
     DeleteChallengeInput,
-    GetoneChallengeInput,
+    GetOneChallengeInput,
     UpdateMoveMoreParksInput,
 } from "../../../input";
 import { fileNameUUID, imgFilter } from "../../../utils/image-upload.utils";
@@ -318,7 +318,7 @@ export class MoveMoreParksController {
     }
     @UseGuards(AccessGuard)
     @Post('get-one')
-    async getOne(@Req() req: Request, @Res() res: Response, @Body() postData: GetoneChallengeInput) {
+    async getOne(@Req() req: Request, @Res() res: Response, @Body() postData: GetOneChallengeInput) {
         try {
             if (!postData?.id || !postData?.schedule_id) {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang,'ERR_REQUIRED_PARAM_MISSING'));

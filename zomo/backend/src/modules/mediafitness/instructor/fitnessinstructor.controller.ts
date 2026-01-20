@@ -56,12 +56,12 @@ export class FitnessInstructorController {
             if(resultedData['list'] && resultedData['list'].length){
                 await Promise.all(resultedData['list'].map(async (ele)=>{
                     if(ele.first_name){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_instruction_firstname_${ele['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${ele['org_id']}/instruction}`,`dynamic`);
-                        ele.first_name = (customeName == '' || customeName == `fitness_instruction_firstname_${ele['id']}`) ? ele['first_name'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_instruction_firstname_${ele['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${ele['org_id']}/instruction}`,`dynamic`);
+                        ele.first_name = (customName == '' || customName == `fitness_instruction_firstname_${ele['id']}`) ? ele['first_name'] : customName;
                     }
                     if(ele.last_name){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_instruction_lastname_${ele['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${ele['org_id']}/instruction}`,`dynamic`);
-                        ele.last_name = (customeName == '' || customeName == `fitness_instruction_lastname_${ele['id']}`) ? ele['last_name'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_instruction_lastname_${ele['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${ele['org_id']}/instruction}`,`dynamic`);
+                        ele.last_name = (customName == '' || customName == `fitness_instruction_lastname_${ele['id']}`) ? ele['last_name'] : customName;
                     }
                 }));
             }
@@ -123,12 +123,12 @@ export class FitnessInstructorController {
                 await this.commonArrayService.formatToDto(MediaFitnessInstructorDto, instructorData, req.lang)
             );
             if(instructorData.first_name){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_instruction_firstname_${instructorData['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${instructorData['org_id']}/instruction}`,`dynamic`);
-                instructorData.first_name = (customeName == '' || customeName == `fitness_instruction_firstname_${instructorData['id']}`) ? instructorData['first_name'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_instruction_firstname_${instructorData['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${instructorData['org_id']}/instruction}`,`dynamic`);
+                instructorData.first_name = (customName == '' || customName == `fitness_instruction_firstname_${instructorData['id']}`) ? instructorData['first_name'] : customName;
             }
             if(instructorData.last_name){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_instruction_lastname_${instructorData['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${instructorData['org_id']}/instruction}`,`dynamic`);
-                instructorData.last_name = (customeName == '' || customeName == `fitness_instruction_lastname_${instructorData['id']}`) ? instructorData['last_name'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_instruction_lastname_${instructorData['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${instructorData['org_id']}/instruction}`,`dynamic`);
+                instructorData.last_name = (customName == '' || customName == `fitness_instruction_lastname_${instructorData['id']}`) ? instructorData['last_name'] : customName;
             }
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
@@ -331,12 +331,12 @@ export class FitnessInstructorController {
             if(resultedData && resultedData.length){
                 await Promise.all(resultedData.map(async (ele)=>{
                     if(ele.first_name){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_instruction_firstname_${ele['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${ele['org_id']}/instruction}`,`dynamic`);
-                        ele.first_name = (customeName == '' || customeName == `fitness_instruction_firstname_${ele['id']}`) ? ele['first_name'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_instruction_firstname_${ele['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${ele['org_id']}/instruction}`,`dynamic`);
+                        ele.first_name = (customName == '' || customName == `fitness_instruction_firstname_${ele['id']}`) ? ele['first_name'] : customName;
                     }
                     if(ele.last_name){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_instruction_lastname_${ele['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${ele['org_id']}/instruction}`,`dynamic`);
-                        ele.last_name = (customeName == '' || customeName == `fitness_instruction_lastname_${ele['id']}`) ? ele['last_name'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_instruction_lastname_${ele['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${ele['org_id']}/instruction}`,`dynamic`);
+                        ele.last_name = (customName == '' || customName == `fitness_instruction_lastname_${ele['id']}`) ? ele['last_name'] : customName;
                     }
                 }));
             }

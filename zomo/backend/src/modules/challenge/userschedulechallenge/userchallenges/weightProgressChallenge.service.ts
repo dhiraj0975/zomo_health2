@@ -161,32 +161,32 @@ export class WeightProgressChallengeService {
                             }
                             if(tuser?.locations && req?.lang != 'eng'){
                                 if (tuser?.locations.location_name) {
-                                    let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_name_${tuser?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${orgid}/${tuser?.locations['id']}`, `dynamic`);
-                                    tuser.locations.location_name = (customeName == '' || customeName == `location_name_${tuser?.locations['id']}`) ? tuser?.locations['location_name'] : customeName;
+                                    let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_name_${tuser?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${orgid}/${tuser?.locations['id']}`, `dynamic`);
+                                    tuser.locations.location_name = (customName == '' || customName == `location_name_${tuser?.locations['id']}`) ? tuser?.locations['location_name'] : customName;
                                 }
                                 if (tuser?.locations.address1) {
-                                    let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_address1_${tuser?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${orgid}/${tuser?.locations['id']}`, `dynamic`);
-                                    tuser.locations.address1 = (customeName == '' || customeName == `location_address1_${tuser?.locations['id']}`) ? tuser?.locations['address1'] : customeName;
+                                    let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_address1_${tuser?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${orgid}/${tuser?.locations['id']}`, `dynamic`);
+                                    tuser.locations.address1 = (customName == '' || customName == `location_address1_${tuser?.locations['id']}`) ? tuser?.locations['address1'] : customName;
                                 }
                                 if (tuser?.locations.address2) {
-                                    let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_address2_${tuser?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${orgid}/${tuser?.locations['id']}`, `dynamic`);
-                                    tuser.locations.address2 = (customeName == '' || customeName == `location_address2_${tuser?.locations['id']}`) ? tuser?.locations['address2'] : customeName;
+                                    let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_address2_${tuser?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${orgid}/${tuser?.locations['id']}`, `dynamic`);
+                                    tuser.locations.address2 = (customName == '' || customName == `location_address2_${tuser?.locations['id']}`) ? tuser?.locations['address2'] : customName;
                                 }
                                 if (tuser?.locations.lname) {
-                                    let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_lname_${tuser?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${orgid}/${tuser?.locations['id']}`, `dynamic`);
-                                    tuser.locations.lname = (customeName == '' || customeName == `location_lname_${tuser?.locations['id']}`) ? tuser?.locations['lname'] : customeName;
+                                    let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_lname_${tuser?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${orgid}/${tuser?.locations['id']}`, `dynamic`);
+                                    tuser.locations.lname = (customName == '' || customName == `location_lname_${tuser?.locations['id']}`) ? tuser?.locations['lname'] : customName;
                                 }
                                 if (tuser?.locations.city) {
-                                    let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_city_${tuser?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${orgid}/${tuser?.locations['id']}`, `dynamic`);
-                                    tuser.locations.city = (customeName == '' || customeName == `location_city_${tuser?.locations['id']}`) ? tuser?.locations['city'] : customeName;
+                                    let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_city_${tuser?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${orgid}/${tuser?.locations['id']}`, `dynamic`);
+                                    tuser.locations.city = (customName == '' || customName == `location_city_${tuser?.locations['id']}`) ? tuser?.locations['city'] : customName;
                                 }
                                 if (tuser?.locations.state) {
-                                    let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_state_${tuser?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${orgid}/${tuser?.locations['id']}`, `dynamic`);
-                                    tuser.locations.state = (customeName == '' || customeName == `location_state_${tuser?.locations['id']}`) ? tuser?.locations['state'] : customeName;
+                                    let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_state_${tuser?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${orgid}/${tuser?.locations['id']}`, `dynamic`);
+                                    tuser.locations.state = (customName == '' || customName == `location_state_${tuser?.locations['id']}`) ? tuser?.locations['state'] : customName;
                                 }
                                 if (tuser?.locations.country) {
-                                    let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_country_${tuser?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${orgid}/${tuser?.locations['id']}`, `dynamic`);
-                                    tuser.locations.country = (customeName == '' || customeName == `location_country_${tuser?.locations['id']}`) ? tuser?.locations['country'] : customeName;
+                                    let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_country_${tuser?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${orgid}/${tuser?.locations['id']}`, `dynamic`);
+                                    tuser.locations.country = (customName == '' || customName == `location_country_${tuser?.locations['id']}`) ? tuser?.locations['country'] : customName;
                                 }
                             }
 
@@ -771,32 +771,32 @@ export class WeightProgressChallengeService {
                             }
                             if(tuser?.locations && req?.lang != 'eng'){
                                 if (tuser?.locations.location_name) {
-                                    let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_name_${tuser?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${orgid}/${tuser?.locations['id']}`, `dynamic`);
-                                    tuser.locations.location_name = (customeName == '' || customeName == `location_name_${tuser?.locations['id']}`) ? tuser?.locations['location_name'] : customeName;
+                                    let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_name_${tuser?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${orgid}/${tuser?.locations['id']}`, `dynamic`);
+                                    tuser.locations.location_name = (customName == '' || customName == `location_name_${tuser?.locations['id']}`) ? tuser?.locations['location_name'] : customName;
                                 }
                                 if (tuser?.locations.address1) {
-                                    let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_address1_${tuser?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${orgid}/${tuser?.locations['id']}`, `dynamic`);
-                                    tuser.locations.address1 = (customeName == '' || customeName == `location_address1_${tuser?.locations['id']}`) ? tuser?.locations['address1'] : customeName;
+                                    let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_address1_${tuser?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${orgid}/${tuser?.locations['id']}`, `dynamic`);
+                                    tuser.locations.address1 = (customName == '' || customName == `location_address1_${tuser?.locations['id']}`) ? tuser?.locations['address1'] : customName;
                                 }
                                 if (tuser?.locations.address2) {
-                                    let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_address2_${tuser?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${orgid}/${tuser?.locations['id']}`, `dynamic`);
-                                    tuser.locations.address2 = (customeName == '' || customeName == `location_address2_${tuser?.locations['id']}`) ? tuser?.locations['address2'] : customeName;
+                                    let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_address2_${tuser?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${orgid}/${tuser?.locations['id']}`, `dynamic`);
+                                    tuser.locations.address2 = (customName == '' || customName == `location_address2_${tuser?.locations['id']}`) ? tuser?.locations['address2'] : customName;
                                 }
                                 if (tuser?.locations.lname) {
-                                    let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_lname_${tuser?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${orgid}/${tuser?.locations['id']}`, `dynamic`);
-                                    tuser.locations.lname = (customeName == '' || customeName == `location_lname_${tuser?.locations['id']}`) ? tuser?.locations['lname'] : customeName;
+                                    let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_lname_${tuser?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${orgid}/${tuser?.locations['id']}`, `dynamic`);
+                                    tuser.locations.lname = (customName == '' || customName == `location_lname_${tuser?.locations['id']}`) ? tuser?.locations['lname'] : customName;
                                 }
                                 if (tuser?.locations.city) {
-                                    let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_city_${tuser?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${orgid}/${tuser?.locations['id']}`, `dynamic`);
-                                    tuser.locations.city = (customeName == '' || customeName == `location_city_${tuser?.locations['id']}`) ? tuser?.locations['city'] : customeName;
+                                    let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_city_${tuser?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${orgid}/${tuser?.locations['id']}`, `dynamic`);
+                                    tuser.locations.city = (customName == '' || customName == `location_city_${tuser?.locations['id']}`) ? tuser?.locations['city'] : customName;
                                 }
                                 if (tuser?.locations.state) {
-                                    let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_state_${tuser?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${orgid}/${tuser?.locations['id']}`, `dynamic`);
-                                    tuser.locations.state = (customeName == '' || customeName == `location_state_${tuser?.locations['id']}`) ? tuser?.locations['state'] : customeName;
+                                    let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_state_${tuser?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${orgid}/${tuser?.locations['id']}`, `dynamic`);
+                                    tuser.locations.state = (customName == '' || customName == `location_state_${tuser?.locations['id']}`) ? tuser?.locations['state'] : customName;
                                 }
                                 if (tuser?.locations.country) {
-                                    let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_country_${tuser?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${orgid}/${tuser?.locations['id']}`, `dynamic`);
-                                    tuser.locations.country = (customeName == '' || customeName == `location_country_${tuser?.locations['id']}`) ? tuser?.locations['country'] : customeName;
+                                    let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_country_${tuser?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${orgid}/${tuser?.locations['id']}`, `dynamic`);
+                                    tuser.locations.country = (customName == '' || customName == `location_country_${tuser?.locations['id']}`) ? tuser?.locations['country'] : customName;
                                 }
                             }
 

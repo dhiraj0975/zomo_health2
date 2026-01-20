@@ -267,6 +267,10 @@ export class AppService {
                     ? parseInt(nutrition_value_str)
                     : 250;
                 const languageData = await this.getLanguagesData();
+                if (!languageData || languageData.length === 0) {
+                    Logger.log(`No language data available for ${translationsQue}, marking as completed`);
+                    return `${translationsQue} - No languages configured, skipped.`;
+                }
                 const languageTitles = languageData.map((lang) => lang.name);
                 let resLangtmp = [];
                 if (languageTitles.length !== 0) {
@@ -274,6 +278,10 @@ export class AppService {
                         status: Not(2),
                         title: In(languageTitles),
                     });
+                }
+                if (resLangtmp.length === 0) {
+                    Logger.log(`No matching languages found in database for ${translationsQue}`);
+                    return `${translationsQue} - No matching languages in database, skipped.`;
                 }
                 const AlllangIds = resLangtmp.map((lang) => lang.id);
                 let langQryResultstmp = [];
@@ -1775,6 +1783,12 @@ export class AppService {
         if (!languageData) {
             const languagesFile = `${this.path}/languages.json`;
             languageData = await this.getTranslationFileData(languagesFile);
+
+            if (!Array.isArray(languageData)) {
+                Logger.log(`WARNING: languages.json contains non-array data. Type: ${typeof languageData}`);
+                return [];
+            }
+
             this.cacheService.setCache(
                 cacheKey,
                 JSON.stringify(languageData),
@@ -1782,7 +1796,19 @@ export class AppService {
             );
         } else {
             if (typeof languageData === 'string') {
-                languageData = JSON.parse(languageData);
+                try {
+                    languageData = JSON.parse(languageData);
+                } catch (error) {
+                    Logger.log(`ERROR parsing cached languageData: ${error.message}`);
+                    this.cacheService.setCache(cacheKey, null, 0);
+                    return [];
+                }
+            }
+
+            if (!Array.isArray(languageData)) {
+                Logger.log(`WARNING: Cached languageData is not array. Type: ${typeof languageData}`);
+                this.cacheService.setCache(cacheKey, null, 0);
+                return [];
             }
         }
         return languageData;

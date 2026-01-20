@@ -16,7 +16,7 @@ import { AccessGuard, RoleGuard, TokenGuard } from '../../../guard';
 import {
     CreateHealthActivityInput,
     DeleteChallengeInput,
-    GetoneChallengeInput,
+    GetOneChallengeInput,
     PaginateWithChallengeInput,
     UpdateHealthActivityInput
 } from "../../../input";
@@ -56,8 +56,8 @@ export class HealthActivityController {
             if(![appConstant.ROLE.ADMIN,appConstant.ROLE.GLOBALCLIENTENGAGEMENTMANAGER].includes(req.tokenUser?.role_id)){
                 await Promise.all(resultedData['list'].map(async (ele) => {
                     if(ele.name){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`healactivity_name_${ele.schedule_id}_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele.schedule_id}`,`dynamic`);
-                        ele.name = (customeName == '' || customeName == `healactivity_name_${ele.schedule_id}_${ele['id']}`) ? ele['name'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`healactivity_name_${ele.schedule_id}_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele.schedule_id}`,`dynamic`);
+                        ele.name = (customName == '' || customName == `healactivity_name_${ele.schedule_id}_${ele['id']}`) ? ele['name'] : customName;
                     }
                 }));
             }
@@ -226,7 +226,7 @@ export class HealthActivityController {
         }
     }
     @Post('get-one')
-    async getOne(@Req() req: Request, @Res() res: Response, @Body() postData: GetoneChallengeInput) {
+    async getOne(@Req() req: Request, @Res() res: Response, @Body() postData: GetOneChallengeInput) {
         try {
             if (!postData?.id || !postData?.schedule_id) {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang,'ERR_REQUIRED_PARAM_MISSING'));
@@ -236,8 +236,8 @@ export class HealthActivityController {
                 await this.commonArrayService.formatToDto(HealthActivityDto, resultedData, req.lang)
             );
             if(resultedData.name){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`healactivity_name_${resultedData.schedule_id}_${resultedData['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${resultedData.org_id}/${resultedData.schedule_id}`,`dynamic`);
-                resultedData.name = (customeName == '' || customeName == `healactivity_name_${resultedData.schedule_id}_${resultedData['id']}`) ? resultedData['name'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`healactivity_name_${resultedData.schedule_id}_${resultedData['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${resultedData.org_id}/${resultedData.schedule_id}`,`dynamic`);
+                resultedData.name = (customName == '' || customName == `healactivity_name_${resultedData.schedule_id}_${resultedData['id']}`) ? resultedData['name'] : customName;
             }
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
@@ -276,8 +276,8 @@ export class HealthActivityController {
             );
             await Promise.all(result.map(async (ele) => {
                 if(ele.name){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`healactivity_name_${ele.schedule_id}_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele.schedule_id}`,`dynamic`);
-                    ele.name = (customeName == '' || customeName == `healactivity_name_${ele.schedule_id}_${ele['id']}`) ? ele['name'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`healactivity_name_${ele.schedule_id}_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele.schedule_id}`,`dynamic`);
+                    ele.name = (customName == '' || customName == `healactivity_name_${ele.schedule_id}_${ele['id']}`) ? ele['name'] : customName;
                 }
             }));
             return res.status(HttpStatus.OK).json({

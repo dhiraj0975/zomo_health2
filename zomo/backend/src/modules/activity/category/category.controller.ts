@@ -1,3 +1,4 @@
+import { CampaignCategoryService } from '@/modules/campaign/category/campaigncategory.service';
 import { CategoryDto, CommonArrayService, CommonFileService, CommonService, tableConstant } from '@common-constants';
 import {
     Body,
@@ -12,6 +13,7 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from "express";
 import { ActivityLogService } from 'src/modules/master/activitylog/activitylog.service';
+import { In, Not } from 'typeorm';
 import { AccessGuard, RoleGuard, TokenGuard } from '../../../guard';
 import {
     CopycategoryInput,
@@ -23,8 +25,6 @@ import {
 } from "../../../input";
 import { TranslationService } from "../../translation/translation.service";
 import { CategoryService } from './category.service';
-import { CampaignCategoryService } from '@/modules/campaign/category/campaigncategory.service';
-import { In, Not } from 'typeorm';
 @Controller('category')
 @UseGuards(TokenGuard, RoleGuard, AccessGuard)
 export class CategoryController {
@@ -61,12 +61,12 @@ export class CategoryController {
             if(resultedData['list'] && resultedData['list'].length){
                 await Promise.all(resultedData['list'].map(async (ele)=>{
                     if(ele.category_name){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`category_name_${ele['id']}`, `/LC_MESSAGES/Campaign/Category/${ele['id']}`,`dynamic`);
-                        ele.category_name = (customeName == '' || customeName == `category_name_${ele['id']}`) ? ele['category_name'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`category_name_${ele['id']}`, `/LC_MESSAGES/Campaign/Category/${ele['id']}`,`dynamic`);
+                        ele.category_name = (customName == '' || customName == `category_name_${ele['id']}`) ? ele['category_name'] : customName;
                     }
                     if(ele.description){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`category_description_${ele['id']}`, `/LC_MESSAGES/Campaign/Category/${ele['id']}`,`dynamic`);
-                        ele.description = (customeName == '' || customeName == `category_description_${ele['id']}`) ? ele['description'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`category_description_${ele['id']}`, `/LC_MESSAGES/Campaign/Category/${ele['id']}`,`dynamic`);
+                        ele.description = (customName == '' || customName == `category_description_${ele['id']}`) ? ele['description'] : customName;
                     }
                 }));
             }
@@ -321,12 +321,12 @@ export class CategoryController {
             if(resultedData && resultedData.length){
                 await Promise.all(resultedData.map(async (ele)=>{
                     if(ele.category_name){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`category_name_${ele['id']}`, `/LC_MESSAGES/Campaign/Category/${ele['id']}`,`dynamic`);
-                        ele.category_name = (customeName == '' || customeName == `category_name_${ele['id']}`) ? ele['category_name'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`category_name_${ele['id']}`, `/LC_MESSAGES/Campaign/Category/${ele['id']}`,`dynamic`);
+                        ele.category_name = (customName == '' || customName == `category_name_${ele['id']}`) ? ele['category_name'] : customName;
                     }
                     if(ele.description){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`category_description_${ele['id']}`, `/LC_MESSAGES/Campaign/Category/${ele['id']}`,`dynamic`);
-                        ele.description = (customeName == '' || customeName == `category_description_${ele['id']}`) ? ele['description'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`category_description_${ele['id']}`, `/LC_MESSAGES/Campaign/Category/${ele['id']}`,`dynamic`);
+                        ele.description = (customName == '' || customName == `category_description_${ele['id']}`) ? ele['description'] : customName;
                     }
                 }));
             }
@@ -374,12 +374,12 @@ export class CategoryController {
                 await this.commonArrayService.formatToDto(CategoryDto, recordDetails, req.lang)
             );
             if(recordDetails.category_name){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`category_name_${recordDetails['id']}`, `/LC_MESSAGES/Campaign/Category/${recordDetails['id']}`,`dynamic`);
-                recordDetails.category_name = (customeName == '' || customeName == `category_name_${recordDetails['id']}`) ? recordDetails['category_name'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`category_name_${recordDetails['id']}`, `/LC_MESSAGES/Campaign/Category/${recordDetails['id']}`,`dynamic`);
+                recordDetails.category_name = (customName == '' || customName == `category_name_${recordDetails['id']}`) ? recordDetails['category_name'] : customName;
             }
             if(recordDetails.description){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`category_description_${recordDetails['id']}`, `/LC_MESSAGES/Campaign/Category/${recordDetails['id']}`,`dynamic`);
-                recordDetails.description = (customeName == '' || customeName == `category_description_${recordDetails['id']}`) ? recordDetails['description'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`category_description_${recordDetails['id']}`, `/LC_MESSAGES/Campaign/Category/${recordDetails['id']}`,`dynamic`);
+                recordDetails.description = (customName == '' || customName == `category_description_${recordDetails['id']}`) ? recordDetails['description'] : customName;
             }
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,

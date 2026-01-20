@@ -551,8 +551,8 @@ export class UserChallengeHelperService {
                         let teamData = await this.teamsService.findOne({id: data.team_id});
                         let scheduleInfo = await this.scheduleChallengeService.findOne({id: data.schedule_id, org_id: org_id});
                         if(teamData.tname){
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang,`team_name_${teamData['schedule_id']}_${teamData['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${teamData['org_id']}/${teamData.schedule_id}`,`dynamic`);
-                            teamData.tname = (customeName == '' || customeName == `team_name_${teamData['schedule_id']}_${teamData['id']}`) ? teamData['tname'] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang,`team_name_${teamData['schedule_id']}_${teamData['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${teamData['org_id']}/${teamData.schedule_id}`,`dynamic`);
+                            teamData.tname = (customName == '' || customName == `team_name_${teamData['schedule_id']}_${teamData['id']}`) ? teamData['tname'] : customName;
                         }
                         if(user && user['email']!=''){ 
                             let toEmail = user['email'];
@@ -1183,6 +1183,9 @@ export class UserChallengeHelperService {
                         notification_sent_count: 0,
                     },
                 }; 
+                if(challengeData?.square_data){
+                    notificationData['metadata']['square_data'] = challengeData?.square_data;
+                }
                 if(challengeData?.reg_start_date || challengeData?.reg_start_date || challengeData?.start_date || challengeData?.end_date){
                     if(challengeData?.reg_start_date || challengeData?.reg_start_date){
                         let startDate

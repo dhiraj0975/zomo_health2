@@ -16,7 +16,7 @@ import { AccessGuard, RoleGuard, TokenGuard } from '../../../guard';
 import {
     CreateScheduleChallengeAgreementInput,
     DeleteChallengeInput,
-    GetoneChallengeInput,
+    GetOneChallengeInput,
     UpdateScheduleChallengeAgreementInput
 } from "../../../input";
 import { TranslationService } from "../../translation/translation.service";
@@ -144,7 +144,7 @@ export class ScheduleChallengeAgreementController {
         }
     }
     @Post('get-one')
-    async getOne(@Req() req: Request, @Res() res: Response, @Body() postData: GetoneChallengeInput) {
+    async getOne(@Req() req: Request, @Res() res: Response, @Body() postData: GetOneChallengeInput) {
         try {
             if (!postData?.id || !postData?.schedule_id) {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang,'ERR_REQUIRED_PARAM_MISSING'));
@@ -154,8 +154,8 @@ export class ScheduleChallengeAgreementController {
                 await this.commonArrayService.formatToDto(ScheduleChallengeAgreementDto, resultedData, req.lang)
             );
             if(resultedData.agreement_text){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`agreement_name_${resultedData['schedule_id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${resultedData['scheduleChallenge'].org_id}/${resultedData.schedule_id}`,`dynamic`);
-                resultedData.agreement_text = (customeName == '' || customeName == `agreement_name_${resultedData['schedule_id']}`) ? resultedData['agreement_text'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`agreement_name_${resultedData['schedule_id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${resultedData['scheduleChallenge'].org_id}/${resultedData.schedule_id}`,`dynamic`);
+                resultedData.agreement_text = (customName == '' || customName == `agreement_name_${resultedData['schedule_id']}`) ? resultedData['agreement_text'] : customName;
             }
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,

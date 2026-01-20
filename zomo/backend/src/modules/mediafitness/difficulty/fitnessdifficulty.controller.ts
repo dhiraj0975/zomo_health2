@@ -54,8 +54,8 @@ export class FitnessDifficultyController {
             if(resultedData['list'] && resultedData['list'].length){
                 await Promise.all(resultedData['list'].map(async (ele)=>{
                     if(ele.name){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_difficulty_${ele['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${ele['org_id']}/difficulty`,`dynamic`);
-                        ele.name = (customeName == '' || customeName == `fitness_difficulty_${ele['id']}`) ? ele['name'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_difficulty_${ele['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${ele['org_id']}/difficulty`,`dynamic`);
+                        ele.name = (customName == '' || customName == `fitness_difficulty_${ele['id']}`) ? ele['name'] : customName;
                     }
                 }));
             }
@@ -105,8 +105,8 @@ export class FitnessDifficultyController {
                 await this.commonArrayService.formatToDto(MediaFitnessDifficultyDto, difficultyData, req.lang)
             );
             if(difficultyData.name){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_difficulty_${difficultyData['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${difficultyData['org_id']}/difficulty`,`dynamic`);
-                difficultyData.name = (customeName == '' || customeName == `fitness_difficulty_${difficultyData['id']}`) ? difficultyData['name'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_difficulty_${difficultyData['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${difficultyData['org_id']}/difficulty`,`dynamic`);
+                difficultyData.name = (customName == '' || customName == `fitness_difficulty_${difficultyData['id']}`) ? difficultyData['name'] : customName;
             }
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
@@ -289,8 +289,8 @@ export class FitnessDifficultyController {
             if(resultedData && resultedData.length){
                 await Promise.all(resultedData.map(async (ele)=>{
                     if(ele.name){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_difficulty_${ele['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${ele['org_id']}/difficulty`,`dynamic`);
-                        ele.name = (customeName == '' || customeName == `fitness_difficulty_${ele['id']}`) ? ele['name'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_difficulty_${ele['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${ele['org_id']}/difficulty`,`dynamic`);
+                        ele.name = (customName == '' || customName == `fitness_difficulty_${ele['id']}`) ? ele['name'] : customName;
                     }
                 }));
             }

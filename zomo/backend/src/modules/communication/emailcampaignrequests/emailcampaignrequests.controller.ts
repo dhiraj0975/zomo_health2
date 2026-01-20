@@ -2721,12 +2721,12 @@ export class EmailCampaignRequestsController {
                     if(campaignDatas && campaignDatas.length){
                         await Promise.all(campaignDatas.map(async (ele)=>{
                             if(ele.campaign_name){
-                                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`campaign_name_${ele['id']}`, `/LC_MESSAGES/Campaign/Campaigns/${ele['organization_id']}`,`dynamic`);
-                                ele.campaign_name = (customeName == '' || customeName == `campaign_name_${ele['id']}`) ? ele['campaign_name'] : customeName;
+                                let customName = await this.translatorService.frontendReadTranslation(req.lang,`campaign_name_${ele['id']}`, `/LC_MESSAGES/Campaign/Campaigns/${ele['organization_id']}`,`dynamic`);
+                                ele.campaign_name = (customName == '' || customName == `campaign_name_${ele['id']}`) ? ele['campaign_name'] : customName;
                             }
                             if(ele.tab_titled){
-                                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`campaign_tab_titled_${ele['id']}`, `/LC_MESSAGES/Campaign/Campaigns/${ele['organization_id']}`,`dynamic`);
-                                ele.tab_titled = (customeName == '' || customeName == `campaign_tab_titled_${ele['id']}`) ? ele['tab_titled'] : customeName;
+                                let customName = await this.translatorService.frontendReadTranslation(req.lang,`campaign_tab_titled_${ele['id']}`, `/LC_MESSAGES/Campaign/Campaigns/${ele['organization_id']}`,`dynamic`);
+                                ele.tab_titled = (customName == '' || customName == `campaign_tab_titled_${ele['id']}`) ? ele['tab_titled'] : customName;
                             }
                         }));
                     }
@@ -2753,8 +2753,8 @@ export class EmailCampaignRequestsController {
                     let eventDatas = await this.eventService.listRecord(["id", "event_name"],evWhere, { [orderBy]: order });
                     await Promise.all(resultedData['list'].map(async (ele)=>{
                         if(ele.event_name){
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang,`event_name_${ele['id']}`, `/LC_MESSAGES/Events/Events/${ele['org_id']}/${ele['id']}`,`dynamic`);
-                            ele.event_name = (customeName == '' || customeName == `event_name_${ele['id']}`) ? ele['event_name'] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang,`event_name_${ele['id']}`, `/LC_MESSAGES/Events/Events/${ele['org_id']}/${ele['id']}`,`dynamic`);
+                            ele.event_name = (customName == '' || customName == `event_name_${ele['id']}`) ? ele['event_name'] : customName;
                         }
                     }));
                     itemDatas['datas'] = eventDatas;

@@ -543,8 +543,8 @@ export class MyPlanAssignPlanUserController {
                                 let eventData = await this.eventService.eventsListRecord(["event.id AS id","event.organization_id AS organization_id","event.created_by_user_id AS created_by_user_id","event.event_name AS event_name","event.activity_id AS activity_id","event.event_type AS event_type","event.external_link AS external_link","event.category_id AS category_id"],evCondition, { "event.id": "DESC" });
                                 await Promise.all(eventData.map(async (ele)=>{
                                     if(ele.event_name){
-                                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`event_name_${ele['id']}`, `/LC_MESSAGES/Events/Events/${ele['organization_id']}/${ele['id']}`,`dynamic`);
-                                        ele.event_name = (customeName == '' || customeName == `event_name_${ele['id']}`) ? ele['event_name'] : customeName;
+                                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`event_name_${ele['id']}`, `/LC_MESSAGES/Events/Events/${ele['organization_id']}/${ele['id']}`,`dynamic`);
+                                        ele.event_name = (customName == '' || customName == `event_name_${ele['id']}`) ? ele['event_name'] : customName;
                                     }
                                 }));
                                 if (eventData.length > 0)  {
@@ -564,8 +564,8 @@ export class MyPlanAssignPlanUserController {
                                 if(categoryData && categoryData.length){
                                     await Promise.all(categoryData.map(async (ele)=>{
                                         if(ele.category_name){
-                                            let customeName = await this.translatorService.frontendReadTranslation(req.lang,`category_name_${ele['id']}`, `/LC_MESSAGES/Events/Category/${ele['c_companies_id']}/${ele['id']}`,`dynamic`);
-                                            ele.category_name = (customeName == '' || customeName == `category_name_${ele['id']}`) ? ele['category_name'] : customeName;
+                                            let customName = await this.translatorService.frontendReadTranslation(req.lang,`category_name_${ele['id']}`, `/LC_MESSAGES/Events/Category/${ele['c_companies_id']}/${ele['id']}`,`dynamic`);
+                                            ele.category_name = (customName == '' || customName == `category_name_${ele['id']}`) ? ele['category_name'] : customName;
                                         }
                                     }));
                                 }
@@ -611,8 +611,8 @@ export class MyPlanAssignPlanUserController {
                                 if(quickLinkData && quickLinkData.length){
                                     await Promise.all(quickLinkData.map(async (ele)=>{
                                         if(ele.title){
-                                            let customeName = await this.translatorService.frontendReadTranslation(req.lang,`title_${ele['id']}`, `/LC_MESSAGES/QuickLink/QuickLink/${ele['c_companies_id']}`,`dynamic`);
-                                            ele.title = (customeName == '' || customeName == `title_${ele['id']}`) ? ele['title'] : customeName;
+                                            let customName = await this.translatorService.frontendReadTranslation(req.lang,`title_${ele['id']}`, `/LC_MESSAGES/QuickLink/QuickLink/${ele['c_companies_id']}`,`dynamic`);
+                                            ele.title = (customName == '' || customName == `title_${ele['id']}`) ? ele['title'] : customName;
                                         }
                                     }));
                                 }
@@ -821,8 +821,8 @@ export class MyPlanAssignPlanUserController {
                                         if(emotionalWellBeingPost && emotionalWellBeingPost.length){
                                             await Promise.all(emotionalWellBeingPost.map(async (ele)=>{
                                                 if(ele.title){
-                                                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`post_title_${ele['cat_id']}_${ele['id']}_${ele['org_id']}`, `/LC_MESSAGES/Emotionalwellbeing/Emotionalwellbeing/${ele['org_id']}/${ele['cat_id']}`,`dynamic`);
-                                                    ele.title = (customeName == '' || customeName == `post_title_${ele['cat_id']}_${ele['id']}_${ele['org_id']}`) ? ele['title'] : customeName;
+                                                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`post_title_${ele['cat_id']}_${ele['id']}_${ele['org_id']}`, `/LC_MESSAGES/Emotionalwellbeing/Emotionalwellbeing/${ele['org_id']}/${ele['cat_id']}`,`dynamic`);
+                                                    ele.title = (customName == '' || customName == `post_title_${ele['cat_id']}_${ele['id']}_${ele['org_id']}`) ? ele['title'] : customName;
                                                 }
                                             }));
                                         }
@@ -1789,8 +1789,8 @@ export class MyPlanAssignPlanUserController {
                                                 myPlan['mb'][j]['ma'][k]['activity_name'] = (customName == '' || customName == `activity_name_${myPlan['mb'][j]['mab']['id']}_${myPlan['mb'][j]['ma'][k]['maa']['id']}_${postData?.org_id}`) ? myPlan['mb'][j]['ma'][k]['activity_name'] : customName;
                                             }
                                             if (myPlan['mb'][j]['ma'][k]['button_text']) {
-                                                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`button_text_${myPlan['mb'][j]['mab']['id']}_${myPlan['mb'][j]['ma'][k]['maa']['id']}_${req?.tokenUser?.org_id}`,`/LC_MESSAGES/MyPlan/MyPlan/${req?.tokenUser?.org_id}/${myPlan['map']['id']}`,`dynamic`);
-                                                myPlan['mb'][j]['ma'][k]['button_text'] = (customeName == '' || customeName == `button_text_${myPlan['mb'][j]['mab']['id']}_${myPlan['mb'][j]['ma'][k]['maa']['id']}_${req?.tokenUser?.org_id}`) ? myPlan['mb'][j]['ma'][k]['button_text'] : customeName;
+                                                let customName = await this.translatorService.frontendReadTranslation(req.lang,`button_text_${myPlan['mb'][j]['mab']['id']}_${myPlan['mb'][j]['ma'][k]['maa']['id']}_${req?.tokenUser?.org_id}`,`/LC_MESSAGES/MyPlan/MyPlan/${req?.tokenUser?.org_id}/${myPlan['map']['id']}`,`dynamic`);
+                                                myPlan['mb'][j]['ma'][k]['button_text'] = (customName == '' || customName == `button_text_${myPlan['mb'][j]['mab']['id']}_${myPlan['mb'][j]['ma'][k]['maa']['id']}_${req?.tokenUser?.org_id}`) ? myPlan['mb'][j]['ma'][k]['button_text'] : customName;
                                             }
                                             myPlan['mb'][j]['ma'][k]['button_text'] = myPlan['mb'][j]['ma'][k]['button_text'] || await this.translatorService.frontendReadTranslation(req.lang,'Click here', `/LC_MESSAGES/MyPlan/MyPlan`,`static`);
                                             myPlan['mb'][j]['ma'][k]['activity_description'] = null;
@@ -2059,8 +2059,8 @@ export class MyPlanAssignPlanUserController {
                 defaultDesc = await this.myPlanDescriptionService.listRecord({ organization_id: postData?.org_id, status: '1'}, ['id', 'description','module_id','organization_id']);
                 await Promise.all(defaultDesc.map(async (ele)=>{
                     if(ele.description){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`description_${ele['module_id']}`, `/LC_MESSAGES/MyPlan/PlanDescription/${ele['organization_id']}`,`dynamic`);
-                        ele.description = (customeName == '' || customeName == `description_${ele['module_id']}`) ? ele['description'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`description_${ele['module_id']}`, `/LC_MESSAGES/MyPlan/PlanDescription/${ele['organization_id']}`,`dynamic`);
+                        ele.description = (customName == '' || customName == `description_${ele['module_id']}`) ? ele['description'] : customName;
                     }
                 }));
             }

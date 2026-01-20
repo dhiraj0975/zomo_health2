@@ -474,8 +474,11 @@ export class StepChallengeService {
             let myTeamID:any = '';
 
             let stepsCompletedtrans = await this.translatorService.frontendReadTranslation(req.lang,'Steps Completed', `/LC_MESSAGES/Dashboard/ChallengeProgress`,`static`);
+            let stepCompletedtrans = await this.translatorService.frontendReadTranslation(req.lang,'Step Completed', `/LC_MESSAGES/Dashboard/ChallengeProgress`,`static`);
             let avgDailyStepsRequiredtrans = await this.translatorService.frontendReadTranslation(req.lang,'Avg. Daily Steps Required', `/LC_MESSAGES/Dashboard/ChallengeProgress`,`static`);
+            let avgDailyStepRequiredtrans = await this.translatorService.frontendReadTranslation(req.lang,'Avg. Daily Step Required', `/LC_MESSAGES/Dashboard/ChallengeProgress`,`static`);
             let avgDailyStepstrans =  await this.translatorService.frontendReadTranslation(req.lang,'Avg. Daily Steps', `/LC_MESSAGES/Dashboard/ChallengeProgress`,`static`);
+            let avgDailySteptrans =  await this.translatorService.frontendReadTranslation(req.lang,'Avg. Daily Step', `/LC_MESSAGES/Dashboard/ChallengeProgress`,`static`);
 
             if(schedule['sc']['team'] == 1){
                 const allgetteams:any = await this.teamsService.getAllTeams(`team.org_id = ${orgid} AND team.schedule_id = ${schedule_id}`);
@@ -628,32 +631,32 @@ export class StepChallengeService {
                             }
                             if(getMember?.locations && req?.lang != 'eng'){
                                 if (getMember?.locations.location_name) {
-                                    let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_name_${getMember?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${orgid}/${getMember?.locations['id']}`, `dynamic`);
-                                    getMember.locations.location_name = (customeName == '' || customeName == `location_name_${getMember?.locations['id']}`) ? getMember?.locations['location_name'] : customeName;
+                                    let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_name_${getMember?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${orgid}/${getMember?.locations['id']}`, `dynamic`);
+                                    getMember.locations.location_name = (customName == '' || customName == `location_name_${getMember?.locations['id']}`) ? getMember?.locations['location_name'] : customName;
                                 }
                                 if (getMember?.locations.address1) {
-                                    let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_address1_${getMember?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${orgid}/${getMember?.locations['id']}`, `dynamic`);
-                                    getMember.locations.address1 = (customeName == '' || customeName == `location_address1_${getMember?.locations['id']}`) ? getMember?.locations['address1'] : customeName;
+                                    let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_address1_${getMember?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${orgid}/${getMember?.locations['id']}`, `dynamic`);
+                                    getMember.locations.address1 = (customName == '' || customName == `location_address1_${getMember?.locations['id']}`) ? getMember?.locations['address1'] : customName;
                                 }
                                 if (getMember?.locations.address2) {
-                                    let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_address2_${getMember?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${orgid}/${getMember?.locations['id']}`, `dynamic`);
-                                    getMember.locations.address2 = (customeName == '' || customeName == `location_address2_${getMember?.locations['id']}`) ? getMember?.locations['address2'] : customeName;
+                                    let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_address2_${getMember?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${orgid}/${getMember?.locations['id']}`, `dynamic`);
+                                    getMember.locations.address2 = (customName == '' || customName == `location_address2_${getMember?.locations['id']}`) ? getMember?.locations['address2'] : customName;
                                 }
                                 if (getMember?.locations.lname) {
-                                    let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_lname_${getMember?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${orgid}/${getMember?.locations['id']}`, `dynamic`);
-                                    getMember.locations.lname = (customeName == '' || customeName == `location_lname_${getMember?.locations['id']}`) ? getMember?.locations['lname'] : customeName;
+                                    let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_lname_${getMember?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${orgid}/${getMember?.locations['id']}`, `dynamic`);
+                                    getMember.locations.lname = (customName == '' || customName == `location_lname_${getMember?.locations['id']}`) ? getMember?.locations['lname'] : customName;
                                 }
                                 if (getMember?.locations.city) {
-                                    let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_city_${getMember?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${orgid}/${getMember?.locations['id']}`, `dynamic`);
-                                    getMember.locations.city = (customeName == '' || customeName == `location_city_${getMember?.locations['id']}`) ? getMember?.locations['city'] : customeName;
+                                    let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_city_${getMember?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${orgid}/${getMember?.locations['id']}`, `dynamic`);
+                                    getMember.locations.city = (customName == '' || customName == `location_city_${getMember?.locations['id']}`) ? getMember?.locations['city'] : customName;
                                 }
                                 if (getMember?.locations.state) {
-                                    let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_state_${getMember?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${orgid}/${getMember?.locations['id']}`, `dynamic`);
-                                    getMember.locations.state = (customeName == '' || customeName == `location_state_${getMember?.locations['id']}`) ? getMember?.locations['state'] : customeName;
+                                    let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_state_${getMember?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${orgid}/${getMember?.locations['id']}`, `dynamic`);
+                                    getMember.locations.state = (customName == '' || customName == `location_state_${getMember?.locations['id']}`) ? getMember?.locations['state'] : customName;
                                 }
                                 if (getMember?.locations.country) {
-                                    let customeName = await this.translatorService.frontendReadTranslation(req.lang, `location_country_${getMember?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${orgid}/${getMember?.locations['id']}`, `dynamic`);
-                                    getMember.locations.country = (customeName == '' || customeName == `location_country_${getMember?.locations['id']}`) ? getMember?.locations['country'] : customeName;
+                                    let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_country_${getMember?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${orgid}/${getMember?.locations['id']}`, `dynamic`);
+                                    getMember.locations.country = (customName == '' || customName == `location_country_${getMember?.locations['id']}`) ? getMember?.locations['country'] : customName;
                                 }
                             }
     
@@ -837,10 +840,10 @@ export class StepChallengeService {
                         }
                         allteams['Teams'][teamId]['teamCount'] = teamCount;
                         allteams['Teams'][teamId]['completedsteps'] = parseFloat(teamCompeletedSteps.toFixed(2));
-                        allteams['Teams'][teamId]['completedsteps_str'] = parseFloat(teamCompeletedSteps.toFixed(2)).toLocaleString('en-US') + ' '+ stepsCompletedtrans;
+                        allteams['Teams'][teamId]['completedsteps_str'] = parseFloat(teamCompeletedSteps.toFixed(2)).toLocaleString('en-US') + ' '+ (teamCompeletedSteps > 1 ? stepsCompletedtrans : stepCompletedtrans);
                         allteams['Teams'][teamId]['realcompetedsteps'] = parseFloat(teamRealSteps.toFixed(2));
                         allteams['Teams'][teamId]['dailysteps'] = DailyStepsForAll;
-                        allteams['Teams'][teamId]['dailysteps_str'] = DailyStepsForAll.toLocaleString('en-US') + ' '+ avgDailyStepsRequiredtrans;
+                        allteams['Teams'][teamId]['dailysteps_str'] = DailyStepsForAll.toLocaleString('en-US') + ' '+ (DailyStepsForAll > 1 ? avgDailyStepsRequiredtrans : avgDailyStepRequiredtrans);
                         allteams['Teams'][teamId]['totaldailysteps'] = DailyStepsForTeam * totaldays;
     
                         if(allteams['Teams'][teamId]['teamMember']){
@@ -860,35 +863,35 @@ export class StepChallengeService {
                             allteams['Teams'][teamId]['today'] = Object.create(null);
                         }
                         allteams['Teams'][teamId]['today']['completedsteps'] = 0;
-                        allteams['Teams'][teamId]['today']['completedsteps_str'] = '0 '+ stepsCompletedtrans;
+                        allteams['Teams'][teamId]['today']['completedsteps_str'] = '0 '+ stepCompletedtrans;
                         allteams['Teams'][teamId]['today']['beyond'] = 0;
                         allteams['Teams'][teamId]['today']['remainsteps'] = 0;
                         allteams['Teams'][teamId]['today']['progress'] = 0;
                         allteams['Teams'][teamId]['today']['averagesteps'] = 0; 
-                        allteams['Teams'][teamId]['today']['completedsteps_str'] = '0 '+ avgDailyStepstrans;
+                        allteams['Teams'][teamId]['today']['completedsteps_str'] = '0 '+ avgDailySteptrans;
                         
                         if(allUsersIdArray.includes(userId)){
                             result['myTeamDetails']['completedsteps'] = parseFloat(teamCompeletedSteps.toFixed(2));
-                            result['myTeamDetails']['completedsteps_str'] = parseFloat(teamCompeletedSteps.toFixed(2)).toLocaleString('en-US') + ' '+ stepsCompletedtrans;
+                            result['myTeamDetails']['completedsteps_str'] = parseFloat(teamCompeletedSteps.toFixed(2)).toLocaleString('en-US') + ' '+ (teamCompeletedSteps > 1? stepsCompletedtrans: stepCompletedtrans);
                             result['myTeamDetails']['realcompetedsteps'] = parseFloat(teamRealSteps.toFixed(2));
                             result['myTeamDetails']['dailysteps'] = DailyStepsForAll;
-                            result['myTeamDetails']['dailysteps_str'] = DailyStepsForAll.toLocaleString('en-US') + ' '+ avgDailyStepsRequiredtrans;
+                            result['myTeamDetails']['dailysteps_str'] = DailyStepsForAll.toLocaleString('en-US') + ' '+ (DailyStepsForAll > 1 ? avgDailyStepsRequiredtrans : avgDailyStepRequiredtrans);
                             result['myTeamDetails']['totaldailysteps'] = DailyStepsForTeam * totaldays;
                             if(!result['myTeamDetails']['today']){
                                 result['myTeamDetails']['today'] = Object.create(null);
                             }
                             result['myTeamDetails']['today']['completedsteps'] = 0;
-                            result['myTeamDetails']['today']['completedsteps_str'] = '0 '+ stepsCompletedtrans;
+                            result['myTeamDetails']['today']['completedsteps_str'] = '0 '+ stepCompletedtrans;
                             result['myTeamDetails']['today']['beyond'] = 0;
                             result['myTeamDetails']['today']['remainsteps'] = 0;
                             result['myTeamDetails']['today']['averagesteps'] = 0;
-                            result['myTeamDetails']['today']['averagesteps_str'] = '0 '+ avgDailyStepstrans;
+                            result['myTeamDetails']['today']['averagesteps_str'] = '0 '+ avgDailySteptrans;
                             result['myTeamDetails']['today']['progress'] = 0;
                             result['myTeamDetails']['teamMember'] = allteams['Teams'][teamId]['teamMember'];
                         }
                         if (matchStartDate <= ucurrentdate) { 
                                 allteams['Teams'][teamId]['today']['completedsteps'] = Math.round(todayTotal);
-                                allteams['Teams'][teamId]['today']['completedsteps_str'] = Math.round(todayTotal).toLocaleString('en-US') + ' '+ stepsCompletedtrans;
+                                allteams['Teams'][teamId]['today']['completedsteps_str'] = Math.round(todayTotal).toLocaleString('en-US') + ' '+ (todayTotal > 1 ? stepsCompletedtrans : stepCompletedtrans);
                                 if (todayTotal > todayBeyondTotal) {
                                     todayTotal = todayTotal - todayBeyondTotal;
                                 }
@@ -905,7 +908,7 @@ export class StepChallengeService {
                                     }
                                 }       
                                 allteams['Teams'][teamId]['today']['averagesteps'] = Math.round(teamTodayTotalAverageSteps);
-                                allteams['Teams'][teamId]['today']['averagesteps_str'] = Math.round(teamTodayTotalAverageSteps).toLocaleString('en-US') + ' '+ avgDailyStepstrans;
+                                allteams['Teams'][teamId]['today']['averagesteps_str'] = Math.round(teamTodayTotalAverageSteps).toLocaleString('en-US') + ' '+ (teamTodayTotalAverageSteps > 1 ? avgDailyStepstrans : avgDailySteptrans);
                                 if (teamTodayProcess >= 100) {
                                     teamTodayProcess = 100;
                                 }                  
@@ -942,7 +945,7 @@ export class StepChallengeService {
                             }
                             allteams['Teams'][teamId]['averagesteps'] = Math.round(averagestepsteam);
                         }
-                        allteams['Teams'][teamId]['averagesteps_str'] = Math.round(averagestepsteam).toLocaleString('en-US') + ' '+ avgDailyStepstrans;
+                        allteams['Teams'][teamId]['averagesteps_str'] = Math.round(averagestepsteam).toLocaleString('en-US') + ' '+ (averagestepsteam > 1 ? avgDailyStepstrans : avgDailySteptrans);
                         if(teamProgress >= 100){
                             teamProgress = 100;
                         }
@@ -950,7 +953,7 @@ export class StepChallengeService {
                         allteams['Teams'][teamId]['progress'] = teamProgress;
                         if(allUsersIdArray.includes(userId)){
                             result['myTeamDetails']['averagesteps'] = allteams['Teams'][teamId]['averagesteps'];
-                            result['myTeamDetails']['averagesteps_str'] = allteams['Teams'][teamId]['averagesteps'].toLocaleString('en-US') + ' '+ avgDailyStepstrans;
+                            result['myTeamDetails']['averagesteps_str'] = allteams['Teams'][teamId]['averagesteps'].toLocaleString('en-US') + ' '+ (allteams['Teams'][teamId]['averagesteps'] > 1 ? avgDailyStepstrans : avgDailySteptrans);
                             result['myTeamDetails']['beyondtotal'] = parseFloat(allteams['Teams'][teamId]['beyondtotal'].toFixed(2));
                             result['myTeamDetails']['progress'] = allteams['Teams'][teamId]['progress'];
                             result['myTeamDetails']['remainsteps'] = allteams['Teams'][teamId]['remainsteps'];
@@ -989,11 +992,11 @@ export class StepChallengeService {
                                 allgroups['Groups'][groupId]['today'] = Object.create(null);
                             }
                             allgroups['Groups'][groupId]['today']['completedsteps'] = Math.round(groupTodayCompletedSteps);
-                            allgroups['Groups'][groupId]['today']['completedsteps_str'] = Math.round(groupTodayCompletedSteps).toLocaleString('en-US') + ' '+ stepsCompletedtrans;
+                            allgroups['Groups'][groupId]['today']['completedsteps_str'] = Math.round(groupTodayCompletedSteps).toLocaleString('en-US') + ' '+ (groupTodayCompletedSteps > 1 ? stepsCompletedtrans : stepCompletedtrans);
                             allgroups['Groups'][groupId]['today']['beyond'] = groupTodayBeyond;
                             allgroups['Groups'][groupId]['today']['remainsteps'] = groupTodayRemainSteps;
                             allgroups['Groups'][groupId]['today']['averagesteps'] = Math.round(groupTodayAvarageSteps);
-                            allgroups['Groups'][groupId]['today']['completedsteps_str'] = Math.round(groupTodayAvarageSteps).toLocaleString('en-US') + ' '+ avgDailyStepstrans;
+                            allgroups['Groups'][groupId]['today']['completedsteps_str'] = Math.round(groupTodayAvarageSteps).toLocaleString('en-US') + ' '+ (groupTodayAvarageSteps > 1 ? avgDailyStepstrans : avgDailySteptrans);
                             groupTodayProgress = groupTodayProgress / groupTodayMemberCount;
                             if(groupTodayProgress >= 100){
                                 groupTodayProgress = 100;
@@ -1038,11 +1041,11 @@ export class StepChallengeService {
                                 groupProgress = parseFloat(teamProgress.toFixed(2));
                             }
                             allgroups['Groups'][groupId]['completedsteps'] = parseFloat(groupComplatedSteps.toFixed(2));
-                            allgroups['Groups'][groupId]['completedsteps_str'] = parseFloat(groupComplatedSteps.toFixed(2)).toLocaleString('en-US') + ' '+ stepsCompletedtrans;
+                            allgroups['Groups'][groupId]['completedsteps_str'] = parseFloat(groupComplatedSteps.toFixed(2)).toLocaleString('en-US') + ' '+ (groupComplatedSteps > 1 ? stepsCompletedtrans : stepCompletedtrans);
                             allgroups['Groups'][groupId]['averagestep'] = groupAverageSteps;
-                            allgroups['Groups'][groupId]['averagestep_str'] = groupAverageSteps.toLocaleString('en-US') + ' '+ avgDailyStepstrans;
+                            allgroups['Groups'][groupId]['averagestep_str'] = groupAverageSteps.toLocaleString('en-US') + ' '+ (groupAverageSteps > 1 ? avgDailyStepstrans : avgDailySteptrans);
                             allgroups['Groups'][groupId]['dailysteps'] = groupDailySteps;
-                            allgroups['Groups'][groupId]['dailysteps_str'] = groupDailySteps.toLocaleString('en-US') + ' '+ avgDailyStepsRequiredtrans;
+                            allgroups['Groups'][groupId]['dailysteps_str'] = groupDailySteps.toLocaleString('en-US') + ' '+ (groupDailySteps > 1 ? avgDailyStepsRequiredtrans : avgDailyStepRequiredtrans);
                             allgroups['Groups'][groupId]['totaldailysteps'] = groupDailyTotalSteps;
                             allgroups['Groups'][groupId]['beyond'] = groupRemainSteps;
                             allgroups['Groups'][groupId]['beyond'] += allteams['Teams'][teamId]['beyondtotal'];
@@ -1076,11 +1079,11 @@ export class StepChallengeService {
                             allgroups['Groups'][groupId]['today'] = Object.create(null);
                         }
                         allgroups['Groups'][groupId]['today']['completedsteps'] = 0;
-                        allgroups['Groups'][groupId]['today']['completedsteps_str'] = '0 '+ stepsCompletedtrans;
+                        allgroups['Groups'][groupId]['today']['completedsteps_str'] = '0 '+ stepCompletedtrans;
                         allgroups['Groups'][groupId]['today']['beyond'] = 0;
                         allgroups['Groups'][groupId]['today']['remainsteps'] = 0;
                         allgroups['Groups'][groupId]['today']['averagesteps'] = 0;
-                        allgroups['Groups'][groupId]['today']['averagesteps_str'] = '0 '+ stepsCompletedtrans;
+                        allgroups['Groups'][groupId]['today']['averagesteps_str'] = '0 '+ stepCompletedtrans;
                         allgroups['Groups'][groupId]['today']['progress'] = 0;
                         if(allgroups['Groups'][groupId]['completedsteps']){
                             groupComplatedSteps = 0;
@@ -1121,11 +1124,11 @@ export class StepChallengeService {
                             groupProgress = 0;
                         }
                         allgroups['Groups'][groupId]['completedsteps'] = 0;
-                        allgroups['Groups'][groupId]['completedsteps_str'] = '0 '+ stepsCompletedtrans;
+                        allgroups['Groups'][groupId]['completedsteps_str'] = '0 '+ stepCompletedtrans;
                         allgroups['Groups'][groupId]['averagestep'] = 0;
-                        allgroups['Groups'][groupId]['averagestep_str'] = '0 '+ avgDailyStepstrans;
+                        allgroups['Groups'][groupId]['averagestep_str'] = '0 '+ avgDailySteptrans;
                         allgroups['Groups'][groupId]['dailysteps'] = 0;
-                        allgroups['Groups'][groupId]['dailysteps_str'] = '0 '+ avgDailyStepsRequiredtrans;
+                        allgroups['Groups'][groupId]['dailysteps_str'] = '0 '+ avgDailyStepRequiredtrans;
                         allgroups['Groups'][groupId]['totaldailysteps'] = 0;
                         allgroups['Groups'][groupId]['beyond'] = 0;
                         allgroups['Groups'][groupId]['beyond'] = 0;

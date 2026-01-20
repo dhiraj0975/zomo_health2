@@ -176,16 +176,16 @@ export class FitnessVideosController {
             if(resultedData['list'] && resultedData['list'].length){
                 await Promise.all(resultedData['list'].map(async (ele)=>{
                     if(ele.name){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_video_name_${ele['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${ele['org_id']}/Video/${ele['id']}`,`dynamic`);
-                        ele.name = (customeName == '' || customeName == `fitness_video_name_${ele['id']}`) ? ele['name'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_video_name_${ele['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${ele['org_id']}/Video/${ele['id']}`,`dynamic`);
+                        ele.name = (customName == '' || customName == `fitness_video_name_${ele['id']}`) ? ele['name'] : customName;
                     }
                     if(ele.description){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_video_description_${ele['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${ele['org_id']}/Video/${ele['id']}`,`dynamic`);
-                        ele.description = (customeName == '' || customeName == `fitness_video_description_${ele['id']}`) ? ele['description'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_video_description_${ele['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${ele['org_id']}/Video/${ele['id']}`,`dynamic`);
+                        ele.description = (customName == '' || customName == `fitness_video_description_${ele['id']}`) ? ele['description'] : customName;
                     }
                     if(ele.provider_name){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_video_providername_${ele['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${ele['org_id']}/Video/${ele['id']}`,`dynamic`);
-                        ele.provider_name = (customeName == '' || customeName == `fitness_video_providername_${ele['id']}`) ? ele['provider_name'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_video_providername_${ele['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${ele['org_id']}/Video/${ele['id']}`,`dynamic`);
+                        ele.provider_name = (customName == '' || customName == `fitness_video_providername_${ele['id']}`) ? ele['provider_name'] : customName;
                     }
                     if(ele.image_thumb){
                         let imageExist = await this.commonService.checkImage(ele.image_thumb);
@@ -255,42 +255,42 @@ export class FitnessVideosController {
                 resultedData.fvc = resultedData?.fvc.split(',').map(Number)
                 resultedData.fvc = await this.fitnessCategoryService.listRecord({status: '1',org_id: In([0,postData?.org_id]),id: In(resultedData.fvc)},['id','name','org_id']);
                 for (let item of resultedData.fvc) {
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_category_${item.id}`, `/LC_MESSAGES/Media/Fitnessvideos/${item['org_id']}/category`,`dynamic`);
-                    item.name = (customeName == '' || customeName == `fitness_category_${item['id']}`) ? resultedData['name'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_category_${item.id}`, `/LC_MESSAGES/Media/Fitnessvideos/${item['org_id']}/category`,`dynamic`);
+                    item.name = (customName == '' || customName == `fitness_category_${item['id']}`) ? resultedData['name'] : customName;
                 }
             }
             if (resultedData?.fvf) {
                 resultedData.fvf = resultedData?.fvf.split(',').map(Number)
                 resultedData.fvf = await this.fitnessFocusService.listRecord({status: '1',org_id: In([0,postData?.org_id]),id: In(resultedData.fvf)},['id','name','org_id']);
                 for (let item of resultedData.fvf) {
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_focus_${item.id}`, `/LC_MESSAGES/Media/Fitnessvideos/${item['org_id']}/focus`,`dynamic`);
-                    item.name = (customeName == '' || customeName == `fitness_focus_${item['id']}`) ? resultedData['name'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_focus_${item.id}`, `/LC_MESSAGES/Media/Fitnessvideos/${item['org_id']}/focus`,`dynamic`);
+                    item.name = (customName == '' || customName == `fitness_focus_${item['id']}`) ? resultedData['name'] : customName;
                 }
             }
             if (resultedData?.fve) {
                 resultedData.fve = resultedData?.fve.split(',').map(Number)
                 resultedData.fve = await this.fitnessEquipmentService.listRecord({status: '1',org_id: In([0,postData?.org_id]), id: In(resultedData.fve)},['id','name','org_id']);
                 for (let item of resultedData.fve) {
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_equipment_${item.id}`, `/LC_MESSAGES/Media/Fitnessvideos/${item['org_id']}/equipment`,`dynamic`);
-                    item.name = (customeName == '' || customeName == `fitness_equipment_${item['id']}`) ? resultedData['name'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_equipment_${item.id}`, `/LC_MESSAGES/Media/Fitnessvideos/${item['org_id']}/equipment`,`dynamic`);
+                    item.name = (customName == '' || customName == `fitness_equipment_${item['id']}`) ? resultedData['name'] : customName;
                 }
             }
             if (resultedData?.fvs) {
                 resultedData.fvs = resultedData?.fvs.split(',').map(Number)
                 resultedData.fvs = await this.fitnessSeriesService.listRecord({status: '1',org_id: In([0,postData?.org_id]),id: In(resultedData.fvs)},['id','name','org_id']);
                 for (let item of resultedData.fvs) {
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_series_${item.id}`, `/LC_MESSAGES/Media/Fitnessvideos/${item['org_id']}/series`,`dynamic`);
-                    item.name = (customeName == '' || customeName == `fitness_series_${item['id']}`) ? resultedData['name'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_series_${item.id}`, `/LC_MESSAGES/Media/Fitnessvideos/${item['org_id']}/series`,`dynamic`);
+                    item.name = (customName == '' || customName == `fitness_series_${item['id']}`) ? resultedData['name'] : customName;
                 }
             }
             if (resultedData?.fvi) {
                 resultedData.fvi = resultedData?.fvi.split(',').map(Number)
                 resultedData.fvi = await this.fitnessInstructorService.listRecord({status: '1',org_id: In([0,postData?.org_id]),id: In(resultedData.fvi)},['id','first_name','last_name','full_name','org_id']);
                 for (let item of resultedData.fvi) {
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_instruction_firstname_${item.id}`, `/LC_MESSAGES/Media/Fitnessvideos/${item['org_id']}/instruction`,`dynamic`);
-                    item.first_name = (customeName == '' || customeName == `fitness_instruction_firstname_${item['id']}`) ? resultedData['first_name'] : customeName;
-                    customeName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_instruction_lastname_${item.id}`, `/LC_MESSAGES/Media/Fitnessvideos/${item['org_id']}/instruction`,`dynamic`);
-                    item.last_name = (customeName == '' || customeName == `fitness_instruction_lastname_${item['id']}`) ? resultedData['last_name'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_instruction_firstname_${item.id}`, `/LC_MESSAGES/Media/Fitnessvideos/${item['org_id']}/instruction`,`dynamic`);
+                    item.first_name = (customName == '' || customName == `fitness_instruction_firstname_${item['id']}`) ? resultedData['first_name'] : customName;
+                    customName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_instruction_lastname_${item.id}`, `/LC_MESSAGES/Media/Fitnessvideos/${item['org_id']}/instruction`,`dynamic`);
+                    item.last_name = (customName == '' || customName == `fitness_instruction_lastname_${item['id']}`) ? resultedData['last_name'] : customName;
                 }
             }
             if (durationData?.fd_id) {
@@ -321,20 +321,20 @@ export class FitnessVideosController {
                 await this.commonArrayService.formatToDto(MediaFitnessVideosDto, resultedData, req.lang)
             );
             if(resultedData?.dificulty?.name){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_difficulty_${resultedData.dificulty.id}`, `/LC_MESSAGES/Media/Fitnessvideos/${resultedData.dificulty.org_id}/difficulty`,`dynamic`);
-                resultedData.fd = (customeName == '' || customeName == `fitness_difficulty_${resultedData.dificulty.id}`) ? resultedData.dificulty['name'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_difficulty_${resultedData.dificulty.id}`, `/LC_MESSAGES/Media/Fitnessvideos/${resultedData.dificulty.org_id}/difficulty`,`dynamic`);
+                resultedData.fd = (customName == '' || customName == `fitness_difficulty_${resultedData.dificulty.id}`) ? resultedData.dificulty['name'] : customName;
             }
             if(resultedData?.name){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_video_name_${resultedData['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${resultedData['org_id']}/Video/${resultedData['id']}`,`dynamic`);
-                resultedData.name = (customeName == '' || customeName == `fitness_video_name_${resultedData['id']}`) ? resultedData['name'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_video_name_${resultedData['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${resultedData['org_id']}/Video/${resultedData['id']}`,`dynamic`);
+                resultedData.name = (customName == '' || customName == `fitness_video_name_${resultedData['id']}`) ? resultedData['name'] : customName;
             }
             if(resultedData?.description){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_video_description_${resultedData['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${resultedData['org_id']}/Video/${resultedData['id']}`,`dynamic`);
-                resultedData.description = (customeName == '' || customeName == `fitness_video_description_${resultedData['id']}`) ? resultedData['description'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_video_description_${resultedData['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${resultedData['org_id']}/Video/${resultedData['id']}`,`dynamic`);
+                resultedData.description = (customName == '' || customName == `fitness_video_description_${resultedData['id']}`) ? resultedData['description'] : customName;
             }
             if(resultedData?.provider_name){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_video_providername_${resultedData['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${resultedData['org_id']}/Video/${resultedData['id']}`,`dynamic`);
-                resultedData.provider_name = (customeName == '' || customeName == `fitness_video_providername_${resultedData['id']}`) ? resultedData['provider_name'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_video_providername_${resultedData['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${resultedData['org_id']}/Video/${resultedData['id']}`,`dynamic`);
+                resultedData.provider_name = (customName == '' || customName == `fitness_video_providername_${resultedData['id']}`) ? resultedData['provider_name'] : customName;
             }
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
@@ -935,8 +935,8 @@ export class FitnessVideosController {
                 if (resultedData && resultedData.length) {
                     await Promise.all(resultedData.map(async (ele) => {
                         if (ele.name) {
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang, `fitness_video_name_${ele['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${ele['org_id']}/Video/${ele['id']}`, `dynamic`);
-                            ele.name = (customeName == '' || customeName == `fitness_video_name_${ele['id']}`) ? ele['name'] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang, `fitness_video_name_${ele['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${ele['org_id']}/Video/${ele['id']}`, `dynamic`);
+                            ele.name = (customName == '' || customName == `fitness_video_name_${ele['id']}`) ? ele['name'] : customName;
                         }
                     }));
                 }

@@ -22,7 +22,7 @@ import { AccessGuard, RoleGuard, TokenGuard } from '../../../guard';
 import {
     CreateRecipeInput,
     DeleteChallengeInput,
-    GetoneChallengeInput,
+    GetOneChallengeInput,
     PaginateWithChallengeInput,
     UpdateRecipeInput
 } from "../../../input";
@@ -320,7 +320,7 @@ export class RecipeController {
     }
     @UseGuards(AccessGuard)
     @Post('get-one')
-    async getOne(@Req() req: Request, @Res() res: Response, @Body() postData: GetoneChallengeInput) {
+    async getOne(@Req() req: Request, @Res() res: Response, @Body() postData: GetOneChallengeInput) {
         try {
             let user = Object.create(req.tokenUser);
             let user_id = user.id;

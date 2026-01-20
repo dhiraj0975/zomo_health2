@@ -227,20 +227,20 @@ export class WellBeingPostController {
             await Promise.all(resultedData['list'].map(async (element)=>{
                 if(element.post_img){
                     if(element.title){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`post_title_${element['cat_id']}_${element['id']}_${element['org_id']}`, `/LC_MESSAGES/Emotionalwellbeing/Emotionalwellbeing/${element['org_id']}/${element['cat_id']}`,`dynamic`);
-                        element.title = (customeName == '' || customeName == `post_title_${element['cat_id']}_${element['id']}_${element['org_id']}`) ? element['title'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`post_title_${element['cat_id']}_${element['id']}_${element['org_id']}`, `/LC_MESSAGES/Emotionalwellbeing/Emotionalwellbeing/${element['org_id']}/${element['cat_id']}`,`dynamic`);
+                        element.title = (customName == '' || customName == `post_title_${element['cat_id']}_${element['id']}_${element['org_id']}`) ? element['title'] : customName;
                     }
                     if(element.link_title){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`post_linktitle_${element['cat_id']}_${element['id']}_${element['org_id']}`, `/LC_MESSAGES/Emotionalwellbeing/Emotionalwellbeing/${element['org_id']}/${element['cat_id']}`,`dynamic`);
-                        element.link_title = (customeName == '' || customeName == `post_linktitle_${element['cat_id']}_${element['id']}_${element['org_id']}`) ? element['link_title'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`post_linktitle_${element['cat_id']}_${element['id']}_${element['org_id']}`, `/LC_MESSAGES/Emotionalwellbeing/Emotionalwellbeing/${element['org_id']}/${element['cat_id']}`,`dynamic`);
+                        element.link_title = (customName == '' || customName == `post_linktitle_${element['cat_id']}_${element['id']}_${element['org_id']}`) ? element['link_title'] : customName;
                     }
                     if(element.short_desc){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`post_shortdesc_${element['cat_id']}_${element['id']}_${element['org_id']}`, `/LC_MESSAGES/Emotionalwellbeing/Emotionalwellbeing/${element['org_id']}/${element['cat_id']}`,`dynamic`);
-                        element.short_desc = (customeName == '' || customeName == `post_shortdesc_${element['cat_id']}_${element['id']}_${element['org_id']}`) ? element['short_desc'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`post_shortdesc_${element['cat_id']}_${element['id']}_${element['org_id']}`, `/LC_MESSAGES/Emotionalwellbeing/Emotionalwellbeing/${element['org_id']}/${element['cat_id']}`,`dynamic`);
+                        element.short_desc = (customName == '' || customName == `post_shortdesc_${element['cat_id']}_${element['id']}_${element['org_id']}`) ? element['short_desc'] : customName;
                     }
                     if(element.more_desc){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`post_moredesc_${element['cat_id']}_${element['id']}_${element['org_id']}`, `/LC_MESSAGES/Emotionalwellbeing/Emotionalwellbeing/${element['org_id']}/${element['cat_id']}`,`dynamic`);
-                        element.more_desc = (customeName == '' || customeName == `post_moredesc_${element['cat_id']}_${element['id']}_${element['org_id']}`) ? element['more_desc'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`post_moredesc_${element['cat_id']}_${element['id']}_${element['org_id']}`, `/LC_MESSAGES/Emotionalwellbeing/Emotionalwellbeing/${element['org_id']}/${element['cat_id']}`,`dynamic`);
+                        element.more_desc = (customName == '' || customName == `post_moredesc_${element['cat_id']}_${element['id']}_${element['org_id']}`) ? element['more_desc'] : customName;
                     }
                     let check_file = await lastValueFrom(this.commonMicroservice.send({cmd: 'check_file'}, {prefix: element.post_img.replace(S3_URL,'') }));
                     if(check_file){
@@ -298,20 +298,20 @@ export class WellBeingPostController {
                 await this.commonArrayService.formatToDto(WellBeingPostDto, recordDetails, req.lang)
             );
             if(recordDetails.title){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`post_title_${recordDetails['cat_id']}_${recordDetails['id']}_${recordDetails['org_id']}`, `/LC_MESSAGES/Emotionalwellbeing/Emotionalwellbeing/${recordDetails['org_id']}/${recordDetails['cat_id']}`,`dynamic`);
-                recordDetails.title = (customeName == '' || customeName == `post_title_${recordDetails['cat_id']}_${recordDetails['id']}_${recordDetails['org_id']}`) ? recordDetails['title'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`post_title_${recordDetails['cat_id']}_${recordDetails['id']}_${recordDetails['org_id']}`, `/LC_MESSAGES/Emotionalwellbeing/Emotionalwellbeing/${recordDetails['org_id']}/${recordDetails['cat_id']}`,`dynamic`);
+                recordDetails.title = (customName == '' || customName == `post_title_${recordDetails['cat_id']}_${recordDetails['id']}_${recordDetails['org_id']}`) ? recordDetails['title'] : customName;
             }
             if(recordDetails.link_title){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`post_linktitle_${recordDetails['cat_id']}_${recordDetails['id']}_${recordDetails['org_id']}`, `/LC_MESSAGES/Emotionalwellbeing/Emotionalwellbeing/${recordDetails['org_id']}/${recordDetails['cat_id']}`,`dynamic`);
-                recordDetails.link_title = (customeName == '' || customeName == `post_linktitle_${recordDetails['cat_id']}_${recordDetails['id']}_${recordDetails['org_id']}`) ? recordDetails['link_title'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`post_linktitle_${recordDetails['cat_id']}_${recordDetails['id']}_${recordDetails['org_id']}`, `/LC_MESSAGES/Emotionalwellbeing/Emotionalwellbeing/${recordDetails['org_id']}/${recordDetails['cat_id']}`,`dynamic`);
+                recordDetails.link_title = (customName == '' || customName == `post_linktitle_${recordDetails['cat_id']}_${recordDetails['id']}_${recordDetails['org_id']}`) ? recordDetails['link_title'] : customName;
             }
             if(recordDetails.short_desc){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`post_shortdesc_${recordDetails['cat_id']}_${recordDetails['id']}_${recordDetails['org_id']}`, `/LC_MESSAGES/Emotionalwellbeing/Emotionalwellbeing/${recordDetails['org_id']}/${recordDetails['cat_id']}`,`dynamic`);
-                recordDetails.short_desc = (customeName == '' || customeName == `post_shortdesc_${recordDetails['cat_id']}_${recordDetails['id']}_${recordDetails['org_id']}`) ? recordDetails['short_desc'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`post_shortdesc_${recordDetails['cat_id']}_${recordDetails['id']}_${recordDetails['org_id']}`, `/LC_MESSAGES/Emotionalwellbeing/Emotionalwellbeing/${recordDetails['org_id']}/${recordDetails['cat_id']}`,`dynamic`);
+                recordDetails.short_desc = (customName == '' || customName == `post_shortdesc_${recordDetails['cat_id']}_${recordDetails['id']}_${recordDetails['org_id']}`) ? recordDetails['short_desc'] : customName;
             }
             if(recordDetails.more_desc){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`post_moredesc_${recordDetails['cat_id']}_${recordDetails['id']}_${recordDetails['org_id']}`, `/LC_MESSAGES/Emotionalwellbeing/Emotionalwellbeing/${recordDetails['org_id']}/${recordDetails['cat_id']}`,`dynamic`);
-                recordDetails.more_desc = (customeName == '' || customeName == `post_moredesc_${recordDetails['cat_id']}_${recordDetails['id']}_${recordDetails['org_id']}`) ? recordDetails['more_desc'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`post_moredesc_${recordDetails['cat_id']}_${recordDetails['id']}_${recordDetails['org_id']}`, `/LC_MESSAGES/Emotionalwellbeing/Emotionalwellbeing/${recordDetails['org_id']}/${recordDetails['cat_id']}`,`dynamic`);
+                recordDetails.more_desc = (customName == '' || customName == `post_moredesc_${recordDetails['cat_id']}_${recordDetails['id']}_${recordDetails['org_id']}`) ? recordDetails['more_desc'] : customName;
             }
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
@@ -643,8 +643,8 @@ export class WellBeingPostController {
                     await Promise.all(resultedData.map(async (ele) => {
                         if (ele.maincollection) {
                             let maincollectionClean = ele['maincollection'].replace(/[^a-zA-Z0-9]/g, '');
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang, `${maincollectionClean}_${ele['org_id']}_${ele['cat_id']}`, `/LC_MESSAGES/Emotionalwellbeing/Emotionalwellbeing/${ele['org_id']}/${ele['cat_id']}`, `dynamic`);
-                            ele.maincollectionT = (customeName == '' || customeName == `${maincollectionClean}_${ele['org_id']}_${ele['cat_id']}`) ? ele['maincollection'] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang, `${maincollectionClean}_${ele['org_id']}_${ele['cat_id']}`, `/LC_MESSAGES/Emotionalwellbeing/Emotionalwellbeing/${ele['org_id']}/${ele['cat_id']}`, `dynamic`);
+                            ele.maincollectionT = (customName == '' || customName == `${maincollectionClean}_${ele['org_id']}_${ele['cat_id']}`) ? ele['maincollection'] : customName;
                         }
                     }));
                 }
@@ -705,8 +705,8 @@ export class WellBeingPostController {
             if(resultedData && resultedData.length){
                 await Promise.all(resultedData.map(async (ele)=>{
                     if(ele.title){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`post_title_${resultedData['cat_id']}_${resultedData['id']}_${resultedData['org_id']}`, `/LC_MESSAGES/Emotionalwellbeing/Emotionalwellbeing/${ele['org_id']}/${ele['cat_id']}`,`dynamic`);
-                        ele.title = (customeName == '' || customeName == `post_title_${resultedData['cat_id']}_${resultedData['id']}_${resultedData['org_id']}`) ? ele['title'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`post_title_${resultedData['cat_id']}_${resultedData['id']}_${resultedData['org_id']}`, `/LC_MESSAGES/Emotionalwellbeing/Emotionalwellbeing/${ele['org_id']}/${ele['cat_id']}`,`dynamic`);
+                        ele.title = (customName == '' || customName == `post_title_${resultedData['cat_id']}_${resultedData['id']}_${resultedData['org_id']}`) ? ele['title'] : customName;
                     }
                 }));
             }
@@ -750,20 +750,20 @@ export class WellBeingPostController {
             if(resultedData && resultedData.length){
                 await Promise.all(resultedData.map(async (ele)=>{
                     if(ele.title){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`post_title_${resultedData['cat_id']}_${resultedData['id']}_${resultedData['org_id']}`, `/LC_MESSAGES/Emotionalwellbeing/Emotionalwellbeing/${ele['org_id']}/${ele['cat_id']}`,`dynamic`);
-                        ele.title = (customeName == '' || customeName == `post_title_${resultedData['cat_id']}_${resultedData['id']}_${resultedData['org_id']}`) ? ele['title'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`post_title_${resultedData['cat_id']}_${resultedData['id']}_${resultedData['org_id']}`, `/LC_MESSAGES/Emotionalwellbeing/Emotionalwellbeing/${ele['org_id']}/${ele['cat_id']}`,`dynamic`);
+                        ele.title = (customName == '' || customName == `post_title_${resultedData['cat_id']}_${resultedData['id']}_${resultedData['org_id']}`) ? ele['title'] : customName;
                     }
                     if(ele.link_title){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`post_linktitle_${resultedData['cat_id']}_${resultedData['id']}_${resultedData['org_id']}`, `/LC_MESSAGES/Emotionalwellbeing/Emotionalwellbeing/${ele['org_id']}/${ele['cat_id']}`,`dynamic`);
-                        ele.link_title = (customeName == '' || customeName == `post_linktitle_${resultedData['cat_id']}_${resultedData['id']}_${resultedData['org_id']}`) ? ele['link_title'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`post_linktitle_${resultedData['cat_id']}_${resultedData['id']}_${resultedData['org_id']}`, `/LC_MESSAGES/Emotionalwellbeing/Emotionalwellbeing/${ele['org_id']}/${ele['cat_id']}`,`dynamic`);
+                        ele.link_title = (customName == '' || customName == `post_linktitle_${resultedData['cat_id']}_${resultedData['id']}_${resultedData['org_id']}`) ? ele['link_title'] : customName;
                     }
                     if(ele.short_desc){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`post_shortdesc_${resultedData['cat_id']}_${resultedData['id']}_${resultedData['org_id']}`, `/LC_MESSAGES/Emotionalwellbeing/Emotionalwellbeing/${ele['org_id']}/${ele['cat_id']}`,`dynamic`);
-                        ele.short_desc = (customeName == '' || customeName == `post_shortdesc_${resultedData['cat_id']}_${resultedData['id']}_${resultedData['org_id']}`) ? ele['short_desc'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`post_shortdesc_${resultedData['cat_id']}_${resultedData['id']}_${resultedData['org_id']}`, `/LC_MESSAGES/Emotionalwellbeing/Emotionalwellbeing/${ele['org_id']}/${ele['cat_id']}`,`dynamic`);
+                        ele.short_desc = (customName == '' || customName == `post_shortdesc_${resultedData['cat_id']}_${resultedData['id']}_${resultedData['org_id']}`) ? ele['short_desc'] : customName;
                     }
                     if(ele.more_desc){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`post_moredesc_${resultedData['cat_id']}_${resultedData['id']}_${resultedData['org_id']}`, `/LC_MESSAGES/Emotionalwellbeing/Emotionalwellbeing/${ele['org_id']}/${ele['cat_id']}`,`dynamic`);
-                        ele.more_desc = (customeName == '' || customeName == `post_moredesc_${resultedData['cat_id']}_${resultedData['id']}_${resultedData['org_id']}`) ? ele['more_desc'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`post_moredesc_${resultedData['cat_id']}_${resultedData['id']}_${resultedData['org_id']}`, `/LC_MESSAGES/Emotionalwellbeing/Emotionalwellbeing/${ele['org_id']}/${ele['cat_id']}`,`dynamic`);
+                        ele.more_desc = (customName == '' || customName == `post_moredesc_${resultedData['cat_id']}_${resultedData['id']}_${resultedData['org_id']}`) ? ele['more_desc'] : customName;
                     }
                 }));
             }
@@ -793,8 +793,8 @@ export class WellBeingPostController {
             const record =  await this.wellbeingCategoryService.findOne({ id: id });
             if (record) {
                 if(record.title){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`category_title_${record['id']}`, `/LC_MESSAGES/Media/Media/${record['org_id']}/${record['id']}`,`dynamic`);
-                    record.title = (customeName == '' || customeName == `category_title_${record['id']}`) ? record['title'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`category_title_${record['id']}`, `/LC_MESSAGES/Media/Media/${record['org_id']}/${record['id']}`,`dynamic`);
+                    record.title = (customName == '' || customName == `category_title_${record['id']}`) ? record['title'] : customName;
                 }
                 if (record.parent_id) {
                     concatenatedString.push(record.title)

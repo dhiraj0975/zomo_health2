@@ -73,8 +73,8 @@ export class AssessmentHaQuestionsController {
             if(resultedData['list'] && resultedData['list'].length){
                 await Promise.all(resultedData['list'].map(async (ele)=>{
                     if(ele.question_title){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`question_title_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/hra/${ele?.questioncat_id}`,`dynamic`);
-                        ele.question_title = (customeName == '' || customeName == `question_title_${ele['id']}`) ? ele['question_title'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`question_title_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/hra/${ele?.questioncat_id}`,`dynamic`);
+                        ele.question_title = (customName == '' || customName == `question_title_${ele['id']}`) ? ele['question_title'] : customName;
                     }
                 }));
             }
@@ -131,8 +131,8 @@ export class AssessmentHaQuestionsController {
                 await this.commonArrayService.formatToDto(AssessmentHaQuestionsDto, resultedData, req.lang)
             );
             if(resultedData.question_title){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`question_title_${resultedData['id']}`, `/LC_MESSAGES/MyHealth/Assessment/hra/${resultedData?.questioncat_id}`,`dynamic`);
-                resultedData.question_title = (customeName == '' || customeName == `question_title_${resultedData['id']}`) ? resultedData['question_title'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`question_title_${resultedData['id']}`, `/LC_MESSAGES/MyHealth/Assessment/hra/${resultedData?.questioncat_id}`,`dynamic`);
+                resultedData.question_title = (customName == '' || customName == `question_title_${resultedData['id']}`) ? resultedData['question_title'] : customName;
             }
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
@@ -410,20 +410,20 @@ export class AssessmentHaQuestionsController {
                     let questioncatId = ele?.questioncat_id
                     let questionId = ele?.id
                     if(ele?.question_title){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`question_title_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/hra/${ele?.questioncat_id}`,`dynamic`);
-                        ele.question_title = (customeName == '' || customeName == `question_title_${ele['id']}`) ? ele['question_title'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`question_title_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/hra/${ele?.questioncat_id}`,`dynamic`);
+                        ele.question_title = (customName == '' || customName == `question_title_${ele['id']}`) ? ele['question_title'] : customName;
                     }
                     if (ele?.option?.length) {
                         await Promise.all(ele?.option.map(async (ele)=>{
                             if(ele?.option_title){
-                                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`option_title_${questionId}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/hra/${questioncatId}`,`dynamic`);
-                                ele.option_title = (customeName == '' || customeName == `option_title_${questionId}_${ele['id']}`) ? ele['option_title'] : customeName;
+                                let customName = await this.translatorService.frontendReadTranslation(req.lang,`option_title_${questionId}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/hra/${questioncatId}`,`dynamic`);
+                                ele.option_title = (customName == '' || customName == `option_title_${questionId}_${ele['id']}`) ? ele['option_title'] : customName;
                             }
                             if (ele?.optionMenu?.length) {
                                 await Promise.all(ele?.optionMenu.map(async (ele)=>{
                                     if(ele?.option_title){
-                                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`option_title_${questionId}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/hra/${questioncatId}`,`dynamic`);
-                                        ele.option_title = (customeName == '' || customeName == `option_title_${questionId}_${ele['id']}`) ? ele['option_title'] : customeName;
+                                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`option_title_${questionId}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/hra/${questioncatId}`,`dynamic`);
+                                        ele.option_title = (customName == '' || customName == `option_title_${questionId}_${ele['id']}`) ? ele['option_title'] : customName;
                                     }
                                 }));
                             }

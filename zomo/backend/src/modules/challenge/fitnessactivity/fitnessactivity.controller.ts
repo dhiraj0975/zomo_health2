@@ -16,7 +16,7 @@ import { AccessGuard, RoleGuard, TokenGuard } from '../../../guard';
 import {
     CreateFitnessActivityInput,
     DeleteChallengeInput,
-    GetoneChallengeInput,
+    GetOneChallengeInput,
     UpdateFitnessActivityInput
 } from "../../../input";
 import { TranslationService } from "../../translation/translation.service";
@@ -157,7 +157,7 @@ export class FitnessActivityController {
         }
     }
     @Post('get-one')
-    async getOne(@Req() req: Request, @Res() res: Response, @Body() postData: GetoneChallengeInput) {
+    async getOne(@Req() req: Request, @Res() res: Response, @Body() postData: GetOneChallengeInput) {
         try {
             if (!postData?.id || !postData?.challenge_id) {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang,'ERR_REQUIRED_PARAM_MISSING'));
@@ -167,18 +167,18 @@ export class FitnessActivityController {
                 await this.commonArrayService.formatToDto(FitnessActivityDto, resultedData, req.lang)
             );
             if(resultedData){
-                let customeName;
+                let customName;
                     if(resultedData.alphabet){
-                        customeName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_activity_alphabet_${resultedData['challenge_id']}_${resultedData['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/0/${resultedData.id}`,`dynamic`);
-                        resultedData.alphabet = !customeName.includes('fitness_activity_alphabet_') ? customeName : resultedData.alphabet;
+                        customName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_activity_alphabet_${resultedData['challenge_id']}_${resultedData['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/0/${resultedData.id}`,`dynamic`);
+                        resultedData.alphabet = !customName.includes('fitness_activity_alphabet_') ? customName : resultedData.alphabet;
                     }
                     if(resultedData.activity_name){
-                        customeName = await this.translatorService.frontendReadTranslation(req.lang, `fitness_activity_name_${resultedData['challenge_id']}_${resultedData['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/0/${resultedData.id}`,`dynamic`);
-                        resultedData.activity_name = !customeName.includes('fitness_activity_name_') ? customeName : resultedData.activity_name;
+                        customName = await this.translatorService.frontendReadTranslation(req.lang, `fitness_activity_name_${resultedData['challenge_id']}_${resultedData['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/0/${resultedData.id}`,`dynamic`);
+                        resultedData.activity_name = !customName.includes('fitness_activity_name_') ? customName : resultedData.activity_name;
                     }
                     if(resultedData.suggestion){
-                        customeName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_activity_suggestion_${resultedData['challenge_id']}_${resultedData['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/0/${resultedData.id}`,`dynamic`);
-                        resultedData.suggestion = !customeName.includes('fitness_activity_suggestion_') ? customeName : resultedData.suggestion;
+                        customName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_activity_suggestion_${resultedData['challenge_id']}_${resultedData['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/0/${resultedData.id}`,`dynamic`);
+                        resultedData.suggestion = !customName.includes('fitness_activity_suggestion_') ? customName : resultedData.suggestion;
                     }
             }
             return res.status(HttpStatus.OK).json({

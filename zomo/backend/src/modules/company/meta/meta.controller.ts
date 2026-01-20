@@ -100,39 +100,39 @@ export class MetaController {
             if(resultedData['list'] && resultedData['list'].length){
                 await Promise.all(resultedData['list'].map(async (ele)=>{
                     if(ele.a_popup_title){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `agreement_title_content_${ele['org_id']}`, `/LC_MESSAGES/Common/Agreement/${req.tokenUser?.org_id || ele['org_id']}`,`dynamic`);
-                        if (customeName != `agreement_title_content_${ele['org_id']}`) {
-                            ele.a_popup_title = customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `agreement_title_content_${ele['org_id']}`, `/LC_MESSAGES/Common/Agreement/${req.tokenUser?.org_id || ele['org_id']}`,`dynamic`);
+                        if (customName != `agreement_title_content_${ele['org_id']}`) {
+                            ele.a_popup_title = customName;
                         }
                     }
                     if(ele.a_popup_text){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `agreement_text_content_${ele['org_id']}`, `/LC_MESSAGES/Common/Agreement/${req.tokenUser?.org_id || ele['org_id']}`,`dynamic`);
-                        if (customeName != `agreement_text_content_${ele['org_id']}`) {
-                            ele.a_popup_text = customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `agreement_text_content_${ele['org_id']}`, `/LC_MESSAGES/Common/Agreement/${req.tokenUser?.org_id || ele['org_id']}`,`dynamic`);
+                        if (customName != `agreement_text_content_${ele['org_id']}`) {
+                            ele.a_popup_text = customName;
                         }
                     }
                     if(ele.user_popup_title){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `user_popup_title_${ele['org_id']}`, `/LC_MESSAGES/Common/LoginPopup/${req.tokenUser?.org_id || ele['org_id']}`,`dynamic`);
-                        if (customeName != `user_popup_title_${ele['org_id']}`) {
-                            ele.user_popup_title = customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `user_popup_title_${ele['org_id']}`, `/LC_MESSAGES/Common/LoginPopup/${req.tokenUser?.org_id || ele['org_id']}`,`dynamic`);
+                        if (customName != `user_popup_title_${ele['org_id']}`) {
+                            ele.user_popup_title = customName;
                         }
                     }
                     if(ele.agreement_text){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `agreement_text_${ele['org_id']}`, `/LC_MESSAGES/Common/SpouseAuthorizedPopup/${req.tokenUser?.org_id || ele['org_id']}`,`dynamic`);
-                        if (customeName != `agreement_text_${ele['org_id']}`) {
-                            ele.agreement_text = customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `agreement_text_${ele['org_id']}`, `/LC_MESSAGES/Common/SpouseAuthorizedPopup/${req.tokenUser?.org_id || ele['org_id']}`,`dynamic`);
+                        if (customName != `agreement_text_${ele['org_id']}`) {
+                            ele.agreement_text = customName;
                         }
                     }
                     if(ele.title){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `inpo_pop_title_${ele['org_id']}_${ele['id']}`, `/LC_MESSAGES/Common/InformationPopup/${req.tokenUser?.org_id || ele['org_id']}`,`dynamic`);
-                        if (customeName != `inpo_pop_title_${ele['org_id']}_${ele['id']}`) {
-                            ele.title = customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `inpo_pop_title_${ele['org_id']}_${ele['id']}`, `/LC_MESSAGES/Common/InformationPopup/${req.tokenUser?.org_id || ele['org_id']}`,`dynamic`);
+                        if (customName != `inpo_pop_title_${ele['org_id']}_${ele['id']}`) {
+                            ele.title = customName;
                         }
                     }
                     if(ele.setting_dic){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `inpo_setting_dic_${ele['org_id']}_${ele['id']}`, `/LC_MESSAGES/Common/InformationPopup/${req.tokenUser?.org_id || ele['org_id']}`,`dynamic`);
-                        if (customeName != `inpo_setting_dic_${ele['org_id']}_${ele['id']}`) {
-                            ele.setting_dic = customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `inpo_setting_dic_${ele['org_id']}_${ele['id']}`, `/LC_MESSAGES/Common/InformationPopup/${req.tokenUser?.org_id || ele['org_id']}`,`dynamic`);
+                        if (customName != `inpo_setting_dic_${ele['org_id']}_${ele['id']}`) {
+                            ele.setting_dic = customName;
                         }
                     }
                 }));
@@ -193,39 +193,39 @@ export class MetaController {
                 await this.commonArrayService.formatToDto(CompanyMetaDto, companyMeta, req.lang)
             );
             if(companyMeta.a_popup_title){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang, `agreement_title_content_${companyMeta['org_id']}`, `/LC_MESSAGES/Common/Agreement/${req.tokenUser?.org_id || companyMeta['org_id']}`,`dynamic`);
-                if (customeName != `agreement_title_content_${companyMeta['org_id']}`) {
-                    companyMeta.a_popup_title = customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang, `agreement_title_content_${companyMeta['org_id']}`, `/LC_MESSAGES/Common/Agreement/${req.tokenUser?.org_id || companyMeta['org_id']}`,`dynamic`);
+                if (customName != `agreement_title_content_${companyMeta['org_id']}`) {
+                    companyMeta.a_popup_title = customName;
                 }
             }
             if(companyMeta.a_popup_text){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang, `agreement_text_content_${companyMeta['org_id']}`, `/LC_MESSAGES/Common/Agreement/${req.tokenUser?.org_id || companyMeta['org_id']}`,`dynamic`);
-                if (customeName != `agreement_text_content_${companyMeta['org_id']}`) {
-                    companyMeta.a_popup_text = customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang, `agreement_text_content_${companyMeta['org_id']}`, `/LC_MESSAGES/Common/Agreement/${req.tokenUser?.org_id || companyMeta['org_id']}`,`dynamic`);
+                if (customName != `agreement_text_content_${companyMeta['org_id']}`) {
+                    companyMeta.a_popup_text = customName;
                 }
             }
             if(companyMeta.user_popup_title){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang, `user_popup_title_${companyMeta['org_id']}`, `/LC_MESSAGES/Common/LoginPopup/${req.tokenUser?.org_id || companyMeta['org_id']}`,`dynamic`);
-                if (customeName != `user_popup_title_${companyMeta['org_id']}`) {
-                    companyMeta.user_popup_title = customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang, `user_popup_title_${companyMeta['org_id']}`, `/LC_MESSAGES/Common/LoginPopup/${req.tokenUser?.org_id || companyMeta['org_id']}`,`dynamic`);
+                if (customName != `user_popup_title_${companyMeta['org_id']}`) {
+                    companyMeta.user_popup_title = customName;
                 }
             }
             if(companyMeta.agreement_text){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang, `agreement_text_${companyMeta['org_id']}`, `/LC_MESSAGES/Common/SpouseAuthorizedPopup/${req.tokenUser?.org_id || companyMeta['org_id']}`,`dynamic`);
-                if (customeName != `agreement_text_${companyMeta['org_id']}`) {
-                    companyMeta.agreement_text = customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang, `agreement_text_${companyMeta['org_id']}`, `/LC_MESSAGES/Common/SpouseAuthorizedPopup/${req.tokenUser?.org_id || companyMeta['org_id']}`,`dynamic`);
+                if (customName != `agreement_text_${companyMeta['org_id']}`) {
+                    companyMeta.agreement_text = customName;
                 }
             }
             if(companyMeta.title){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang, `inpo_pop_title_${companyMeta['org_id']}_${companyMeta['id']}`, `/LC_MESSAGES/Common/InformationPopup/${req.tokenUser?.org_id || companyMeta['org_id']}`,`dynamic`);
-                if (customeName != `inpo_pop_title_${companyMeta['org_id']}_${companyMeta['id']}`) {
-                    companyMeta.title = customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang, `inpo_pop_title_${companyMeta['org_id']}_${companyMeta['id']}`, `/LC_MESSAGES/Common/InformationPopup/${req.tokenUser?.org_id || companyMeta['org_id']}`,`dynamic`);
+                if (customName != `inpo_pop_title_${companyMeta['org_id']}_${companyMeta['id']}`) {
+                    companyMeta.title = customName;
                 }
             }
             if(companyMeta.setting_dic){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang, `inpo_setting_dic_${companyMeta['org_id']}_${companyMeta['id']}`, `/LC_MESSAGES/Common/InformationPopup/${req.tokenUser?.org_id || companyMeta['org_id']}`,`dynamic`);
-                if (customeName != `inpo_setting_dic_${companyMeta['org_id']}_${companyMeta['id']}`) {
-                    companyMeta.setting_dic = customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang, `inpo_setting_dic_${companyMeta['org_id']}_${companyMeta['id']}`, `/LC_MESSAGES/Common/InformationPopup/${req.tokenUser?.org_id || companyMeta['org_id']}`,`dynamic`);
+                if (customName != `inpo_setting_dic_${companyMeta['org_id']}_${companyMeta['id']}`) {
+                    companyMeta.setting_dic = customName;
                 }
             }
             return res.status(HttpStatus.OK).json({
@@ -300,7 +300,8 @@ export class MetaController {
                     "supports":"1",
                     "currentpoint":"0",
                     "challengeprogress":"0",
-                    "quicklinks":"0"
+                    "quicklinks":"0",
+                    "biometricresult":"0"
                 }
                 postData.enable_widget= JSON.stringify(enable_widgets)
             }
@@ -627,39 +628,39 @@ export class MetaController {
             if(resultedData && resultedData.length){
                 await Promise.all(resultedData.map(async (ele)=>{
                     if(ele.a_popup_title){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `agreement_title_content_${ele['org_id']}`, `/LC_MESSAGES/Common/Agreement/${req.tokenUser?.org_id  || ele['org_id']}`,`dynamic`);
-                        if (customeName != `agreement_title_content_${ele['org_id']}`) {
-                            ele.a_popup_title = customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `agreement_title_content_${ele['org_id']}`, `/LC_MESSAGES/Common/Agreement/${req.tokenUser?.org_id  || ele['org_id']}`,`dynamic`);
+                        if (customName != `agreement_title_content_${ele['org_id']}`) {
+                            ele.a_popup_title = customName;
                         }
                     }
                     if(ele.a_popup_text){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `agreement_text_content_${ele['org_id']}`, `/LC_MESSAGES/Common/Agreement/${req.tokenUser?.org_id  || ele['org_id']}`,`dynamic`);
-                        if (customeName != `agreement_text_content_${ele['org_id']}`) {
-                            ele.a_popup_text = customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `agreement_text_content_${ele['org_id']}`, `/LC_MESSAGES/Common/Agreement/${req.tokenUser?.org_id  || ele['org_id']}`,`dynamic`);
+                        if (customName != `agreement_text_content_${ele['org_id']}`) {
+                            ele.a_popup_text = customName;
                         }
                     }
                     if(ele.user_popup_title){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `user_popup_title_${ele['org_id']}`, `/LC_MESSAGES/Common/LoginPopup/${req.tokenUser?.org_id  || ele['org_id']}`,`dynamic`);
-                        if (customeName != `user_popup_title_${ele['org_id']}`) {
-                            ele.user_popup_title = customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `user_popup_title_${ele['org_id']}`, `/LC_MESSAGES/Common/LoginPopup/${req.tokenUser?.org_id  || ele['org_id']}`,`dynamic`);
+                        if (customName != `user_popup_title_${ele['org_id']}`) {
+                            ele.user_popup_title = customName;
                         }
                     }
                     if(ele.agreement_text){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `agreement_text_${ele['org_id']}`, `/LC_MESSAGES/Common/SpouseAuthorizedPopup/${req.tokenUser?.org_id  || ele['org_id']}`,`dynamic`);
-                        if (customeName != `agreement_text_${ele['org_id']}`) {
-                            ele.agreement_text = customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `agreement_text_${ele['org_id']}`, `/LC_MESSAGES/Common/SpouseAuthorizedPopup/${req.tokenUser?.org_id  || ele['org_id']}`,`dynamic`);
+                        if (customName != `agreement_text_${ele['org_id']}`) {
+                            ele.agreement_text = customName;
                         }
                     }
                     if(ele.title){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `inpo_pop_title_${ele['org_id']}_${ele['id']}`, `/LC_MESSAGES/Common/InformationPopup/${req.tokenUser?.org_id  || ele['org_id']}`,`dynamic`);
-                        if (customeName != `inpo_pop_title_${ele['org_id']}_${ele['id']}`) {
-                            ele.title = customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `inpo_pop_title_${ele['org_id']}_${ele['id']}`, `/LC_MESSAGES/Common/InformationPopup/${req.tokenUser?.org_id  || ele['org_id']}`,`dynamic`);
+                        if (customName != `inpo_pop_title_${ele['org_id']}_${ele['id']}`) {
+                            ele.title = customName;
                         }
                     }
                     if(ele.setting_dic){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `inpo_setting_dic_${ele['org_id']}_${ele['id']}`, `/LC_MESSAGES/Common/InformationPopup/${req.tokenUser?.org_id  || ele['org_id']}`,`dynamic`);
-                        if (customeName != `inpo_setting_dic_${ele['org_id']}_${ele['id']}`) {
-                            ele.setting_dic = customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `inpo_setting_dic_${ele['org_id']}_${ele['id']}`, `/LC_MESSAGES/Common/InformationPopup/${req.tokenUser?.org_id  || ele['org_id']}`,`dynamic`);
+                        if (customName != `inpo_setting_dic_${ele['org_id']}_${ele['id']}`) {
+                            ele.setting_dic = customName;
                         }
                     }
                 }));

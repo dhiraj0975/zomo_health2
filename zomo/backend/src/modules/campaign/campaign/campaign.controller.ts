@@ -1,5 +1,6 @@
 import { NotificationsController } from '@/modules/notifications/notifications.controller';
-import { appConstant, campaignConstant, CampaignDto, CommonArrayService, CommonDateService, CommonService, tableConstant } from '@common-constants';
+import { appConstant, campaignConstant, CampaignDto, CommonArrayService, CommonDateService, CommonFileService, CommonService, tableConstant } from '@common-constants';
+import * as path from 'path';
 import {
     Body,
     Controller,
@@ -9,7 +10,14 @@ import {
     Put, Req,
     Res,
     UseGuards,
+    UseInterceptors,
+    UploadedFile,
+    Inject
 } from "@nestjs/common";
+import { ClientProxy } from '@nestjs/microservices';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { lastValueFrom } from 'rxjs';
+import * as XLSX from 'xlsx';
 import { Request, Response } from "express";
 import { ActivityService } from "src/modules/activity/activity/activity.service";
 import { CategoryService } from "src/modules/activity/category/category.service";
@@ -21,7 +29,7 @@ import { LocationService } from "src/modules/company/locations/location.service"
 import { ActivityLogService } from "src/modules/master/activitylog/activitylog.service";
 import { TranslationService } from "src/modules/translation/translation.service";
 import { In, Not } from "typeorm";
-import { AccessGuard, TokenGuard } from '../../../guard';
+import { CampaignGuard, TokenGuard } from '../../../guard';
 import { CampaignActivityService } from "../campaignactivity/campaignactivity.service";
 import { CashRewardService } from "../cashreward/cashreward.service";
 import { CampaignCategoryService } from "../category/campaigncategory.service";
@@ -31,10 +39,10 @@ import { InsuranceRewardService } from "../insurancereward/insurancereward.servi
 import { OtherRewardService } from "../otherreward/otherreward.service";
 import { CampaignRewardService } from "../reward/campaignreward.service";
 import { CampaignService } from "./campaign.service";
-import { CampaignCommonInput, CreateCampaignInput, UpdateCampaignInput } from './input';
+import { CampaignCommonInput, CreateCampaignInput, UpdateCampaignInput, UploadRecipientsInput } from './input';
 const moment = require('moment-timezone');
 @Controller('incentive/campaign')
-@UseGuards(TokenGuard, AccessGuard)
+@UseGuards(TokenGuard, CampaignGuard)
 export class CampaignController {
     constructor(
         private readonly campaignService: CampaignService,
@@ -58,7 +66,9 @@ export class CampaignController {
         private readonly otherRewardService: OtherRewardService,
         private readonly clientManagerAssignService: ClientManagerAssignService,
         private readonly notificationsController: NotificationsController,
-    ) {}
+        private readonly commonFileService: CommonFileService,
+        @Inject('COMMUNICATION_SERVICE') private readonly communicationServiceClient: ClientProxy,
+    ) { }
     /*
      * Function to get paginate list of Campaigns
      * - can pass page, limit, order_by, order
@@ -67,12 +77,12 @@ export class CampaignController {
     async paginate(@Req() req: Request, @Res() res: Response, @Body() postData: PaginateWithCampaignInput) {
         try {
             let where = `campaign.status != 2`;
-            if (appConstant.ROLE.CLIENTENGAGEMENTMANAGER == req.tokenUser?.role_id){
-                let resultedData = await this.clientManagerAssignService.listRecord({user_id: req.tokenUser?.id,status: 1},null);
-                if(resultedData.length > 0){
-                    postData.organization_id = resultedData.map((e)=>e.org_id).join(',');
+            if (appConstant.ROLE.CLIENTENGAGEMENTMANAGER == req.tokenUser?.role_id) {
+                let resultedData = await this.clientManagerAssignService.listRecord({ user_id: req.tokenUser?.id, status: 1 }, null);
+                if (resultedData.length > 0) {
+                    postData.organization_id = resultedData.map((e) => e.org_id).join(',');
                     where += ` AND campaign.organization_id IN(${postData?.organization_id.split(',')})`;
-                }else{
+                } else {
                     return res.status(HttpStatus.OK).json({
                         statusCode: 200,
                         success: 1,
@@ -105,12 +115,12 @@ export class CampaignController {
             if(resultedData['list'] && resultedData['list'].length){
                 await Promise.all(resultedData['list'].map(async (ele)=>{
                     if(ele.campaign_name){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`campaign_name_${ele['id']}`, `/LC_MESSAGES/Campaign/Campaigns/${ele['organization_id']}/${ele['id']}`,`dynamic`);
-                        ele.campaign_name = (customeName == '' || customeName == `campaign_name_${ele['id']}`) ? ele['campaign_name'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`campaign_name_${ele['id']}`, `/LC_MESSAGES/Campaign/Campaigns/${ele['organization_id']}/${ele['id']}`,`dynamic`);
+                        ele.campaign_name = (customName == '' || customName == `campaign_name_${ele['id']}`) ? ele['campaign_name'] : customName;
                     }
                     if(ele.tab_titled){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`campaign_tab_titled_${ele['id']}`, `/LC_MESSAGES/Campaign/Campaigns/${ele['organization_id']}/${ele['id']}`,`dynamic`);
-                        ele.tab_titled = (customeName == '' || customeName == `campaign_tab_titled_${ele['id']}`) ? ele['tab_titled'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`campaign_tab_titled_${ele['id']}`, `/LC_MESSAGES/Campaign/Campaigns/${ele['organization_id']}/${ele['id']}`,`dynamic`);
+                        ele.tab_titled = (customName == '' || customName == `campaign_tab_titled_${ele['id']}`) ? ele['tab_titled'] : customName;
                     }
                 }));
             }
@@ -168,12 +178,12 @@ export class CampaignController {
                 await this.commonArrayService.formatToDto(CampaignDto, campaignDetails, req.lang)
             );
             if(campaignDetails.campaign_name){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`campaign_name_${campaignDetails['id']}`, `/LC_MESSAGES/Campaign/Campaigns/${campaignDetails['organization_id']}`,`dynamic`);
-                campaignDetails.campaign_name = (customeName == '' || customeName == `campaign_name_${campaignDetails['id']}`) ? campaignDetails['campaign_name'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`campaign_name_${campaignDetails['id']}`, `/LC_MESSAGES/Campaign/Campaigns/${campaignDetails['organization_id']}`,`dynamic`);
+                campaignDetails.campaign_name = (customName == '' || customName == `campaign_name_${campaignDetails['id']}`) ? campaignDetails['campaign_name'] : customName;
             }
             if(campaignDetails.tab_titled){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`campaign_tab_titled_${campaignDetails['id']}`, `/LC_MESSAGES/Campaign/Campaigns/${campaignDetails['organization_id']}`,`dynamic`);
-                campaignDetails.tab_titled = (customeName == '' || customeName == `campaign_tab_titled_${campaignDetails['id']}`) ? campaignDetails['tab_titled'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`campaign_tab_titled_${campaignDetails['id']}`, `/LC_MESSAGES/Campaign/Campaigns/${campaignDetails['organization_id']}`,`dynamic`);
+                campaignDetails.tab_titled = (customName == '' || customName == `campaign_tab_titled_${campaignDetails['id']}`) ? campaignDetails['tab_titled'] : customName;
             }
             if(campaignDetails.department_ids){
                 if(campaignDetails.department_ids !== '0'){
@@ -285,12 +295,12 @@ export class CampaignController {
             if(result && result.length){
                 await Promise.all(result.map(async (ele)=>{
                     if(ele.campaign_name){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`campaign_name_${ele['id']}`, `/LC_MESSAGES/Campaign/Campaigns/${ele['organization_id']}`,`dynamic`);
-                        ele.campaign_name = (customeName == '' || customeName == `campaign_name_${ele['id']}`) ? ele['campaign_name'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`campaign_name_${ele['id']}`, `/LC_MESSAGES/Campaign/Campaigns/${ele['organization_id']}`,`dynamic`);
+                        ele.campaign_name = (customName == '' || customName == `campaign_name_${ele['id']}`) ? ele['campaign_name'] : customName;
                     }
                     if(ele.tab_titled){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`campaign_tab_titled_${ele['id']}`, `/LC_MESSAGES/Campaign/Campaigns/${ele['organization_id']}`,`dynamic`);
-                        ele.tab_titled = (customeName == '' || customeName == `campaign_tab_titled_${ele['id']}`) ? ele['tab_titled'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`campaign_tab_titled_${ele['id']}`, `/LC_MESSAGES/Campaign/Campaigns/${ele['organization_id']}`,`dynamic`);
+                        ele.tab_titled = (customName == '' || customName == `campaign_tab_titled_${ele['id']}`) ? ele['tab_titled'] : customName;
                     }
                     delete(ele['start_date_copy']);
                     delete(ele['end_date_copy']);
@@ -857,8 +867,8 @@ export class CampaignController {
             if(postData?.type == 'activity'){
                 result = await this.activityService.findOne({id: postData?.seleted_id}, null , ['activity', 'category']);
                 if(result.activity_name){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`activity_name_${result['id']}`, `/LC_MESSAGES/Campaign/Category/${result['id']}`,`dynamic`);
-                    result.activity_name = (customeName == '' || customeName == `activity_name_${result['id']}`) ? result['activity_name'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`activity_name_${result['id']}`, `/LC_MESSAGES/Campaign/Category/${result['id']}`,`dynamic`);
+                    result.activity_name = (customName == '' || customName == `activity_name_${result['id']}`) ? result['activity_name'] : customName;
                 }
             }else if(postData?.type == 'category'){
                 result = await this.categoryService.findOne({id: postData?.seleted_id});
@@ -1042,4 +1052,95 @@ export class CampaignController {
             return
         }
     }
+
+
+
+
+
+
+
+    @Post('upload-recipients')
+    @UseInterceptors(FileInterceptor('file'))
+    async uploadRecipients(
+        @UploadedFile() file: any,
+        @Body() body: UploadRecipientsInput,
+        @Req() req: any,
+    ) {
+        try {
+            if (!file) {
+                throw new HttpException('File is required', HttpStatus.BAD_REQUEST);
+            }
+
+            if (!body.campaign_id) {
+                throw new HttpException('Campaign ID is required', HttpStatus.BAD_REQUEST);
+            }
+
+            const workbook = XLSX.read(file.path, { type: 'file' });
+            const sheetName = workbook.SheetNames[0];
+            const sheet = workbook.Sheets[sheetName];
+            const rows: any[] = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+            const headers = rows[0];
+            const firstRowData = rows[1] || [];
+
+            const campaignData = await this.campaignService.findOne({ id: Number(body.campaign_id) });
+
+            const campaignRequestData = {
+                org_id: req.tokenUser?.org_id,
+                campaign_title: campaignData?.campaign_name || 'Campaign',
+                file: file.filename,
+                sheet_header: JSON.stringify(headers),
+                test_mail_user_data: JSON.stringify(firstRowData),
+                status: 1,
+                request_status: 4,
+                created_by: req.tokenUser?.id,
+                updated_by: req.tokenUser?.id,
+                timezone: 'UTC',
+            };
+
+            const result = await lastValueFrom(
+                this.communicationServiceClient.send({ cmd: 'create_campaign_requests' }, campaignRequestData)
+            );
+
+            let lastInsertId = 0;
+            let lastInsertHash = '';
+            if (result && result['identifiers'] && result['identifiers'].length > 0) {
+                lastInsertId = result['identifiers'][0]['id'];
+                lastInsertHash = this.commonService.generateMD5(lastInsertId.toString());
+                const fileExt = path.extname(file.originalname);
+                const finalFileName = `${lastInsertHash}${fileExt}`;
+
+                const finalPath = `${appConstant.COMUNICATION_CAMPAIGN_FILE_PATH}/${lastInsertId}`;
+
+                await this.commonFileService.copyFiles(
+                    file.path,
+                    finalPath,
+                    finalFileName
+                );
+
+                await lastValueFrom(
+                    this.communicationServiceClient.send({ cmd: 'update_campaign_requests' }, {
+                        id: lastInsertId,
+                        hash: lastInsertHash,
+                        file: finalFileName
+                    })
+                );
+            }
+
+            return {
+                status: true,
+                message: this.translatorService.translate('RECIPIENTS_UPLOADED_SUCCESSFULLY', req),
+                data: {
+                    headers,
+                    recipients: XLSX.utils.sheet_to_json(sheet),
+                    count: rows.length > 0 ? rows.length - 1 : 0,
+                    id: lastInsertId,
+                    hash: lastInsertHash
+                }
+            };
+        } catch (error) {
+            await this.activityLogService.error_log(req.tokenUser?.id, req?.originalUrl, error?.message, error, req);
+            throw new HttpException(error?.message, error?.status || HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
+

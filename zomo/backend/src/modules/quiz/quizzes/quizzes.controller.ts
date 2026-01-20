@@ -19,7 +19,7 @@ import { Request, Response } from "express";
 import { diskStorage } from "multer";
 import { lastValueFrom } from "rxjs";
 import { ActivityLogService } from 'src/modules/master/activitylog/activitylog.service';
-import { In, Not } from "typeorm";
+import { Not } from "typeorm";
 import { AccessGuard, RoleGuard, TokenGuard } from '../../../guard';
 import {
     CreateQuizzesInput,
@@ -31,23 +31,23 @@ import {
 import { fileName, filesFilter } from "../../../utils/image-upload.utils";
 import { MyPlanActivityService } from "../../myplan/activity/activity.service";
 import { TranslationService } from "../../translation/translation.service";
+import { QuizCategoriesService } from '../categories/categories.service';
+import { QuizFillUpQuestionService } from '../fillupquestions/fillupquestions.service';
 import { FrontService } from "../front/front.service";
+import { QuizHotspotQuestionService } from '../hotspotquestions/hotspotquestions.service';
+import { QuizMatchingDragDropQuestionService } from '../matchingdragdropquestions/matchingdragdropquestions.service';
+import { QuizMatchingDropDownQuestionService } from '../matchingdropdownquestions/matchingdropdownquestions.service';
+import { QuizMultipleChoiceQuestionService } from '../multiplechoicequestions/multiplechoicequestions.service';
+import { QuizMultipleQuestionService } from '../multiplequestions/multiplequestions.service';
+import { QuizMultipleResponseQuestionService } from '../multipleresponsequestions/multipleresponsequestions.service';
 import { QuizDetailsService } from "../quizdetails/quizdetails.service";
-import { QuizQuizzesService } from './quizzes.service';
-import { ListQuizInput } from './input/listquiz.input';
+import { QuizSectionService } from '../quizsections/quizsections.service';
+import { QuizTrueFalseQuestionsService } from '../truefalsequestions/truefalsequestions.service';
 import { QuizWebinarService } from '../webinar/quizwebinar.service';
 import { addDefaultQuizInput } from './input/adddefaultquiz.input';
-import { QuizTrueFalseQuestionsService } from '../truefalsequestions/truefalsequestions.service';
-import { QuizMultipleChoiceQuestionService } from '../multiplechoicequestions/multiplechoicequestions.service';
-import { QuizMultipleResponseQuestionService } from '../multipleresponsequestions/multipleresponsequestions.service';
-import { QuizMatchingDropDownQuestionService } from '../matchingdropdownquestions/matchingdropdownquestions.service';
-import { QuizHotspotQuestionService } from '../hotspotquestions/hotspotquestions.service';
-import { QuizFillUpQuestionService } from '../fillupquestions/fillupquestions.service';
-import { QuizMatchingDragDropQuestionService } from '../matchingdragdropquestions/matchingdragdropquestions.service';
-import { QuizMultipleQuestionService } from '../multiplequestions/multiplequestions.service';
-import { QuizCategoriesService } from '../categories/categories.service';
-import { QuizSectionService } from '../quizsections/quizsections.service';
 import { CopyQuizInput } from './input/copyquiz.input';
+import { ListQuizInput } from './input/listquiz.input';
+import { QuizQuizzesService } from './quizzes.service';
 const path = require('path');
 @Controller('quiz/quizzes')
 @UseGuards(TokenGuard, RoleGuard)
@@ -115,12 +115,12 @@ export class QuizQuizzesController {
             if(resultedData['list'] && resultedData['list'].length){
                 await Promise.all(resultedData['list'].map(async (ele)=>{
                     if(ele.quiz_name){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`quiz_name_${ele.id}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${ele['id']}`,`dynamic`);
-                        ele.quiz_name = (customeName == '' || customeName == `quiz_name_${ele.id}`) ? ele['quiz_name'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`quiz_name_${ele.id}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${ele['id']}`,`dynamic`);
+                        ele.quiz_name = (customName == '' || customName == `quiz_name_${ele.id}`) ? ele['quiz_name'] : customName;
                     }
                     if(ele.quiz_description){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`quiz_description_${ele.id}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${ele['id']}`,`dynamic`);
-                        ele.quiz_description = (customeName == '' || customeName == `quiz_description_${ele.id}`) ? ele['quiz_description'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`quiz_description_${ele.id}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${ele['id']}`,`dynamic`);
+                        ele.quiz_description = (customName == '' || customName == `quiz_description_${ele.id}`) ? ele['quiz_description'] : customName;
                     }
                 }));
             }
@@ -430,12 +430,12 @@ export class QuizQuizzesController {
                 await this.commonArrayService.formatToDto(QuizQuizzesDto, resultedData, req.lang)
             );
             if(resultedData.quiz_name){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`quiz_name_${postData?.id}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${resultedData['id']}`,`dynamic`);
-                resultedData.quiz_name = (customeName == '' || customeName == `quiz_name_${postData?.id}`) ? resultedData['quiz_name'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`quiz_name_${postData?.id}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${resultedData['id']}`,`dynamic`);
+                resultedData.quiz_name = (customName == '' || customName == `quiz_name_${postData?.id}`) ? resultedData['quiz_name'] : customName;
             }
             if(resultedData.quiz_description){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`quiz_description_${postData?.id}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${resultedData['id']}`,`dynamic`);
-                resultedData.quiz_description = (customeName == '' || customeName == `quiz_description_${postData?.id}`) ? resultedData['quiz_description'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`quiz_description_${postData?.id}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${resultedData['id']}`,`dynamic`);
+                resultedData.quiz_description = (customName == '' || customName == `quiz_description_${postData?.id}`) ? resultedData['quiz_description'] : customName;
             }
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
@@ -517,12 +517,12 @@ export class QuizQuizzesController {
                 if (result && result.length) {
                     await Promise.all(result.map(async (ele) => {
                         if (ele.quiz_name) {
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang, `quiz_name_${ele.id}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${ele['id']}`, `dynamic`);
-                            ele.quiz_name = (customeName == '' || customeName == `quiz_name_${ele.id}`) ? ele['quiz_name'] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang, `quiz_name_${ele.id}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${ele['id']}`, `dynamic`);
+                            ele.quiz_name = (customName == '' || customName == `quiz_name_${ele.id}`) ? ele['quiz_name'] : customName;
                         }
                         if (ele.quiz_description) {
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang, `quiz_description_${ele.id}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${ele['id']}`, `dynamic`);
-                            ele.quiz_description = (customeName == '' || customeName == `quiz_description_${ele.id}`) ? ele['quiz_description'] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang, `quiz_description_${ele.id}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${ele['id']}`, `dynamic`);
+                            ele.quiz_description = (customName == '' || customName == `quiz_description_${ele.id}`) ? ele['quiz_description'] : customName;
                         }
                     }));
                 }

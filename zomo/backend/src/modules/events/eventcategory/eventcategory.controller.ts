@@ -47,8 +47,8 @@ export class EventCategoryController {
             if(resultedData['list'] && resultedData['list'].length){
                 await Promise.all(resultedData['list'].map(async (ele)=>{
                     if(ele.category_name){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`category_name_${ele['id']}`, `/LC_MESSAGES/Events/Category/${ele['c_companies_id']}/${ele['id']}`,`dynamic`);
-                        ele.category_name = (customeName == '' || customeName == `category_name_${ele['id']}`) ? ele['category_name'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`category_name_${ele['id']}`, `/LC_MESSAGES/Events/Category/${ele['c_companies_id']}/${ele['id']}`,`dynamic`);
+                        ele.category_name = (customName == '' || customName == `category_name_${ele['id']}`) ? ele['category_name'] : customName;
                     }
                 }));
             }
@@ -215,8 +215,8 @@ export class EventCategoryController {
                 if (resultedData && resultedData.length) {
                     await Promise.all(resultedData.map(async (ele) => {
                         if (ele.category_name) {
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang, `category_name_${ele['id']}`, `/LC_MESSAGES/Events/Category/${ele['c_companies_id']}/${ele['id']}`, `dynamic`);
-                            ele.category_name = (customeName == '' || customeName == `category_name_${ele['id']}`) ? ele['category_name'] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang, `category_name_${ele['id']}`, `/LC_MESSAGES/Events/Category/${ele['c_companies_id']}/${ele['id']}`, `dynamic`);
+                            ele.category_name = (customName == '' || customName == `category_name_${ele['id']}`) ? ele['category_name'] : customName;
                         }
                     }));
                 }
@@ -259,8 +259,8 @@ export class EventCategoryController {
                 await this.commonArrayService.formatToDto(EventCategoryDto, resultedData, req.lang)
             );
             if(resultedData.category_name){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`category_name_${resultedData['id']}`, `/LC_MESSAGES/Events/Category/${resultedData['c_companies_id']}/${resultedData['id']}`,`dynamic`);
-                resultedData.category_name = (customeName == '' || customeName == `category_name_${resultedData['id']}`) ? resultedData['category_name'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`category_name_${resultedData['id']}`, `/LC_MESSAGES/Events/Category/${resultedData['c_companies_id']}/${resultedData['id']}`,`dynamic`);
+                resultedData.category_name = (customName == '' || customName == `category_name_${resultedData['id']}`) ? resultedData['category_name'] : customName;
             }
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,

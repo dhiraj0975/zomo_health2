@@ -12,7 +12,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginateInput } from 'src/input';
 import { AssessmentHraBiometricService } from 'src/modules/healthassessment/assessmenthrabiometrics/assessmenthrabiometric.service';
-import { Repository } from 'typeorm';
+import {Between, Repository} from 'typeorm';
 import { FtBiometricsService } from "../../trackers/biometrics/biometrics.service";
 import {BiometricData, ProcessedBiometricData} from "@/interface";
 @Injectable()
@@ -214,6 +214,15 @@ export class BiometricsService extends BaseService<BiometricsEntity> {
     }
     async biometricsRecord(condition: any,paginationParam, tableData: any[] = []) {
       try{
+          let search: boolean = true;
+          if(this.commonDateService.isValidDate(paginationParam?.search_str)){
+              search = false
+              let startDate = `${this.commonDateService.getTodayDate(paginationParam.search_str).format('YYYY-MM-DD')} 00:00:00`;
+              let endDate = `${this.commonDateService.getTodayDate(paginationParam.search_str).format('YYYY-MM-DD')} 23:59:59`;
+              condition['bio'] = {...condition['bio'],created: Between(startDate, endDate)};
+              condition['hra_bio'] = {...condition['hra_bio'],date: Between(startDate, endDate)};
+              condition['ft_bio'] = {...condition['ft_bio'],added_date: Between(startDate, endDate)};
+          }
           const recordData = async (data) =>  {
               let responseData = [];
               for (let biomatrics of data) {
@@ -269,7 +278,6 @@ export class BiometricsService extends BaseService<BiometricsEntity> {
           }
           resultedData = this.commonService.dynamicSort(resultedData, (a, b) => new Date(b['created']).getTime() - new Date(a['created']).getTime());
           if (paginationParam.page && paginationParam.limit) {
-              console.log("resultedData",resultedData);
 
               const getUserType = (source: number, enterBy: number): string => {
                   const userTypeMap: { [key: number]: string } = {
@@ -287,7 +295,6 @@ export class BiometricsService extends BaseService<BiometricsEntity> {
                   return userTypeMap[source] || 'Physician Entered';
               };
 
-// Main processing function
               const processBiometricData = (resultedData: BiometricData[]): ProcessedBiometricData[] => {
                   const processedData: ProcessedBiometricData[] = [];
 
@@ -340,7 +347,9 @@ export class BiometricsService extends BaseService<BiometricsEntity> {
                   });
                   return filteredData;
               };
-              processedResult = searchBiometricDataSpecific(processedResult, paginationParam?.search_str, ['bmi', 'systolic', 'diastolic', 'blood_glucose', 'alc', 'hdl', 'ldl', 'total_cholesterol', 'triglycerides', 'waist', 'created'])
+              if (search) {
+                processedResult = searchBiometricDataSpecific(processedResult, paginationParam?.search_str, ['bmi', 'systolic', 'diastolic', 'blood_glucose', 'alc', 'hdl', 'ldl', 'total_cholesterol', 'triglycerides', 'waist', 'user_type'])
+              }
               let paginateObj = this.commonArrayService.getPaginationVar(
                   paginationParam.page || 1,
                   paginationParam.limit,

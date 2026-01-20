@@ -49,6 +49,10 @@ import { Module } from '@nestjs/common';
 import { ConfigService } from "@nestjs/config";
 import { ClientProxyFactory, Transport } from "@nestjs/microservices";
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { MulterModule } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
+import * as fs from 'fs';
 import { CampaignController } from './campaign/campaign.controller';
 import { CampaignService } from './campaign/campaign.service';
 import { CampaignActivityController } from './campaignactivity/campaignactivity.controller';
@@ -88,15 +92,30 @@ import { SpouseSettingsService } from "./spousesettings/spousesettings.service";
 @Module({
     imports: [
         TypeOrmModule.forFeature([InsurancePlanEntity, CampaignEntity, CampaignActivityEntity, IncentiveReportsEntity, InsuranceRewardEntity, CampaignCategoryEntity, CampaignChallengeEntity, CampaignRewardEntity, CashRewardEntity, CustomPointEntity, OtherRewardEntity,
-            SliderSettingsEntity,SpouseSettingsEntity, BiometricsEntity, DentistsEntity, OptometristsEntity, TobaccoUsesEntity, AuthorizationsEntity, AssessmentsEntity, AssessmentEmotionalAssessmentEntity, AssessmentHraBiometricEntity, SubmitedFormsEntity,
+            SliderSettingsEntity, SpouseSettingsEntity, BiometricsEntity, DentistsEntity, OptometristsEntity, TobaccoUsesEntity, AuthorizationsEntity, AssessmentsEntity, AssessmentEmotionalAssessmentEntity, AssessmentHraBiometricEntity, SubmitedFormsEntity,
             MyPlanJoinUserPlanEntity, MyPlanCompleteBlockEntity, MyPlanCompleteActivityEntity, UserLoginEntity, MediaFitnessVideoClickEntity, EmotionalWellBeingPostClickEntity, QuickLinkClicksEntity, EventUserBookingListsEntity, QuizUserDetailsEntity,
-            HealthUsersActivityEntity, ActivityFeedsEntity, ReimbursementSubmitedFormsEntity, FtBiometricsEntity, UserDetailsEntity, FoodFeedsEntity, UserEntity, ScheduleChallengeJoinUsersEntity, ScheduleChallengeEntity, FormInstructionsEntity, BrokerEntity, 
+            HealthUsersActivityEntity, ActivityFeedsEntity, ReimbursementSubmitedFormsEntity, FtBiometricsEntity, UserDetailsEntity, FoodFeedsEntity, UserEntity, ScheduleChallengeJoinUsersEntity, ScheduleChallengeEntity, FormInstructionsEntity, BrokerEntity,
             CustomPointRequestEntity, CoachesEntity, CompanyReportMenuSettingsEntity, LocationsEntity, CensusCustomFieldsEntity, CompaniesEntity], appConstant.READ_REPLICA.toLowerCase()),
         TypeOrmModule.forFeature([InsurancePlanEntity, CampaignEntity, CampaignActivityEntity, IncentiveReportsEntity, InsuranceRewardEntity, CampaignCategoryEntity, CampaignChallengeEntity, CampaignRewardEntity, CashRewardEntity, CustomPointEntity, OtherRewardEntity,
-            SliderSettingsEntity,SpouseSettingsEntity, BiometricsEntity, DentistsEntity, OptometristsEntity, TobaccoUsesEntity, AuthorizationsEntity, AssessmentsEntity, AssessmentEmotionalAssessmentEntity, AssessmentHraBiometricEntity, SubmitedFormsEntity,
+            SliderSettingsEntity, SpouseSettingsEntity, BiometricsEntity, DentistsEntity, OptometristsEntity, TobaccoUsesEntity, AuthorizationsEntity, AssessmentsEntity, AssessmentEmotionalAssessmentEntity, AssessmentHraBiometricEntity, SubmitedFormsEntity,
             MyPlanJoinUserPlanEntity, MyPlanCompleteBlockEntity, MyPlanCompleteActivityEntity, UserLoginEntity, MediaFitnessVideoClickEntity, EmotionalWellBeingPostClickEntity, QuickLinkClicksEntity, EventUserBookingListsEntity, QuizUserDetailsEntity,
-            HealthUsersActivityEntity, ActivityFeedsEntity, ReimbursementSubmitedFormsEntity, FtBiometricsEntity, UserDetailsEntity, FoodFeedsEntity, UserEntity, ScheduleChallengeJoinUsersEntity, ScheduleChallengeEntity, FormInstructionsEntity, BrokerEntity, 
+            HealthUsersActivityEntity, ActivityFeedsEntity, ReimbursementSubmitedFormsEntity, FtBiometricsEntity, UserDetailsEntity, FoodFeedsEntity, UserEntity, ScheduleChallengeJoinUsersEntity, ScheduleChallengeEntity, FormInstructionsEntity, BrokerEntity,
             CustomPointRequestEntity, CoachesEntity, CompanyReportMenuSettingsEntity, LocationsEntity, CensusCustomFieldsEntity, CompaniesEntity], appConstant.MAIN.toLowerCase()),
+        MulterModule.register({
+            storage: diskStorage({
+                destination: (req, file, cb) => {
+                    const path = `${appConstant.COMUNICATION_CAMPAIGN_FILE_TEMP_PATH}`;
+                    if (!fs.existsSync(path)) {
+                        fs.mkdirSync(path, { recursive: true });
+                    }
+                    cb(null, path);
+                },
+                filename: (req, file, cb) => {
+                    const randomName = Array(32).fill(null).map(() => (Math.round(Math.random() * 16)).toString(16)).join('');
+                    cb(null, `${randomName}${extname(file.originalname)}`);
+                },
+            }),
+        }),
     ],
     providers: [
         InsurancePlanService,
@@ -142,6 +161,19 @@ import { SpouseSettingsService } from "./spousesettings/spousesettings.service";
                     options: {
                         host: process.env.CRON_SERVICE_HOST_PROD,
                         port: Number(process.env.CRON_SERVICE_PORT_PROD),
+                    }
+                })
+            }
+        },
+        {
+            provide: 'COMMUNICATION_SERVICE',
+            inject: [ConfigService],
+            useFactory: () => {
+                return ClientProxyFactory.create({
+                    transport: Transport.TCP,
+                    options: {
+                        host: process.env.COMMUNICATION_SERVICE_HOST_PROD,
+                        port: Number(process.env.COMMUNICATION_SERVICE_PORT_PROD),
                     }
                 })
             }

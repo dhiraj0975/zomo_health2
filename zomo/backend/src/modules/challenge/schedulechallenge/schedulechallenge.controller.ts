@@ -30,7 +30,7 @@ import { AccessGuard, RoleGuard, TokenGuard } from '../../../guard';
 import {
     CreateScheduleChallengeInput,
     DeleteChallengeInput,
-    GetoneChallengeInput,
+    GetOneChallengeInput,
     PaginateWithChallengeInput,
     UpdateScheduleChallengeInput,
     UpdateTeamMembersInput
@@ -218,28 +218,28 @@ export class ScheduleChallengeController {
             if(![appConstant.ROLE.ADMIN,appConstant.ROLE.GLOBALCLIENTENGAGEMENTMANAGER , appConstant.ROLE.WCH].includes(req.tokenUser?.role_id)){
                 await Promise.all(resultedData['list'].map(async (ele) => {
                     if(ele.custom_cname){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`custom_cname_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele['id']}`,`dynamic`);
-                        ele.custom_cname = (customeName == '' || customeName == `custom_cname_${ele['id']}`) ? ele['custom_cname'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`custom_cname_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele['id']}`,`dynamic`);
+                        ele.custom_cname = (customName == '' || customName == `custom_cname_${ele['id']}`) ? ele['custom_cname'] : customName;
                     }
                     if(ele.custom_desc){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`custom_desc_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele['id']}`,`dynamic`);
-                        ele.custom_desc = (customeName == '' || customeName == `custom_desc_${ele['id']}`) ? ele['custom_desc'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`custom_desc_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele['id']}`,`dynamic`);
+                        ele.custom_desc = (customName == '' || customName == `custom_desc_${ele['id']}`) ? ele['custom_desc'] : customName;
                     }
                     if(ele.info_button){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`custom_info_button_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele['id']}`,`dynamic`);
-                        ele.info_button = (customeName == '' || customeName == `custom_info_button_${ele['id']}`) ? ele['info_button'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`custom_info_button_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele['id']}`,`dynamic`);
+                        ele.info_button = (customName == '' || customName == `custom_info_button_${ele['id']}`) ? ele['info_button'] : customName;
                     }
                     if(ele.website_button){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`custom_website_button_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele['id']}`,`dynamic`);
-                        ele.website_button = (customeName == '' || customeName == `custom_website_button_${ele['id']}`) ? ele['website_button'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`custom_website_button_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele['id']}`,`dynamic`);
+                        ele.website_button = (customName == '' || customName == `custom_website_button_${ele['id']}`) ? ele['website_button'] : customName;
                     }
                     if(ele.map_button){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`custom_map_button_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele['id']}`,`dynamic`);
-                        ele.map_button = (customeName == '' || customeName == `custom_map_button_${ele['id']}`) ? ele['map_button'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`custom_map_button_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele['id']}`,`dynamic`);
+                        ele.map_button = (customName == '' || customName == `custom_map_button_${ele['id']}`) ? ele['map_button'] : customName;
                     }
                     if(ele.image_button){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`custom_image_button_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele['id']}`,`dynamic`);
-                        ele.image_button = (customeName == '' || customeName == `custom_image_button_${ele['id']}`) ? ele['image_button'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`custom_image_button_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele['id']}`,`dynamic`);
+                        ele.image_button = (customName == '' || customName == `custom_image_button_${ele['id']}`) ? ele['image_button'] : customName;
                     }
                     if(ele && ele['custom_logo'] && await lastValueFrom(this.commonMicroservice.send({cmd: 'check_file'}, {prefix: ele['custom_logo']?.replace(S3_URL,'')}))){
                         ele['custom_logo'] = S3_URL + ele['custom_logo'];
@@ -884,7 +884,7 @@ export class ScheduleChallengeController {
     }
     @UseGuards(AccessGuard)
     @Post('get-one')
-    async getOne(@Req() req: Request, @Res() res: Response, @Body() postData: GetoneChallengeInput) {
+    async getOne(@Req() req: Request, @Res() res: Response, @Body() postData: GetOneChallengeInput) {
         try {
             if (!postData?.id && !postData?.challenge_id) {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang,'ERR_REQUIRED_PARAM_MISSING'));
@@ -1015,28 +1015,28 @@ export class ScheduleChallengeController {
                 delete ele['team'];
                 delete ele['group_status'];
                 if(ele.custom_cname){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`custom_cname_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele['id']}`,`dynamic`);
-                    ele.custom_cname = (customeName == '' || customeName == `custom_cname_${ele['id']}`) ? ele['custom_cname'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`custom_cname_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele['id']}`,`dynamic`);
+                    ele.custom_cname = (customName == '' || customName == `custom_cname_${ele['id']}`) ? ele['custom_cname'] : customName;
                 }
                 if(ele.custom_desc){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`custom_desc_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele['id']}`,`dynamic`);
-                    ele.custom_desc = (customeName == '' || customeName == `custom_desc_${ele['id']}`) ? ele['custom_desc'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`custom_desc_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele['id']}`,`dynamic`);
+                    ele.custom_desc = (customName == '' || customName == `custom_desc_${ele['id']}`) ? ele['custom_desc'] : customName;
                 }
                 if(ele.info_button){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`custom_info_button_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele['id']}`,`dynamic`);
-                    ele.info_button = (customeName == '' || customeName == `custom_info_button_${ele['id']}`) ? ele['info_button'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`custom_info_button_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele['id']}`,`dynamic`);
+                    ele.info_button = (customName == '' || customName == `custom_info_button_${ele['id']}`) ? ele['info_button'] : customName;
                 }
                 if(ele.website_button){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`custom_website_button_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele['id']}`,`dynamic`);
-                    ele.website_button = (customeName == '' || customeName == `custom_website_button_${ele['id']}`) ? ele['website_button'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`custom_website_button_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele['id']}`,`dynamic`);
+                    ele.website_button = (customName == '' || customName == `custom_website_button_${ele['id']}`) ? ele['website_button'] : customName;
                 }
                 if(ele.map_button){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`custom_map_button_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele['id']}`,`dynamic`);
-                    ele.map_button = (customeName == '' || customeName == `custom_map_button_${ele['id']}`) ? ele['map_button'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`custom_map_button_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele['id']}`,`dynamic`);
+                    ele.map_button = (customName == '' || customName == `custom_map_button_${ele['id']}`) ? ele['map_button'] : customName;
                 }
                 if(ele.image_button){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`custom_image_button_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele['id']}`,`dynamic`);
-                    ele.image_button = (customeName == '' || customeName == `custom_image_button_${ele['id']}`) ? ele['image_button'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`custom_image_button_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele['id']}`,`dynamic`);
+                    ele.image_button = (customName == '' || customName == `custom_image_button_${ele['id']}`) ? ele['image_button'] : customName;
                 }
                 // if(ele && ele['custom_logo'] && await lastValueFrom(this.commonMicroservice.send({cmd: 'check_file'}, {prefix: ele['custom_logo']?.replace(S3_URL,'')}))){
                 //     ele['custom_logo'] = S3_URL + ele['custom_logo'];
@@ -1092,12 +1092,12 @@ export class ScheduleChallengeController {
                 result = await this.scheduleChallengeService.listRecord(where,{ id: 'DESC' },['sc.id','sc.custom_cname']);
                 await Promise.all(result.map(async (ele) => {
                     if(ele.custom_cname){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`custom_cname_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele['id']}`,`dynamic`);
-                        ele.custom_cname = (customeName == '' || customeName == `custom_cname_${ele['id']}`) ? ele['custom_cname'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`custom_cname_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele['id']}`,`dynamic`);
+                        ele.custom_cname = (customName == '' || customName == `custom_cname_${ele['id']}`) ? ele['custom_cname'] : customName;
                     }
                     if(ele.custom_desc){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`custom_desc_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele['id']}`,`dynamic`);
-                        ele.custom_desc = (customeName == '' || customeName == `custom_desc_${ele['id']}`) ? ele['custom_desc'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`custom_desc_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele['id']}`,`dynamic`);
+                        ele.custom_desc = (customName == '' || customName == `custom_desc_${ele['id']}`) ? ele['custom_desc'] : customName;
                     }
                 }));
             }
@@ -2083,27 +2083,27 @@ export class ScheduleChallengeController {
                                                             translationMessage = await this.translatorService.readTranslation('eng', `/LC_MESSAGES/Challenge/MyChallenges/0/${challengeWeek['challenge_id']}/dynamic.json`);
                                                         }
                                                         if(challengeWeek.manual_activity){
-                                                            let customeName = await this.translatorService.frontendReadTranslation(req.lang, `week_activity_name_${challengeWeek['challenge_id']}_${challengeWeek['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/0/${challengeWeek['challenge_id']}`,`dynamic`);
-                                                            if (customeName != `week_activity_name_${challengeWeek['challenge_id']}_${challengeWeek['id']}`) {
-                                                                challengeWeek.manual_activity = customeName;
+                                                            let customName = await this.translatorService.frontendReadTranslation(req.lang, `week_activity_name_${challengeWeek['challenge_id']}_${challengeWeek['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/0/${challengeWeek['challenge_id']}`,`dynamic`);
+                                                            if (customName != `week_activity_name_${challengeWeek['challenge_id']}_${challengeWeek['id']}`) {
+                                                                challengeWeek.manual_activity = customName;
                                                             }
                                                         }
                                                         if(challengeWeek.site_activity_desc){
-                                                            let customeName = await this.translatorService.frontendReadTranslation(req.lang, `week_activity_description_${challengeWeek['challenge_id']}_${challengeWeek['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/0/${challengeWeek['challenge_id']}`,`dynamic`);
-                                                            if (customeName != `week_activity_description_${challengeWeek['challenge_id']}_${challengeWeek['id']}`) {
-                                                                challengeWeek.site_activity_desc = customeName;
+                                                            let customName = await this.translatorService.frontendReadTranslation(req.lang, `week_activity_description_${challengeWeek['challenge_id']}_${challengeWeek['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/0/${challengeWeek['challenge_id']}`,`dynamic`);
+                                                            if (customName != `week_activity_description_${challengeWeek['challenge_id']}_${challengeWeek['id']}`) {
+                                                                challengeWeek.site_activity_desc = customName;
                                                             }
                                                         }
                                                         if(challengeWeek.manual_desc){
-                                                            let customeName = await this.translatorService.frontendReadTranslation(req.lang, `week_description_${challengeWeek['challenge_id']}_${challengeWeek['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/0/${challengeWeek['challenge_id']}`,`dynamic`);
-                                                            if (customeName != `week_description_${challengeWeek['challenge_id']}_${challengeWeek['id']}`) {
-                                                                challengeWeek.manual_desc = customeName;
+                                                            let customName = await this.translatorService.frontendReadTranslation(req.lang, `week_description_${challengeWeek['challenge_id']}_${challengeWeek['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/0/${challengeWeek['challenge_id']}`,`dynamic`);
+                                                            if (customName != `week_description_${challengeWeek['challenge_id']}_${challengeWeek['id']}`) {
+                                                                challengeWeek.manual_desc = customName;
                                                             }
                                                         }
                                                         if(challengeWeek.tabmanual){
-                                                            let customeName = await this.translatorService.frontendReadTranslation(req.lang, `week_tabmanual_${challengeWeek['challenge_id']}_${challengeWeek['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/0/${challengeWeek['challenge_id']}`,`dynamic`);
-                                                            if (customeName != `week_tabmanual_${challengeWeek['challenge_id']}_${challengeWeek['id']}`) {
-                                                                challengeWeek.tabmanual = customeName;
+                                                            let customName = await this.translatorService.frontendReadTranslation(req.lang, `week_tabmanual_${challengeWeek['challenge_id']}_${challengeWeek['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/0/${challengeWeek['challenge_id']}`,`dynamic`);
+                                                            if (customName != `week_tabmanual_${challengeWeek['challenge_id']}_${challengeWeek['id']}`) {
+                                                                challengeWeek.tabmanual = customName;
                                                             }
                                                         }
 
@@ -2224,27 +2224,27 @@ export class ScheduleChallengeController {
                                                         translationMessage = await this.translatorService.readTranslation('eng', `/LC_MESSAGES/Challenge/MyChallenges/0/${challengeWeek['challenge_id']}/dynamic.json`);
                                                     }
                                                     if(challengeWeek.manual_activity){
-                                                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `week_activity_name_${challengeWeek['challenge_id']}_${challengeWeek['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/0/${challengeWeek['challenge_id']}`,`dynamic`);
-                                                        if (customeName != `week_activity_name_${challengeWeek['challenge_id']}_${challengeWeek['id']}`) {
-                                                            challengeWeek.manual_activity = customeName;
+                                                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `week_activity_name_${challengeWeek['challenge_id']}_${challengeWeek['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/0/${challengeWeek['challenge_id']}`,`dynamic`);
+                                                        if (customName != `week_activity_name_${challengeWeek['challenge_id']}_${challengeWeek['id']}`) {
+                                                            challengeWeek.manual_activity = customName;
                                                         }
                                                     }
                                                     if(challengeWeek.site_activity_desc){
-                                                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `week_activity_description_${challengeWeek['challenge_id']}_${challengeWeek['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/0/${challengeWeek['challenge_id']}`,`dynamic`);
-                                                        if (customeName != `week_activity_description_${challengeWeek['challenge_id']}_${challengeWeek['id']}`) {
-                                                            challengeWeek.site_activity_desc = customeName;
+                                                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `week_activity_description_${challengeWeek['challenge_id']}_${challengeWeek['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/0/${challengeWeek['challenge_id']}`,`dynamic`);
+                                                        if (customName != `week_activity_description_${challengeWeek['challenge_id']}_${challengeWeek['id']}`) {
+                                                            challengeWeek.site_activity_desc = customName;
                                                         }
                                                     }
                                                     if(challengeWeek.manual_desc){
-                                                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `week_description_${challengeWeek['challenge_id']}_${challengeWeek['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/0/${challengeWeek['challenge_id']}`,`dynamic`);
-                                                        if (customeName != `week_description_${challengeWeek['challenge_id']}_${challengeWeek['id']}`) {
-                                                            challengeWeek.manual_desc = customeName;
+                                                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `week_description_${challengeWeek['challenge_id']}_${challengeWeek['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/0/${challengeWeek['challenge_id']}`,`dynamic`);
+                                                        if (customName != `week_description_${challengeWeek['challenge_id']}_${challengeWeek['id']}`) {
+                                                            challengeWeek.manual_desc = customName;
                                                         }
                                                     }
                                                     if(challengeWeek.tabmanual){
-                                                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `week_tabmanual_${challengeWeek['challenge_id']}_${challengeWeek['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/0/${challengeWeek['challenge_id']}`,`dynamic`);
-                                                        if (customeName != `week_tabmanual_${challengeWeek['challenge_id']}_${challengeWeek['id']}`) {
-                                                            challengeWeek.tabmanual = customeName;
+                                                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `week_tabmanual_${challengeWeek['challenge_id']}_${challengeWeek['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/0/${challengeWeek['challenge_id']}`,`dynamic`);
+                                                        if (customName != `week_tabmanual_${challengeWeek['challenge_id']}_${challengeWeek['id']}`) {
+                                                            challengeWeek.tabmanual = customName;
                                                         }
                                                     }
                                                     if(weekarray['weeks']["week_"+weekcounter][0] && weekarray['weeks']["week_"+weekcounter][1]){

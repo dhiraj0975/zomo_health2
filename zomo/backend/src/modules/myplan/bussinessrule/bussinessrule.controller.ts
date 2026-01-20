@@ -310,8 +310,8 @@ export class MyPlanBusinessRuleController {
                     activityData = await this.assessmentResultsService.findOne({organization_id: resultedData.organization_id,status: Not('2'),type: In(['0','2']),id: resultedData.activity_id});
                     resultedData['assessment_id'] = activityData?.id;
                     if(activityData?.title){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_title_${activityData.organization_id}_${activityData['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${activityData['organization_id']}`,`dynamic`);
-                        activityData.title = (customeName == '' || customeName == `assessment_title_${activityData.organization_id}_${activityData['id']}`) ? activityData['title'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_title_${activityData.organization_id}_${activityData['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${activityData['organization_id']}`,`dynamic`);
+                        activityData.title = (customName == '' || customName == `assessment_title_${activityData.organization_id}_${activityData['id']}`) ? activityData['title'] : customName;
                     }    
                     resultedData['assessment_name'] = activityData?.title;
                     break;
@@ -334,8 +334,8 @@ export class MyPlanBusinessRuleController {
                     let code = await this.companyService.getCompanyCodeFromId(resultedData.organization_id);
                     activityData = await this.quizQuizzesService.findOne(`aqo.organization_id = '${code}' AND qs.id = '${resultedData.activity_id}' AND aqo.status != '2' AND qs.status != '2'`,{id: 'ASC'},[tableConstant.QUIZ.TBL_QZ_ASSIGN_QUIZ_ORG]);
                     if(activityData?.quiz_name){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`quiz_name_${activityData.id}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${activityData['id']}`,`dynamic`);
-                        activityData.quiz_name = (customeName == '' || customeName == `quiz_name_${activityData.id}`) ? activityData['quiz_name'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`quiz_name_${activityData.id}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${activityData['id']}`,`dynamic`);
+                        activityData.quiz_name = (customName == '' || customName == `quiz_name_${activityData.id}`) ? activityData['quiz_name'] : customName;
                     }
                     resultedData['quiz_id'] = activityData?.id;
                     resultedData['quiz_name'] = activityData?.quiz_name;
@@ -464,15 +464,15 @@ export class MyPlanBusinessRuleController {
                     let resultedData3 = await this.eventGlobalEventsService.listRecord(["ge.id","ev.id","ev.event_name"],`ge.organization_id = '${postData?.organization_id}' AND ge.status != '2' AND ev.status != '2'`,{ id: 'ASC' },[tableConstant.EVENTS.TBL_EV_EVENTS]);
                     await Promise.all(resultedData2.map(async (ele)=>{
                         if(ele.event_name){
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang,`event_name_${ele['id']}`, `/LC_MESSAGES/Events/Events/${ele['org_id']}/${ele['id']}`,`dynamic`);
-                            ele.event_name = (customeName == '' || customeName == `event_name_${ele['id']}`) ? ele['event_name'] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang,`event_name_${ele['id']}`, `/LC_MESSAGES/Events/Events/${ele['org_id']}/${ele['id']}`,`dynamic`);
+                            ele.event_name = (customName == '' || customName == `event_name_${ele['id']}`) ? ele['event_name'] : customName;
                         }
                     }));
                     if(resultedData1 && resultedData1.length){
                         await Promise.all(resultedData1.map(async (ele)=>{
                             if(ele.category_name){
-                                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`category_name_${ele['id']}`, `/LC_MESSAGES/Events/Category/${ele['c_companies_id']}/${ele['id']}`,`dynamic`);
-                                ele.category_name = (customeName == '' || customeName == `category_name_${ele['id']}`) ? ele['category_name'] : customeName;
+                                let customName = await this.translatorService.frontendReadTranslation(req.lang,`category_name_${ele['id']}`, `/LC_MESSAGES/Events/Category/${ele['c_companies_id']}/${ele['id']}`,`dynamic`);
+                                ele.category_name = (customName == '' || customName == `category_name_${ele['id']}`) ? ele['category_name'] : customName;
                             }
                         }));
                     }
@@ -554,20 +554,20 @@ export class MyPlanBusinessRuleController {
                     if(resultedData && resultedData.length){
                         await Promise.all(resultedData.map(async (ele)=>{
                             if(ele.title){
-                                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`post_title_${ele['cat_id']}_${ele['id']}_${ele['org_id']}`, `/LC_MESSAGES/Emotionalwellbeing/Emotionalwellbeing/${ele['org_id']}/${ele['cat_id']}`,`dynamic`);
-                                ele.title = (customeName == '' || customeName == `post_title_${ele['cat_id']}_${ele['id']}_${ele['org_id']}`) ? ele['title'] : customeName;
+                                let customName = await this.translatorService.frontendReadTranslation(req.lang,`post_title_${ele['cat_id']}_${ele['id']}_${ele['org_id']}`, `/LC_MESSAGES/Emotionalwellbeing/Emotionalwellbeing/${ele['org_id']}/${ele['cat_id']}`,`dynamic`);
+                                ele.title = (customName == '' || customName == `post_title_${ele['cat_id']}_${ele['id']}_${ele['org_id']}`) ? ele['title'] : customName;
                             }
                             if(ele.link_title){
-                                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`post_linktitle_${ele['cat_id']}_${ele['id']}_${ele['org_id']}`, `/LC_MESSAGES/Emotionalwellbeing/Emotionalwellbeing/${ele['org_id']}/${ele['cat_id']}`,`dynamic`);
-                                ele.link_title = (customeName == '' || customeName == `post_linktitle_${ele['cat_id']}_${ele['id']}_${ele['org_id']}`) ? ele['link_title'] : customeName;
+                                let customName = await this.translatorService.frontendReadTranslation(req.lang,`post_linktitle_${ele['cat_id']}_${ele['id']}_${ele['org_id']}`, `/LC_MESSAGES/Emotionalwellbeing/Emotionalwellbeing/${ele['org_id']}/${ele['cat_id']}`,`dynamic`);
+                                ele.link_title = (customName == '' || customName == `post_linktitle_${ele['cat_id']}_${ele['id']}_${ele['org_id']}`) ? ele['link_title'] : customName;
                             }
                             if(ele.short_desc){
-                                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`post_shortdesc_${ele['cat_id']}_${ele['id']}_${ele['org_id']}`, `/LC_MESSAGES/Emotionalwellbeing/Emotionalwellbeing/${ele['org_id']}/${ele['cat_id']}`,`dynamic`);
-                                ele.short_desc = (customeName == '' || customeName == `post_shortdesc_${ele['cat_id']}_${ele['id']}_${ele['org_id']}`) ? ele['short_desc'] : customeName;
+                                let customName = await this.translatorService.frontendReadTranslation(req.lang,`post_shortdesc_${ele['cat_id']}_${ele['id']}_${ele['org_id']}`, `/LC_MESSAGES/Emotionalwellbeing/Emotionalwellbeing/${ele['org_id']}/${ele['cat_id']}`,`dynamic`);
+                                ele.short_desc = (customName == '' || customName == `post_shortdesc_${ele['cat_id']}_${ele['id']}_${ele['org_id']}`) ? ele['short_desc'] : customName;
                             }
                             if(ele.more_desc){
-                                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`post_moredesc_${ele['cat_id']}_${ele['id']}_${ele['org_id']}`, `/LC_MESSAGES/Emotionalwellbeing/Emotionalwellbeing/${ele['org_id']}/${ele['cat_id']}`,`dynamic`);
-                                ele.more_desc = (customeName == '' || customeName == `post_moredesc_${ele['cat_id']}_${ele['id']}_${ele['org_id']}`) ? ele['more_desc'] : customeName;
+                                let customName = await this.translatorService.frontendReadTranslation(req.lang,`post_moredesc_${ele['cat_id']}_${ele['id']}_${ele['org_id']}`, `/LC_MESSAGES/Emotionalwellbeing/Emotionalwellbeing/${ele['org_id']}/${ele['cat_id']}`,`dynamic`);
+                                ele.more_desc = (customName == '' || customName == `post_moredesc_${ele['cat_id']}_${ele['id']}_${ele['org_id']}`) ? ele['more_desc'] : customName;
                             }
                         }));
                     }

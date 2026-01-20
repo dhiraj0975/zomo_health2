@@ -23,7 +23,7 @@ import { AccessGuard, RoleGuard, TokenGuard } from '../../../guard';
 import {
     CreateTeamsInput,
     DeleteChallengeInput,
-    GetoneChallengeInput,
+    GetOneChallengeInput,
     ListTeamsInput,
     PaginateWithChallengeInput,
     UpdateTeamsInput
@@ -112,8 +112,8 @@ export class TeamsController {
                 if(resultedData['list'] && resultedData['list'].length){
                     await Promise.all(resultedData['list'].map(async (ele)=>{
                         if(ele.tname){
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang,`team_name_${ele['schedule_id']}_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele.schedule_id}`,`dynamic`);
-                            ele.tname = (customeName == '' || customeName == `team_name_${ele['schedule_id']}_${ele['id']}`) ? ele['tname'] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang,`team_name_${ele['schedule_id']}_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele.schedule_id}`,`dynamic`);
+                            ele.tname = (customName == '' || customName == `team_name_${ele['schedule_id']}_${ele['id']}`) ? ele['tname'] : customName;
                         }
 
                         let count = 0;
@@ -406,7 +406,7 @@ export class TeamsController {
     }
     @UseGuards(AccessGuard)
     @Post('get-one')
-    async getOne(@Req() req: Request, @Res() res: Response, @Body() postData: GetoneChallengeInput) {
+    async getOne(@Req() req: Request, @Res() res: Response, @Body() postData: GetOneChallengeInput) {
         try {
             if (!postData?.id || !postData?.schedule_id) {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang,'ERR_REQUIRED_PARAM_MISSING'));
@@ -416,8 +416,8 @@ export class TeamsController {
                 await this.commonArrayService.formatToDto(TeamsDto, resultedData, req.lang)
             );
             if(resultedData.tname){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`team_name_${resultedData['schedule_id']}_${resultedData['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${resultedData['org_id']}/${resultedData.schedule_id}`,`dynamic`);
-                resultedData.tname = (customeName == '' || customeName == `team_name_${resultedData['schedule_id']}_${resultedData['id']}`) ? resultedData['tname'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`team_name_${resultedData['schedule_id']}_${resultedData['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${resultedData['org_id']}/${resultedData.schedule_id}`,`dynamic`);
+                resultedData.tname = (customName == '' || customName == `team_name_${resultedData['schedule_id']}_${resultedData['id']}`) ? resultedData['tname'] : customName;
             }
            return res.status(HttpStatus.OK).json({
                 statusCode: 200,
@@ -475,8 +475,8 @@ export class TeamsController {
                 ele['captainDetails'] = ele?.['teamMember']?.find((element) => element.iscaptain == 1); 
                 ele['captainDetails'] = ele['captainDetails'] ? ele['captainDetails']?.['user'] : ele['captainDetails']; 
                 if(ele.tname){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`team_name_${ele['schedule_id']}_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele.schedule_id}`,`dynamic`);
-                    ele.tname = (customeName == '' || customeName == `team_name_${ele['schedule_id']}_${ele['id']}`) ? ele['tname'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`team_name_${ele['schedule_id']}_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele.schedule_id}`,`dynamic`);
+                    ele.tname = (customName == '' || customName == `team_name_${ele['schedule_id']}_${ele['id']}`) ? ele['tname'] : customName;
                 }
                 if(postData?.type && postData?.type?.toLowerCase() == 'report'){
                     delete ele?.['teamMember'];
@@ -523,8 +523,8 @@ export class TeamsController {
             if(teamData && teamData.length){
                 await Promise.all(teamData.map(async (ele)=>{
                     if(ele.tname){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`team_name_${ele['schedule_id']}_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele.schedule_id}`,`dynamic`);
-                        ele.tname = (customeName == '' || customeName == `team_name_${ele['schedule_id']}_${ele['id']}`) ? ele['tname'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`team_name_${ele['schedule_id']}_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele.schedule_id}`,`dynamic`);
+                        ele.tname = (customName == '' || customName == `team_name_${ele['schedule_id']}_${ele['id']}`) ? ele['tname'] : customName;
                     }
                 }));
             }

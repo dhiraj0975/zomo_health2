@@ -562,11 +562,7 @@ export class AutoReportSettingController {
                 reportData['f_from_date']=postData?.f_from_date || null
                 reportData['f_to_date']=postData?.f_to_date || null
                 reportData['f_terminated_users']=postData?.f_terminated_users || null
-                console.log('report_fields:', postData?.report_fields);
-                
                 let ReportIncDefaultFields = reportFieldsConstant.ReportIncDefaultFields;
-                console.log('ReportIncDefaultFields:', ReportIncDefaultFields);
-                
                 reportData['report_fields']= null
                 if(postData?.report_fields){
                     const filteredReportIncDefaultFields = Object.keys(ReportIncDefaultFields)
@@ -575,8 +571,6 @@ export class AutoReportSettingController {
                             obj[key] = ReportIncDefaultFields[key];
                             return obj;
                         }, {});
-                    console.log('filteredReportIncDefaultFields:', filteredReportIncDefaultFields);
-                    
                     if (Object.keys(filteredReportIncDefaultFields).length > 0) {
                         reportData['report_fields'] = JSON.stringify(filteredReportIncDefaultFields);
                     }

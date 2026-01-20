@@ -55,24 +55,24 @@ export class SupportController {
             if(resultedData['list'] && resultedData['list'].length){
                 await Promise.all(resultedData['list'].map(async (ele)=>{
                     if(ele.title){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`title_${ele['id']}`, `/LC_MESSAGES/Support/Support/${ele['org_id']}`,`dynamic`);
-                        ele.title = (customeName == '' || customeName == `title_${ele['id']}`) ? ele['title'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`title_${ele['id']}`, `/LC_MESSAGES/Support/Support/${ele['org_id']}`,`dynamic`);
+                        ele.title = (customName == '' || customName == `title_${ele['id']}`) ? ele['title'] : customName;
                     }
                     if(ele.cname){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`cname_${ele['id']}`, `/LC_MESSAGES/Support/Support/${ele['org_id']}`,`dynamic`);
-                        ele.cname = (customeName == '' || customeName == `cname_${ele['id']}`) ? ele['cname'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`cname_${ele['id']}`, `/LC_MESSAGES/Support/Support/${ele['org_id']}`,`dynamic`);
+                        ele.cname = (customName == '' || customName == `cname_${ele['id']}`) ? ele['cname'] : customName;
                     }
                     if(ele.ph_number){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`ph_number_${ele['id']}`, `/LC_MESSAGES/Support/Support/${ele['org_id']}`,`dynamic`);
-                        ele.ph_number = (customeName == '' || customeName == `ph_number_${ele['id']}`) ? ele['ph_number'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`ph_number_${ele['id']}`, `/LC_MESSAGES/Support/Support/${ele['org_id']}`,`dynamic`);
+                        ele.ph_number = (customName == '' || customName == `ph_number_${ele['id']}`) ? ele['ph_number'] : customName;
                     }
                     if(ele.operation){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`operation_${ele['id']}`, `/LC_MESSAGES/Support/Support/${ele['org_id']}`,`dynamic`);
-                        ele.operation = (customeName == '' || customeName == `operation_${ele['id']}`) ? ele['operation'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`operation_${ele['id']}`, `/LC_MESSAGES/Support/Support/${ele['org_id']}`,`dynamic`);
+                        ele.operation = (customName == '' || customName == `operation_${ele['id']}`) ? ele['operation'] : customName;
                     }
                     if(ele.message){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`message_${ele['id']}`, `/LC_MESSAGES/Support/Support/${ele['org_id']}`,`dynamic`);
-                        ele.message = (customeName == '' || customeName == `message_${ele['id']}`) ? ele['message'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`message_${ele['id']}`, `/LC_MESSAGES/Support/Support/${ele['org_id']}`,`dynamic`);
+                        ele.message = (customName == '' || customName == `message_${ele['id']}`) ? ele['message'] : customName;
                     }
                 }));
             }
@@ -122,24 +122,24 @@ export class SupportController {
                 await this.commonArrayService.formatToDto(CompanySupportDto, supportData, req.lang)
             );
             if(supportData.title){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`title_${supportData['id']}`, `/LC_MESSAGES/Support/Support/${supportData['org_id']}`,`dynamic`);
-                supportData.title = (customeName == '' || customeName == `title_${supportData['id']}`) ? supportData['title'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`title_${supportData['id']}`, `/LC_MESSAGES/Support/Support/${supportData['org_id']}`,`dynamic`);
+                supportData.title = (customName == '' || customName == `title_${supportData['id']}`) ? supportData['title'] : customName;
             }
             if(supportData.cname){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`cname_${supportData['id']}`, `/LC_MESSAGES/Support/Support/${supportData['org_id']}`,`dynamic`);
-                supportData.cname = (customeName == '' || customeName == `cname_${supportData['id']}`) ? supportData['cname'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`cname_${supportData['id']}`, `/LC_MESSAGES/Support/Support/${supportData['org_id']}`,`dynamic`);
+                supportData.cname = (customName == '' || customName == `cname_${supportData['id']}`) ? supportData['cname'] : customName;
             }
             if(supportData.ph_number){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`ph_number_${supportData['id']}`, `/LC_MESSAGES/Support/Support/${supportData['org_id']}`,`dynamic`);
-                supportData.ph_number = (customeName == '' || customeName == `ph_number_${supportData['id']}`) ? supportData['ph_number'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`ph_number_${supportData['id']}`, `/LC_MESSAGES/Support/Support/${supportData['org_id']}`,`dynamic`);
+                supportData.ph_number = (customName == '' || customName == `ph_number_${supportData['id']}`) ? supportData['ph_number'] : customName;
             }
             if(supportData.operation){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`operation_${supportData['id']}`, `/LC_MESSAGES/Support/Support/${supportData['org_id']}`,`dynamic`);
-                supportData.operation = (customeName == '' || customeName == `operation_${supportData['id']}`) ? supportData['operation'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`operation_${supportData['id']}`, `/LC_MESSAGES/Support/Support/${supportData['org_id']}`,`dynamic`);
+                supportData.operation = (customName == '' || customName == `operation_${supportData['id']}`) ? supportData['operation'] : customName;
             }
             if(supportData.message){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`message_${supportData['id']}`, `/LC_MESSAGES/Support/Support/${supportData['org_id']}`,`dynamic`);
-                supportData.message = (customeName == '' || customeName == `message_${supportData['id']}`) ? supportData['message'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`message_${supportData['id']}`, `/LC_MESSAGES/Support/Support/${supportData['org_id']}`,`dynamic`);
+                supportData.message = (customName == '' || customName == `message_${supportData['id']}`) ? supportData['message'] : customName;
             }
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
@@ -479,24 +479,24 @@ export class SupportController {
             if(resultedData && resultedData.length){
                 await Promise.all(resultedData.map(async (ele)=>{
                     if(ele.title){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`title_${ele['id']}`, `/LC_MESSAGES/Support/Support/${ele['org_id']}`,`dynamic`);
-                        ele.title = (customeName == '' || customeName == `title_${ele['id']}`) ? ele['title'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`title_${ele['id']}`, `/LC_MESSAGES/Support/Support/${ele['org_id']}`,`dynamic`);
+                        ele.title = (customName == '' || customName == `title_${ele['id']}`) ? ele['title'] : customName;
                     }
                     if(ele.cname){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`cname_${ele['id']}`, `/LC_MESSAGES/Support/Support/${ele['org_id']}`,`dynamic`);
-                        ele.cname = (customeName == '' || customeName == `cname_${ele['id']}`) ? ele['cname'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`cname_${ele['id']}`, `/LC_MESSAGES/Support/Support/${ele['org_id']}`,`dynamic`);
+                        ele.cname = (customName == '' || customName == `cname_${ele['id']}`) ? ele['cname'] : customName;
                     }
                     if(ele.ph_number){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`ph_number_${ele['id']}`, `/LC_MESSAGES/Support/Support/${ele['org_id']}`,`dynamic`);
-                        ele.ph_number = (customeName == '' || customeName == `ph_number_${ele['id']}`) ? ele['ph_number'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`ph_number_${ele['id']}`, `/LC_MESSAGES/Support/Support/${ele['org_id']}`,`dynamic`);
+                        ele.ph_number = (customName == '' || customName == `ph_number_${ele['id']}`) ? ele['ph_number'] : customName;
                     }
                     if(ele.operation){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`operation_${ele['id']}`, `/LC_MESSAGES/Support/Support/${ele['org_id']}`,`dynamic`);
-                        ele.operation = (customeName == '' || customeName == `operation_${ele['id']}`) ? ele['operation'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`operation_${ele['id']}`, `/LC_MESSAGES/Support/Support/${ele['org_id']}`,`dynamic`);
+                        ele.operation = (customName == '' || customName == `operation_${ele['id']}`) ? ele['operation'] : customName;
                     }
                     if(ele.message){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`message_${ele['id']}`, `/LC_MESSAGES/Support/Support/${ele['org_id']}`,`dynamic`);
-                        ele.message = (customeName == '' || customeName == `message_${ele['id']}`) ? ele['message'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`message_${ele['id']}`, `/LC_MESSAGES/Support/Support/${ele['org_id']}`,`dynamic`);
+                        ele.message = (customName == '' || customName == `message_${ele['id']}`) ? ele['message'] : customName;
                     }
                 }));
             }

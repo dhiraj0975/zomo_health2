@@ -11,20 +11,20 @@ import {
     Res,
     UseGuards,
 } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
 import { Request, Response } from "express";
+import { lastValueFrom } from 'rxjs';
 import { ActivityLogService } from 'src/modules/master/activitylog/activitylog.service';
+import { Not } from 'typeorm';
 import { AccessGuard, RoleGuard, TokenGuard } from '../../../guard';
 import { TranslationService } from "../../translation/translation.service";
-import { QuizWebinarService } from './quizwebinar.service';
-import { QuizWebinarPaginateInput } from './input/quizwebinarpaginate.input';
+import { FrontService } from '../front/front.service';
 import { QuizWebinarCreateInput } from './input/quizwebinarcreate.input';
-import { Not } from 'typeorm';
 import { QuizWebinarDeleteInput } from './input/quizwebinardelete.input';
 import { QuizWebinarGetOneInput } from './input/quizwebinargetone.input';
 import { QuizWebinarListInput } from './input/quizwebinarlist.input';
-import { lastValueFrom } from 'rxjs';
-import { ClientProxy } from '@nestjs/microservices';
-import { FrontService } from '../front/front.service';
+import { QuizWebinarPaginateInput } from './input/quizwebinarpaginate.input';
+import { QuizWebinarService } from './quizwebinar.service';
 @Controller('quiz/webinar')
 @UseGuards(TokenGuard, RoleGuard, AccessGuard)
 export class QuizWebinarController {
@@ -106,8 +106,8 @@ export class QuizWebinarController {
                             item.webinar_date = this.commonDateService.DateTimeFormat(item?.webinar_date, 'MM-DD-YYYY', 'YYYY-MM-DD');
                         }
                         if (item.title) {
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang, `quiz_webinar_title_${item['id']}`, `/LC_MESSAGES/Quizzes/QuizWebinar/0/${item['id']}`, `dynamic`);
-                            item.title = (customeName == '' || customeName == `quiz_webinar_title_${item['id']}`) ? item['title'] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang, `quiz_webinar_title_${item['id']}`, `/LC_MESSAGES/Quizzes/QuizWebinar/0/${item['id']}`, `dynamic`);
+                            item.title = (customName == '' || customName == `quiz_webinar_title_${item['id']}`) ? item['title'] : customName;
                         }
                         if (item.description) {
                             let customeDescription = await this.translatorService.frontendReadTranslation(req.lang, `quiz_webinar_description_${item['id']}`, `/LC_MESSAGES/Quizzes/QuizWebinar/0/${item['id']}`, `dynamic`);
@@ -147,8 +147,8 @@ export class QuizWebinarController {
                         item.webinar_date = this.commonDateService.DateTimeFormat(item?.webinar_date, 'MM-DD-YYYY', 'YYYY-MM-DD');
                     }
                     if (item.title) {
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `quiz_webinar_title_${item['id']}`, `/LC_MESSAGES/Quizzes/QuizWebinar/0/${item['id']}`, `dynamic`);
-                        item.title = (customeName == '' || customeName == `quiz_webinar_title_${item['id']}`) ? item['title'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `quiz_webinar_title_${item['id']}`, `/LC_MESSAGES/Quizzes/QuizWebinar/0/${item['id']}`, `dynamic`);
+                        item.title = (customName == '' || customName == `quiz_webinar_title_${item['id']}`) ? item['title'] : customName;
                     }
                     if (item.description) {
                         let customeDescription = await this.translatorService.frontendReadTranslation(req.lang, `quiz_webinar_description_${item['id']}`, `/LC_MESSAGES/Quizzes/QuizWebinar/0/${item['id']}`, `dynamic`);
@@ -395,8 +395,8 @@ export class QuizWebinarController {
                 resultedData.webinar_date = this.commonDateService.DateTimeFormat(resultedData?.webinar_date, 'MM-DD-YYYY', 'YYYY-MM-DD');
             }
             if (resultedData.title) {
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang, `quiz_webinar_title_${resultedData['id']}`, `/LC_MESSAGES/Quizzes/QuizWebinar/0/${resultedData['id']}`, `dynamic`);
-                resultedData.title = (customeName == '' || customeName == `quiz_webinar_title_${resultedData.id}`) ? resultedData['title'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang, `quiz_webinar_title_${resultedData['id']}`, `/LC_MESSAGES/Quizzes/QuizWebinar/0/${resultedData['id']}`, `dynamic`);
+                resultedData.title = (customName == '' || customName == `quiz_webinar_title_${resultedData.id}`) ? resultedData['title'] : customName;
             }
             if (resultedData.description) {
                 let customeDescription = await this.translatorService.frontendReadTranslation(req.lang, `quiz_webinar_description_${resultedData['id']}`, `/LC_MESSAGES/Quizzes/QuizWebinar/0/${resultedData['id']}`, `dynamic`);
@@ -484,8 +484,8 @@ export class QuizWebinarController {
             if (result && result?.length && (req.tokenUser?.role_id !== appConstant.ROLE.ADMIN)) {
                 await Promise.all(result.map(async (item) => {
                     if (item.title) {
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `quiz_webinar_title_${item['id']}`, `/LC_MESSAGES/Quizzes/QuizWebinar/0/${item['id']}`, `dynamic`);
-                        item.title = (customeName == '' || customeName == `quiz_webinar_title_${item['id']}`) ? item['title'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `quiz_webinar_title_${item['id']}`, `/LC_MESSAGES/Quizzes/QuizWebinar/0/${item['id']}`, `dynamic`);
+                        item.title = (customName == '' || customName == `quiz_webinar_title_${item['id']}`) ? item['title'] : customName;
                     }
                 }))
             }
@@ -521,6 +521,61 @@ export class QuizWebinarController {
             if (req.tokenUser?.role_id !== appConstant.ROLE.ADMIN) {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_ACCESS_DENIED"));
             }
+            if (postData?.type === 'defaultTranslation') {
+                const allWebinars = await this.quizWebinarService.listRecord(
+                    ['qw.id', 'qw.title', 'qw.description'],
+                    {
+                        status: Not(2),
+                        deleted: 0
+                    }
+                );
+                if (!allWebinars?.length) {
+                    let result = { 'processed': 0, 'skipped': 0 };
+                    return res.status(HttpStatus.OK).json({
+                        statusCode: 200,
+                        success: 1,
+                        error: 0,
+                        data: result,
+                        message: 'success',
+                    });
+                }
+                let skipCount = 0;
+                let processedCount = 0;
+                const translationPromises = allWebinars.map(async (webinar) => {
+                    const filePath = `/LC_MESSAGES/Quizzes/QuizWebinar/0/${webinar.id}/dynamic.json`;
+                    const jsonData = await this.translatorService.checkBucketForFile(filePath, 'eng');
+                    if (jsonData) {
+                        skipCount++;
+                        return;
+                    }
+                    const dynamicDatas = Object.create(null);
+                    if (webinar.title) {
+                        dynamicDatas[`quiz_webinar_title_${webinar.id}`] = webinar.title;
+                    }
+                    if (webinar.description) {
+                        dynamicDatas[`quiz_webinar_description_${webinar.id}`] = webinar.description;
+                    }
+                    if (Object.keys(dynamicDatas).length > 0) {
+                        processedCount++;
+                        await this.translatorService.DynamicEngJsonData(
+                            'Quizzes', '0', dynamicDatas,
+                            'Add', 'QuizWebinar', webinar.id
+                        );
+                    }
+                });
+                await Promise.all(translationPromises);
+                let result = {
+                    'processed': processedCount,
+                    'skipped': skipCount
+                };
+                return res.status(HttpStatus.OK).json({
+                    statusCode: 200,
+                    success: 1,
+                    error: 0,
+                    data: result,
+                    message: 'success',
+                });
+            }
             let dataFromBucket = await lastValueFrom(this.commonMicroservice.send({ cmd: 'get_file' }, { path: `quiz/webinar/default/defaultwebinars.json`, userBucket: 'private' }))
             if (dataFromBucket) {
                 dataFromBucket = Buffer.from(dataFromBucket.Body, 'base64').toString('utf-8');
@@ -548,8 +603,12 @@ export class QuizWebinarController {
                     let saveData = await this.quizWebinarService.save(data);
                     let dynamicDatas = Object.create(null);
                     if (webinar?.title) {
-                        let tilte = `quiz_webinar_title_${saveData['id']}`
-                        dynamicDatas[`${tilte}`] = webinar?.title;
+                        let title = `quiz_webinar_title_${saveData['id']}`
+                        dynamicDatas[`${title}`] = webinar?.title;
+                    }
+                    if (webinar?.description) {
+                        let title = `quiz_webinar_description_${saveData['id']}`
+                        dynamicDatas[`${title}`] = webinar?.description;
                     }
                     await this.translatorService.DynamicEngJsonData('Quizzes', '0', dynamicDatas, 'Add', 'QuizWebinar', saveData?.id);
                 }

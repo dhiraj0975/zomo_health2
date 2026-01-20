@@ -80,20 +80,20 @@ export class MediaPostController {
             if(resultedData['list'] && resultedData['list'].length){
                 await Promise.all(resultedData['list'].map(async (ele)=>{
                     if(ele.title){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`post_title_${ele['cat_id']}_${ele['id']}`, `/LC_MESSAGES/Media/Media/${ele['org_id']}/${ele['cat_id']}`,`dynamic`);
-                        ele.title = (customeName == '' || customeName == `post_title_${ele['cat_id']}_${ele['id']}`) ? ele['title'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`post_title_${ele['cat_id']}_${ele['id']}`, `/LC_MESSAGES/Media/Media/${ele['org_id']}/${ele['cat_id']}`,`dynamic`);
+                        ele.title = (customName == '' || customName == `post_title_${ele['cat_id']}_${ele['id']}`) ? ele['title'] : customName;
                     }
                     if(ele.link_title){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`post_linktitle_${ele['cat_id']}_${ele['id']}`, `/LC_MESSAGES/Media/Media/${ele['org_id']}/${ele['cat_id']}`,`dynamic`);
-                        ele.link_title = (customeName == '' || customeName == `post_linktitle_${ele['cat_id']}_${ele['id']}`) ? ele['link_title'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`post_linktitle_${ele['cat_id']}_${ele['id']}`, `/LC_MESSAGES/Media/Media/${ele['org_id']}/${ele['cat_id']}`,`dynamic`);
+                        ele.link_title = (customName == '' || customName == `post_linktitle_${ele['cat_id']}_${ele['id']}`) ? ele['link_title'] : customName;
                     }
                     if(ele.short_desc){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`post_shortdesc_${ele['cat_id']}_${ele['id']}`, `/LC_MESSAGES/Media/Media/${ele['org_id']}/${ele['cat_id']}`,`dynamic`);
-                        ele.short_desc = (customeName == '' || customeName == `post_shortdesc_${ele['cat_id']}_${ele['id']}`) ? ele['short_desc'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`post_shortdesc_${ele['cat_id']}_${ele['id']}`, `/LC_MESSAGES/Media/Media/${ele['org_id']}/${ele['cat_id']}`,`dynamic`);
+                        ele.short_desc = (customName == '' || customName == `post_shortdesc_${ele['cat_id']}_${ele['id']}`) ? ele['short_desc'] : customName;
                     }
                     if(ele.more_desc){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`post_moredesc_${ele['cat_id']}_${ele['id']}`, `/LC_MESSAGES/Media/Media/${ele['org_id']}/${ele['cat_id']}`,`dynamic`);
-                        ele.more_desc = (customeName == '' || customeName == `post_moredesc_${ele['cat_id']}_${ele['id']}`) ? ele['more_desc'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`post_moredesc_${ele['cat_id']}_${ele['id']}`, `/LC_MESSAGES/Media/Media/${ele['org_id']}/${ele['cat_id']}`,`dynamic`);
+                        ele.more_desc = (customName == '' || customName == `post_moredesc_${ele['cat_id']}_${ele['id']}`) ? ele['more_desc'] : customName;
                     }
                 }));
             }
@@ -144,20 +144,20 @@ export class MediaPostController {
                 await this.commonArrayService.formatToDto(MediaPostDto, mediaPost, req.lang)
             );
             if(mediaPost.title){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`post_title_${mediaPost['cat_id']}_${mediaPost['id']}`, `/LC_MESSAGES/Media/Media/${mediaPost['org_id']}/${mediaPost['cat_id']}`,`dynamic`);
-                mediaPost.title = (customeName == '' || customeName == `post_title_${mediaPost['cat_id']}_${mediaPost['id']}`) ? mediaPost['title'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`post_title_${mediaPost['cat_id']}_${mediaPost['id']}`, `/LC_MESSAGES/Media/Media/${mediaPost['org_id']}/${mediaPost['cat_id']}`,`dynamic`);
+                mediaPost.title = (customName == '' || customName == `post_title_${mediaPost['cat_id']}_${mediaPost['id']}`) ? mediaPost['title'] : customName;
             }
             if(mediaPost.link_title){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`post_linktitle_${mediaPost['cat_id']}_${mediaPost['id']}`, `/LC_MESSAGES/Media/Media/${mediaPost['org_id']}/${mediaPost['cat_id']}`,`dynamic`);
-                mediaPost.link_title = (customeName == '' || customeName == `post_linktitle_${mediaPost['cat_id']}_${mediaPost['id']}`) ? mediaPost['link_title'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`post_linktitle_${mediaPost['cat_id']}_${mediaPost['id']}`, `/LC_MESSAGES/Media/Media/${mediaPost['org_id']}/${mediaPost['cat_id']}`,`dynamic`);
+                mediaPost.link_title = (customName == '' || customName == `post_linktitle_${mediaPost['cat_id']}_${mediaPost['id']}`) ? mediaPost['link_title'] : customName;
             }
             if(mediaPost.short_desc){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`post_shortdesc_${mediaPost['cat_id']}_${mediaPost['id']}`, `/LC_MESSAGES/Media/Media/${mediaPost['org_id']}/${mediaPost['cat_id']}`,`dynamic`);
-                mediaPost.short_desc = (customeName == '' || customeName == `post_shortdesc_${mediaPost['cat_id']}_${mediaPost['id']}`) ? mediaPost['short_desc'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`post_shortdesc_${mediaPost['cat_id']}_${mediaPost['id']}`, `/LC_MESSAGES/Media/Media/${mediaPost['org_id']}/${mediaPost['cat_id']}`,`dynamic`);
+                mediaPost.short_desc = (customName == '' || customName == `post_shortdesc_${mediaPost['cat_id']}_${mediaPost['id']}`) ? mediaPost['short_desc'] : customName;
             }
             if(mediaPost.more_desc){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`post_moredesc_${mediaPost['cat_id']}_${mediaPost['id']}`, `/LC_MESSAGES/Media/Media/${mediaPost['org_id']}/${mediaPost['cat_id']}`,`dynamic`);
-                mediaPost.more_desc = (customeName == '' || customeName == `post_moredesc_${mediaPost['cat_id']}_${mediaPost['id']}`) ? mediaPost['more_desc'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`post_moredesc_${mediaPost['cat_id']}_${mediaPost['id']}`, `/LC_MESSAGES/Media/Media/${mediaPost['org_id']}/${mediaPost['cat_id']}`,`dynamic`);
+                mediaPost.more_desc = (customName == '' || customName == `post_moredesc_${mediaPost['cat_id']}_${mediaPost['id']}`) ? mediaPost['more_desc'] : customName;
             }
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
@@ -477,20 +477,20 @@ export class MediaPostController {
             if(resultedData && resultedData.length){
                 await Promise.all(resultedData.map(async (ele)=>{
                     if(ele.title){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`post_title_${ele['cat_id']}_${ele['id']}`, `/LC_MESSAGES/Media/Media/${ele['org_id']}/${ele['cat_id']}`,`dynamic`);
-                        ele.title = (customeName == '' || customeName == `post_title_${ele['cat_id']}_${ele['id']}`) ? ele['title'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`post_title_${ele['cat_id']}_${ele['id']}`, `/LC_MESSAGES/Media/Media/${ele['org_id']}/${ele['cat_id']}`,`dynamic`);
+                        ele.title = (customName == '' || customName == `post_title_${ele['cat_id']}_${ele['id']}`) ? ele['title'] : customName;
                     }
                     if(ele.link_title){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`post_linktitle_${ele['cat_id']}_${ele['id']}`, `/LC_MESSAGES/Media/Media/${ele['org_id']}/${ele['cat_id']}`,`dynamic`);
-                        ele.link_title = (customeName == '' || customeName == `post_linktitle_${ele['cat_id']}_${ele['id']}`) ? ele['link_title'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`post_linktitle_${ele['cat_id']}_${ele['id']}`, `/LC_MESSAGES/Media/Media/${ele['org_id']}/${ele['cat_id']}`,`dynamic`);
+                        ele.link_title = (customName == '' || customName == `post_linktitle_${ele['cat_id']}_${ele['id']}`) ? ele['link_title'] : customName;
                     }
                     if(ele.short_desc){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`post_shortdesc_${ele['cat_id']}_${ele['id']}`, `/LC_MESSAGES/Media/Media/${ele['org_id']}/${ele['cat_id']}`,`dynamic`);
-                        ele.short_desc = (customeName == '' || customeName == `post_shortdesc_${ele['cat_id']}_${ele['id']}`) ? ele['short_desc'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`post_shortdesc_${ele['cat_id']}_${ele['id']}`, `/LC_MESSAGES/Media/Media/${ele['org_id']}/${ele['cat_id']}`,`dynamic`);
+                        ele.short_desc = (customName == '' || customName == `post_shortdesc_${ele['cat_id']}_${ele['id']}`) ? ele['short_desc'] : customName;
                     }
                     if(ele.more_desc){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`post_moredesc_${ele['cat_id']}_${ele['id']}`, `/LC_MESSAGES/Media/Media/${ele['org_id']}/${ele['cat_id']}`,`dynamic`);
-                        ele.more_desc = (customeName == '' || customeName == `post_moredesc_${ele['cat_id']}_${ele['id']}`) ? ele['more_desc'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`post_moredesc_${ele['cat_id']}_${ele['id']}`, `/LC_MESSAGES/Media/Media/${ele['org_id']}/${ele['cat_id']}`,`dynamic`);
+                        ele.more_desc = (customName == '' || customName == `post_moredesc_${ele['cat_id']}_${ele['id']}`) ? ele['more_desc'] : customName;
                     }
                 }));
             }
@@ -520,8 +520,8 @@ export class MediaPostController {
             const record =  await this.mediaCategoryService.findOne({ id: id });
             if (record) {
                 if(record.title){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`category_title_${record['id']}`, `/LC_MESSAGES/Media/Media/${record['org_id']}/${record['id']}`,`dynamic`);
-                    record.title = (customeName == '' || customeName == `category_title_${record['id']}`) ? record['title'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`category_title_${record['id']}`, `/LC_MESSAGES/Media/Media/${record['org_id']}/${record['id']}`,`dynamic`);
+                    record.title = (customName == '' || customName == `category_title_${record['id']}`) ? record['title'] : customName;
                 }
                 if (record.parent_id) {
                     concatenatedString.push(record?.title ?? '')

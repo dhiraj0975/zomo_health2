@@ -16,7 +16,7 @@ import { AccessGuard, RoleGuard, TokenGuard } from '../../../guard';
 import {
     CreateBingoWeekLabelsInput,
     DeleteChallengeInput,
-    GetoneChallengeInput,
+    GetOneChallengeInput,
     UpdateBingoWeekLabelsInput
 } from "../../../input";
 import { TranslationService } from "../../translation/translation.service";
@@ -180,7 +180,7 @@ export class BingoWeekLabelsController {
         }
     }
     @Post('get-one')
-    async getOne(@Req() req: Request, @Res() res: Response, @Body() postData: GetoneChallengeInput) {
+    async getOne(@Req() req: Request, @Res() res: Response, @Body() postData: GetOneChallengeInput) {
         try {
             if (!postData?.id || !postData?.schedule_id) {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang,'ERR_REQUIRED_PARAM_MISSING'));
@@ -190,8 +190,8 @@ export class BingoWeekLabelsController {
                 await this.commonArrayService.formatToDto(BingoWeekLabelsDto, resultedData, req.lang)
             );
             if(resultedData.week_custom_name){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`bingoweek_labels_${resultedData.schedule_id}_${resultedData['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${resultedData['scheduleChallenge'].org_id}/${resultedData.schedule_id}`,`dynamic`);
-                resultedData.week_custom_name = (customeName == '' || customeName == `bingoweek_labels_${resultedData.schedule_id}_${resultedData['id']}`) ? resultedData['week_custom_name'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`bingoweek_labels_${resultedData.schedule_id}_${resultedData['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${resultedData['scheduleChallenge'].org_id}/${resultedData.schedule_id}`,`dynamic`);
+                resultedData.week_custom_name = (customName == '' || customName == `bingoweek_labels_${resultedData.schedule_id}_${resultedData['id']}`) ? resultedData['week_custom_name'] : customName;
             }
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
@@ -224,8 +224,8 @@ export class BingoWeekLabelsController {
             );
             await Promise.all(result.map(async (ele) => {
                 if(ele.week_custom_name){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`bingoweek_labels_${ele.schedule_id}_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele['scheduleChallenge'].org_id}/${ele.schedule_id}`,`dynamic`);
-                    ele.week_custom_name = (customeName == '' || customeName == `bingoweek_labels_${ele.schedule_id}_${ele['id']}`) ? ele['week_custom_name'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`bingoweek_labels_${ele.schedule_id}_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele['scheduleChallenge'].org_id}/${ele.schedule_id}`,`dynamic`);
+                    ele.week_custom_name = (customName == '' || customName == `bingoweek_labels_${ele.schedule_id}_${ele['id']}`) ? ele['week_custom_name'] : customName;
                 }
             }));
             return res.status(HttpStatus.OK).json({

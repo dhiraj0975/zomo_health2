@@ -50,8 +50,8 @@ export class AssessmentOptionsDetailsController {
                 await Promise.all(resultedData['list'].map(async (ele)=>{
                     if(ele.option_title){
                         let optionData = await this.assessmentOptionsService.findOne(`ao.id = '${ele.option_id}' AND ao.status = 1`, ['ao']);
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_option_title_${optionData['question_id']}_${ele['option_id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${req.tokenUser?.org_id}`,`dynamic`);
-                        ele.option_title = (customeName == '' || customeName == `assessment_option_title_${optionData['question_id']}_${ele['option_id']}`) ? ele['option_title'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_option_title_${optionData['question_id']}_${ele['option_id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${req.tokenUser?.org_id}`,`dynamic`);
+                        ele.option_title = (customName == '' || customName == `assessment_option_title_${optionData['question_id']}_${ele['option_id']}`) ? ele['option_title'] : customName;
                     }
                 }));
             }
@@ -99,8 +99,8 @@ export class AssessmentOptionsDetailsController {
             );
             if(optionDetails.option_title){
                 let optionData = await this.assessmentOptionsService.findOne(`ao.id = '${optionDetails.option_id}' AND ao.status = 1`, ['ao']);
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_option_title_${optionData['question_id']}_${optionDetails['option_id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${req.tokenUser?.org_id}`,`dynamic`);
-                optionDetails.option_title = (customeName == '' || customeName == `assessment_option_title_${optionData['question_id']}_${optionDetails['option_id']}`) ? optionDetails['option_title'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_option_title_${optionData['question_id']}_${optionDetails['option_id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${req.tokenUser?.org_id}`,`dynamic`);
+                optionDetails.option_title = (customName == '' || customName == `assessment_option_title_${optionData['question_id']}_${optionDetails['option_id']}`) ? optionDetails['option_title'] : customName;
             }
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
@@ -258,8 +258,8 @@ export class AssessmentOptionsDetailsController {
                 await Promise.all(resultedData.map(async (ele)=>{
                     if(ele.option_title){
                         let optionData = await this.assessmentOptionsService.findOne(`ao.id = '${ele.option_id}' AND ao.status = 1`, ['ao']);
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_option_title_${optionData['question_id']}_${ele['option_id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${req.tokenUser?.org_id}`,`dynamic`);
-                        ele.option_title = (customeName == '' || customeName == `assessment_option_title_${optionData['question_id']}_${ele['option_id']}`) ? ele['option_title'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_option_title_${optionData['question_id']}_${ele['option_id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${req.tokenUser?.org_id}`,`dynamic`);
+                        ele.option_title = (customName == '' || customName == `assessment_option_title_${optionData['question_id']}_${ele['option_id']}`) ? ele['option_title'] : customName;
                     }
                 }));
             }

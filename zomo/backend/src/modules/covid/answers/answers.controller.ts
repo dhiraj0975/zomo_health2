@@ -57,15 +57,15 @@ export class AnswersController {
                 if(resultedData['list'] && resultedData['list'].length){
                     await Promise.all(resultedData['list'].map(async (ele)=>{
                         if(ele.title){
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang, `covidanswer_${ele['question']['id']}_${ele['id']}`, `/LC_MESSAGES/Common/CovidPopup/${postData.org_id}`,`dynamic`)
-                            if (customeName != `covidanswer_${ele['question']['id']}_${ele['id']}`) {
-                                ele.title = customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang, `covidanswer_${ele['question']['id']}_${ele['id']}`, `/LC_MESSAGES/Common/CovidPopup/${postData.org_id}`,`dynamic`)
+                            if (customName != `covidanswer_${ele['question']['id']}_${ele['id']}`) {
+                                ele.title = customName;
                             }
                         }
                         if(ele.question?.title){
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang, `covidquestion_title_${ele['question']['id']}`, `/LC_MESSAGES/Common/CovidPopup/${postData.org_id}`,`dynamic`);
-                            if (customeName != `covidquestion_title_${ele['question']['id']}`) {
-                                ele.question.title = customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang, `covidquestion_title_${ele['question']['id']}`, `/LC_MESSAGES/Common/CovidPopup/${postData.org_id}`,`dynamic`);
+                            if (customName != `covidquestion_title_${ele['question']['id']}`) {
+                                ele.question.title = customName;
                             }
                         }
                     }));
@@ -117,14 +117,14 @@ export class AnswersController {
                     await this.commonArrayService.formatToDto(CovidAnswersDto, answerDetails, req.lang)
                 );
                 if(answerDetails.title){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang, `covidanswer_${answerDetails['question']['id']}_${answerDetails['id']}`, `/LC_MESSAGES/Common/CovidPopup/${req.tokenUser?.org_id}`,`dynamic`)
-                    if (customeName != `covidanswer_${answerDetails['question']['id']}_${answerDetails['id']}`) {
-                        answerDetails.title = customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang, `covidanswer_${answerDetails['question']['id']}_${answerDetails['id']}`, `/LC_MESSAGES/Common/CovidPopup/${req.tokenUser?.org_id}`,`dynamic`)
+                    if (customName != `covidanswer_${answerDetails['question']['id']}_${answerDetails['id']}`) {
+                        answerDetails.title = customName;
                     }
                     if(answerDetails['question']['title']){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `covidquestion_title_${answerDetails['question']['id']}`, `/LC_MESSAGES/Common/CovidPopup/${req.tokenUser?.org_id}`,`dynamic`);
-                        if (customeName != `covidquestion_title_${answerDetails['question']['id']}`) {
-                            answerDetails['question']['title'] = customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `covidquestion_title_${answerDetails['question']['id']}`, `/LC_MESSAGES/Common/CovidPopup/${req.tokenUser?.org_id}`,`dynamic`);
+                        if (customName != `covidquestion_title_${answerDetails['question']['id']}`) {
+                            answerDetails['question']['title'] = customName;
                         }
                     }
                 }
@@ -294,9 +294,9 @@ export class AnswersController {
             if(resultedData && resultedData.length){
                 await Promise.all(resultedData.map(async (ele)=>{
                     if(ele.title){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `covidanswer_${ele['question']['id']}_${ele['id']}`, `/LC_MESSAGES/Common/CovidPopup/${req.tokenUser?.org_id}`,`dynamic`)
-                        if (customeName != `covidanswer_${ele['question']['id']}_${ele['id']}`) {
-                            ele.title = customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `covidanswer_${ele['question']['id']}_${ele['id']}`, `/LC_MESSAGES/Common/CovidPopup/${req.tokenUser?.org_id}`,`dynamic`)
+                        if (customName != `covidanswer_${ele['question']['id']}_${ele['id']}`) {
+                            ele.title = customName;
                         }
                     }
                 }));

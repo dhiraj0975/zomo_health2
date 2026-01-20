@@ -395,7 +395,7 @@ export class MarketingController {
             }
 
             let emailDetails = {
-                receiver: 'info@atologistinfotech.com',
+                receiver: 'hr@atologistinfotech.com',
                 subject: `New Application for ${postData?.role}.`,
                 content: { 'type': 51, 'Name': postData?.first_name + ' ' + postData?.last_name, 'Email': postData?.email, 'Contact_Number': postData?.mobile, 'Role': postData?.role },
                 attachment: attachemnt,

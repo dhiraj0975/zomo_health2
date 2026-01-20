@@ -1,7 +1,7 @@
-import { appConstant, CommonArrayService, CommonFileService, CommunicationEmailEntity } from '@common-constants';
+import { appConstant, CommonArrayService, CommonFileService, CommunicationEmailEntity, tableConstant } from '@common-constants';
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { FindOptionsSelect, Repository } from "typeorm";
 import { PaginateWithCommunicationInput } from "../../../input";
 @Injectable()
 export class CommunicationEmailService {
@@ -41,13 +41,13 @@ export class CommunicationEmailService {
             where: condition,
         });
     }
-    async listRecord(condition: any, orderBy: any = null) {
+    async listRecord(condition: any, orderBy: any = null ,  fields: FindOptionsSelect<CommunicationEmailEntity> = {} ) {
         if (!orderBy) {
             orderBy = { id: 'DESC' };
         }
         return await this.readReplicacommunicationEmailRepository.find({
             where: condition,
-            select: [],
+            select: fields,
             order: orderBy,
         });
     }
@@ -65,5 +65,39 @@ export class CommunicationEmailService {
     }
     async delete(condition: any) {
         await this.writeReplicacommunicationEmailRepository.delete(condition);
+    }
+    async paginateWithEmT(condition: any, orderBy: any = null, fields: string[] = ['communication'],  paginationParam: PaginateWithCommunicationInput, subCondition: string = '') {
+        const paginateObj = this.commonArrayService.getPaginationVar(
+            paginationParam.page || 1,
+            paginationParam.limit,
+        );
+        if (!orderBy) {
+            orderBy = { 'communication.id': 'DESC' };
+        }
+        const resultData = await this.readReplicacommunicationEmailRepository.createQueryBuilder('communication')
+            .innerJoinAndMapOne(
+                'communication.EmailTo',
+                tableConstant.COMMUNICATION.TBL_COM_EMAIL_TO,
+                'EmailTo',
+                `EmailTo.mail_id = communication.id`,
+            )
+            .leftJoinAndMapMany(
+                'communication.user',
+                tableConstant.TBL_USERS,
+                'user',
+                `${subCondition}`,
+            )
+            .where(condition)
+            .select(fields)
+            .take(paginateObj.take)
+            .skip(paginateObj.skip)
+            .getManyAndCount();
+        const [result, total] = resultData;
+        return this.commonArrayService.paginationResponse(result, total, paginateObj);
+    }
+    async count(condition: any) {
+        return await this.readReplicacommunicationEmailRepository.count({
+            where: condition,
+        });
     }
 }

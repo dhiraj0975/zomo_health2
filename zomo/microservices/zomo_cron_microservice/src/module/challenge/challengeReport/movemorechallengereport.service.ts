@@ -25,8 +25,7 @@ export class MoveChallengeReportService {
         private readonly weekStepsService: WeekStepsService,
     ) {}
 
-    async moveMoreChallengeReport(schedule: Partial<ScheduleChallengeEntity>,condition: string = '',result_type: number = 1,paginateObj: any = null, activityList = [],teamCondition: string = '',
-        groupCondition: string = '',) {
+    async moveMoreChallengeReport(schedule: Partial<ScheduleChallengeEntity>,condition: string = '',result_type: number = 1,paginateObj: any = null, activityList = [],teamCondition: string = '',groupCondition: string = '',) {
         try {
             if(teamCondition !== ''){
                 condition += ' AND ' + teamCondition;
@@ -469,6 +468,9 @@ export class MoveChallengeReportService {
                                             let tempcomcount = 0;
                                             for (const weeksftepsVal of weeksfteps) {
                                                 const startDate = this.commonDateService.DateTimeFormat(weeksftepsVal.start_date);
+                                                if(this.commonDateService.DateTimeFormat(weeksftepsVal.end_date).isSameOrBefore(enddate) == false){
+                                                    weeksftepsVal.end_date = enddate.format('YYYY-MM-DD')
+                                                }
                                                 const endDate = this.commonDateService.DateTimeFormat(this.commonDateService.DateTimeFormat(weeksftepsVal.end_date).format('YYYY-MM-DD') + ' 23:59:59');
                                                 const tempdata = Object.fromEntries(
                                                     Object.entries(user.datewise).filter(([dateStr, val]) => {
@@ -569,10 +571,8 @@ export class MoveChallengeReportService {
                                             }
                                         }
 
-                                        const completed_lock_locations: number[] =
-                                            user.scj.completed_lock_locations && user.scj.completed_lock_locations !== ''
-                                            ? (JSON.parse(user.scj.completed_lock_locations) as number[])
-                                            : [];
+                                        let completed_lock_locations: number[] = user.scj.completed_lock_locations && user.scj.completed_lock_locations !== '' ? (JSON.parse(user.scj.completed_lock_locations) as number[]) : [];
+                                        completed_lock_locations = completed_lock_locations.map(item => Number(item));
                                         const lock_steplog_website_click: number = Number(schedule.lock_steplog_website_click);
                                         let temp_status: boolean = lock_steplog_website_click === 0;
                                         let get_current: number = 0;

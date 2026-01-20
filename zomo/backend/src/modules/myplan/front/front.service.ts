@@ -20,7 +20,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { AssessmentEmotionalAssessmentService } from 'src/modules/healthassessment/assessmentemotionalassessment/assessmentemotionalassessment.service';
 import { AssessmentEmotionalAssessmentAnswerService } from 'src/modules/healthassessment/assessmentemotionalassessmentanswer/assessmentemotionalassessmentanswer.service';
 import { AssessmentResultsService } from 'src/modules/healthassessment/assessmentresults/assessmentresults.service';
-import {In, Not, Repository} from 'typeorm';
+import { In, Not, Repository } from 'typeorm';
 import { TranslationService } from "../../translation/translation.service";
 @Injectable()
 export class FrontService {
@@ -876,8 +876,8 @@ export class FrontService {
             if(tabsAll && tabsAll.length){
                 await Promise.all(tabsAll.map(async (ele)=>{
                     if(ele.title){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_title_${ele.organization_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele['organization_id']}`,`dynamic`);
-                        ele.title = (customeName == '' || customeName == `assessment_title_${ele.organization_id}_${ele['id']}`) ? ele['title'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_title_${ele.organization_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele['organization_id']}`,`dynamic`);
+                        ele.title = (customName == '' || customName == `assessment_title_${ele.organization_id}_${ele['id']}`) ? ele['title'] : customName;
                     }
                 }));
             }

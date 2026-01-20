@@ -259,7 +259,7 @@ export class EventSlotsController {
             await this.eventSlotsService.update(where,{status:2});
             this.activityLogService.create(recordDetails, {status:2}, tableConstant.EVENTS.TBL_EV_SLOTS, req.tokenUser?.id, 'delete');
             const slotTimingData = await this.eventSlotsTimingsService.listRecord(`est.ev_slots_id = ${recordDetails?.id} AND est.ev_events_id = ${recordDetails?.ev_events_id}`,null,['est.id','est.status']);
-            await this.eventSlotsTimingsService.update(`ev_slots_id = ${recordDetails?.id} AND ev_events_id = ${recordDetails?.ev_events_id}`,{ status: 2});
+            await this.eventSlotsTimingsService.update(`ev_slots_id = ${recordDetails?.id} AND ev_events_id = ${recordDetails?.ev_events_id} AND status != 2`,{ status: 2});
             this.notificationsController.removeNotification({org_id: recordDetails?.organization_id, slot_id: recordDetails?.id, event_id: recordDetails?.ev_events_id},req);
             if(slotTimingData.length){
                 slotTimingData?.map(item=>this.activityLogService.create(item, {status: 2}, tableConstant.EVENTS.TBL_EV_SLOTS_TIMINGS, req.tokenUser?.id, 'delete'));

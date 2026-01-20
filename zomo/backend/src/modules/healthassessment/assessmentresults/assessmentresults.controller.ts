@@ -54,28 +54,28 @@ export class AssessmentResultsController {
             if(resultedData['list'] && resultedData['list'].length){
                 await Promise.all(resultedData['list'].map(async (ele)=>{
                     if(ele.title){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_title_${ele.organization_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele['organization_id']}`,`dynamic`);
-                        ele.title = (customeName == '' || customeName == `assessment_title_${ele.organization_id}_${ele['id']}`) ? ele['title'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_title_${ele.organization_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele['organization_id']}`,`dynamic`);
+                        ele.title = (customName == '' || customName == `assessment_title_${ele.organization_id}_${ele['id']}`) ? ele['title'] : customName;
                     }
                     if(ele['marker-low']){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markerlow_${ele.organization_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele['organization_id']}`,`dynamic`);
-                        ele['marker-low'] = (customeName == '' || customeName == `assessment_markerlow_${ele.organization_id}_${ele['id']}`) ? ele['marker-low'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markerlow_${ele.organization_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele['organization_id']}`,`dynamic`);
+                        ele['marker-low'] = (customName == '' || customName == `assessment_markerlow_${ele.organization_id}_${ele['id']}`) ? ele['marker-low'] : customName;
                     }
                     if(ele['marker-mod']){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markermod_${ele.organization_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele['organization_id']}`,`dynamic`);
-                        ele['marker-mod'] = (customeName == '' || customeName == `assessment_markermod_${ele.organization_id}_${ele['id']}`) ? ele['marker-mod'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markermod_${ele.organization_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele['organization_id']}`,`dynamic`);
+                        ele['marker-mod'] = (customName == '' || customName == `assessment_markermod_${ele.organization_id}_${ele['id']}`) ? ele['marker-mod'] : customName;
                     }
                     if(ele['marker-high']){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markerhigh_${ele.organization_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele['organization_id']}`,`dynamic`);
-                        ele['marker-high'] = (customeName == '' || customeName == `assessment_markerhigh_${ele.organization_id}_${ele['id']}`) ? ele['marker-high'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markerhigh_${ele.organization_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele['organization_id']}`,`dynamic`);
+                        ele['marker-high'] = (customName == '' || customName == `assessment_markerhigh_${ele.organization_id}_${ele['id']}`) ? ele['marker-high'] : customName;
                     }
                     if(ele['marker-common']){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markercommon_${ele.organization_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele['organization_id']}`,`dynamic`);
-                        ele['marker-common'] = (customeName == '' || customeName == `assessment_markercommon_${ele.organization_id}_${ele['id']}`) ? ele['marker-common'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markercommon_${ele.organization_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele['organization_id']}`,`dynamic`);
+                        ele['marker-common'] = (customName == '' || customName == `assessment_markercommon_${ele.organization_id}_${ele['id']}`) ? ele['marker-common'] : customName;
                     }
                     if(ele['marker-common_last']){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markercommonlast_${ele.organization_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele['organization_id']}`,`dynamic`);
-                        ele['marker-common_last'] = (customeName == '' || customeName == `assessment_markercommonlast_${ele.organization_id}_${ele['id']}`) ? ele['marker-common_last'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markercommonlast_${ele.organization_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele['organization_id']}`,`dynamic`);
+                        ele['marker-common_last'] = (customName == '' || customName == `assessment_markercommonlast_${ele.organization_id}_${ele['id']}`) ? ele['marker-common_last'] : customName;
                     }
                 }));
             }
@@ -125,28 +125,28 @@ export class AssessmentResultsController {
                 await this.commonArrayService.formatToDto(AssessmentResultsDto, assessmentResult, req.lang)
             );
             if(assessmentResult.title){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_title_${assessmentResult.organization_id}_${assessmentResult['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${assessmentResult['organization_id']}`,`dynamic`);
-                assessmentResult.title = (customeName == '' || customeName == `assessment_title_${assessmentResult.organization_id}_${assessmentResult['id']}`) ? assessmentResult['title'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_title_${assessmentResult.organization_id}_${assessmentResult['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${assessmentResult['organization_id']}`,`dynamic`);
+                assessmentResult.title = (customName == '' || customName == `assessment_title_${assessmentResult.organization_id}_${assessmentResult['id']}`) ? assessmentResult['title'] : customName;
             }
             if(assessmentResult['marker-low']){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markerlow_${assessmentResult.organization_id}_${assessmentResult['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${assessmentResult['organization_id']}`,`dynamic`);
-                assessmentResult['marker-low'] = (customeName == '' || customeName == `assessment_markerlow_${assessmentResult.organization_id}_${assessmentResult['id']}`) ? assessmentResult['marker-low'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markerlow_${assessmentResult.organization_id}_${assessmentResult['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${assessmentResult['organization_id']}`,`dynamic`);
+                assessmentResult['marker-low'] = (customName == '' || customName == `assessment_markerlow_${assessmentResult.organization_id}_${assessmentResult['id']}`) ? assessmentResult['marker-low'] : customName;
             }
             if(assessmentResult['marker-mod']){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markermod_${assessmentResult.organization_id}_${assessmentResult['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${assessmentResult['organization_id']}`,`dynamic`);
-                assessmentResult['marker-mod'] = (customeName == '' || customeName == `assessment_markermod_${assessmentResult.organization_id}_${assessmentResult['id']}`) ? assessmentResult['marker-mod'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markermod_${assessmentResult.organization_id}_${assessmentResult['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${assessmentResult['organization_id']}`,`dynamic`);
+                assessmentResult['marker-mod'] = (customName == '' || customName == `assessment_markermod_${assessmentResult.organization_id}_${assessmentResult['id']}`) ? assessmentResult['marker-mod'] : customName;
             }
             if(assessmentResult['marker-high']){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markerhigh_${assessmentResult.organization_id}_${assessmentResult['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${assessmentResult['organization_id']}`,`dynamic`);
-                assessmentResult['marker-high'] = (customeName == '' || customeName == `assessment_markerhigh_${assessmentResult.organization_id}_${assessmentResult['id']}`) ? assessmentResult['marker-high'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markerhigh_${assessmentResult.organization_id}_${assessmentResult['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${assessmentResult['organization_id']}`,`dynamic`);
+                assessmentResult['marker-high'] = (customName == '' || customName == `assessment_markerhigh_${assessmentResult.organization_id}_${assessmentResult['id']}`) ? assessmentResult['marker-high'] : customName;
             }
             if(assessmentResult['marker-common']){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markercommon_${assessmentResult.organization_id}_${assessmentResult['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${assessmentResult['organization_id']}`,`dynamic`);
-                assessmentResult['marker-common'] = (customeName == '' || customeName == `assessment_markercommon_${assessmentResult.organization_id}_${assessmentResult['id']}`) ? assessmentResult['marker-common'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markercommon_${assessmentResult.organization_id}_${assessmentResult['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${assessmentResult['organization_id']}`,`dynamic`);
+                assessmentResult['marker-common'] = (customName == '' || customName == `assessment_markercommon_${assessmentResult.organization_id}_${assessmentResult['id']}`) ? assessmentResult['marker-common'] : customName;
             }
             if(assessmentResult['marker-common_last']){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markercommonlast_${assessmentResult.organization_id}_${assessmentResult['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${assessmentResult['organization_id']}`,`dynamic`);
-                assessmentResult['marker-common_last'] = (customeName == '' || customeName == `assessment_markercommonlast_${assessmentResult.organization_id}_${assessmentResult['id']}`) ? assessmentResult['marker-common_last'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markercommonlast_${assessmentResult.organization_id}_${assessmentResult['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${assessmentResult['organization_id']}`,`dynamic`);
+                assessmentResult['marker-common_last'] = (customName == '' || customName == `assessment_markercommonlast_${assessmentResult.organization_id}_${assessmentResult['id']}`) ? assessmentResult['marker-common_last'] : customName;
             }
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
@@ -358,28 +358,28 @@ export class AssessmentResultsController {
             if(resultedData && resultedData.length){
                 await Promise.all(resultedData.map(async (ele)=>{
                     if(ele.title){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_title_${ele.organization_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele['organization_id']}`,`dynamic`);
-                        ele.title = (customeName == '' || customeName == `assessment_title_${ele.organization_id}_${ele['id']}`) ? ele['title'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_title_${ele.organization_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele['organization_id']}`,`dynamic`);
+                        ele.title = (customName == '' || customName == `assessment_title_${ele.organization_id}_${ele['id']}`) ? ele['title'] : customName;
                     }
                     if(ele['marker-low']){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markerlow_${ele.organization_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele['organization_id']}`,`dynamic`);
-                        ele['marker-low'] = (customeName == '' || customeName == `assessment_markerlow_${ele.organization_id}_${ele['id']}`) ? ele['marker-low'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markerlow_${ele.organization_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele['organization_id']}`,`dynamic`);
+                        ele['marker-low'] = (customName == '' || customName == `assessment_markerlow_${ele.organization_id}_${ele['id']}`) ? ele['marker-low'] : customName;
                     }
                     if(ele['marker-mod']){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markermod_${ele.organization_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele['organization_id']}`,`dynamic`);
-                        ele['marker-mod'] = (customeName == '' || customeName == `assessment_markermod_${ele.organization_id}_${ele['id']}`) ? ele['marker-mod'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markermod_${ele.organization_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele['organization_id']}`,`dynamic`);
+                        ele['marker-mod'] = (customName == '' || customName == `assessment_markermod_${ele.organization_id}_${ele['id']}`) ? ele['marker-mod'] : customName;
                     }
                     if(ele['marker-high']){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markerhigh_${ele.organization_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele['organization_id']}`,`dynamic`);
-                        ele['marker-high'] = (customeName == '' || customeName == `assessment_markerhigh_${ele.organization_id}_${ele['id']}`) ? ele['marker-high'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markerhigh_${ele.organization_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele['organization_id']}`,`dynamic`);
+                        ele['marker-high'] = (customName == '' || customName == `assessment_markerhigh_${ele.organization_id}_${ele['id']}`) ? ele['marker-high'] : customName;
                     }
                     if(ele['marker-common']){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markercommon_${ele.organization_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele['organization_id']}`,`dynamic`);
-                        ele['marker-common'] = (customeName == '' || customeName == `assessment_markercommon_${ele.organization_id}_${ele['id']}`) ? ele['marker-common'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markercommon_${ele.organization_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele['organization_id']}`,`dynamic`);
+                        ele['marker-common'] = (customName == '' || customName == `assessment_markercommon_${ele.organization_id}_${ele['id']}`) ? ele['marker-common'] : customName;
                     }
                     if(ele['marker-common_last']){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markercommonlast_${ele.organization_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele['organization_id']}`,`dynamic`);
-                        ele['marker-common_last'] = (customeName == '' || customeName == `assessment_markercommonlast_${ele.organization_id}_${ele['id']}`) ? ele['marker-common_last'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_markercommonlast_${ele.organization_id}_${ele['id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${ele['organization_id']}`,`dynamic`);
+                        ele['marker-common_last'] = (customName == '' || customName == `assessment_markercommonlast_${ele.organization_id}_${ele['id']}`) ? ele['marker-common_last'] : customName;
                     }
                 }));
             }

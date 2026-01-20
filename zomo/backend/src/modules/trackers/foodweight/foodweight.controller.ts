@@ -54,8 +54,8 @@ export class FoodWeightController {
             if(foodRequests['list'] && foodRequests['list'].length){
                 await Promise.all(foodRequests['list'].map(async (ele)=>{
                     if(ele.Msre_Desc){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`foodunit_${ele.Msre_Desc}_${NDBNo}`, `/LC_MESSAGES/Trackers/Nutrition/${NDBNo}`,`dynamic`);
-                        ele.Msre_Desc_trans = (customeName == '' || customeName == `foodunit_${ele.Msre_Desc}_${NDBNo}`) ? ele.Msre_Desc : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`foodunit_${ele.Msre_Desc}_${NDBNo}`, `/LC_MESSAGES/Trackers/Nutrition/${NDBNo}`,`dynamic`);
+                        ele.Msre_Desc_trans = (customName == '' || customName == `foodunit_${ele.Msre_Desc}_${NDBNo}`) ? ele.Msre_Desc : customName;
                     }
                 }));
             }

@@ -686,12 +686,12 @@ export class FoodFeedsController {
                 await Promise.all(resultedData.map(async (ele)=>{
                     let foodId: number = Number(ele?.foodId)
                     if(ele.name){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`${ele.name}`, `/LC_MESSAGES/Trackers/Nutrition/${foodId}`,`dynamic`);
-                        ele.name = (customeName == '' || customeName == `${ele.name}`) ? ele.name : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`${ele.name}`, `/LC_MESSAGES/Trackers/Nutrition/${foodId}`,`dynamic`);
+                        ele.name = (customName == '' || customName == `${ele.name}`) ? ele.name : customName;
                     }
                     if(ele.foodUnit){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`foodunit_${ele.foodUnit}_${foodId}`, `/LC_MESSAGES/Trackers/Nutrition/${foodId}`,`dynamic`);
-                        ele.foodUnit = (customeName == '' || customeName == `${ele.foodUnit}`) ? ele.foodUnit : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`foodunit_${ele.foodUnit}_${foodId}`, `/LC_MESSAGES/Trackers/Nutrition/${foodId}`,`dynamic`);
+                        ele.foodUnit = (customName == '' || customName == `${ele.foodUnit}`) ? ele.foodUnit : customName;
                     }
                 }));
             }

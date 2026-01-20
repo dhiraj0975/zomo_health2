@@ -308,12 +308,13 @@ export class UserScheduleChallengeController {
                     id: verificationRequest?.id, 
                     schedule_id: verificationRequest?.schedule_id, 
                     org_id: verificationRequest?.sc?.org_id ?? verificationRequest?.square?.org_id, 
-                    user_id: verificationRequest?.user_id, 
+                    user_id: verificationRequest?.verified_userid,
                     custom_cname: verificationRequest?.sc?.custom_cname, 
                     square_id: verificationRequest?.square_id,
                     card_id: verificationRequest?.card_id,
                     url: `https://${process.env.DOMAIN}/my-challenges/${verificationRequest?.schedule_id}`,
-                    send_type: 1
+                    send_type: 1,
+                    square_data: verificationRequest,
                 })
                 this.userChallengeHelperService.addNotification(notificationData, req);      
             } 

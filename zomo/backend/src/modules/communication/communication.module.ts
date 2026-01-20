@@ -26,6 +26,7 @@ import { CommunicationEmailToService } from './emailto/communicationemailto.serv
 import { MailSchedulersController } from "./mailschedulers/mailschedulers.controller";
 import { CommunicationTemplateTextsController } from './templatetexts/communicationtemplatetexts.controller';
 import { CommunicationTemplateTextsService } from './templatetexts/communicationtemplatetexts.service';
+import { CommunicationHelperService } from './communicationHelper.service';
 @Module({
     imports: [
         TypeOrmModule.forFeature([CommunicationEmailEntity, CommunicationEmailAttachmentEntity, CommunicationEmailAttachmentTypeEntity, CommunicationEmailToEntity, CommunicationTemplateTextsEntity], appConstant.READ_REPLICA.toLowerCase()),
@@ -37,6 +38,7 @@ import { CommunicationTemplateTextsService } from './templatetexts/communication
         EmailAttachmentTypesService,
         CommunicationEmailToService,
         CommunicationTemplateTextsService,
+        CommunicationHelperService,
         {
             provide: 'COMMUNICATION_SERVICE',
             inject: [ConfigService],
@@ -84,6 +86,7 @@ import { CommunicationTemplateTextsService } from './templatetexts/communication
         EmailAttachmentTypesService,
         CommunicationEmailToService,
         CommunicationTemplateTextsService,
+        CommunicationHelperService,
     ],
 })
 export class CommunicationModule {}

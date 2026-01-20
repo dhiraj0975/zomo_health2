@@ -62,47 +62,47 @@ export class SurveyPopupController {
             );
             if(resultedData['list'] && resultedData['list'].length){
                 await Promise.all(resultedData['list'].map(async (ele)=>{
-                    let customeName;
+                    let customName;
                     if(ele.title){
-                        customeName = await this.translatorService.frontendReadTranslation(req.lang, `survey_popup_title_${ele['org_id']}_${ele['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${postData?.org_id}/${ele.id}`,`dynamic`);
-                        if (customeName != `survey_popup_title_${ele['org_id']}_${ele['id']}`) {
-                            ele.title = customeName;
+                        customName = await this.translatorService.frontendReadTranslation(req.lang, `survey_popup_title_${ele['org_id']}_${ele['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${postData?.org_id}/${ele.id}`,`dynamic`);
+                        if (customName != `survey_popup_title_${ele['org_id']}_${ele['id']}`) {
+                            ele.title = customName;
                         }
                     }
                     if(ele.description){
-                        customeName = await this.translatorService.frontendReadTranslation(req.lang, `survey_popup_description_${ele['org_id']}_${ele['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${postData?.org_id}/${ele.id}`,`dynamic`);
-                        if (customeName != `survey_popup_description_${ele['org_id']}_${ele['id']}`) {
-                            ele.description = customeName;
+                        customName = await this.translatorService.frontendReadTranslation(req.lang, `survey_popup_description_${ele['org_id']}_${ele['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${postData?.org_id}/${ele.id}`,`dynamic`);
+                        if (customName != `survey_popup_description_${ele['org_id']}_${ele['id']}`) {
+                            ele.description = customName;
                         }
                     }
                     if(ele.additional_note){
-                        customeName = await this.translatorService.frontendReadTranslation(req.lang, `survey_popup_note_${ele['org_id']}_${ele['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${postData?.org_id}/${ele.id}`,`dynamic`);
-                        if (customeName != `survey_popup_note_${ele['org_id']}_${ele['id']}`) {
-                            ele.additional_note = customeName;
+                        customName = await this.translatorService.frontendReadTranslation(req.lang, `survey_popup_note_${ele['org_id']}_${ele['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${postData?.org_id}/${ele.id}`,`dynamic`);
+                        if (customName != `survey_popup_note_${ele['org_id']}_${ele['id']}`) {
+                            ele.additional_note = customName;
                         }
                     }
                     if(ele.pass_need_text){
-                        customeName = await this.translatorService.frontendReadTranslation(req.lang, `pass_need_text_${ele['org_id']}_${ele['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${postData?.org_id}/${ele.id}`,`dynamic`);
-                        if (customeName != `pass_need_text_${ele['org_id']}_${ele['id']}`) {
-                            ele.pass_need_text = customeName;
+                        customName = await this.translatorService.frontendReadTranslation(req.lang, `pass_need_text_${ele['org_id']}_${ele['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${postData?.org_id}/${ele.id}`,`dynamic`);
+                        if (customName != `pass_need_text_${ele['org_id']}_${ele['id']}`) {
+                            ele.pass_need_text = customName;
                         }
                     }
                     if(ele.pass_need_desc){
-                        customeName = await this.translatorService.frontendReadTranslation(req.lang, `pass_need_desc_${ele['org_id']}_${ele['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${postData?.org_id}/${ele.id}`,`dynamic`);
-                        if (customeName != `pass_need_desc_${ele['org_id']}_${ele['id']}`) {                            
-                            ele.pass_need_desc = customeName;
+                        customName = await this.translatorService.frontendReadTranslation(req.lang, `pass_need_desc_${ele['org_id']}_${ele['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${postData?.org_id}/${ele.id}`,`dynamic`);
+                        if (customName != `pass_need_desc_${ele['org_id']}_${ele['id']}`) {                            
+                            ele.pass_need_desc = customName;
                         }
                     }
                     if(ele.fail_need_text){
-                        customeName = await this.translatorService.frontendReadTranslation(req.lang, `fail_need_text_${ele['org_id']}_${ele['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${postData?.org_id}/${ele.id}`,`dynamic`);
-                        if (customeName != `fail_need_text_${ele['org_id']}_${ele['id']}`) {
-                            ele.fail_need_text = customeName;
+                        customName = await this.translatorService.frontendReadTranslation(req.lang, `fail_need_text_${ele['org_id']}_${ele['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${postData?.org_id}/${ele.id}`,`dynamic`);
+                        if (customName != `fail_need_text_${ele['org_id']}_${ele['id']}`) {
+                            ele.fail_need_text = customName;
                         }
                     }
                     if(ele.fail_need_desc){
-                        customeName = await this.translatorService.frontendReadTranslation(req.lang, `fail_need_desc_${ele['org_id']}_${ele['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${postData?.org_id}/${ele.id}`,`dynamic`);
-                        if (customeName != `fail_need_desc_${ele['org_id']}_${ele['id']}`) {
-                            ele.fail_need_desc = customeName;
+                        customName = await this.translatorService.frontendReadTranslation(req.lang, `fail_need_desc_${ele['org_id']}_${ele['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${postData?.org_id}/${ele.id}`,`dynamic`);
+                        if (customName != `fail_need_desc_${ele['org_id']}_${ele['id']}`) {
+                            ele.fail_need_desc = customName;
                         }
                     }
                 }));
@@ -346,47 +346,47 @@ export class SurveyPopupController {
             if (req.tokenUser?.role_id != appConstant.ROLE.ADMIN) {
                 if (resultedData && resultedData.length) {
                     await Promise.all(resultedData.map(async (ele) => {
-                        let customeName;
+                        let customName;
                         if (ele.title) {
-                            customeName = await this.translatorService.frontendReadTranslation(req.lang, `survey_popup_title_${ele['org_id']}_${ele['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${postData?.org_id}/${ele.id}`, `dynamic`);
-                            if (customeName != `survey_popup_title_${ele['org_id']}_${ele['id']}`) {
-                                ele.title = customeName;
+                            customName = await this.translatorService.frontendReadTranslation(req.lang, `survey_popup_title_${ele['org_id']}_${ele['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${postData?.org_id}/${ele.id}`, `dynamic`);
+                            if (customName != `survey_popup_title_${ele['org_id']}_${ele['id']}`) {
+                                ele.title = customName;
                             }
                         }
                         if (ele.description) {
-                            customeName = await this.translatorService.frontendReadTranslation(req.lang, `survey_popup_description_${ele['org_id']}_${ele['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${postData?.org_id}/${ele.id}`, `dynamic`);
-                            if (customeName != `survey_popup_description_${ele['org_id']}_${ele['id']}`) {
-                                ele.description = customeName;
+                            customName = await this.translatorService.frontendReadTranslation(req.lang, `survey_popup_description_${ele['org_id']}_${ele['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${postData?.org_id}/${ele.id}`, `dynamic`);
+                            if (customName != `survey_popup_description_${ele['org_id']}_${ele['id']}`) {
+                                ele.description = customName;
                             }
                         }
                         if (ele.additional_note) {
-                            customeName = await this.translatorService.frontendReadTranslation(req.lang, `survey_popup_note_${ele['org_id']}_${ele['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${postData?.org_id}/${ele.id}`, `dynamic`);
-                            if (customeName != `survey_popup_note_${ele['org_id']}_${ele['id']}`) {
-                                ele.additional_note = customeName;
+                            customName = await this.translatorService.frontendReadTranslation(req.lang, `survey_popup_note_${ele['org_id']}_${ele['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${postData?.org_id}/${ele.id}`, `dynamic`);
+                            if (customName != `survey_popup_note_${ele['org_id']}_${ele['id']}`) {
+                                ele.additional_note = customName;
                             }
                         }
                         if (ele.pass_need_text) {
-                            customeName = await this.translatorService.frontendReadTranslation(req.lang, `pass_need_text_${ele['org_id']}_${ele['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${postData?.org_id}/${ele.id}`, `dynamic`);
-                            if (customeName != `pass_need_text_${ele['org_id']}_${ele['id']}`) {
-                                ele.pass_need_text = customeName;
+                            customName = await this.translatorService.frontendReadTranslation(req.lang, `pass_need_text_${ele['org_id']}_${ele['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${postData?.org_id}/${ele.id}`, `dynamic`);
+                            if (customName != `pass_need_text_${ele['org_id']}_${ele['id']}`) {
+                                ele.pass_need_text = customName;
                             }
                         }
                         if (ele.pass_need_desc) {
-                            customeName = await this.translatorService.frontendReadTranslation(req.lang, `pass_need_desc_${ele['org_id']}_${ele['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${postData?.org_id}/${ele.id}`, `dynamic`);
-                            if (customeName != `pass_need_desc_${ele['org_id']}_${ele['id']}`) {
-                                ele.pass_need_desc = customeName;
+                            customName = await this.translatorService.frontendReadTranslation(req.lang, `pass_need_desc_${ele['org_id']}_${ele['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${postData?.org_id}/${ele.id}`, `dynamic`);
+                            if (customName != `pass_need_desc_${ele['org_id']}_${ele['id']}`) {
+                                ele.pass_need_desc = customName;
                             }
                         }
                         if (ele.fail_need_text) {
-                            customeName = await this.translatorService.frontendReadTranslation(req.lang, `fail_need_text_${ele['org_id']}_${ele['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${postData?.org_id}/${ele.id}`, `dynamic`);
-                            if (customeName != `fail_need_text_${ele['org_id']}_${ele['id']}`) {
-                                ele.fail_need_text = customeName;
+                            customName = await this.translatorService.frontendReadTranslation(req.lang, `fail_need_text_${ele['org_id']}_${ele['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${postData?.org_id}/${ele.id}`, `dynamic`);
+                            if (customName != `fail_need_text_${ele['org_id']}_${ele['id']}`) {
+                                ele.fail_need_text = customName;
                             }
                         }
                         if (ele.fail_need_desc) {
-                            customeName = await this.translatorService.frontendReadTranslation(req.lang, `fail_need_desc_${ele['org_id']}_${ele['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${postData?.org_id}/${ele.id}`, `dynamic`);
-                            if (customeName != `fail_need_desc_${ele['org_id']}_${ele['id']}`) {
-                                ele.fail_need_desc = customeName;
+                            customName = await this.translatorService.frontendReadTranslation(req.lang, `fail_need_desc_${ele['org_id']}_${ele['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${postData?.org_id}/${ele.id}`, `dynamic`);
+                            if (customName != `fail_need_desc_${ele['org_id']}_${ele['id']}`) {
+                                ele.fail_need_desc = customName;
                             }
                         }
                     }));
@@ -469,47 +469,47 @@ export class SurveyPopupController {
             recordDetails = <any>(
                 await this.commonArrayService.formatToDto(SurveyPopupDto, recordDetails, req.lang)
             );
-            let customeName;
+            let customName;
             if(recordDetails.title){
-                customeName = await this.translatorService.frontendReadTranslation(req.lang, `survey_popup_title_${recordDetails['org_id']}_${recordDetails['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${postData?.org_id}/${recordDetails.id}`,`dynamic`);
-                if (customeName != `survey_popup_title_${recordDetails['org_id']}_${recordDetails['id']}`) {
-                    recordDetails.title = customeName;
+                customName = await this.translatorService.frontendReadTranslation(req.lang, `survey_popup_title_${recordDetails['org_id']}_${recordDetails['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${postData?.org_id}/${recordDetails.id}`,`dynamic`);
+                if (customName != `survey_popup_title_${recordDetails['org_id']}_${recordDetails['id']}`) {
+                    recordDetails.title = customName;
                 }
             }
             if(recordDetails.description){
-                customeName = await this.translatorService.frontendReadTranslation(req.lang, `survey_popup_description_${recordDetails['org_id']}_${recordDetails['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${postData?.org_id}/${recordDetails.id}`,`dynamic`);
-                if (customeName != `survey_popup_description_${recordDetails['org_id']}_${recordDetails['id']}`) {
-                    recordDetails.description = customeName;
+                customName = await this.translatorService.frontendReadTranslation(req.lang, `survey_popup_description_${recordDetails['org_id']}_${recordDetails['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${postData?.org_id}/${recordDetails.id}`,`dynamic`);
+                if (customName != `survey_popup_description_${recordDetails['org_id']}_${recordDetails['id']}`) {
+                    recordDetails.description = customName;
                 }
             }
             if(recordDetails.additional_note){
-                customeName = await this.translatorService.frontendReadTranslation(req.lang, `survey_popup_note_${recordDetails['org_id']}_${recordDetails['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${postData?.org_id}/${recordDetails.id}`,`dynamic`);
-                if (customeName != `survey_popup_note_${recordDetails['org_id']}_${recordDetails['id']}`) {
-                    recordDetails.additional_note = customeName;
+                customName = await this.translatorService.frontendReadTranslation(req.lang, `survey_popup_note_${recordDetails['org_id']}_${recordDetails['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${postData?.org_id}/${recordDetails.id}`,`dynamic`);
+                if (customName != `survey_popup_note_${recordDetails['org_id']}_${recordDetails['id']}`) {
+                    recordDetails.additional_note = customName;
                 }
             }
             if(recordDetails.pass_need_text){
-                customeName = await this.translatorService.frontendReadTranslation(req.lang, `pass_need_text_${recordDetails['org_id']}_${recordDetails['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${postData?.org_id}/${recordDetails.id}`,`dynamic`);
-                if (customeName != `pass_need_text_${recordDetails['org_id']}_${recordDetails['id']}`) {
-                    recordDetails.pass_need_text = customeName;
+                customName = await this.translatorService.frontendReadTranslation(req.lang, `pass_need_text_${recordDetails['org_id']}_${recordDetails['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${postData?.org_id}/${recordDetails.id}`,`dynamic`);
+                if (customName != `pass_need_text_${recordDetails['org_id']}_${recordDetails['id']}`) {
+                    recordDetails.pass_need_text = customName;
                 }
             }
             if(recordDetails.pass_need_desc){
-                customeName = await this.translatorService.frontendReadTranslation(req.lang, `pass_need_desc_${recordDetails['org_id']}_${recordDetails['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${postData?.org_id}/${recordDetails.id}`,`dynamic`);
-                if (customeName != `pass_need_desc_${recordDetails['org_id']}_${recordDetails['id']}`) {                            
-                    recordDetails.pass_need_desc = customeName;
+                customName = await this.translatorService.frontendReadTranslation(req.lang, `pass_need_desc_${recordDetails['org_id']}_${recordDetails['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${postData?.org_id}/${recordDetails.id}`,`dynamic`);
+                if (customName != `pass_need_desc_${recordDetails['org_id']}_${recordDetails['id']}`) {                            
+                    recordDetails.pass_need_desc = customName;
                 }
             }
             if(recordDetails.fail_need_text){
-                customeName = await this.translatorService.frontendReadTranslation(req.lang, `fail_need_text_${recordDetails['org_id']}_${recordDetails['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${postData?.org_id}/${recordDetails.id}`,`dynamic`);
-                if (customeName != `fail_need_text_${recordDetails['org_id']}_${recordDetails['id']}`) {
-                    recordDetails.fail_need_text = customeName;
+                customName = await this.translatorService.frontendReadTranslation(req.lang, `fail_need_text_${recordDetails['org_id']}_${recordDetails['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${postData?.org_id}/${recordDetails.id}`,`dynamic`);
+                if (customName != `fail_need_text_${recordDetails['org_id']}_${recordDetails['id']}`) {
+                    recordDetails.fail_need_text = customName;
                 }
             }
             if(recordDetails.fail_need_desc){
-                customeName = await this.translatorService.frontendReadTranslation(req.lang, `fail_need_desc_${recordDetails['org_id']}_${recordDetails['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${postData?.org_id}/${recordDetails.id}`,`dynamic`);
-                if (customeName != `fail_need_desc_${recordDetails['org_id']}_${recordDetails['id']}`) {
-                    recordDetails.fail_need_desc = customeName;
+                customName = await this.translatorService.frontendReadTranslation(req.lang, `fail_need_desc_${recordDetails['org_id']}_${recordDetails['id']}`, `/LC_MESSAGES/Common/SurveyPopup/${postData?.org_id}/${recordDetails.id}`,`dynamic`);
+                if (customName != `fail_need_desc_${recordDetails['org_id']}_${recordDetails['id']}`) {
+                    recordDetails.fail_need_desc = customName;
                 }
             }
             return res.status(HttpStatus.OK).json({

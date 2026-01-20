@@ -9,4 +9,5 @@ export class QuizWebinarCreateInput {
     @Allow() webinar_date?: string;
     @Allow() status?: number;
     @Allow() is_default?: number;
+    @Allow() type?: string;
 }

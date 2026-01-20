@@ -166,12 +166,12 @@ export class QuestionnaireSettingsController {
                     await this.commonArrayService.formatToDto(QuestionnaireSettingsDto, resultedData, req.lang)
                 );
                 if(resultedData?.title){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`title_${resultedData.org_id}`, `/LC_MESSAGES/Common/QuestionnairePopup/${resultedData['org_id']}`,`dynamic`);
-                    resultedData.title = (customeName == '' || customeName == `title_${resultedData.org_id}`) ? resultedData['title'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`title_${resultedData.org_id}`, `/LC_MESSAGES/Common/QuestionnairePopup/${resultedData['org_id']}`,`dynamic`);
+                    resultedData.title = (customName == '' || customName == `title_${resultedData.org_id}`) ? resultedData['title'] : customName;
                 }
                 if(resultedData?.header_text){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`header_text_${resultedData.org_id}`, `/LC_MESSAGES/Common/QuestionnairePopup/${resultedData['org_id']}`,`dynamic`);
-                    resultedData.header_text = (customeName == '' || customeName == `header_text_${resultedData.org_id}`) ? resultedData['header_text'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`header_text_${resultedData.org_id}`, `/LC_MESSAGES/Common/QuestionnairePopup/${resultedData['org_id']}`,`dynamic`);
+                    resultedData.header_text = (customName == '' || customName == `header_text_${resultedData.org_id}`) ? resultedData['header_text'] : customName;
                 } 
                 return res.status(HttpStatus.OK).json({
                     statusCode: 200,

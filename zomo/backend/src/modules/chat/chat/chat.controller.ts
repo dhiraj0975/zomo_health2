@@ -1236,16 +1236,16 @@ export class ChatController {
                     teamData.list.map(async (ele) => {
                         if (ele.tname) {
                             const key = `team_name_${ele.schedule_id}_${ele.id}`;
-                            const customeName = await this.translatorService.frontendReadTranslation(
+                            const customName = await this.translatorService.frontendReadTranslation(
                                 req.lang,
                                 key,
                                 `/LC_MESSAGES/Challenge/MyChallenges/${user.org_id}/${ele.schedule_id}`,
                                 'dynamic'
                             );
                             ele.tname =
-                                customeName === '' || customeName === key
+                                customName === '' || customName === key
                                     ? ele.tname
-                                    : customeName;
+                                    : customName;
                         }
                         return ele;
                     })
@@ -1431,7 +1431,7 @@ export class ChatController {
                         if (ele.location_name) {
                             const key = `location_name_${ele.id}`;
 
-                            const customeName = await this.translatorService.frontendReadTranslation(
+                            const customName = await this.translatorService.frontendReadTranslation(
                                 req.lang,
                                 key,
                                 `/LC_MESSAGES/OrgAdmin/Location/${org_id}/${ele.id}`,
@@ -1439,9 +1439,9 @@ export class ChatController {
                             );
 
                             ele.location_name =
-                                customeName === '' || customeName === key
+                                customName === '' || customName === key
                                     ? ele.location_name
-                                    : customeName;
+                                    : customName;
                         }
                         return ele;
                     })
@@ -1625,7 +1625,7 @@ export class ChatController {
                         if (ele.dept_name) {
                             const key = `department_name_${ele.id}`;
 
-                            const customeName = await this.translatorService.frontendReadTranslation(
+                            const customName = await this.translatorService.frontendReadTranslation(
                                 req.lang,
                                 key,
                                 `/LC_MESSAGES/OrgAdmin/Department/${org_id}/${ele.id}`,
@@ -1633,9 +1633,9 @@ export class ChatController {
                             );
 
                             ele.dept_name =
-                                customeName === '' || customeName === key
+                                customName === '' || customName === key
                                     ? ele.dept_name
-                                    : customeName;
+                                    : customName;
                         }
                         return ele;
                     })

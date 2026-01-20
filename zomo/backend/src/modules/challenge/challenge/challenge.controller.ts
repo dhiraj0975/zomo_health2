@@ -17,12 +17,12 @@ import { Request, Response } from "express";
 import { diskStorage } from "multer";
 import { lastValueFrom } from 'rxjs';
 import { ActivityLogService } from 'src/modules/master/activitylog/activitylog.service';
-import {In, Like, Not} from 'typeorm';
+import { In, Like, Not } from 'typeorm';
 import { AccessGuard, RoleGuard, TokenGuard } from '../../../guard';
 import {
     CreateChallengeInput,
     DeleteChallengeInput,
-    GetoneChallengeInput,
+    GetOneChallengeInput,
     PaginateWithChallengeInput,
     UpdateChallengeInput,
 } from "../../../input";
@@ -82,15 +82,15 @@ export class ChallengeController {
                 if(resultedData['list'] && resultedData['list'].length){
                     await Promise.all(resultedData['list'].map(async (ele)=>{
                         if(ele.challenge_name){
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang,`challenge_name_${ele.id}`, `/LC_MESSAGES/Challenge/MyChallenges/0/${ele.id}`,`dynamic`);
-                            if (!customeName.includes('challenge_name_')) {
-                                ele.challenge_name = customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang,`challenge_name_${ele.id}`, `/LC_MESSAGES/Challenge/MyChallenges/0/${ele.id}`,`dynamic`);
+                            if (!customName.includes('challenge_name_')) {
+                                ele.challenge_name = customName;
                             }
                         }
                         if(ele['ch'] && ele.challenge_desc){
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang,`challenge_desc_${ele.id}`, `/LC_MESSAGES/Challenge/MyChallenges/0/${ele.id}`,`dynamic`);
-                            if (!customeName.includes('challenge_desc_')) {
-                                ele.challenge_desc = customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang,`challenge_desc_${ele.id}`, `/LC_MESSAGES/Challenge/MyChallenges/0/${ele.id}`,`dynamic`);
+                            if (!customName.includes('challenge_desc_')) {
+                                ele.challenge_desc = customName;
                             }
                         }
                     }));
@@ -573,7 +573,7 @@ export class ChallengeController {
     }
     @UseGuards(AccessGuard)
     @Post('get-one')
-    async getOne(@Req() req: Request, @Res() res: Response, @Body() postData: GetoneChallengeInput) {
+    async getOne(@Req() req: Request, @Res() res: Response, @Body() postData: GetOneChallengeInput) {
         try {
             if (!postData?.id) {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang,'ERR_REQUIRED_PARAM_MISSING'));
@@ -592,15 +592,15 @@ export class ChallengeController {
                 }
             }
             if(resultedData.challenge_name){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`challenge_name_${resultedData.id}`, `/LC_MESSAGES/Challenge/MyChallenges/0/${resultedData.id}`,`dynamic`);
-                if (!customeName.includes('challenge_name_')) {
-                    resultedData.challenge_name = customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`challenge_name_${resultedData.id}`, `/LC_MESSAGES/Challenge/MyChallenges/0/${resultedData.id}`,`dynamic`);
+                if (!customName.includes('challenge_name_')) {
+                    resultedData.challenge_name = customName;
                 }
             }
             if(resultedData && resultedData.challenge_desc){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`challenge_desc_${resultedData.id}`, `/LC_MESSAGES/Challenge/MyChallenges/0/${resultedData.id}`,`dynamic`);
-                if (!customeName.includes('challenge_desc_')) {
-                    resultedData.challenge_desc = customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`challenge_desc_${resultedData.id}`, `/LC_MESSAGES/Challenge/MyChallenges/0/${resultedData.id}`,`dynamic`);
+                if (!customName.includes('challenge_desc_')) {
+                    resultedData.challenge_desc = customName;
                 }
             }
             return res.status(HttpStatus.OK).json({
@@ -664,15 +664,15 @@ export class ChallengeController {
                 if (result && result.length) {
                     await Promise.all(result.map(async (ele) => {
                         if (ele.challenge_name) {
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang, `challenge_name_${ele.id}`, `/LC_MESSAGES/Challenge/MyChallenges/0/${ele.id}`, `dynamic`);
-                            if (!customeName.includes('challenge_name_')) {
-                                ele.challenge_name = customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang, `challenge_name_${ele.id}`, `/LC_MESSAGES/Challenge/MyChallenges/0/${ele.id}`, `dynamic`);
+                            if (!customName.includes('challenge_name_')) {
+                                ele.challenge_name = customName;
                             }
                         }
                         if (ele && ele.challenge_desc) {
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang, `challenge_desc_${ele.id}`, `/LC_MESSAGES/Challenge/MyChallenges/0/${ele.id}`, `dynamic`);
-                            if (!customeName.includes('challenge_desc_')) {
-                                ele.challenge_desc = customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang, `challenge_desc_${ele.id}`, `/LC_MESSAGES/Challenge/MyChallenges/0/${ele.id}`, `dynamic`);
+                            if (!customName.includes('challenge_desc_')) {
+                                ele.challenge_desc = customName;
                             }
                         }
                     }));

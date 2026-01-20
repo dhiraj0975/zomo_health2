@@ -77,12 +77,12 @@ export class DepartmentController {
             if (req.lang != 'eng') {
                 await Promise.all(resultedData['list'].map(async (ele) => {
                     if (ele.dept_name) {
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `department_name_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Department/${ele?.company_id}/${ele['id']}`, `dynamic`);
-                        ele.dept_name = (customeName == '' || customeName == `department_name_${ele['id']}`) ? ele['dept_name'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `department_name_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Department/${ele?.company_id}/${ele['id']}`, `dynamic`);
+                        ele.dept_name = (customName == '' || customName == `department_name_${ele['id']}`) ? ele['dept_name'] : customName;
                     }
                     if (ele.dept_desc) {
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `department_desc_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Department/${ele?.company_id}/${ele['id']}`, `dynamic`);
-                        ele.dept_desc = (customeName == '' || customeName == `department_desc_${ele['id']}`) ? ele['dept_desc'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `department_desc_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Department/${ele?.company_id}/${ele['id']}`, `dynamic`);
+                        ele.dept_desc = (customName == '' || customName == `department_desc_${ele['id']}`) ? ele['dept_desc'] : customName;
                     }
                 }));
             }
@@ -141,12 +141,12 @@ export class DepartmentController {
             );
             if (req.lang != 'eng') {
                 if (depDetails.dept_name) {
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang, `department_name_${depDetails['id']}`, `/LC_MESSAGES/OrgAdmin/Department/${depDetails?.company_id}/${depDetails['id']}`, `dynamic`);
-                    depDetails.dept_name = (customeName == '' || customeName == `department_name_${depDetails['id']}`) ? depDetails['dept_name'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang, `department_name_${depDetails['id']}`, `/LC_MESSAGES/OrgAdmin/Department/${depDetails?.company_id}/${depDetails['id']}`, `dynamic`);
+                    depDetails.dept_name = (customName == '' || customName == `department_name_${depDetails['id']}`) ? depDetails['dept_name'] : customName;
                 }
                 if (depDetails.dept_desc) {
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang, `department_desc_${depDetails['id']}`, `/LC_MESSAGES/OrgAdmin/Department/${depDetails?.company_id}/${depDetails['id']}`, `dynamic`);
-                    depDetails.dept_desc = (customeName == '' || customeName == `department_desc_${depDetails['id']}`) ? depDetails['dept_desc'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang, `department_desc_${depDetails['id']}`, `/LC_MESSAGES/OrgAdmin/Department/${depDetails?.company_id}/${depDetails['id']}`, `dynamic`);
+                    depDetails.dept_desc = (customName == '' || customName == `department_desc_${depDetails['id']}`) ? depDetails['dept_desc'] : customName;
                 }
             }
             return res.status(HttpStatus.OK).json({
@@ -216,12 +216,12 @@ export class DepartmentController {
                 if (req.lang != 'eng') {
                     await Promise.all(result.map(async (ele) => {
                         if (ele.dept_name) {
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang, `department_name_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Department/${ele?.company_id}/${ele['id']}`, `dynamic`);
-                            ele.dept_name = (customeName == '' || customeName == `department_name_${ele['id']}`) ? ele['dept_name'] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang, `department_name_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Department/${ele?.company_id}/${ele['id']}`, `dynamic`);
+                            ele.dept_name = (customName == '' || customName == `department_name_${ele['id']}`) ? ele['dept_name'] : customName;
                         }
                         if (ele.dept_desc) {
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang, `department_desc_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Department/${ele?.company_id}/${ele['id']}`, `dynamic`);
-                            ele.dept_desc = (customeName == '' || customeName == `department_desc_${ele['id']}`) ? ele['dept_desc'] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang, `department_desc_${ele['id']}`, `/LC_MESSAGES/OrgAdmin/Department/${ele?.company_id}/${ele['id']}`, `dynamic`);
+                            ele.dept_desc = (customName == '' || customName == `department_desc_${ele['id']}`) ? ele['dept_desc'] : customName;
                         }
                     }));
                 }

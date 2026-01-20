@@ -16,7 +16,7 @@ import { ScheduleChallengeService } from "src/modules/challenge/schedulechalleng
 import { ActivityLogService } from "src/modules/master/activitylog/activitylog.service";
 import { TranslationService } from "src/modules/translation/translation.service";
 import { In, Not } from "typeorm";
-import { AccessGuard, TokenGuard } from '../../../guard';
+import { CampaignGuard, TokenGuard } from '../../../guard';
 import { PaginateWithCompanyInput } from "../../../input";
 import { CampaignService } from "../campaign/campaign.service";
 import { CampaignCategoryService } from "../category/campaigncategory.service";
@@ -25,7 +25,7 @@ import { CampaignRewardService } from "../reward/campaignreward.service";
 import { CampaignActivityService } from "./campaignactivity.service";
 import { CreateCampaignActivityInput, UpdateCampaignActivityInput } from './input';
 @Controller('incentive/campaign-activity')
-@UseGuards(TokenGuard, AccessGuard)
+@UseGuards(TokenGuard, CampaignGuard)
 export class CampaignActivityController {
     constructor(
         private readonly campaignActivityService: CampaignActivityService,
@@ -251,12 +251,12 @@ export class CampaignActivityController {
                     if(getActivityDatas && getActivityDatas.length){
                         await Promise.all(getActivityDatas.map(async (ele)=>{
                             if(ele.activity_name){
-                                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`activity_name_${ele['id']}`, `/LC_MESSAGES/ActivityForms/Activities/${ele['id']}`,`dynamic`);
-                                ele.activity_name = (customeName == '' || customeName == `activity_name_${ele['id']}`) ? ele['activity_name'] : customeName;
+                                let customName = await this.translatorService.frontendReadTranslation(req.lang,`activity_name_${ele['id']}`, `/LC_MESSAGES/ActivityForms/Activities/${ele['id']}`,`dynamic`);
+                                ele.activity_name = (customName == '' || customName == `activity_name_${ele['id']}`) ? ele['activity_name'] : customName;
                             }
                             if(ele.category && ele.category.category_name){
-                                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`category_name_${ele.category['id']}`, `/LC_MESSAGES/Campaign/Category/${ele.category['id']}`,`dynamic`);
-                                ele.category.category_name = (customeName == '' || customeName == `category_name_${ele.category['id']}`) ? ele.category['category_name'] : customeName;
+                                let customName = await this.translatorService.frontendReadTranslation(req.lang,`category_name_${ele.category['id']}`, `/LC_MESSAGES/Campaign/Category/${ele.category['id']}`,`dynamic`);
+                                ele.category.category_name = (customName == '' || customName == `category_name_${ele.category['id']}`) ? ele.category['category_name'] : customName;
                             }
                         }));
                     }

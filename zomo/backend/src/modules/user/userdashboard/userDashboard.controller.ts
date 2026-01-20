@@ -341,8 +341,8 @@ export class UserDashboardController {
                                         if(incentive && incentive.length){
                                             await Promise.all(incentive.map(async (ele)=>{
                                                 if(ele.campaign_name){
-                                                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`campaign_name_${ele['id']}`, `/LC_MESSAGES/Campaign/Campaigns/${ele['organization_id']}/${ele['id']}`,`dynamic`);
-                                                    ele.campaign_name = (customeName == '' || customeName == `campaign_name_${ele['id']}`) ? ele['campaign_name'] : customeName;
+                                                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`campaign_name_${ele['id']}`, `/LC_MESSAGES/Campaign/Campaigns/${ele['organization_id']}/${ele['id']}`,`dynamic`);
+                                                    ele.campaign_name = (customName == '' || customName == `campaign_name_${ele['id']}`) ? ele['campaign_name'] : customName;
                                                 }
                                             }));
                                         }
@@ -380,12 +380,12 @@ export class UserDashboardController {
                                                 ele.end_date = null;
                                             }
                                             if(ele.title){
-                                                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`title_${ele['id']}`, `/LC_MESSAGES/Dashboard/UpcomingActivities/${ele['org_id']}/${ele['id']}`,`dynamic`);
-                                                ele.title = (customeName == '' || customeName == `title_${ele['id']}`) ? ele['title'] : customeName;
+                                                let customName = await this.translatorService.frontendReadTranslation(req.lang,`title_${ele['id']}`, `/LC_MESSAGES/Dashboard/UpcomingActivities/${ele['org_id']}/${ele['id']}`,`dynamic`);
+                                                ele.title = (customName == '' || customName == `title_${ele['id']}`) ? ele['title'] : customName;
                                             }
                                             if(ele.description){
-                                                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`description_${ele['id']}`, `/LC_MESSAGES/Dashboard/UpcomingActivities/${ele['org_id']}/${ele['id']}`,`dynamic`);
-                                                ele.description = (customeName == '' || customeName == `description_${ele['id']}`) ? ele['description'] : customeName;
+                                                let customName = await this.translatorService.frontendReadTranslation(req.lang,`description_${ele['id']}`, `/LC_MESSAGES/Dashboard/UpcomingActivities/${ele['org_id']}/${ele['id']}`,`dynamic`);
+                                                ele.description = (customName == '' || customName == `description_${ele['id']}`) ? ele['description'] : customName;
                                             }
                                         }));
                                     }
@@ -545,6 +545,14 @@ export class UserDashboardController {
                             enableWidget.spouseregistration = '0';
                         }
                         let updatedEnableWidget = {};
+                        if(!enableWidget.hasOwnProperty('biometricresult')){
+                            if ('Biometricresult' in pluginName) {
+                                enableWidget['biometricresult'] = '1';
+                            }
+                            else{
+                                enableWidget['biometricresult'] = '0';
+                            }
+                        }
                         for (let key in enableWidget) {
                             if (key == 'participationsummary') {
                                 if ('Incentive' in pluginName || 'Healthcheckup' in pluginName) {
@@ -594,6 +602,11 @@ export class UserDashboardController {
                             if (key == 'supports') {
                                 updatedEnableWidget[key] = enableWidget[key];
                             }
+                            if (key == 'biometricresult') {
+                                if ('Biometricresult' in pluginName) {
+                                    updatedEnableWidget[key] = enableWidget[key];
+                                }
+                            }
                         }
                         return res.status(HttpStatus.OK).json({
                             statusCode: 200,
@@ -622,7 +635,8 @@ export class UserDashboardController {
                         challengeprogress:0,
                         quicklinks:0,
                         spouseregistration:0,
-                        supports:0
+                        supports:0,
+                        biometricresult:0
                     }
                     if(pluginName && pluginName !== '' && Object.keys(pluginName).length > 0 && pluginName !== undefined){
                         let updatedEnableWidget = {};
@@ -675,6 +689,11 @@ export class UserDashboardController {
                             if (key == 'supports') {
                                 updatedEnableWidget[key] = newWidget[key];
                             }
+                            if (key == 'biometricresult') {
+                                if ('Biometricresult' in pluginName) {
+                                    updatedEnableWidget[key] = newWidget[key];
+                                }
+                            }
                         }
                         return res.status(HttpStatus.OK).json({
                             statusCode: 200,
@@ -704,7 +723,8 @@ export class UserDashboardController {
                     challengeprogress:0,
                     quicklinks:0,
                     spouseregistration:0,
-                    PointsLeaderboard:0
+                    PointsLeaderboard:0,
+                    biometricresult:0
                 }
             if(pluginName && pluginName !== '' && Object.keys(pluginName).length > 0 && pluginName !== undefined){
                 if (Object.keys(pluginName).includes('Incentive') &&(!enableWidget?.participationsummary || enableWidget.participationsummary == '1')) {
@@ -766,6 +786,12 @@ export class UserDashboardController {
                 }else{
                     result['spouseregistration']='0'
                 }
+                if(Object.keys(pluginName).includes('Biometricresult') &&
+                    (!enableWidget?.biometricresult || enableWidget.biometricresult == '1')) {
+                        result['biometricresult']='1'
+                    }else{
+                        result['biometricresult']='0'
+                    }
             }
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
@@ -863,7 +889,7 @@ export class UserDashboardController {
             if(activePlugin && activePlugin.plugin_name && activePlugin.plugin_name !== null){
                 pluginName = JSON.parse(activePlugin?.plugin_name);
             }
-            if (userCompanyData && userCompanyData?.company && userCompanyData?.company.meta) {
+            if (userCompanyData && userCompanyData?.company && userCompanyData?.company?.meta) {
                 if(pluginName && pluginName.Biometricresult){
                     let biometricList = await this.biometricService.listRecord({status: 1});
                     let biometricResult = await this.orgBiometricService.listRecord(`orgBiometric.company_id = ${orgId}`,{ is_optional: 'ASC' });
@@ -1000,7 +1026,7 @@ export class UserDashboardController {
                                         const valueKey = `value${index + 1}`;
                                         const dateKey = `date${index + 1}`;
                                         const testKey = `Test_type${index + 1}`;
-                                        if (!wb?.['data']?.[valueKey] && dataarr[metric]) {
+                                        if (!wb?.['data']?.[valueKey] && dataarr[metric] !== "") {
                                             if(!wb['data']) {
                                                 wb['data'] = {};
                                             }
@@ -1009,7 +1035,7 @@ export class UserDashboardController {
                                             wb['data'][testKey] = dataarr.Test_type;
                                         } else if (
                                             wb?.['data']?.[valueKey] &&
-                                            dataarr[metric] &&
+                                            dataarr[metric] !== "" &&
                                             wb?.['data']?.[dateKey] &&
                                             moment(wb?.['data']?.[dateKey]).isSameOrBefore(moment(dataarr.added_date))
                                         ) {
@@ -1051,7 +1077,7 @@ export class UserDashboardController {
                                         const dateKey = `date${index+ 1}`;
                                         const testKey = `Test_type${index + 1}`;
 
-                                        if (!wb?.['data']?.[valueKey] && dataarr[metric]) {
+                                        if (!wb?.['data']?.[valueKey] && dataarr[metric] !== "") {
                                             if(!wb['data']) {
                                                 wb['data'] = {};
                                             }
@@ -1059,7 +1085,7 @@ export class UserDashboardController {
                                             wb['data'][dateKey] = dataarr.added_date;
                                             wb['data'][testKey] = dataarr.Test_type;
                                         } 
-                                        else if (wb?.['data']?.[valueKey] && dataarr[metric] && wb?.['data']?.[dateKey] && moment(wb?.['data']?.[dateKey]).isSameOrBefore(moment(dataarr.added_date))) 
+                                        else if (wb?.['data']?.[valueKey] && dataarr[metric] !== "" && wb?.['data']?.[dateKey] && moment(wb?.['data']?.[dateKey]).isSameOrBefore(moment(dataarr.added_date))) 
                                         {
                                             wb['data'][valueKey] = dataarr[metric];
                                             wb['data'][dateKey] = dataarr.added_date;
@@ -1122,7 +1148,7 @@ export class UserDashboardController {
                             if(widgetbioval['is_optional']!=0){                        
                                 OptionalData[widgetbioval['is_optional']] = widgetbiokey + 1;
                             } 
-                            if(widgetbioval['data']['date1']){
+                            if(widgetbioval?.['data']?.['date1']){
                                 if(Date1Comp==''){
                                     Date1Comp = widgetbioval['data']['date1'];
                                 }else{
@@ -1131,7 +1157,7 @@ export class UserDashboardController {
                                     }
                                 }
                             }
-                            if(widgetbioval['data']['date2']){    
+                            if(widgetbioval?.['data']?.['date2']){    
                                 if(Date2Comp==''){
                                     Date2Comp = widgetbioval['data']['date2'];
                                 }else{
@@ -1147,6 +1173,9 @@ export class UserDashboardController {
                             if(widgetbioval['start_range_male']==0 && widgetbioval['end_range_male']==0){
                                 widgetbioval['start_range_male'] = biometricResult[widgetbiokey]['start_range_male'] = widgetbioval['biometricsList']['start_range'];
                                 widgetbioval['end_range_male'] = biometricResult[widgetbiokey]['end_range_male'] = widgetbioval['biometricsList']['end_range'];
+                            }
+                            if(!biometricResult[widgetbiokey]['data']){
+                                biometricResult[widgetbiokey]['data'] = {};
                             }
                             biometricResult[widgetbiokey]['data']['part1val'] = 'region-1';
                             biometricResult[widgetbiokey]['data']['part2val'] = 'region-2';

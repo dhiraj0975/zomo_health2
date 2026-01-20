@@ -996,8 +996,8 @@ export class CoachesController {
                         element.event_name = element?.slot?.event?.event_name;
                     }
                     if(element.event_name){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`event_name_${element['id']}`, `/LC_MESSAGES/Events/Events/${element['org_id']}/${element['id']}`,`dynamic`);
-                        element.event_name = (customeName == '' || customeName == `event_name_${element['id']}`) ? element['event_name'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`event_name_${element['id']}`, `/LC_MESSAGES/Events/Events/${element['org_id']}/${element['id']}`,`dynamic`);
+                        element.event_name = (customName == '' || customName == `event_name_${element['id']}`) ? element['event_name'] : customName;
                     } 
                     let totalBooking = (await this.eventUserBookingListsService.listRecord(`eubl.ev_slots_id = ${element['slot']['id']}`))?.length;
                     element['totalBooking'] = totalBooking;
@@ -1044,8 +1044,8 @@ export class CoachesController {
             let events = await this.eventService.listRecordPagination(['event.id','event.created','event.category_id','event.event_name','event.status','event.organization_id','userBookingList.id','userBookingList.ev_attend_status'],where, postData ,user.id);
             await Promise.all(events['list']?.map(async (ele)=>{
                 if(ele.event_name){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`event_name_${ele['id']}`, `/LC_MESSAGES/Events/Events/${ele['org_id']}/${ele['id']}`,`dynamic`);
-                    ele.event_name = (customeName == '' || customeName == `event_name_${ele['id']}`) ? ele['event_name'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`event_name_${ele['id']}`, `/LC_MESSAGES/Events/Events/${ele['org_id']}/${ele['id']}`,`dynamic`);
+                    ele.event_name = (customName == '' || customName == `event_name_${ele['id']}`) ? ele['event_name'] : customName;
                 }
             }));
             let currentDate = this.commonDateService.getTodayDate();

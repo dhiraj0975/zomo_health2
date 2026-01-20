@@ -50,8 +50,8 @@ export class AssessmentQuestionsDetailsController {
                 await Promise.all(resultedData['list'].map(async (ele)=>{
                     if(ele.question_title){
                         let questionData = await this.assessmentQuestionsService.findOne(`aq.id = '${postData?.question_id}' AND aq.status = 1`,null, ['aq','at'],[tableConstant.HEALTH_ASSESSMENT.TBL_HA_ASSESSMENT_TABS]);
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_question_title_${questionData['tab_id']}_${ele['question_id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${questionData['at']?.organization_id ?? req.tokenUser?.org_id}`,`dynamic`);
-                        ele.question_title = (customeName == '' || customeName == `assessment_question_title_${questionData['tab_id']}_${ele['question_id']}`) ? ele['question_title'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_question_title_${questionData['tab_id']}_${ele['question_id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${questionData['at']?.organization_id ?? req.tokenUser?.org_id}`,`dynamic`);
+                        ele.question_title = (customName == '' || customName == `assessment_question_title_${questionData['tab_id']}_${ele['question_id']}`) ? ele['question_title'] : customName;
                     }
                 }));
             }
@@ -99,8 +99,8 @@ export class AssessmentQuestionsDetailsController {
             );
             if(resultedData.question_title){
                 let questionData = await this.assessmentQuestionsService.findOne(`aq.id = '${postData?.question_id}' AND aq.status = 1`,null, ['aq','at'],[tableConstant.HEALTH_ASSESSMENT.TBL_HA_ASSESSMENT_TABS]);
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_question_title_${questionData['tab_id']}_${resultedData['question_id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${questionData['at']?.organization_id ?? req.tokenUser?.org_id}`,`dynamic`);
-                resultedData.question_title = (customeName == '' || customeName == `assessment_question_title_${questionData['tab_id']}_${resultedData['question_id']}`) ? resultedData['question_title'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_question_title_${questionData['tab_id']}_${resultedData['question_id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${questionData['at']?.organization_id ?? req.tokenUser?.org_id}`,`dynamic`);
+                resultedData.question_title = (customName == '' || customName == `assessment_question_title_${questionData['tab_id']}_${resultedData['question_id']}`) ? resultedData['question_title'] : customName;
             }
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
@@ -261,8 +261,8 @@ export class AssessmentQuestionsDetailsController {
                 await Promise.all(resultedData.map(async (ele)=>{
                     if(ele.question_title){
                         let questionData = await this.assessmentQuestionsService.findOne(`aq.id = '${postData?.question_id}' AND aq.status = 1`,null, ['aq','at'],[tableConstant.HEALTH_ASSESSMENT.TBL_HA_ASSESSMENT_TABS]);
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_question_title_${questionData['tab_id']}_${ele['question_id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${questionData['at']?.organization_id ?? req.tokenUser?.org_id}`,`dynamic`);
-                        ele.question_title = (customeName == '' || customeName == `assessment_question_title_${questionData['tab_id']}_${ele['question_id']}`) ? ele['question_title'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`assessment_question_title_${questionData['tab_id']}_${ele['question_id']}`, `/LC_MESSAGES/MyHealth/Assessment/eha/${questionData['at']?.organization_id ?? req.tokenUser?.org_id}`,`dynamic`);
+                        ele.question_title = (customName == '' || customName == `assessment_question_title_${questionData['tab_id']}_${ele['question_id']}`) ? ele['question_title'] : customName;
                     }
                 }));
             }

@@ -1,7 +1,7 @@
 import { appConstant, CommonArrayService, CommonFileService, CommunicationEmailToEntity } from '@common-constants';
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { FindOptionsSelect, Repository } from "typeorm";
 import { PaginateWithCommunicationInput } from "../../../input";
 @Injectable()
 export class CommunicationEmailToService {
@@ -41,13 +41,13 @@ export class CommunicationEmailToService {
             where: condition,
         });
     }
-    async listRecord(condition: any, orderBy: any = null) {
+    async listRecord(condition: any, orderBy: any = null, fields: FindOptionsSelect<CommunicationEmailToEntity> = {} ) {
         if (!orderBy) {
             orderBy = { id: 'DESC' };
         }
         return await this.readReplicacommunicationEmailRepository.find({
             where: condition,
-            select: [],
+            select: fields,
             order: orderBy,
         });
     }

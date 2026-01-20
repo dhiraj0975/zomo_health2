@@ -43,16 +43,16 @@ export class FitnessChallengeService {
             if (fitness && fitness?.length > 0) {
                 await Promise.all(fitness.map(async (ele)=>{
                     if(ele.alphabet){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_activity_alphabet_${ele['challenge_id']}_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/0/${ele?.['challenge_id']}`,`dynamic`);
-                        ele.alphabet = !customeName.includes('fitness_activity_alphabet_') ? customeName : ele.alphabet;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_activity_alphabet_${ele['challenge_id']}_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/0/${ele?.['challenge_id']}`,`dynamic`);
+                        ele.alphabet = !customName.includes('fitness_activity_alphabet_') ? customName : ele.alphabet;
                     }
                     if(ele.activity_name){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `fitness_activity_name_${ele['challenge_id']}_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/0/${ele?.['challenge_id']}`,`dynamic`);
-                        ele.activity_name = !customeName.includes('fitness_activity_name_') ? customeName : ele.activity_name;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `fitness_activity_name_${ele['challenge_id']}_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/0/${ele?.['challenge_id']}`,`dynamic`);
+                        ele.activity_name = !customName.includes('fitness_activity_name_') ? customName : ele.activity_name;
                     }
                     if(ele.suggestion){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_activity_suggestion_${ele['challenge_id']}_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/0/${ele?.['challenge_id']}`,`dynamic`);
-                        ele.suggestion = !customeName.includes('fitness_activity_suggestion_') ? customeName : ele.suggestion;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_activity_suggestion_${ele['challenge_id']}_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/0/${ele?.['challenge_id']}`,`dynamic`);
+                        ele.suggestion = !customName.includes('fitness_activity_suggestion_') ? customName : ele.suggestion;
                     }
                 }));
             }   

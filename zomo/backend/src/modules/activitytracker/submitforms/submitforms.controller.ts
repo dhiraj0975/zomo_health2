@@ -176,19 +176,19 @@ export class SubmitFormsController {
                         ele.added_date = formatedDate + ' ' + this.commonDateService.getTodayDate(addedDate).format('HH:mm');
                     }
                     if(ele?.createForm?.title){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `title_${ele?.createForm?.['id']}`, `/LC_MESSAGES/ActivityForms/SubmitForm/${postData?.org_id}/${ele?.createForm?.['id']}`,`dynamic`);
-                        if (customeName != `title_${ele?.createForm?.['id']}`) {
-                            ele.createForm.title = customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `title_${ele?.createForm?.['id']}`, `/LC_MESSAGES/ActivityForms/SubmitForm/${postData?.org_id}/${ele?.createForm?.['id']}`,`dynamic`);
+                        if (customName != `title_${ele?.createForm?.['id']}`) {
+                            ele.createForm.title = customName;
                         }
                     }
                     if (ele?.activity?.activity_name) {
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `activity_name_${ele?.activity?.['id']}`, `/LC_MESSAGES/ActivityForms/Activities/${postData?.org_id}/${ele?.activity?.['id']}`, `dynamic`);
-                        ele.activity.activity_name = (customeName == '' || customeName == `activity_name_${ele?.activity?.['id']}`) ? ele?.activity?.['activity_name'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `activity_name_${ele?.activity?.['id']}`, `/LC_MESSAGES/ActivityForms/Activities/${postData?.org_id}/${ele?.activity?.['id']}`, `dynamic`);
+                        ele.activity.activity_name = (customName == '' || customName == `activity_name_${ele?.activity?.['id']}`) ? ele?.activity?.['activity_name'] : customName;
                     }
                     if (ele?.decline_reason) {
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`decline_reason_${ele.id}`, `/LC_MESSAGES/ActivityForms/SubmittedForms/${ele.org_id}/${ele.form_id}/${ele.user_id}`,`dynamic`);
-                        if (!customeName.includes('decline_reason_')) {
-                            ele.decline_reason = customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`decline_reason_${ele.id}`, `/LC_MESSAGES/ActivityForms/SubmittedForms/${ele.org_id}/${ele.form_id}/${ele.user_id}`,`dynamic`);
+                        if (!customName.includes('decline_reason_')) {
+                            ele.decline_reason = customName;
                         }
                     }
                 }))
@@ -519,19 +519,19 @@ export class SubmitFormsController {
             let resultedData:any = await this.submitFormsService.findOne(where);
             if (req.tokenUser?.role_id != appConstant.ROLE.ADMIN) {
                 if (resultedData?.createForm?.title) {
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang, `title_${resultedData?.createForm?.['id']}`, `/LC_MESSAGES/ActivityForms/SubmitForm/${postData?.org_id}/${resultedData?.createForm?.['id']}`, `dynamic`);
-                    if (customeName != `title_${resultedData?.createForm?.['id']}`) {
-                        resultedData.createForm.title = customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang, `title_${resultedData?.createForm?.['id']}`, `/LC_MESSAGES/ActivityForms/SubmitForm/${postData?.org_id}/${resultedData?.createForm?.['id']}`, `dynamic`);
+                    if (customName != `title_${resultedData?.createForm?.['id']}`) {
+                        resultedData.createForm.title = customName;
                     }
                 }
                 if (resultedData?.activity?.activity_name) {
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang, `activity_name_${resultedData?.activity?.['id']}`, `/LC_MESSAGES/ActivityForms/Activities/${postData?.org_id}/${resultedData?.activity?.['id']}`, `dynamic`);
-                    resultedData.activity.activity_name = (customeName == '' || customeName == `activity_name_${resultedData?.activity?.['id']}`) ? resultedData?.activity?.['activity_name'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang, `activity_name_${resultedData?.activity?.['id']}`, `/LC_MESSAGES/ActivityForms/Activities/${postData?.org_id}/${resultedData?.activity?.['id']}`, `dynamic`);
+                    resultedData.activity.activity_name = (customName == '' || customName == `activity_name_${resultedData?.activity?.['id']}`) ? resultedData?.activity?.['activity_name'] : customName;
                 }
                 if (resultedData?.notes) {
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`notes_${resultedData.id}`, `/LC_MESSAGES/ActivityForms/SubmittedForms/${resultedData.org_id}/${resultedData.form_id}/${resultedData.user_id}`,`dynamic`);
-                    if (!customeName.includes('notes_')) {
-                        resultedData.notes = customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`notes_${resultedData.id}`, `/LC_MESSAGES/ActivityForms/SubmittedForms/${resultedData.org_id}/${resultedData.form_id}/${resultedData.user_id}`,`dynamic`);
+                    if (!customName.includes('notes_')) {
+                        resultedData.notes = customName;
                     }
                 }
             }
@@ -625,8 +625,8 @@ export class SubmitFormsController {
                     let activity = await this.activityService.findOne(`activity.id = ${recordDetails['activity_id']} AND activity.status != 2 AND activity.activity_display = 0`);
                     if (activity) {
                         if(activity.activity_name){
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang,`activity_name_${activity['id']}`, `/LC_MESSAGES/ActivityForms/Activities/${activity['id']}`,`dynamic`);
-                            activity.activity_name = (customeName == '' || customeName == `activity_name_${activity['id']}`) ? activity['activity_name'] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang,`activity_name_${activity['id']}`, `/LC_MESSAGES/ActivityForms/Activities/${activity['id']}`,`dynamic`);
+                            activity.activity_name = (customName == '' || customName == `activity_name_${activity['id']}`) ? activity['activity_name'] : customName;
                         }
                         form_title = activity['activity_name'];
                     }

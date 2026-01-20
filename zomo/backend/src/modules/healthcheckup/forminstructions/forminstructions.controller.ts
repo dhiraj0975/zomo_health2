@@ -146,39 +146,39 @@ export class FormInstructionsController {
                         let programCustomName = JSON.parse(ele.forminstructions.program_custom_name);
                         for (let i = 0; i <= 5; i++) {
                             if(programCustomName[i+1] || programCustomName[i+1] == ''){
-                                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`custo_customeLabel_${i}_${ele.id}`, `/LC_MESSAGES/HealthForms/SubmitForm/${ele['id']}`,`dynamic`);
-                                programCustomName[i+1] = (customeName == '' || customeName == `custo_customeLabel_${i}_${ele.id}`) ? programCustomName[i+1] : customeName;
+                                let customName = await this.translatorService.frontendReadTranslation(req.lang,`custo_customeLabel_${i}_${ele.id}`, `/LC_MESSAGES/HealthForms/SubmitForm/${ele['id']}`,`dynamic`);
+                                programCustomName[i+1] = (customName == '' || customName == `custo_customeLabel_${i}_${ele.id}`) ? programCustomName[i+1] : customName;
                             }
                         }
                         ele.forminstructions.program_custom_name = JSON.stringify(programCustomName);
                     }
                     if(ele?.forminstructions?.tobacco_cessation_text){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`tobacco_cessation_text_${ele.id}`, `/LC_MESSAGES/Activities/Activities/0/${ele['id']}`,`dynamic`);
-                        ele.forminstructions.tobacco_cessation_text = (customeName == '' || customeName == `tobacco_cessation_text_${ele.id}`) ? ele?.forminstructions['tobacco_cessation_text'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`tobacco_cessation_text_${ele.id}`, `/LC_MESSAGES/Activities/Activities/0/${ele['id']}`,`dynamic`);
+                        ele.forminstructions.tobacco_cessation_text = (customName == '' || customName == `tobacco_cessation_text_${ele.id}`) ? ele?.forminstructions['tobacco_cessation_text'] : customName;
                     }
                     if(ele?.forminstructions?.tobacco_para1){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`tobacco_para1_${ele.id}`, `/LC_MESSAGES/Activities/Activities/0/${ele['id']}`,`dynamic`);
-                        ele.forminstructions.tobacco_para1 = (customeName == '' || customeName == `tobacco_para1_${ele.id}`) ? ele?.forminstructions['tobacco_para1'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`tobacco_para1_${ele.id}`, `/LC_MESSAGES/Activities/Activities/0/${ele['id']}`,`dynamic`);
+                        ele.forminstructions.tobacco_para1 = (customName == '' || customName == `tobacco_para1_${ele.id}`) ? ele?.forminstructions['tobacco_para1'] : customName;
                     }
                     if(ele?.forminstructions?.dentists_text){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`dentists_text_${ele.id}`, `/LC_MESSAGES/Activities/Activities/${ele['id']}`,`dynamic`);
-                        ele.forminstructions.dentists_text = (customeName == '' || customeName == `dentists_text_${ele.id}`) ? ele?.forminstructions['dentists_text'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`dentists_text_${ele.id}`, `/LC_MESSAGES/Activities/Activities/${ele['id']}`,`dynamic`);
+                        ele.forminstructions.dentists_text = (customName == '' || customName == `dentists_text_${ele.id}`) ? ele?.forminstructions['dentists_text'] : customName;
                     }
                     if(ele?.forminstructions?.optometrists_text){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`optometrists_text_${ele.id}`, `/LC_MESSAGES/Activities/Activities/${ele['id']}`,`dynamic`);
-                        ele.forminstructions.optometrists_text = (customeName == '' || customeName == `optometrists_text_${ele.id}`) ? ele.forminstructions['optometrists_text'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`optometrists_text_${ele.id}`, `/LC_MESSAGES/Activities/Activities/${ele['id']}`,`dynamic`);
+                        ele.forminstructions.optometrists_text = (customName == '' || customName == `optometrists_text_${ele.id}`) ? ele.forminstructions['optometrists_text'] : customName;
                     }
                     if(ele?.forminstructions?.physician_text){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`physician_text_${ele.id}`, `/LC_MESSAGES/Activities/Activities/${ele['id']}`,`dynamic`);
-                        ele.forminstructions.physician_text = (customeName == '' || customeName == `physician_text_${ele.id}`) ? ele.forminstructions['physician_text'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`physician_text_${ele.id}`, `/LC_MESSAGES/Activities/Activities/${ele['id']}`,`dynamic`);
+                        ele.forminstructions.physician_text = (customName == '' || customName == `physician_text_${ele.id}`) ? ele.forminstructions['physician_text'] : customName;
                     }
                     if(ele?.forminstructions?.age_gender_title){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`age_gender_title_${ele.id}`, `/LC_MESSAGES/Activities/Activities/${ele['id']}`,`dynamic`);
-                        ele.forminstructions.age_gender_title = (customeName == '' || customeName == `age_gender_title_${ele.id}`) ? ele?.forminstructions['age_gender_title'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`age_gender_title_${ele.id}`, `/LC_MESSAGES/Activities/Activities/${ele['id']}`,`dynamic`);
+                        ele.forminstructions.age_gender_title = (customName == '' || customName == `age_gender_title_${ele.id}`) ? ele?.forminstructions['age_gender_title'] : customName;
                     }
                     if(ele?.forminstructions?.age_gender_text){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`age_gender_text_${ele.id}`, `/LC_MESSAGES/Activities/Activities/${ele['id']}`,`dynamic`);
-                        ele.forminstructions.age_gender_text = (customeName == '' || customeName == `age_gender_text_${ele.id}`) ? ele.forminstructions['age_gender_text'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`age_gender_text_${ele.id}`, `/LC_MESSAGES/Activities/Activities/${ele['id']}`,`dynamic`);
+                        ele.forminstructions.age_gender_text = (customName == '' || customName == `age_gender_text_${ele.id}`) ? ele.forminstructions['age_gender_text'] : customName;
                     }
                 }));
                 return res.status(HttpStatus.OK).json({
@@ -281,39 +281,39 @@ export class FormInstructionsController {
                         let programCustomName = JSON.parse(ele.formInstructions.program_custom_name);
                         for (let i = 0; i <= 5; i++) {
                             if(programCustomName[i+1] ){
-                                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`custo_customeLabel_${i}_${ele['org_id']}`, `/LC_MESSAGES/HealthForms/SubmitForm/${ele['org_id']}`,`dynamic`);
-                                programCustomName[i+1] = (customeName == '' || customeName == `custo_customeLabel_${i}_${ele['org_id']}`) ? programCustomName[i+1] : customeName;
+                                let customName = await this.translatorService.frontendReadTranslation(req.lang,`custo_customeLabel_${i}_${ele['org_id']}`, `/LC_MESSAGES/HealthForms/SubmitForm/${ele['org_id']}`,`dynamic`);
+                                programCustomName[i+1] = (customName == '' || customName == `custo_customeLabel_${i}_${ele['org_id']}`) ? programCustomName[i+1] : customName;
                             }
                         }
                         ele.formInstructions.program_custom_name = JSON.stringify(programCustomName);
                     }
                     if(ele?.formInstructions?.tobacco_cessation_text){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`tobacco_cessation_text_${ele.org_id}`, `/LC_MESSAGES/Activities/Activities/${ele['org_id']}`,`dynamic`);
-                        ele.formInstructions.tobacco_cessation_text = (customeName == '' || customeName == `tobacco_cessation_text_${ele.org_id}`) ? ele?.formInstructions['tobacco_cessation_text'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`tobacco_cessation_text_${ele.org_id}`, `/LC_MESSAGES/Activities/Activities/${ele['org_id']}`,`dynamic`);
+                        ele.formInstructions.tobacco_cessation_text = (customName == '' || customName == `tobacco_cessation_text_${ele.org_id}`) ? ele?.formInstructions['tobacco_cessation_text'] : customName;
                     }
                     if(ele?.formInstructions?.tobacco_para1){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`tobacco_para1_${ele.org_id}`, `/LC_MESSAGES/Activities/Activities/${ele['org_id']}`,`dynamic`);
-                        ele.formInstructions.tobacco_para1 = (customeName == '' || customeName == `tobacco_para1_${ele.org_id}`) ? ele?.formInstructions['tobacco_para1'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`tobacco_para1_${ele.org_id}`, `/LC_MESSAGES/Activities/Activities/${ele['org_id']}`,`dynamic`);
+                        ele.formInstructions.tobacco_para1 = (customName == '' || customName == `tobacco_para1_${ele.org_id}`) ? ele?.formInstructions['tobacco_para1'] : customName;
                     }
                     if(ele?.formInstructions?.dentists_text){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`dentists_text_${ele.org_id}`, `/LC_MESSAGES/Activities/Activities/${ele['org_id']}`,`dynamic`);
-                        ele.formInstructions.dentists_text = (customeName == '' || customeName == `dentists_text_${ele.org_id}`) ? ele?.formInstructions['dentists_text'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`dentists_text_${ele.org_id}`, `/LC_MESSAGES/Activities/Activities/${ele['org_id']}`,`dynamic`);
+                        ele.formInstructions.dentists_text = (customName == '' || customName == `dentists_text_${ele.org_id}`) ? ele?.formInstructions['dentists_text'] : customName;
                     }
                     if(ele?.formInstructions?.optometrists_text){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`optometrists_text_${ele.org_id}`, `/LC_MESSAGES/Activities/Activities/${ele['org_id']}`,`dynamic`);
-                        ele.formInstructions.optometrists_text = (customeName == '' || customeName == `optometrists_text_${ele.org_id}`) ? ele.formInstructions['optometrists_text'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`optometrists_text_${ele.org_id}`, `/LC_MESSAGES/Activities/Activities/${ele['org_id']}`,`dynamic`);
+                        ele.formInstructions.optometrists_text = (customName == '' || customName == `optometrists_text_${ele.org_id}`) ? ele.formInstructions['optometrists_text'] : customName;
                     }
                     if(ele?.formInstructions?.physician_text){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`physician_text_${ele.org_id}`, `/LC_MESSAGES/Activities/Activities/${ele['org_id']}`,`dynamic`);
-                        ele.formInstructions.physician_text = (customeName == '' || customeName == `physician_text_${ele.org_id}`) ? ele.formInstructions['physician_text'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`physician_text_${ele.org_id}`, `/LC_MESSAGES/Activities/Activities/${ele['org_id']}`,`dynamic`);
+                        ele.formInstructions.physician_text = (customName == '' || customName == `physician_text_${ele.org_id}`) ? ele.formInstructions['physician_text'] : customName;
                     }
                     if(ele?.formInstructions?.age_gender_title){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`age_gender_title_${ele.org_id}`, `/LC_MESSAGES/Activities/Activities/${ele['org_id']}`,`dynamic`);
-                        ele.formInstructions.age_gender_title = (customeName == '' || customeName == `age_gender_title_${ele.org_id}`) ? ele?.formInstructions['age_gender_title'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`age_gender_title_${ele.org_id}`, `/LC_MESSAGES/Activities/Activities/${ele['org_id']}`,`dynamic`);
+                        ele.formInstructions.age_gender_title = (customName == '' || customName == `age_gender_title_${ele.org_id}`) ? ele?.formInstructions['age_gender_title'] : customName;
                     }
                     if(ele?.formInstructions?.age_gender_text){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`age_gender_text_${ele.org_id}`, `/LC_MESSAGES/Activities/Activities/${ele['org_id']}`,`dynamic`);
-                        ele.formInstructions.age_gender_text = (customeName == '' || customeName == `age_gender_text_${ele.org_id}`) ? ele.formInstructions['age_gender_text'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`age_gender_text_${ele.org_id}`, `/LC_MESSAGES/Activities/Activities/${ele['org_id']}`,`dynamic`);
+                        ele.formInstructions.age_gender_text = (customName == '' || customName == `age_gender_text_${ele.org_id}`) ? ele.formInstructions['age_gender_text'] : customName;
                     }
                     let userTimeZone = req.tokenUser?.timezone ? req.tokenUser?.timezone : 'UTC';
                     if (ele?.['added_date_copy']) {    
@@ -919,32 +919,32 @@ export class FormInstructionsController {
             if(resultedData && resultedData.length){
                 await Promise.all(resultedData.map(async (ele)=>{
                     if(ele.tobacco_cessation_text){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`tobacco_cessation_text_${ele.company_id}`, `/LC_MESSAGES/Activities/Activities/${ele['company_id']}`,`dynamic`);
-                        ele.tobacco_cessation_text = (customeName == '' || customeName == `tobacco_cessation_text_${ele.company_id}`) ? ele['tobacco_cessation_text'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`tobacco_cessation_text_${ele.company_id}`, `/LC_MESSAGES/Activities/Activities/${ele['company_id']}`,`dynamic`);
+                        ele.tobacco_cessation_text = (customName == '' || customName == `tobacco_cessation_text_${ele.company_id}`) ? ele['tobacco_cessation_text'] : customName;
                     }
                     if(ele.tobacco_para1){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`tobacco_para1_${ele.company_id}`, `/LC_MESSAGES/Activities/Activities/${ele['company_id']}`,`dynamic`);
-                        ele.tobacco_para1 = (customeName == '' || customeName == `tobacco_para1_${ele.company_id}`) ? ele['tobacco_para1'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`tobacco_para1_${ele.company_id}`, `/LC_MESSAGES/Activities/Activities/${ele['company_id']}`,`dynamic`);
+                        ele.tobacco_para1 = (customName == '' || customName == `tobacco_para1_${ele.company_id}`) ? ele['tobacco_para1'] : customName;
                     }
                     if(ele.dentists_text){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`dentists_text_${ele.company_id}`, `/LC_MESSAGES/Activities/Activities/${ele['company_id']}`,`dynamic`);
-                        ele.dentists_text = (customeName == '' || customeName == `dentists_text_${ele.company_id}`) ? ele['dentists_text'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`dentists_text_${ele.company_id}`, `/LC_MESSAGES/Activities/Activities/${ele['company_id']}`,`dynamic`);
+                        ele.dentists_text = (customName == '' || customName == `dentists_text_${ele.company_id}`) ? ele['dentists_text'] : customName;
                     }
                     if(ele.optometrists_text){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`optometrists_text_${ele.company_id}`, `/LC_MESSAGES/Activities/Activities/${ele['company_id']}`,`dynamic`);
-                        ele.optometrists_text = (customeName == '' || customeName == `optometrists_text_${ele.company_id}`) ? ele['optometrists_text'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`optometrists_text_${ele.company_id}`, `/LC_MESSAGES/Activities/Activities/${ele['company_id']}`,`dynamic`);
+                        ele.optometrists_text = (customName == '' || customName == `optometrists_text_${ele.company_id}`) ? ele['optometrists_text'] : customName;
                     }
                     if(ele.physician_text){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`physician_text_${ele.company_id}`, `/LC_MESSAGES/Activities/Activities/${ele['company_id']}`,`dynamic`);
-                        ele.physician_text = (customeName == '' || customeName == `physician_text_${ele.company_id}`) ? ele['physician_text'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`physician_text_${ele.company_id}`, `/LC_MESSAGES/Activities/Activities/${ele['company_id']}`,`dynamic`);
+                        ele.physician_text = (customName == '' || customName == `physician_text_${ele.company_id}`) ? ele['physician_text'] : customName;
                     }
                     if(ele.age_gender_title){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`age_gender_title_${ele.company_id}`, `/LC_MESSAGES/Activities/Activities/${ele['company_id']}`,`dynamic`);
-                        ele.age_gender_title = (customeName == '' || customeName == `age_gender_title_${ele.company_id}`) ? ele['age_gender_title'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`age_gender_title_${ele.company_id}`, `/LC_MESSAGES/Activities/Activities/${ele['company_id']}`,`dynamic`);
+                        ele.age_gender_title = (customName == '' || customName == `age_gender_title_${ele.company_id}`) ? ele['age_gender_title'] : customName;
                     }
                     if(ele.age_gender_text){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`age_gender_text_${ele.company_id}`, `/LC_MESSAGES/Activities/Activities/${ele['company_id']}`,`dynamic`);
-                        ele.age_gender_text = (customeName == '' || customeName == `age_gender_text_${ele.company_id}`) ? ele['age_gender_text'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`age_gender_text_${ele.company_id}`, `/LC_MESSAGES/Activities/Activities/${ele['company_id']}`,`dynamic`);
+                        ele.age_gender_text = (customName == '' || customName == `age_gender_text_${ele.company_id}`) ? ele['age_gender_text'] : customName;
                     }
                 }));
             }
@@ -1095,39 +1095,39 @@ export class FormInstructionsController {
                     let programCustomName = JSON.parse(resultedData.program_custom_name);
                     for (let i = 0; i <= 5; i++) {
                         if(programCustomName[i+1] ){
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang,`custo_customeLabel_${i}_${resultedData['company_id']}`, `/LC_MESSAGES/HealthForms/SubmitForm/${resultedData['company_id']}`,`dynamic`);
-                            programCustomName[i+1] = (customeName == '' || customeName == `custo_customeLabel_${i}_${resultedData['company_id']}`) ? programCustomName[i+1] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang,`custo_customeLabel_${i}_${resultedData['company_id']}`, `/LC_MESSAGES/HealthForms/SubmitForm/${resultedData['company_id']}`,`dynamic`);
+                            programCustomName[i+1] = (customName == '' || customName == `custo_customeLabel_${i}_${resultedData['company_id']}`) ? programCustomName[i+1] : customName;
                         }
                     }
                     resultedData.program_custom_name = JSON.stringify(programCustomName);
                 }
                 if(resultedData.tobacco_cessation_text){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`tobacco_cessation_text_${resultedData.company_id}`, `/LC_MESSAGES/Activities/Activities/${resultedData['company_id']}`,`dynamic`);
-                    resultedData.tobacco_cessation_text = (customeName == '' || customeName == `tobacco_cessation_text_${resultedData.company_id}`) ? resultedData['tobacco_cessation_text'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`tobacco_cessation_text_${resultedData.company_id}`, `/LC_MESSAGES/Activities/Activities/${resultedData['company_id']}`,`dynamic`);
+                    resultedData.tobacco_cessation_text = (customName == '' || customName == `tobacco_cessation_text_${resultedData.company_id}`) ? resultedData['tobacco_cessation_text'] : customName;
                 }
                 if(resultedData.tobacco_para1){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`tobacco_para1_${resultedData.company_id}`, `/LC_MESSAGES/Activities/Activities/${resultedData['company_id']}`,`dynamic`);
-                    resultedData.tobacco_para1 = (customeName == '' || customeName == `tobacco_para1_${resultedData.company_id}`) ? resultedData['tobacco_para1'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`tobacco_para1_${resultedData.company_id}`, `/LC_MESSAGES/Activities/Activities/${resultedData['company_id']}`,`dynamic`);
+                    resultedData.tobacco_para1 = (customName == '' || customName == `tobacco_para1_${resultedData.company_id}`) ? resultedData['tobacco_para1'] : customName;
                 }
                 if(resultedData.dentists_text){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`dentists_text_${resultedData.company_id}`, `/LC_MESSAGES/Activities/Activities/${resultedData['company_id']}`,`dynamic`);
-                    resultedData.dentists_text = (customeName == '' || customeName == `dentists_text_${resultedData.company_id}`) ? resultedData['dentists_text'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`dentists_text_${resultedData.company_id}`, `/LC_MESSAGES/Activities/Activities/${resultedData['company_id']}`,`dynamic`);
+                    resultedData.dentists_text = (customName == '' || customName == `dentists_text_${resultedData.company_id}`) ? resultedData['dentists_text'] : customName;
                 }
                 if(resultedData.optometrists_text){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`optometrists_text_${resultedData.company_id}`, `/LC_MESSAGES/Activities/Activities/${resultedData['company_id']}`,`dynamic`);
-                    resultedData.optometrists_text = (customeName == '' || customeName == `optometrists_text_${resultedData.company_id}`) ? resultedData['optometrists_text'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`optometrists_text_${resultedData.company_id}`, `/LC_MESSAGES/Activities/Activities/${resultedData['company_id']}`,`dynamic`);
+                    resultedData.optometrists_text = (customName == '' || customName == `optometrists_text_${resultedData.company_id}`) ? resultedData['optometrists_text'] : customName;
                 }
                 if(resultedData.physician_text){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`physician_text_${resultedData.company_id}`, `/LC_MESSAGES/Activities/Activities/${resultedData['company_id']}`,`dynamic`);
-                    resultedData.physician_text = (customeName == '' || customeName == `physician_text_${resultedData.company_id}`) ? resultedData['physician_text'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`physician_text_${resultedData.company_id}`, `/LC_MESSAGES/Activities/Activities/${resultedData['company_id']}`,`dynamic`);
+                    resultedData.physician_text = (customName == '' || customName == `physician_text_${resultedData.company_id}`) ? resultedData['physician_text'] : customName;
                 }
                 if(resultedData.age_gender_title){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`age_gender_title_${resultedData.company_id}`, `/LC_MESSAGES/Activities/Activities/${resultedData['company_id']}`,`dynamic`);
-                    resultedData.age_gender_title = (customeName == '' || customeName == `age_gender_title_${resultedData.company_id}`) ? resultedData['age_gender_title'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`age_gender_title_${resultedData.company_id}`, `/LC_MESSAGES/Activities/Activities/${resultedData['company_id']}`,`dynamic`);
+                    resultedData.age_gender_title = (customName == '' || customName == `age_gender_title_${resultedData.company_id}`) ? resultedData['age_gender_title'] : customName;
                 }
                 if(resultedData.age_gender_text){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`age_gender_text_${resultedData.company_id}`, `/LC_MESSAGES/Activities/Activities/${resultedData['company_id']}`,`dynamic`);
-                    resultedData.age_gender_text = (customeName == '' || customeName == `age_gender_text_${resultedData.company_id}`) ? resultedData['age_gender_text'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`age_gender_text_${resultedData.company_id}`, `/LC_MESSAGES/Activities/Activities/${resultedData['company_id']}`,`dynamic`);
+                    resultedData.age_gender_text = (customName == '' || customName == `age_gender_text_${resultedData.company_id}`) ? resultedData['age_gender_text'] : customName;
                 }
                 if(!resultedData.tobacco_para1){
                     if(resultedData.company_id){

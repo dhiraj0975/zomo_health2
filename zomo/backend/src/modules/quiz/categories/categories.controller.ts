@@ -63,16 +63,16 @@ export class QuizCategoriesController {
             if(resultedData['list'] && resultedData['list'].length){
                 await Promise.all(resultedData['list'].map(async (ele)=>{
                     if(ele.name){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`quiz_category_name_${ele.id}`, `/LC_MESSAGES/Quizzes/Categories/${ele['id']}`,`dynamic`);
-                        ele.name = (customeName == '' || customeName == `quiz_category_name_${ele.id}`) ? ele['name'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`quiz_category_name_${ele.id}`, `/LC_MESSAGES/Quizzes/Categories/${ele['id']}`,`dynamic`);
+                        ele.name = (customName == '' || customName == `quiz_category_name_${ele.id}`) ? ele['name'] : customName;
                     }
                     if(ele.category_type){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`quiz_category_type_${ele['id']}`, `/LC_MESSAGES/Quizzes/Categories/${ele['id']}`,`dynamic`);
-                        ele.category_type = (customeName == '' || customeName == `quiz_category_type_${ele['id']}`) ? ele['category_type'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`quiz_category_type_${ele['id']}`, `/LC_MESSAGES/Quizzes/Categories/${ele['id']}`,`dynamic`);
+                        ele.category_type = (customName == '' || customName == `quiz_category_type_${ele['id']}`) ? ele['category_type'] : customName;
                     }
                     if(ele.description){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`quiz_category_description_${ele.id}`, `/LC_MESSAGES/Quizzes/Categories/${ele['id']}`,`dynamic`);
-                        ele.description = (customeName == '' || customeName == `quiz_category_description_${ele.id}`) ? ele['description'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`quiz_category_description_${ele.id}`, `/LC_MESSAGES/Quizzes/Categories/${ele['id']}`,`dynamic`);
+                        ele.description = (customName == '' || customName == `quiz_category_description_${ele.id}`) ? ele['description'] : customName;
                     }
                 }));
             }
@@ -257,16 +257,16 @@ export class QuizCategoriesController {
                 await this.commonArrayService.formatToDto(QuizCategoriesDto, resultedData, req.lang)
             );
             if(resultedData?.name){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`quiz_category_name_${resultedData.id}`, `/LC_MESSAGES/Quizzes/Categories/${resultedData['id']}`,`dynamic`);
-                resultedData.name = (customeName == '' || customeName == `quiz_category_name_${resultedData.id}`) ? resultedData['name'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`quiz_category_name_${resultedData.id}`, `/LC_MESSAGES/Quizzes/Categories/${resultedData['id']}`,`dynamic`);
+                resultedData.name = (customName == '' || customName == `quiz_category_name_${resultedData.id}`) ? resultedData['name'] : customName;
             }
             if(resultedData?.category_type){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`quiz_category_type_${resultedData['id']}`, `/LC_MESSAGES/Quizzes/Categories/${resultedData['id']}`,`dynamic`);
-                resultedData.category_type = (customeName == '' || customeName == `quiz_category_type_${resultedData['id']}`) ? resultedData['category_type'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`quiz_category_type_${resultedData['id']}`, `/LC_MESSAGES/Quizzes/Categories/${resultedData['id']}`,`dynamic`);
+                resultedData.category_type = (customName == '' || customName == `quiz_category_type_${resultedData['id']}`) ? resultedData['category_type'] : customName;
             }
             if(resultedData?.description){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`quiz_category_description_${resultedData.id}`, `/LC_MESSAGES/Quizzes/Categories/${resultedData['id']}`,`dynamic`);
-                resultedData.description = (customeName == '' || customeName == `quiz_category_description_${resultedData.id}`) ? resultedData['description'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`quiz_category_description_${resultedData.id}`, `/LC_MESSAGES/Quizzes/Categories/${resultedData['id']}`,`dynamic`);
+                resultedData.description = (customName == '' || customName == `quiz_category_description_${resultedData.id}`) ? resultedData['description'] : customName;
             }
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
@@ -306,16 +306,16 @@ export class QuizCategoriesController {
                 if (result && result.length) {
                     await Promise.all(result.map(async (ele) => {
                         if (ele.name) {
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang, `quiz_category_name_${ele.id}`, `/LC_MESSAGES/Quizzes/Categories/${ele['id']}`, `dynamic`);
-                            ele.name = (customeName == '' || customeName == `quiz_category_name_${ele.id}`) ? ele['name'] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang, `quiz_category_name_${ele.id}`, `/LC_MESSAGES/Quizzes/Categories/${ele['id']}`, `dynamic`);
+                            ele.name = (customName == '' || customName == `quiz_category_name_${ele.id}`) ? ele['name'] : customName;
                         }
                         if (ele.category_type) {
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang, `quiz_category_type_${ele['id']}`, `/LC_MESSAGES/Quizzes/Categories/${ele['id']}`, `dynamic`);
-                            ele.category_type = (customeName == '' || customeName == `quiz_category_type_${ele['id']}`) ? ele['category_type'] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang, `quiz_category_type_${ele['id']}`, `/LC_MESSAGES/Quizzes/Categories/${ele['id']}`, `dynamic`);
+                            ele.category_type = (customName == '' || customName == `quiz_category_type_${ele['id']}`) ? ele['category_type'] : customName;
                         }
                         if (ele.description) {
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang, `quiz_category_description_${ele.id}`, `/LC_MESSAGES/Quizzes/Categories/${ele['id']}`, `dynamic`);
-                            ele.description = (customeName == '' || customeName == `quiz_category_description_${ele.id}`) ? ele['description'] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang, `quiz_category_description_${ele.id}`, `/LC_MESSAGES/Quizzes/Categories/${ele['id']}`, `dynamic`);
+                            ele.description = (customName == '' || customName == `quiz_category_description_${ele.id}`) ? ele['description'] : customName;
                         }
                     }));
                 }

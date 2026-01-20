@@ -168,12 +168,12 @@ export class QuizDetailsController {
             }
             let resultedData: any = await this.quizQuizzesService.findOne({id: postData?.quiz_id});
             if(resultedData.quiz_name){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`quiz_name_${resultedData.id}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${resultedData['id']}`,`dynamic`);
-                resultedData.quiz_name = (customeName == '' || customeName == `quiz_name_${resultedData.id}`) ? resultedData['quiz_name'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`quiz_name_${resultedData.id}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${resultedData['id']}`,`dynamic`);
+                resultedData.quiz_name = (customName == '' || customName == `quiz_name_${resultedData.id}`) ? resultedData['quiz_name'] : customName;
             }
             if(resultedData.quiz_description){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`quiz_description_${resultedData.id}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${resultedData['id']}`,`dynamic`);
-                resultedData.quiz_description = (customeName == '' || customeName == `quiz_description_${resultedData.id}`) ? resultedData['quiz_description'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`quiz_description_${resultedData.id}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${resultedData['id']}`,`dynamic`);
+                resultedData.quiz_description = (customName == '' || customName == `quiz_description_${resultedData.id}`) ? resultedData['quiz_description'] : customName;
             }
             if (!resultedData) {
                 let errorMessage = await this.translatorService.frontendReadTranslation(req.lang, "ERR_RECORD_NOT_FOUND");
@@ -1616,8 +1616,8 @@ export class QuizDetailsController {
                     let multipleChoiceData = await this.quizMultipleChoiceQuestionService.findOne({question_id: postData?.id, status : Not('2')},{ id: 'ASC' });
                     for (let i = 1; i <= 6; i++) {
                         if(multipleChoiceData?.[`opt_${i}`]){
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang,`multiplechoice_option_${multipleChoiceData.question_id}_opt${i}_${multipleChoiceData['id']}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${multipleChoiceData['question_id']}`,`dynamic`);
-                            multipleChoiceData[`opt_${i}`] = (customeName == '' || customeName == `multiplechoice_option_${multipleChoiceData.question_id}_opt${i}_${multipleChoiceData['id']}`) ? multipleChoiceData[`opt_${i}`] : customeName;  
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang,`multiplechoice_option_${multipleChoiceData.question_id}_opt${i}_${multipleChoiceData['id']}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${multipleChoiceData['question_id']}`,`dynamic`);
+                            multipleChoiceData[`opt_${i}`] = (customName == '' || customName == `multiplechoice_option_${multipleChoiceData.question_id}_opt${i}_${multipleChoiceData['id']}`) ? multipleChoiceData[`opt_${i}`] : customName;  
                         }
                     }
                     resultedData['mc'] = multipleChoiceData;
@@ -1626,8 +1626,8 @@ export class QuizDetailsController {
                     let multipleResponseData = await this.quizMultipleResponseQuestionService.findOne({question_id: postData?.id, status : Not('2')},{ id: 'ASC' });
                     for (let i = 1; i <= 6; i++) {
                         if(multipleResponseData?.[`choice_${i}`] ){
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang,`multipleresponse_option_${resultedData['id']}_choice${i}_${multipleResponseData?.id}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${multipleResponseData['question_id']}`,`dynamic`);
-                            multipleResponseData[`choice_${i}`] = (customeName == '' || customeName == `multipleresponse_option_${resultedData['id']}_choice${i}_${multipleResponseData?.id}`) ? multipleResponseData[`choice_${i}`] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang,`multipleresponse_option_${resultedData['id']}_choice${i}_${multipleResponseData?.id}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${multipleResponseData['question_id']}`,`dynamic`);
+                            multipleResponseData[`choice_${i}`] = (customName == '' || customName == `multipleresponse_option_${resultedData['id']}_choice${i}_${multipleResponseData?.id}`) ? multipleResponseData[`choice_${i}`] : customName;
                         }
                     }
                     resultedData['mr'] = multipleResponseData;
@@ -1694,12 +1694,12 @@ export class QuizDetailsController {
             if(result && result.length){
                 await Promise.all(result.map(async (ele)=>{
                     if(ele.quiz_question){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`question_name_${ele['id']}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${ele['id']}`,`dynamic`);
-                        ele.quiz_question = (customeName == '' || customeName == `question_name_${ele['id']}`) ? ele['quiz_question'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`question_name_${ele['id']}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${ele['id']}`,`dynamic`);
+                        ele.quiz_question = (customName == '' || customName == `question_name_${ele['id']}`) ? ele['quiz_question'] : customName;
                     }
                     if(ele.answer_desc){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`question_answer_${ele['id']}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${ele['id']}`,`dynamic`);
-                        ele.answer_desc = (customeName == '' || customeName == `question_answer_${ele['id']}`) ? ele['answer_desc'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`question_answer_${ele['id']}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${ele['id']}`,`dynamic`);
+                        ele.answer_desc = (customName == '' || customName == `question_answer_${ele['id']}`) ? ele['answer_desc'] : customName;
                     }
                 }));
             }

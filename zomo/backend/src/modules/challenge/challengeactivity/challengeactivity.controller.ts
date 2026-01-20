@@ -17,7 +17,7 @@ import { AccessGuard, RoleGuard, TokenGuard } from '../../../guard';
 import {
     CreateChallengeActivityInput,
     DeleteChallengeInput,
-    GetoneChallengeInput,
+    GetOneChallengeInput,
     PaginateWithChallengeInput,
     UpdateChallengeActivityInput
 } from "../../../input";
@@ -55,12 +55,12 @@ export class ChallengeActivityController {
             if(![appConstant.ROLE.ADMIN,appConstant.ROLE.GLOBALCLIENTENGAGEMENTMANAGER].includes(req.tokenUser?.role_id)){
                 await Promise.all(resultedData['list'].map(async (ele) => {
                     if(ele.activity_name){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`activity_name_${ele['id']}`, `/LC_MESSAGES/Challenge/Activity/${ele.id}`,`dynamic`);
-                        ele.activity_name = (customeName == '' || customeName == `activity_name_${ele['id']}`) ? ele['activity_name'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`activity_name_${ele['id']}`, `/LC_MESSAGES/Challenge/Activity/${ele.id}`,`dynamic`);
+                        ele.activity_name = (customName == '' || customName == `activity_name_${ele['id']}`) ? ele['activity_name'] : customName;
                     }
                     if(ele.activity_desc){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`activity_desc_${ele['id']}`, `/LC_MESSAGES/Challenge/Activity/${ele.id}`,`dynamic`);
-                        ele.activity_desc = (customeName == '' || customeName == `activity_desc_${ele['id']}`) ? ele['activity_desc'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`activity_desc_${ele['id']}`, `/LC_MESSAGES/Challenge/Activity/${ele.id}`,`dynamic`);
+                        ele.activity_desc = (customName == '' || customName == `activity_desc_${ele['id']}`) ? ele['activity_desc'] : customName;
                     }
                 }));
             }
@@ -204,7 +204,7 @@ export class ChallengeActivityController {
         }
     }
     @Post('get-one')
-    async getOne(@Req() req: Request, @Res() res: Response, @Body() postData: GetoneChallengeInput) {
+    async getOne(@Req() req: Request, @Res() res: Response, @Body() postData: GetOneChallengeInput) {
         try {
             if (!postData?.id) {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang,'ERR_REQUIRED_PARAM_MISSING'));
@@ -214,12 +214,12 @@ export class ChallengeActivityController {
                 await this.commonArrayService.formatToDto(ChallengeActivityDto, resultedData, req.lang)
             );
             if(resultedData.activity_name){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`activity_name_${resultedData['id']}`, `/LC_MESSAGES/Challenge/Activity/${resultedData.id}`,`dynamic`);
-                resultedData.activity_name = (customeName == '' || customeName == `activity_name_${resultedData['id']}`) ? resultedData['activity_name'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`activity_name_${resultedData['id']}`, `/LC_MESSAGES/Challenge/Activity/${resultedData.id}`,`dynamic`);
+                resultedData.activity_name = (customName == '' || customName == `activity_name_${resultedData['id']}`) ? resultedData['activity_name'] : customName;
             }
             if(resultedData.activity_desc){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`activity_desc_${resultedData['id']}`, `/LC_MESSAGES/Challenge/Activity/${resultedData.id}`,`dynamic`);
-                resultedData.activity_desc = (customeName == '' || customeName == `activity_desc_${resultedData['id']}`) ? resultedData['activity_desc'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`activity_desc_${resultedData['id']}`, `/LC_MESSAGES/Challenge/Activity/${resultedData.id}`,`dynamic`);
+                resultedData.activity_desc = (customName == '' || customName == `activity_desc_${resultedData['id']}`) ? resultedData['activity_desc'] : customName;
             }
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
@@ -253,12 +253,12 @@ export class ChallengeActivityController {
             if (req.tokenUser?.role_id != appConstant.ROLE.ADMIN) {
                 await Promise.all(result.map(async (ele) => {
                     if (ele.activity_name) {
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `activity_name_${ele['id']}`, `/LC_MESSAGES/Challenge/Activity/${ele.id}`, `dynamic`);
-                        ele.activity_name = (customeName == '' || customeName == `activity_name_${ele['id']}`) ? ele['activity_name'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `activity_name_${ele['id']}`, `/LC_MESSAGES/Challenge/Activity/${ele.id}`, `dynamic`);
+                        ele.activity_name = (customName == '' || customName == `activity_name_${ele['id']}`) ? ele['activity_name'] : customName;
                     }
                     if (ele.activity_desc) {
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `activity_desc_${ele['id']}`, `/LC_MESSAGES/Challenge/Activity/${ele.id}`, `dynamic`);
-                        ele.activity_desc = (customeName == '' || customeName == `activity_desc_${ele['id']}`) ? ele['activity_desc'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `activity_desc_${ele['id']}`, `/LC_MESSAGES/Challenge/Activity/${ele.id}`, `dynamic`);
+                        ele.activity_desc = (customName == '' || customName == `activity_desc_${ele['id']}`) ? ele['activity_desc'] : customName;
                     }
                 }));
             }

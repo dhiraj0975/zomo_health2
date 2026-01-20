@@ -59,8 +59,8 @@ export class FitnessSeriesController {
             if(resultedData['list'] && resultedData['list'].length){
                 await Promise.all(resultedData['list'].map(async (ele)=>{
                     if(ele.name){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_series_${ele['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${ele['org_id']}/series}`,`dynamic`);
-                        ele.name = (customeName == '' || customeName == `fitness_series_${ele['id']}`) ? ele['name'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_series_${ele['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${ele['org_id']}/series}`,`dynamic`);
+                        ele.name = (customName == '' || customName == `fitness_series_${ele['id']}`) ? ele['name'] : customName;
                     }
                 }));
             }
@@ -111,8 +111,8 @@ export class FitnessSeriesController {
                 await this.commonArrayService.formatToDto(MediaFitnessSeriesDto, seriesData, req.lang)
             );
             if(seriesData.name){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_series_${seriesData['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${seriesData['org_id']}/series}`,`dynamic`);
-                seriesData.name = (customeName == '' || customeName == `fitness_series_${seriesData['id']}`) ? seriesData['name'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_series_${seriesData['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${seriesData['org_id']}/series}`,`dynamic`);
+                seriesData.name = (customName == '' || customName == `fitness_series_${seriesData['id']}`) ? seriesData['name'] : customName;
             }
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
@@ -337,8 +337,8 @@ export class FitnessSeriesController {
             if(resultedData && resultedData.length){
                 await Promise.all(resultedData.map(async (ele)=>{
                     if(ele.name){
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_series_${ele['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${ele['org_id']}/series}`,`dynamic`);
-                        ele.name = (customeName == '' || customeName == `fitness_series_${ele['id']}`) ? ele['name'] : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang,`fitness_series_${ele['id']}`, `/LC_MESSAGES/Media/Fitnessvideos/${ele['org_id']}/series}`,`dynamic`);
+                        ele.name = (customName == '' || customName == `fitness_series_${ele['id']}`) ? ele['name'] : customName;
                     }
                 }));
             }

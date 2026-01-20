@@ -1,3 +1,4 @@
+import { CategoryService } from '@/modules/activity/category/category.service';
 import { CompanyService } from '@/modules/company/companies/company.service';
 import { NotificationsController } from '@/modules/notifications/notifications.controller';
 import { appConstant, CommonArrayService, CommonDateService, CommonService, QuizAssignQuizOrgDto, tableConstant } from '@common-constants';
@@ -18,7 +19,7 @@ import { Request, Response } from "express";
 import { lastValueFrom } from "rxjs";
 import { ClientManagerAssignService } from 'src/modules/company/clientmanagerassign/clientmanagerassign.service';
 import { ActivityLogService } from 'src/modules/master/activitylog/activitylog.service';
-import { Between, In, Like, Not } from 'typeorm';
+import { Between, In, Not } from 'typeorm';
 import { AccessGuard, RoleGuard, TokenGuard } from '../../../guard';
 import {
     CreateAssignQuizOrgInput,
@@ -35,8 +36,6 @@ import { UserDetailsService } from "../userdetails/userdetails.service";
 import { QuizWebinarService } from '../webinar/quizwebinar.service';
 import { QuizAssignQuizOrgService } from './assignquizorgs.service';
 import { ListAssignQuizOrgInput } from './input/listassignquizorg.input';
-import { CategoryService } from '@/modules/activity/category/category.service';
-import { title } from 'process';
 const S3_URL =  process.env.S3_URL_PROD
 @Controller('quiz/assign-quiz-org')
 @UseGuards(TokenGuard, RoleGuard, AccessGuard)
@@ -880,12 +879,12 @@ export class QuizAssignQuizOrgController {
                 let quizDescription = resultedData[i].quiz.quiz_description
                 resultedData[i].quiz.quiz_name_temp = resultedData[i].quiz.quiz_name;
                 if (quizName) {
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang, `quiz_name_${resultedData[i].quiz.id}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${resultedData[i].quiz.id}`, `dynamic`);
-                    resultedData[i].quiz.quiz_name = (customeName == '' || customeName == `quiz_name_${resultedData[i].quiz.id}`) ? quizName : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang, `quiz_name_${resultedData[i].quiz.id}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${resultedData[i].quiz.id}`, `dynamic`);
+                    resultedData[i].quiz.quiz_name = (customName == '' || customName == `quiz_name_${resultedData[i].quiz.id}`) ? quizName : customName;
                 }
                 if (quizDescription) {
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang, `quiz_description_${resultedData[i].quiz.id}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${resultedData[i].quiz.id}`, `dynamic`);
-                    resultedData[i].quiz.quiz_description = (customeName == '' || customeName == `quiz_description_${resultedData[i].quiz.id}`) ? quizDescription : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang, `quiz_description_${resultedData[i].quiz.id}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${resultedData[i].quiz.id}`, `dynamic`);
+                    resultedData[i].quiz.quiz_description = (customName == '' || customName == `quiz_description_${resultedData[i].quiz.id}`) ? quizDescription : customName;
                 }
                 let startDate = await this.commonDateService.DateTimeFormat(resultedData[i].start_date, 'YYYY-MM-DD', 'MM/DD/YYYY');
                 let endDate = await this.commonDateService.DateTimeFormat(resultedData[i].end_date, 'YYYY-MM-DD', 'MM/DD/YYYY');
@@ -990,8 +989,8 @@ export class QuizAssignQuizOrgController {
                         categoryId.push(categoryResultedData[i].qc.id);
                         let categoryName = categoryResultedData[i].qc.name
                         if (categoryName) {
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang, `quiz_category_name_${categoryResultedData[i].qc.id}`, `/LC_MESSAGES/Quizzes/Categories/${categoryResultedData[i].qc.id}`, `dynamic`);
-                            categoryName = (customeName == '' || customeName == `quiz_category_name_${categoryResultedData[i].qc.id}`) ? categoryName : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang, `quiz_category_name_${categoryResultedData[i].qc.id}`, `/LC_MESSAGES/Quizzes/Categories/${categoryResultedData[i].qc.id}`, `dynamic`);
+                            categoryName = (customName == '' || customName == `quiz_category_name_${categoryResultedData[i].qc.id}`) ? categoryName : customName;
                         }
                         categoryList.push({ id: categoryResultedData[i].qc.id, name: categoryName });
                     }
@@ -1126,8 +1125,8 @@ export class QuizAssignQuizOrgController {
                     if (resultedData && resultedData.length) {
                         await Promise.all(resultedData.map(async (item) => {
                             if (item.title) {
-                                let customeName = await this.translatorService.frontendReadTranslation(req.lang, `quiz_webinar_title_${item['id']}`, `/LC_MESSAGES/Quizzes/QuizWebinar/0/${item['id']}`, `dynamic`);
-                                item.title = (customeName == '' || customeName == `quiz_webinar_title_${item['id']}`) ? item['title'] : customeName;
+                                let customName = await this.translatorService.frontendReadTranslation(req.lang, `quiz_webinar_title_${item['id']}`, `/LC_MESSAGES/Quizzes/QuizWebinar/0/${item['id']}`, `dynamic`);
+                                item.title = (customName == '' || customName == `quiz_webinar_title_${item['id']}`) ? item['title'] : customName;
                             }
                         }))
                     }
@@ -1150,8 +1149,8 @@ export class QuizAssignQuizOrgController {
                     if (resultedData && resultedData.length) {
                         await Promise.all(resultedData.map(async (ele) => {
                             if (ele.quiz_name) {
-                                let customeName = await this.translatorService.frontendReadTranslation(req.lang, `quiz_name_${ele.id}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${ele['id']}`, `dynamic`);
-                                ele.quiz_name = (customeName == '' || customeName == `quiz_name_${ele.id}`) ? ele.quiz_name : customeName;
+                                let customName = await this.translatorService.frontendReadTranslation(req.lang, `quiz_name_${ele.id}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${ele['id']}`, `dynamic`);
+                                ele.quiz_name = (customName == '' || customName == `quiz_name_${ele.id}`) ? ele.quiz_name : customName;
                             }
                         }));
                     }
@@ -1171,8 +1170,8 @@ export class QuizAssignQuizOrgController {
             if (resultedData && resultedData.length) {
                 await Promise.all(resultedData.map(async (ele) => {
                     if (ele.quiz_name) {
-                        let customeName = await this.translatorService.frontendReadTranslation(req.lang, `quiz_name_${ele.id}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${ele['id']}`, `dynamic`);
-                        ele.quiz_name = (customeName == '' || customeName == `quiz_name_${ele.id}`) ? ele.quiz_name : customeName;
+                        let customName = await this.translatorService.frontendReadTranslation(req.lang, `quiz_name_${ele.id}`, `/LC_MESSAGES/Quizzes/Quizzes/0/${ele['id']}`, `dynamic`);
+                        ele.quiz_name = (customName == '' || customName == `quiz_name_${ele.id}`) ? ele.quiz_name : customName;
                     }
                 }));
             }

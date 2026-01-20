@@ -1,13 +1,13 @@
 import { CommonDateService, CommonHealthService } from '@common-constants';
 import { Injectable } from "@nestjs/common";
 import { Request } from "express";
+import { UrlManageService } from 'src/modules/common';
 import { InterlinksService } from "src/modules/company/interlinks/interlinks.service";
 import { ActivityLogService } from 'src/modules/master/activitylog/activitylog.service';
 import { TranslationService } from "src/modules/translation/translation.service";
 import { BingoWeekLabelsService } from "../../bingoweeklabels/bingoweeklabels.service";
 import { CardsService } from "../../cards/cards.service";
 import { SquareUsersService } from "../../squareusers/squareusers.service";
-import { UrlManageService } from 'src/modules/common';
 const moment = require('moment-timezone');
 const S3_URL =  process.env.S3_URL_PROD
 @Injectable()
@@ -69,12 +69,12 @@ export class BingoChallengeService {
                             squareData['logo'] = S3_URL + squareData['logo'];
                         }
                         if(squareData.name){
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang,`square_name_${squareData.schedule_id}_${squareData['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${squareData.org_id}/${squareData.schedule_id}`,`dynamic`);
-                            squareData.name = (customeName == '' || customeName == `square_name_${squareData.schedule_id}_${squareData['id']}`) ? squareData['name'] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang,`square_name_${squareData.schedule_id}_${squareData['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${squareData.org_id}/${squareData.schedule_id}`,`dynamic`);
+                            squareData.name = (customName == '' || customName == `square_name_${squareData.schedule_id}_${squareData['id']}`) ? squareData['name'] : customName;
                         }
                         if(squareData.description){
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang,`square_description_${squareData.schedule_id}_${squareData['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${squareData.org_id}/${squareData.schedule_id}`,`dynamic`);
-                            squareData.description = (customeName == '' || customeName == `square_description_${squareData.schedule_id}_${squareData['id']}`) ? squareData['description'] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang,`square_description_${squareData.schedule_id}_${squareData['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${squareData.org_id}/${squareData.schedule_id}`,`dynamic`);
+                            squareData.description = (customName == '' || customName == `square_description_${squareData.schedule_id}_${squareData['id']}`) ? squareData['description'] : customName;
                         }
                     }
                 }
@@ -205,12 +205,12 @@ export class BingoChallengeService {
                     if(squares?.square.length){
                         for (let square of squares.square) {
                             if(square.name){
-                                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`square_name_${square.schedule_id}_${square['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${square.org_id}/${square.schedule_id}`,`dynamic`);
-                                square.name = (customeName == '' || customeName == `square_name_${square.schedule_id}_${square['id']}`) ? square['name'] : customeName;
+                                let customName = await this.translatorService.frontendReadTranslation(req.lang,`square_name_${square.schedule_id}_${square['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${square.org_id}/${square.schedule_id}`,`dynamic`);
+                                square.name = (customName == '' || customName == `square_name_${square.schedule_id}_${square['id']}`) ? square['name'] : customName;
                             }
                             if(square.description){
-                                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`square_description_${square.schedule_id}_${square['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${square.org_id}/${square.schedule_id}`,`dynamic`);
-                                square.description = (customeName == '' || customeName == `square_description_${square.schedule_id}_${square['id']}`) ? square['description'] : customeName;
+                                let customName = await this.translatorService.frontendReadTranslation(req.lang,`square_description_${square.schedule_id}_${square['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${square.org_id}/${square.schedule_id}`,`dynamic`);
+                                square.description = (customName == '' || customName == `square_description_${square.schedule_id}_${square['id']}`) ? square['description'] : customName;
                             }
                             if (squareusers[square['card_id']] && squareusers[square['card_id']][square['id']]) {
                                 square['square_status'] = 2;
@@ -241,8 +241,8 @@ export class BingoChallengeService {
         let weeklabels: any = await this.bingoWeekLabelsService.listRecord({schedule_id: schedule['sc']['id'], status: 1})
         await Promise.all(weeklabels.map(async (ele) => {
             if(ele.week_custom_name){
-                let customeName = await this.translatorService.frontendReadTranslation(req.lang,`bingoweek_labels_${ele.schedule_id}_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele['scheduleChallenge'].org_id}/${ele.schedule_id}`,`dynamic`);
-                ele.week_custom_name = (customeName == '' || customeName == `bingoweek_labels_${ele.schedule_id}_${ele['id']}`) ? ele['week_custom_name'] : customeName;
+                let customName = await this.translatorService.frontendReadTranslation(req.lang,`bingoweek_labels_${ele.schedule_id}_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele['scheduleChallenge'].org_id}/${ele.schedule_id}`,`dynamic`);
+                ele.week_custom_name = (customName == '' || customName == `bingoweek_labels_${ele.schedule_id}_${ele['id']}`) ? ele['week_custom_name'] : customName;
             }
         }));
         weeklabels = weeklabels.reduce((acc, item) => {
@@ -258,12 +258,12 @@ export class BingoChallengeService {
                 if(week.carddata && week.carddata.length){
                     for(let card of week.carddata){
                         if(card.name){
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang,`card_name_${card.schedule_id}_${card['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${card.org_id}/${card.schedule_id}`,`dynamic`);
-                            card.name = (customeName == '' || customeName == `card_name_${card.schedule_id}_${card['id']}`) ? card['name'] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang,`card_name_${card.schedule_id}_${card['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${card.org_id}/${card.schedule_id}`,`dynamic`);
+                            card.name = (customName == '' || customName == `card_name_${card.schedule_id}_${card['id']}`) ? card['name'] : customName;
                         }
                         if(card.description){
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang,`card_description_${card.schedule_id}_${card['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${card.org_id}/${card.schedule_id}`,`dynamic`);
-                            card.description = (customeName == '' || customeName == `card_description_${card.schedule_id}_${card['id']}`) ? card['description'] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang,`card_description_${card.schedule_id}_${card['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${card.org_id}/${card.schedule_id}`,`dynamic`);
+                            card.description = (customName == '' || customName == `card_description_${card.schedule_id}_${card['id']}`) ? card['description'] : customName;
                         }
                         if(card.square){
                             card.square = card?.square?.sort((a, b) => a['order_no'] - b['order_no']);
@@ -315,12 +315,12 @@ export class BingoChallengeService {
             }
             for(let card of completedCard){
                 if(card.name){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`card_name_${card.schedule_id}_${card['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${card.org_id}/${card.schedule_id}`,`dynamic`);
-                    card.name = (customeName == '' || customeName == `card_name_${card.schedule_id}_${card['id']}`) ? card['name'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`card_name_${card.schedule_id}_${card['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${card.org_id}/${card.schedule_id}`,`dynamic`);
+                    card.name = (customName == '' || customName == `card_name_${card.schedule_id}_${card['id']}`) ? card['name'] : customName;
                 }
                 if(card.description){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`card_description_${card.schedule_id}_${card['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${card.org_id}/${card.schedule_id}`,`dynamic`);
-                    card.description = (customeName == '' || customeName == `card_description_${card.schedule_id}_${card['id']}`) ? card['description'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`card_description_${card.schedule_id}_${card['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${card.org_id}/${card.schedule_id}`,`dynamic`);
+                    card.description = (customName == '' || customName == `card_description_${card.schedule_id}_${card['id']}`) ? card['description'] : customName;
                 }
                 if(card.square){
                     card.square = card?.square?.sort((a, b) => a['order_no'] - b['order_no']);
@@ -351,8 +351,8 @@ export class BingoChallengeService {
             let weeklabels: any = await this.bingoWeekLabelsService.listRecord({schedule_id: schedule['sc']['id'], status: 1})
             await Promise.all(weeklabels.map(async (ele) => {
                 if(ele.week_custom_name){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`bingoweek_labels_${ele.schedule_id}_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele['scheduleChallenge'].org_id}/${ele.schedule_id}`,`dynamic`);
-                    ele.week_custom_name = (customeName == '' || customeName == `bingoweek_labels_${ele.schedule_id}_${ele['id']}`) ? ele['week_custom_name'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`bingoweek_labels_${ele.schedule_id}_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele['scheduleChallenge'].org_id}/${ele.schedule_id}`,`dynamic`);
+                    ele.week_custom_name = (customName == '' || customName == `bingoweek_labels_${ele.schedule_id}_${ele['id']}`) ? ele['week_custom_name'] : customName;
                 }
             }));
             weeklabels = weeklabels.reduce((result, item) => {
@@ -416,22 +416,22 @@ export class BingoChallengeService {
             let index = 0;
             await Promise.all(cards?.map(async ele =>{
                 if(ele.name){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`card_name_${ele.schedule_id}_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele.schedule_id}`,`dynamic`);
-                    ele.name = (customeName == '' || customeName == `card_name_${ele.schedule_id}_${ele['id']}`) ? ele['name'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`card_name_${ele.schedule_id}_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele.schedule_id}`,`dynamic`);
+                    ele.name = (customName == '' || customName == `card_name_${ele.schedule_id}_${ele['id']}`) ? ele['name'] : customName;
                 }
                 if(ele.description){
-                    let customeName = await this.translatorService.frontendReadTranslation(req.lang,`card_description_${ele.schedule_id}_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele.schedule_id}`,`dynamic`);
-                    ele.description = (customeName == '' || customeName == `card_description_${ele.schedule_id}_${ele['id']}`) ? ele['description'] : customeName;
+                    let customName = await this.translatorService.frontendReadTranslation(req.lang,`card_description_${ele.schedule_id}_${ele['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${ele.org_id}/${ele.schedule_id}`,`dynamic`);
+                    ele.description = (customName == '' || customName == `card_description_${ele.schedule_id}_${ele['id']}`) ? ele['description'] : customName;
                 }
                 if(ele['square'] && ele['square'].length){
                     for (let squareData of ele['square']){
                         if(squareData.name){
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang,`square_name_${squareData.schedule_id}_${squareData['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${squareData.org_id}/${squareData.schedule_id}`,`dynamic`);
-                            squareData.name = (customeName == '' || customeName == `square_name_${squareData.schedule_id}_${squareData['id']}`) ? squareData['name'] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang,`square_name_${squareData.schedule_id}_${squareData['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${squareData.org_id}/${squareData.schedule_id}`,`dynamic`);
+                            squareData.name = (customName == '' || customName == `square_name_${squareData.schedule_id}_${squareData['id']}`) ? squareData['name'] : customName;
                         }
                         if(squareData.description){
-                            let customeName = await this.translatorService.frontendReadTranslation(req.lang,`square_description_${squareData.schedule_id}_${squareData['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${squareData.org_id}/${squareData.schedule_id}`,`dynamic`);
-                            squareData.description = (customeName == '' || customeName == `square_description_${squareData.schedule_id}_${squareData['id']}`) ? squareData['description'] : customeName;
+                            let customName = await this.translatorService.frontendReadTranslation(req.lang,`square_description_${squareData.schedule_id}_${squareData['id']}`, `/LC_MESSAGES/Challenge/MyChallenges/${squareData.org_id}/${squareData.schedule_id}`,`dynamic`);
+                            squareData.description = (customName == '' || customName == `square_description_${squareData.schedule_id}_${squareData['id']}`) ? squareData['description'] : customName;
                         }
                         if(squareData['logo'] && squareData['logo']?.includes('square')){
                             squareData['logo'] = S3_URL + squareData['logo'];

@@ -207,20 +207,22 @@ export class EmailAssetsController {
             if (!postData?.key) {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_REQUIRED_PARAM_MISSING"));
             }
-            try{
-                const role_id = req.tokenUser?.role_id;
+            try {
+                const role_id = Number(req.tokenUser?.role_id);
                 let campRoleIdArr = [];
-                if(role_id == 40){
+                if (role_id == 1) {
+                    // Admin can delete assets of all these roles
+                    campRoleIdArr = [1, 8, 11, 19, 20, 25, 37, 38, 39, 40, 41, 42, 43];
+                } else if (role_id == 38 || role_id == 43) {
+                    campRoleIdArr = [38, 43, 39, 40, 41, 11];
+                } else if (role_id == 39) {
+                    campRoleIdArr = [39, 40, 41, 11];
+                } else if (role_id == 40 || role_id == 41 || role_id == 11) {
                     campRoleIdArr = [role_id];
-                }else if(role_id == 41){
-                    campRoleIdArr = [role_id];
-                }else if(role_id == 11){
-                    campRoleIdArr = [role_id];
-                }else if(role_id == 39){
-                    campRoleIdArr = [role_id,40,41,11];
-                }else{
+                } else {
                     campRoleIdArr = [role_id,40,41,39,11];
                 }
+
                 const assetsRoleId = parseInt(postData?.key.split('/')[1]);
                 let accessStatus = 1;
                 if(campRoleIdArr.includes(assetsRoleId)){
