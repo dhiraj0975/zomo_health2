@@ -24,7 +24,7 @@ export class AppService {
         @Inject('COMMON_SERVICE')
         private commonMicroservice: ClientProxy,
     ) {
-        this.createTranslationCronJobs();
+        /*this.createTranslationCronJobs();*/
     }
 
     private createTranslationCronJobs() {

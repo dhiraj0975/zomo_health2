@@ -1184,6 +1184,7 @@ export class UserChallengeHelperService {
                     },
                 }; 
                 if(challengeData?.square_data){
+                    console.log("square verification before add:", challengeData?.square_data);
                     notificationData['metadata']['square_data'] = challengeData?.square_data;
                 }
                 if(challengeData?.reg_start_date || challengeData?.reg_start_date || challengeData?.start_date || challengeData?.end_date){

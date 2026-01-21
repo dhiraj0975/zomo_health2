@@ -43,6 +43,7 @@ export class NotificationsController {
             if (postData?.org_id) {
                 where += ` AND notifications.org_id = ${postData?.org_id} `;
             }
+            postData.user_id = req?.tokenUser?.id;
             if (postData?.user_id) {
                 where += ` AND notifications.user_id = ${postData?.user_id} `;
                 if(postData?.date && (req.tokenUser?.role_id == appConstant.ROLE.REGISTERED || req.tokenUser?.role_id == appConstant.ROLE.SPOUSE)){

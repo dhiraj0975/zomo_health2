@@ -21,7 +21,7 @@ export class HydrateChallengeReportService {
         private readonly userService: UserService,
         private readonly scheduleChallengeJoinUsersService: ScheduleChallengeJoinUsersService,
         private readonly commonArrayService: CommonArrayService,
-    ) {}
+    ) { }
 
     async hydrateChallengeReport(
         schedule: Partial<ScheduleChallengeEntity>,
@@ -74,7 +74,7 @@ export class HydrateChallengeReportService {
             let ozMeetRequireDay: number = schedule?.oz_meet_require_day || 15;
             // in old system use requiredTotalWater = perDayWater * totaldays
             let requiredTotalWater = perDayWater * ozMeetRequireDay;
-            if(schedule?.is_oz_meet_require_day != 1){
+            if (schedule?.is_oz_meet_require_day != 1) {
                 requiredTotalWater = perDayWater * totaldays;
             }
             let requiredTotalWaterText = `${requiredTotalWater}${' '}${ozTrans}`;
@@ -404,16 +404,17 @@ export class HydrateChallengeReportService {
             }
             if (result && result.length > 0) {
                 result = result.sort((a, b) => {
-                    if (b?.['percent'] !== a?.['percent']) {
-                        return b?.['percent'] - a?.['percent'];
+                    const percentDiff = (b?.['percent'] ?? 0) - (a?.['percent'] ?? 0);
+                    if (percentDiff !== 0) {
+                        return percentDiff;
                     }
-                    return b?.['total_water'] - a?.['total_water'];
+                    return (b?.['day_log'] ?? 0) - (a?.['day_log'] ?? 0);
                 });
                 let rank = 1;
                 if (result_type == 1) {
                     rank =
                         ((paginateObj?.page || 1) - 1) *
-                            (paginateObj?.limit || appConstant.RECORD_PER_PAGE) +
+                        (paginateObj?.limit || appConstant.RECORD_PER_PAGE) +
                         1;
                 }
                 result.forEach((item) => {
@@ -530,13 +531,14 @@ export class HydrateChallengeReportService {
             });
         }
         const sortedUserIds = userRankMetrics
+            .slice()
             .sort((a, b) => {
                 if (b.completedDays !== a.completedDays) {
                     return b.completedDays - a.completedDays;
                 }
-                return b.totalWater - a.totalWater;
+                return (b.totalWater ?? 0) - (a.totalWater ?? 0);
             })
-            .map((r) => r.userId);
+            .map(r => r.userId);
         const remainingUserIds = userIds.filter((id: number) => !sortedUserIds.includes(id));
         const combinedUserIds = [...sortedUserIds, ...remainingUserIds];
         const page = Number(paginateObj?.page) > 0 ? Number(paginateObj?.page) : 1;

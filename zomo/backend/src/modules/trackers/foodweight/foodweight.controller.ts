@@ -35,7 +35,7 @@ export class FoodWeightController {
             let where = `food.NDB_No !=0 `;
             let NDBNo: number = Number(postData?.NDB_No)
             if(postData?.NDB_No){
-                where +=`AND food.NDB_No = '${postData?.NDB_No}' `;
+                where +=`AND CAST(food.NDB_No AS UNSIGNED) = '${postData?.NDB_No}' `;
             }
             if (postData?.search_str) {
                 where += `AND(food.Msre_Desc LIKE '%${postData?.search_str}%')`;

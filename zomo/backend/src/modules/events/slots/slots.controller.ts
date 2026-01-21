@@ -115,7 +115,8 @@ export class EventSlotsController {
                 savedSlot.year_basis_month,
             );
             postData['slot_id'] = savedSlot.id;
-            await this.eventSlotsService.getSlotTimings(postData, datePeriodData, req);
+            // await this.eventSlotsService.getSlotTimings(postData, datePeriodData, req);
+            this.eventSlotsService.getSlotTimings(postData, datePeriodData, req);
             return res.status(HttpStatus.OK).json({
                 statusCode: 201,
                 success: 1,
@@ -258,11 +259,12 @@ export class EventSlotsController {
             }
             await this.eventSlotsService.update(where,{status:2});
             this.activityLogService.create(recordDetails, {status:2}, tableConstant.EVENTS.TBL_EV_SLOTS, req.tokenUser?.id, 'delete');
-            const slotTimingData = await this.eventSlotsTimingsService.listRecord(`est.ev_slots_id = ${recordDetails?.id} AND est.ev_events_id = ${recordDetails?.ev_events_id}`,null,['est.id','est.status']);
-            await this.eventSlotsTimingsService.update(`ev_slots_id = ${recordDetails?.id} AND ev_events_id = ${recordDetails?.ev_events_id} AND status != 2`,{ status: 2});
+            const slotTimingData = await this.eventSlotsTimingsService.listRecord(`est.ev_slots_id = ${recordDetails?.id} AND est.ev_events_id = ${recordDetails?.ev_events_id} AND est.status != 2`,null,['est.id','est.status']);
+            this.eventSlotsTimingsService.update(`ev_slots_id = ${recordDetails?.id} AND ev_events_id = ${recordDetails?.ev_events_id} AND status != 2`,{ status: 2});
             this.notificationsController.removeNotification({org_id: recordDetails?.organization_id, slot_id: recordDetails?.id, event_id: recordDetails?.ev_events_id},req);
             if(slotTimingData.length){
-                slotTimingData?.map(item=>this.activityLogService.create(item, {status: 2}, tableConstant.EVENTS.TBL_EV_SLOTS_TIMINGS, req.tokenUser?.id, 'delete'));
+                // slotTimingData?.map(item=>this.activityLogService.create(item, {status: 2}, tableConstant.EVENTS.TBL_EV_SLOTS_TIMINGS, req.tokenUser?.id, 'delete'));
+                setImmediate(() => {this.activityLogService.createMultiple(slotTimingData, {status: 2}, tableConstant.EVENTS.TBL_EV_SLOTS_TIMINGS, req.tokenUser?.id, 'delete')});
             }
             // const userbookingData = await this.eventUserBookingListsService.listRecord(`eubl.ev_slots_id = ${recordDetails?.id} AND eubl.ev_events_id = ${recordDetails?.ev_events_id} AND eubl.organization_id = ${recordDetails?.organization_id}`,null,['eubl.id','eubl.status']);
             // await this.eventUserBookingListsService.update(`ev_slots_id = ${recordDetails?.id} AND ev_events_id = ${recordDetails?.ev_events_id} AND organization_id = ${recordDetails?.organization_id}`,{ status: 2});

@@ -1,4 +1,5 @@
-import {appConstant, CommonDateService, CommonFileService, CommonService, tableConstant} from '@common-constants';
+import { fileName, imgFilter } from "@/utils/image-upload.utils";
+import { appConstant, CommonDateService, CommonFileService, CommonService, tableConstant } from '@common-constants';
 import {
     Body,
     Controller,
@@ -10,7 +11,11 @@ import {
     Res, UploadedFile,
     UseGuards, UseInterceptors,
 } from '@nestjs/common';
+import { ClientProxy } from "@nestjs/microservices";
+import { FileInterceptor } from "@nestjs/platform-express";
 import { Request, Response } from "express";
+import { diskStorage } from "multer";
+import { lastValueFrom } from "rxjs";
 import { ActivityService } from 'src/modules/activity/activity/activity.service';
 import { ActivityLogService } from 'src/modules/master/activitylog/activitylog.service';
 import { Not } from 'typeorm';
@@ -23,12 +28,7 @@ import { FormInstructionsService } from '../forminstructions/forminstructions.se
 import { TobaccoUsesService } from '../tobaccouses/tobaccouses.service';
 import { AuthorizationsService } from './authorizations.service';
 import { AuthorizationInput } from './input';
-import {FileInterceptor} from "@nestjs/platform-express";
-import {diskStorage} from "multer";
-import {fileName, imgFilter} from "@/utils/image-upload.utils";
-import {lastValueFrom} from "rxjs";
 const path = require('path');
-import {ClientProxy} from "@nestjs/microservices";
 @Controller('health-checkup/authorizations')
 @UseGuards(TokenGuard, RoleGuard, AccessGuard)
 export class AuthorizationsController {
@@ -155,10 +155,13 @@ export class AuthorizationsController {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_REQUIRED_PARAM_MISSING"));
             }
             let formName = 'Physician Form';
+            let returnMsg = await this.translatorService.frontendReadTranslation(req.lang, "PHYSICIAN_FORM_UPDATED");
             if(postData?.type_of_form == 'Dental'){
                 formName = 'Dental Visit Form';
+                returnMsg = await this.translatorService.frontendReadTranslation(req.lang, "DENTAL_FORM_UPDATED");
             }else if(postData?.type_of_form == 'Optometrist'){
                 formName = 'Optometrist Form';
+                returnMsg = await this.translatorService.frontendReadTranslation(req.lang, "OPTOMETRIC_FORM_UPDATED");
             }else if(postData?.type_of_form == 'Tabacco'){
                 formName = 'Tobacco Affidavit- Non-tobacco user';
                 if(postData?.is_tobacco_user == 2){
@@ -166,6 +169,7 @@ export class AuthorizationsController {
 				}else if(postData?.is_tobacco_user == 3){
                     formName = 'Tobacco Affidavit- Tobacco user participating in a tobacco cessation program';
 				}
+                returnMsg = await this.translatorService.frontendReadTranslation(req.lang, "TABACCO_FORM_UPDATED");
             }
             let getActivityId = await this.activityService.findOne({activity_name: formName},'',['activity.id']);
             if(!getActivityId){
@@ -194,7 +198,7 @@ export class AuthorizationsController {
                 success: 1,
                 error: 0,
                 data: null,
-                message: 'success'
+                message: returnMsg
             });
         } catch (error) {
             if (file && file.fieldname === 'user_sign_image' && file.filename) {

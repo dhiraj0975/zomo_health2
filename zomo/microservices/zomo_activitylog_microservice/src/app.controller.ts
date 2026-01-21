@@ -5,9 +5,21 @@ import { AppService } from './app.service';
 export class AppController {
   constructor(private readonly appService: AppService) {}
   @MessagePattern({ cmd: 'create_log' })
-  findPostcode(postData: any) {
+  createLog(postData: any) {
     try {
       return this.appService.create(postData);
+    } catch (error) {
+      console.log("error",error);
+      let data = {user_id: 0,end_point: 'create/logError', message: 'CreateLogError', log: `${JSON.stringify(postData)}`, req: JSON.stringify(postData) }
+      this.appService.error_log(data);
+    }
+
+    return this.appService.create(postData);
+  }
+  @MessagePattern({ cmd: 'create_multiple_log' })
+  createMultipleLog(postData: any) {
+    try {
+      return this.appService.createMultiple(postData);
     } catch (error) {
       console.log("error",error);
       let data = {user_id: 0,end_point: 'create/logError', message: 'CreateLogError', log: `${JSON.stringify(postData)}`, req: JSON.stringify(postData) }

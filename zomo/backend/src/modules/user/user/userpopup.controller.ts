@@ -113,6 +113,7 @@ export class UserPopupController {
             const orgId = user?.org_id;
             const popupName = postData?.popup_name;
             const popupStatus = postData?.popup_status ?? 1;
+            let message = await this.translatorService.frontendReadTranslation(req.lang, "MSG POPUP SUBMITTED SUCCESSFULLY");
             if(popupName == 'loginaggrement'){
                 if (file && file.fieldname === 'user_sign_image' && file.filename) {
                     postData.user_sign = ' ';
@@ -175,14 +176,15 @@ export class UserPopupController {
                     'status':popupStatus,
                     'entry_name':postData?.entry_name || null,
                     'entry_empid':postData?.entry_empid || null,
-                    'medical_status_one':postData?.medical_status_one ?? 0,
-                    'medical_status_two':postData?.medical_status_two ?? 0,
-                    'participation_wp':postData?.participation_wp,
-                    'participation_wp_data':postData?.participation_wp_data,
-                    'wellness_score_one':postData?.wellness_score_one,
-                    'wellness_score_two':postData?.wellness_score_two
+                    'medical_status_one': postData?.medical_status_one || 0,
+                    'medical_status_two': postData?.medical_status_two || 0,
+                    'participation_wp':postData?.participation_wp || 0,
+                    'participation_wp_data':postData?.participation_wp_data || 0,
+                    'wellness_score_one':postData?.wellness_score_one || 0,
+                    'wellness_score_two':postData?.wellness_score_two || 0
                 }
                 await this.questionnaireUsersService.save(data);
+                message = await this.translatorService.frontendReadTranslation(req.lang, "SUBMITTED_SUCCESSFULLY");
             }
             if(popupName == 'UserServeyPopupShow'){
                 if (!orgId || !postData?.survey_popup_id) {
@@ -467,7 +469,7 @@ export class UserPopupController {
                 success: 1,
                 error: 0,
                 data: null,
-                message: await this.translatorService.frontendReadTranslation(req.lang, "MSG POPUP SUBMITTED SUCCESSFULLY"),
+                message,
             });
         } catch (error) {
             if (file && file.fieldname === 'user_sign_image' && file.filename) {

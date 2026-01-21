@@ -505,6 +505,9 @@ export class QuizQuizzesController {
                 where['is_webinar'] = 1;
                 where['webinar_id'] = Not(0);
             }
+            else if (postData?.type == 'allQuizzes'){
+                field = ['qz.id', 'qz.quiz_name'];
+            }
             else{
                 where['is_webinar'] = 0;
                 where['webinar_id'] = 0;

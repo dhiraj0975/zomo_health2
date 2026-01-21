@@ -34,14 +34,8 @@ export class EventSlotsTimingsService {
             'slot',
             `slot.id = est.ev_slots_id`,
           )
-        .leftJoinAndMapMany(
-            'est.userbookinglists',
-            tableConstant.EVENTS.TBL_EV_USER_BOOKING_LISTS,
-            'userbookinglists',
-            `userbookinglists.slot_selected = est.id and userbookinglists.status = 1`,
-          )
             .where(condition)
-            .select(['est','slot.id','slot.ev_events_id','slot.organization_id','userbookinglists'])
+            .select(['est','slot.id','slot.ev_events_id','slot.organization_id'])
             .orderBy(orderBy, <any>order)
             .take(paginateObj.take)
             .skip(paginateObj.skip)

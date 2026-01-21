@@ -4,8 +4,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from "express";
 import * as moment from 'moment-timezone';
+import pLimit from 'p-limit';
 import { ActivityLogService } from 'src/modules/master/activitylog/activitylog.service';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import { PaginateWithCompanyInput } from "../../../input";
 import { EventSlotsTimingsService } from '../slotstimings/slotstimings.service';
 @Injectable()
@@ -281,43 +282,70 @@ export class EventSlotsService {
         try{
             const slotID = data.slot_id;
             if (data?.changedData) {
-                const slotTimingData = await this.eventSlotsTimingsService.listRecord({ ev_events_id: data.ev_events_id, ev_slots_id: slotID });
-                await Promise.all(slotTimingData.map(async (slotTiming) => await this.eventSlotsTimingsService.update({ id: slotTiming.id }, { status: 0 })))
-                for (let slot of slotTimingData) {
-                    this.activityLogService.create(slot, { status: 0 }, tableConstant.EVENTS.TBL_EV_SLOTS_TIMINGS, req.tokenUser?.id);
-                }
+                const slotTimingData = await this.eventSlotsTimingsService.listRecord({ ev_events_id: data.ev_events_id, ev_slots_id: slotID, status : Not(2) },null,['est.id','est.status']);
+                // await Promise.all(slotTimingData.map(async (slotTiming) => await this.eventSlotsTimingsService.update({ id: slotTiming.id }, { status: 0 })));
+                await this.eventSlotsTimingsService.update({ ev_events_id: data?.ev_events_id, ev_slots_id: slotID, status : Not(2) }, { status: 0 })
+                // slotTimingData.map(slot => this.activityLogService.create(slot, { status: 0 }, tableConstant.EVENTS.TBL_EV_SLOTS_TIMINGS, req.tokenUser?.id));
+                this.activityLogService.createMultiple(slotTimingData, { status: 0 }, tableConstant.EVENTS.TBL_EV_SLOTS_TIMINGS, req.tokenUser?.id);
             }
-            const startDate = moment(data.start_date);
-            const endDate = moment(data.end_date);
+            // const startDate = moment(data.start_date);
+            // const endDate = moment(data.end_date);
             const [startHours, startMinutes] = data.start_time ? data.start_time.split(':') : '00:00'.split(':')
             const [endHours, endMinutes] = data.end_time ? data.end_time.split(':') : '23:59'.split(':')
             const availableStartTime = { hour: parseInt(startHours), minute: parseInt(startMinutes) };
             const availableEndTime = { hour: parseInt(endHours), minute: parseInt(endMinutes) };
             const intervalInMinutes = parseInt(data.slot_interval);
             //let datePeriodData = [];
-            let tempBioEvent = [];
+            // let tempBioEvent = [];
             if (!datePeriodData.length) {
                 return;
             }
             let slots = [];
+            let slotInterval;
+            const dividingType = data.dividing_slot_type;
+            if (dividingType == '1') {
+                const start = moment(data.start_time, 'HH:mm');
+                const end = moment(data.end_time, 'HH:mm');
+                slotInterval = Math.round(Math.abs(end.diff(start, 'minutes')));
+            }
             for (let i = 0; i < datePeriodData.length; i++) {
                 const slotDate = datePeriodData[i];
-                if (data['dividing_slot_type'] == '1') {
-                    const slotstarttime = moment(data['start_time'], 'HH:mm');
-                    const slotendtime = moment(data['end_time'], 'HH:mm');
-                    const slotinterval = Math.round(Math.abs(moment(slotendtime, 'HH:mm').diff(moment(slotstarttime, 'HH:mm'), 'minutes')));
-                    slots.push({ slotdate:`${slotDate}`,slotstarttime: `${data.start_time}`, slotendtime: `${data.end_time}`, slotinterval: slotinterval });
-                } else if (data['dividing_slot_type'] == '2') {
-                    slots.push(...this.commonDateService.generateTimeSlotsWithinAvailableHours(slotDate, slotDate, availableStartTime, availableEndTime, intervalInMinutes));
-                } else if (data['dividing_slot_type'] == '3') {
-                    slots.push(...this.commonDateService.generateTimeSlotsWithinAvailableHoursByCount(slotDate, slotDate, availableStartTime, availableEndTime, data.slot_total));
+                let daySlots = [];
+                if (dividingType == '1') {
+                    daySlots = [{ slotdate:`${slotDate}`,slotstarttime: `${data.start_time}`, slotendtime: `${data.end_time}`, slotinterval: slotInterval }];
+                } else if (dividingType == '2') {
+                    daySlots = this.commonDateService.generateTimeSlotsWithinAvailableHours(slotDate, slotDate, availableStartTime, availableEndTime, intervalInMinutes);
+                } else if (dividingType == '3') {
+                    daySlots = this.commonDateService.generateTimeSlotsWithinAvailableHoursByCount(slotDate, slotDate, availableStartTime, availableEndTime, data.slot_total);
+                }
+                if([1,2,3,4].includes(i)){
+                    await this.eventSlotsTimingsService.processAndSaveSlotTimings(daySlots, data.ev_events_id, data.slot_id);
+                }else{
+                    slots.push(...daySlots);
                 }
             }
             if (slots.length) {
                 this.eventSlotsTimingsService.processAndSaveSlotTimings(slots, data.ev_events_id, data.slot_id);
+                // this.processSlotsInBatches.call(this, slots, data.ev_events_id, data.slot_id, 50, 4);
             }
+            return
         }catch (error) {
             throw new Error(error.message); 
+        }
+    }
+    async processSlotsInBatches(slots: any, eventId: number, slotId: number, batchSize = 50, concurrency = 4 ): Promise<void> {
+        const limit = pLimit(concurrency);
+
+        for (let i = 0; i < slots.length; i += batchSize) {
+            const batch = slots.slice(i, i + batchSize);
+
+            limit(async () => {
+            await this.eventSlotsTimingsService.processAndSaveSlotTimings(
+                batch,
+                eventId,
+                slotId
+            );
+            }).catch(console.error);
         }
     }
     async listRecord(condition: any, orderBy: any = null, fields: any = ['es'], slotTimeId: any = null) {

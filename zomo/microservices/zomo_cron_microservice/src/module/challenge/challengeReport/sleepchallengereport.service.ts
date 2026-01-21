@@ -21,7 +21,7 @@ export class SleepChallengeReportService {
         private readonly userChallengeHelperService: UserChallengeHelperService,
         private readonly scheduleChallengeJoinUsersService: ScheduleChallengeJoinUsersService,
         private readonly commonArrayService: CommonArrayService,
-    ) {}
+    ) { }
 
     async sleepChallengeReport(
         schedule: Partial<ScheduleChallengeEntity>,
@@ -80,7 +80,7 @@ export class SleepChallengeReportService {
                 perDaySleepMin * ozMeetRequireDay;
             let requireTotalSleep: number =
                 requireTotalSleepHr * 60 + requireTotalSleepMin;
-            if(schedule?.is_oz_meet_require_day != 1){
+            if (schedule?.is_oz_meet_require_day != 1) {
                 requireTotalSleepHr = perDaySleep * totaldays;
                 requireTotalSleepMin = perDaySleepMin * totaldays;
                 requireTotalSleep = requireTotalSleepHr * 60 + requireTotalSleepMin;
@@ -457,16 +457,17 @@ export class SleepChallengeReportService {
             }
             if (result && result.length > 0) {
                 result = result.sort((a, b) => {
-                    if (b?.['percent'] !== a?.['percent']) {
-                        return b?.['percent'] - a?.['percent'];
+                    const percentDiff = (b?.['percent'] ?? 0) - (a?.['percent'] ?? 0);
+                    if (percentDiff !== 0) {
+                        return percentDiff;
                     }
-                    return b?.['total_sleep'] - a?.['total_sleep'];
+                    return (b?.['day_log'] ?? 0) - (a?.['day_log'] ?? 0);
                 });
                 let rank = 1;
                 if (result_type == 1) {
                     rank =
                         ((paginateObj?.page || 1) - 1) *
-                            (paginateObj?.limit || appConstant.RECORD_PER_PAGE) +
+                        (paginateObj?.limit || appConstant.RECORD_PER_PAGE) +
                         1;
                 }
                 result.forEach((item) => {
@@ -589,13 +590,14 @@ export class SleepChallengeReportService {
             });
         }
         const sortedUserIds = userRankMetrics
+            .slice()
             .sort((a, b) => {
                 if (b.completedDays !== a.completedDays) {
                     return b.completedDays - a.completedDays;
                 }
-                return b.totalSleep - a.totalSleep;
+                return (b.totalSleep ?? 0) - (a.totalSleep ?? 0);
             })
-            .map((r) => r.userId);
+            .map(r => r.userId);
         const remainingUserIds = userIds.filter((id: number) => !sortedUserIds.includes(id));
         const combinedUserIds = [...sortedUserIds, ...remainingUserIds];
         const page = Number(paginateObj?.page) > 0 ? Number(paginateObj?.page) : 1;

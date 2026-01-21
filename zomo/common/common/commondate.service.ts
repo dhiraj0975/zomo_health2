@@ -103,8 +103,8 @@ export class CommonDateService {
             }
             for (let i = 0; i < totalSlotsInDays; i++) {
                 let endTimeSlot = startTime.clone().add(intervalInMinutes, 'minutes');
-                const startTimeStr = startTime.format('HH:mm');
-                const endTimeStr = endTimeSlot.format('HH:mm');
+                // const startTimeStr = startTime.format('HH:mm');
+                // const endTimeStr = endTimeSlot.format('HH:mm');
                 intervals.push({ slotdate:`${startDate}`,slotstarttime: startTime.format('HH:mm:ss'), slotendtime: endTimeSlot.format('HH:mm:ss'), slotinterval: intervalInMinutes });
                 startTime = endTimeSlot;
             }
@@ -155,8 +155,8 @@ export class CommonDateService {
                 if (endTimeSlot.isAfter(endTime)) {
                     endTimeSlot = endTime.clone();
                 }
-                const startTimeStr = currentTime.format('HH:mm');
-                const endTimeStr = endTimeSlot.format('HH:mm');
+                // const startTimeStr = currentTime.format('HH:mm');
+                // const endTimeStr = endTimeSlot.format('HH:mm');
                 /*intervals.push({ startTime: currentTime.format('YYYY-MM-DD HH:mm:ss'), endTime: endTimeSlot.format('YYYY-MM-DD HH:mm:ss'), interval: `${startTimeStr} - ${endTimeStr}` });*/
                 intervals.push({ slotdate:`${startDate}`,slotstarttime: currentTime.format('HH:mm:ss'), slotendtime: endTimeSlot.format('HH:mm:ss'), slotinterval: slotDuration });
                 currentTime = endTimeSlot;

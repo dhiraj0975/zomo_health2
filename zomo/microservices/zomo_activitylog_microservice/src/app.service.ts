@@ -239,6 +239,26 @@ export class AppService {
             );
         }
     }
+    async createMultiple(data: any) {
+        try {
+            if(data.length){
+                for(let ele of data){
+                    try{
+                        this.create(ele);
+                    }
+                    catch(error){
+                        let data = {user_id: 0,end_point: 'create/logError', message: 'CreateLogError', log: `${JSON.stringify(ele)}`, req: JSON.stringify(ele) }
+                        this.error_log(data);
+                    }
+                }
+            }
+            return true;
+        } catch (error) {
+            throw new Error(
+                `Service not found for tablename: ${data.table_name}`,
+            );
+        }
+    }
     async error_log(data: any) {
         try {
             if (data) {

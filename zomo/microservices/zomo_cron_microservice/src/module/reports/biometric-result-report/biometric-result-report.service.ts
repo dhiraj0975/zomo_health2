@@ -656,13 +656,13 @@ export class BiometricResultReportService {
                 }
             }
             await this.commonFileService.removeFileFromLocal(filePath);
+            let encrptedData = this.commonService.passwordEncrypt(data);
             return {
                 success: 1,
-                data: {file_data: data,file_name: fileName, extension: 'csv'},
+                data: {file_data: encrptedData,file_name: fileName, extension: 'csv'},
                 error: 0,
                 message: 'success'
             };
-
         } catch (error) {
             this.cronCommonService.errorLog(
                 0,

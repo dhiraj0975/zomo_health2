@@ -238,6 +238,7 @@ export class UserScheduleChallengeController {
                 type: 'update'
             };
             if (postData?.type == 'add') {
+                console.log("square verification add");
                 if(postData['frequencydata'] && postData['frequencylimit'] && postData['frequencylimit']!='' && postData['frequencylimit']!=0 && (postData['frequencydata']=='daily' || postData['frequencydata']=='weekly' || postData['frequencydata']=='monthly')){
                     if(postData['frequencydata']=='daily'){
                         let frqdata = await this.squareUsersService.listRecord(`squareuser.user_id = ${postData?.user_id} AND squareuser.status != 2 AND squareuser.schedule_id = ${postData?.schedule_id} AND DATE_FORMAT(squareuser.created_date,"%Y-%m-%d") = '${this.commonDateService.getTodayDate().format('YYYY-MM-DD')}'`,null,'square_id, DATE_FORMAT(`created_date`,"%Y-%m-%d")');
@@ -316,6 +317,7 @@ export class UserScheduleChallengeController {
                     send_type: 1,
                     square_data: verificationRequest,
                 })
+                console.log("square verification before send :",notificationData);
                 this.userChallengeHelperService.addNotification(notificationData, req);      
             } 
             return res.status(HttpStatus.OK).json({

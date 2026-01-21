@@ -332,76 +332,133 @@ export class CampaignController {
      * - organization_id, campaign_name, start_date, end_date, status is mandatory params
      */
     @Post('create')
-    async create(@Req() req: Request, @Res() res: Response, @Body() postData: CreateCampaignInput) {
+    @UseInterceptors(FileInterceptor('file')) 
+    async create(
+        @Req() req: any, 
+        @Res() res: Response, 
+        @Body() postData: CreateCampaignInput, 
+        @UploadedFile() file: any
+    ) {
         try {
-            if (
-                !postData?.organization_id ||
-                !postData?.campaign_name ||
-                !postData?.start_date ||
-                !postData?.end_date 
-            ) {
+           
+            if (!file || !postData?.organization_id || !postData?.campaign_name || !postData?.start_date || !postData?.end_date) {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_REQUIRED_PARAM_MISSING"));
             }
+
+         
             const campaignPlanCheck = await this.campaignService.findOne({
-                campaign_name: postData?.campaign_name, organization_id: postData?.organization_id, status: Not(2)
+                campaign_name: postData?.campaign_name, 
+                organization_id: postData?.organization_id, 
+                status: Not(2)
             });
             if (campaignPlanCheck) {
                 throw Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_CAMPAIGN_EXIST"));
             }
-            if(postData?.department_ids == 'all'){
-                postData.department_ids = '0';
-            }
-            if(postData?.location_ids == 'all'){
-                postData.location_ids = '0';
-            }
+
+          
+            if (postData?.department_ids == 'all') postData.department_ids = '0';
+            if (postData?.location_ids == 'all') postData.location_ids = '0';
+
+          
             const insertRecord = await this.campaignService.save(postData);
-            let campaign_id = null;
-            if(Object.keys(postData).length > 0){
-                campaign_id = insertRecord['id'];
-            }else{
-                throw new Error(await this.translatorService.frontendReadTranslation(req.lang, 'ERR_SOMETHING_WENT_WRONG'));
-            }
+            const campaign_id = insertRecord['id'];
+
+          
+            const workbook = XLSX.read(file.path, { type: 'file' });
+            const sheet = workbook.Sheets[workbook.SheetNames[0]];
+            
+           
+            const rows: any[] = XLSX.utils.sheet_to_json(sheet);
+            const headers = rows.length > 0 ? Object.keys(rows[0]) : [];
+
+           
             let dynamicDatas = Object.create(null);
-            if(postData?.campaign_name){
-                let tilte = `campaign_name_${insertRecord['id']}`
-                dynamicDatas[`${tilte}`]= postData?.campaign_name;
-            }            
-            if(postData?.tab_titled){
-                let tilte = `campaign_tab_titled_${insertRecord['id']}`
-                dynamicDatas[`${tilte}`]= postData?.tab_titled;
-            }            
-            await this.translatorService.DynamicEngJsonData('Campaign',postData?.organization_id,dynamicDatas,'Edit','Campaigns',insertRecord['id']);
+            dynamicDatas[`campaign_name_${campaign_id}`] = postData.campaign_name;
+            await this.translatorService.DynamicEngJsonData('Campaign', postData.organization_id, dynamicDatas, 'Edit', 'Campaigns', campaign_id);
+
+          
+            const firstRowData = rows.length > 0 ? Object.values(rows[0]) : [];
+            const campaignRequestData = {
+                for_org_id: postData.organization_id, 
+                role_id: req.tokenUser?.role_id || 0, 
+                campaign_title: postData.campaign_name,
+                 subject: "",
+                file: file.filename,
+                sheet_header: JSON.stringify(headers),
+                test_mail_user_data: JSON.stringify(firstRowData),
+                status: 1, 
+                created_by: req.tokenUser?.id,
+                updated_by: req.tokenUser?.id,
+                timezone: 'UTC',
+            };
+
+            const microserviceResult = await lastValueFrom(
+                this.communicationServiceClient.send({ cmd: 'create_campaign_requests' }, campaignRequestData)
+            );
+
+            let com_campaign_id = 0;
+            if (microserviceResult && microserviceResult['identifiers'] && microserviceResult['identifiers'].length > 0) {
+                com_campaign_id = microserviceResult['identifiers'][0]['id'];
+                const lastInsertHash = this.commonService.generateMD5(com_campaign_id.toString());
+                const fileExt = path.extname(file.originalname);
+                const finalFileName = `${lastInsertHash}${fileExt}`;
+                const finalPath = `${appConstant.COMUNICATION_CAMPAIGN_FILE_PATH}/${com_campaign_id}`;
+
+                
+                await this.commonFileService.copyFiles(file.path, finalPath, finalFileName);
+
+             
+                await lastValueFrom(
+                    this.communicationServiceClient.send({ cmd: 'update_campaign_requests' }, {
+                        id: com_campaign_id,
+                        hash: lastInsertHash,
+                        file: finalFileName
+                    })
+                );
+            }
+            
+
             this.addNotification({
-                id: insertRecord?.['id'], 
-                org_id: insertRecord?.['organization_id'], 
-                user_id: 0, 
-                custom_cname: insertRecord?.['campaign_name'], 
-                campaign_id: insertRecord?.['id'],  
-                logo:  null, 
+                id: campaign_id,
+                org_id: postData.organization_id,
+                user_id: 0,
+                custom_cname: postData.campaign_name,
+                campaign_id: campaign_id,
+                logo: null,
                 type: 'add',
                 url: `https://${process.env.DOMAIN}/incentive-summary`,
-                start_date: postData?.start_date,
-                end_date: postData?.end_date
+                start_date: postData.start_date,
+                end_date: postData.end_date
             }, req);
+
+            
             return res.status(HttpStatus.CREATED).json({
                 statusCode: 201,
                 success: 1,
                 error: 0,
-                data: {campaign_id : campaign_id, org_id: postData?.organization_id},
-                message: 'success',
-            });
-        } catch (error) {
-            this.activityLogService.error_log(req.tokenUser?.id,req?.originalUrl, error?.message, error, req);
-            throw new HttpException(
-                {
-                  statusCode: 401,
-                  success: 0,
-                  error: 1,
-                  message: error?.message,
-                  data: null,
+                message: 'Campaign created successfully. Recipients data loaded.',
+                data: { 
+                    campaign_id: campaign_id, 
+                    com_campaign_id: com_campaign_id,
+                    org_id: postData.organization_id,
+                    csv_data: {
+                        headers: headers,
+                        recipients: rows,
+                        total_contacts: rows.length,
+                        temp_filename: file.filename
+                    }
                 },
-                HttpStatus.BAD_REQUEST,
-            );
+            });
+
+        } catch (error) {
+            this.activityLogService.error_log(req.tokenUser?.id, req?.originalUrl, error?.message, error, req);
+            throw new HttpException({
+                statusCode: 400,
+                success: 0,
+                error: 1,
+                message: error?.message || 'Failed to create campaign',
+                data: null,
+            }, HttpStatus.BAD_REQUEST);
         }
     }
     /*
@@ -1054,93 +1111,88 @@ export class CampaignController {
     }
 
 
+//     @Post('upload-recipients')
+//     @UseInterceptors(FileInterceptor('file'))
+//     async uploadRecipients(
+//         @UploadedFile() file: any,
+//         @Body() body: UploadRecipientsInput,
+//         @Req() req: any,
+//     ) {
+//         try {
+//             if (!file) {
+//                 throw new HttpException('File is required', HttpStatus.BAD_REQUEST);
+//             }
 
+//             if (!body.campaign_id) {
+//                 throw new HttpException('Campaign ID is required', HttpStatus.BAD_REQUEST);
+//             }
 
+//             const workbook = XLSX.read(file.path, { type: 'file' });
+//             const sheetName = workbook.SheetNames[0];
+//             const sheet = workbook.Sheets[sheetName];
+//             const rows: any[] = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+//             const headers = rows[0];
+//             const firstRowData = rows[1] || [];
 
+//             const campaignData = await this.campaignService.findOne({ id: Number(body.campaign_id) });
+//             const campaignRequestData = {
+//                 org_id: req.tokenUser?.org_id, 
+//                 campaign_title: campaignData?.campaign_name || 'Campaign',
+//                 subject: campaignData?.campaign_name || 'Campaign',
+//                 file: file.filename,
+//                 sheet_header: JSON.stringify(headers),
+//                 test_mail_user_data: JSON.stringify(firstRowData), 
+//                 status: 1,
+//                 created_by: req.tokenUser?.id,
+//                 updated_by: req.tokenUser?.id,
+//                 timezone: 'UTC',
+//             };
 
+//             const result = await lastValueFrom(
+//                 this.communicationServiceClient.send({ cmd: 'create_campaign_requests' }, campaignRequestData)
+//             );
 
-    @Post('upload-recipients')
-    @UseInterceptors(FileInterceptor('file'))
-    async uploadRecipients(
-        @UploadedFile() file: any,
-        @Body() body: UploadRecipientsInput,
-        @Req() req: any,
-    ) {
-        try {
-            if (!file) {
-                throw new HttpException('File is required', HttpStatus.BAD_REQUEST);
-            }
+//             let lastInsertId = 0;
+//             let lastInsertHash = '';
+//             if (result && result['identifiers'] && result['identifiers'].length > 0) {
+//                 lastInsertId = result['identifiers'][0]['id'];
+//                 lastInsertHash = this.commonService.generateMD5(lastInsertId.toString());
+//                 const fileExt = path.extname(file.originalname);
+//                 const finalFileName = `${lastInsertHash}${fileExt}`;
 
-            if (!body.campaign_id) {
-                throw new HttpException('Campaign ID is required', HttpStatus.BAD_REQUEST);
-            }
+//                 const finalPath = `${appConstant.COMUNICATION_CAMPAIGN_FILE_PATH}/${lastInsertId}`;
 
-            const workbook = XLSX.read(file.path, { type: 'file' });
-            const sheetName = workbook.SheetNames[0];
-            const sheet = workbook.Sheets[sheetName];
-            const rows: any[] = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-            const headers = rows[0];
-            const firstRowData = rows[1] || [];
+//                 await this.commonFileService.copyFiles(
+//                     file.path,
+//                     finalPath,
+//                     finalFileName
+//                 );
 
-            const campaignData = await this.campaignService.findOne({ id: Number(body.campaign_id) });
+//                 await lastValueFrom(
+//                     this.communicationServiceClient.send({ cmd: 'update_campaign_requests' }, {
+//                         id: lastInsertId,
+//                         hash: lastInsertHash,
+//                         file: finalFileName
+//                     })
+//                 );
+//             }
 
-            const campaignRequestData = {
-                org_id: req.tokenUser?.org_id,
-                campaign_title: campaignData?.campaign_name || 'Campaign',
-                file: file.filename,
-                sheet_header: JSON.stringify(headers),
-                test_mail_user_data: JSON.stringify(firstRowData),
-                status: 1,
-                request_status: 4,
-                created_by: req.tokenUser?.id,
-                updated_by: req.tokenUser?.id,
-                timezone: 'UTC',
-            };
-
-            const result = await lastValueFrom(
-                this.communicationServiceClient.send({ cmd: 'create_campaign_requests' }, campaignRequestData)
-            );
-
-            let lastInsertId = 0;
-            let lastInsertHash = '';
-            if (result && result['identifiers'] && result['identifiers'].length > 0) {
-                lastInsertId = result['identifiers'][0]['id'];
-                lastInsertHash = this.commonService.generateMD5(lastInsertId.toString());
-                const fileExt = path.extname(file.originalname);
-                const finalFileName = `${lastInsertHash}${fileExt}`;
-
-                const finalPath = `${appConstant.COMUNICATION_CAMPAIGN_FILE_PATH}/${lastInsertId}`;
-
-                await this.commonFileService.copyFiles(
-                    file.path,
-                    finalPath,
-                    finalFileName
-                );
-
-                await lastValueFrom(
-                    this.communicationServiceClient.send({ cmd: 'update_campaign_requests' }, {
-                        id: lastInsertId,
-                        hash: lastInsertHash,
-                        file: finalFileName
-                    })
-                );
-            }
-
-            return {
-                status: true,
-                message: this.translatorService.translate('RECIPIENTS_UPLOADED_SUCCESSFULLY', req),
-                data: {
-                    headers,
-                    recipients: XLSX.utils.sheet_to_json(sheet),
-                    count: rows.length > 0 ? rows.length - 1 : 0,
-                    id: lastInsertId,
-                    hash: lastInsertHash
-                }
-            };
-        } catch (error) {
-            await this.activityLogService.error_log(req.tokenUser?.id, req?.originalUrl, error?.message, error, req);
-            throw new HttpException(error?.message, error?.status || HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-}
+//             return {
+//                 status: true,
+//                 message: this.translatorService.translate('RECIPIENTS_UPLOADED_SUCCESSFULLY', req),
+//                 data: {
+//                     headers,
+//                     recipients: XLSX.utils.sheet_to_json(sheet),
+//                     count: rows.length > 0 ? rows.length - 1 : 0,
+//                     id: lastInsertId,
+//                     hash: lastInsertHash
+//                 }
+//             };
+//         } catch (error) {
+//              console.log("BACKEND ERROR:", error); 
+//             await this.activityLogService.error_log(req.tokenUser?.id, req?.originalUrl, error?.message, error, req);
+//             throw new HttpException(error?.message, error?.status || HttpStatus.INTERNAL_SERVER_ERROR);
+//         }
+//     }
+ }
 

@@ -461,6 +461,19 @@ export class UserEventController {
             let removeEventList = []; 
             let eventList;
             let eventData = await this.eventService.userEventList1(wellnessEventCond, {id:'ASC'},['es.id', 'es.start_date', 'es.start_time', 'es.end_date', 'es.end_time', 'es.organization_id', 'es.status', 'es.registration_end', 'event'],wellnessLotCon); 
+            if(postData?.is_filter && postData?.filter_option == 5){ //ZOMO-4373
+                let filterStart = moment(postData?.from_date);
+                let filterEnd = moment(postData?.to_date);
+                eventData = eventData.filter(item => {
+                    if (!item?.['slot'] || item?.['slot'].length === 0) return true;
+
+                    return item?.['slot'].some(slot => {
+                        const slotStart = moment(slot.startDate);
+                        const slotEnd = moment(slot.endDate);
+                        return slotStart.isSameOrBefore(filterEnd) && slotEnd.isSameOrAfter(filterStart);
+                    });
+                })
+            }
             eventData = eventData?.filter(ele => (ele['slot'] && ele?.['slot']?.length > 0) || ele.start_date || ele.end_date || ele.event_type == 3 || ele.event_type == 2);  // filter events update for external event to show without slots
             eventData = eventData?.filter(ele => (ele.organization_id === 0 && globalEventList[ele?.id]) || ele.organization_id != 0);  // filter for global events
             if(!postData?.hasOwnProperty('category_id')) {
@@ -563,6 +576,10 @@ export class UserEventController {
             }
             let lastSlotData = {};
             if (eventList && eventList.length) {
+                let joinButtonText = await this.translatorService.frontendReadTranslation(req.lang, 'Join', `/LC_MESSAGES/Events/Events`, `static`);                                                                
+                let registrationClosedButtonText = await this.translatorService.frontendReadTranslation(req.lang, 'Registration Closed', `/LC_MESSAGES/Events/Events`, `static`);                                                                
+                let registrationFullButtonText = await this.translatorService.frontendReadTranslation(req.lang, 'Registration Full', `/LC_MESSAGES/Events/Events`, `static`);                                                                
+                let goingButtonText = await this.translatorService.frontendReadTranslation(req.lang, 'Going', `/LC_MESSAGES/Events/Events`, `static`);  
                 for(let ele of eventList) {
                     if (ele && ele && ele?.event_timezone) {
                         let timezoneDetails = await timezoneData.find((e) => e.id == ele?.event_timezone);
@@ -599,12 +616,12 @@ export class UserEventController {
                     }
                     if (ele.organization_id != 0 || globalEventList[ele?.id]) {
                         ele['Isglobal'] = 1;
-                        let date = moment().format('YYYY-MM-DD') + " 00:00:00";
+                        let date = moment().format('YYYY-MM-DD');
                         let deptId = parseInt(user.department_id);
                         let campaign = await this.campaignService.findOne(
                             `campaign.organization_id = ${user.org_id} 
-                            AND campaign.d_start_date <= '${date}' 
-                            AND campaign.d_end_date >= '${date}' 
+                            AND campaign.d_start_date <= '${date} 00:00:00' 
+                            AND campaign.d_end_date >= '${date} 23:59:59' 
                             AND campaign.status = 1 
                             AND (
                             campaign.department_ids REGEXP '^${deptId},' OR
@@ -614,8 +631,11 @@ export class UserEventController {
                             campaign.department_ids = '0'
                             )`,
                             { end_date: 'ASC' });
-                        if (campaign && campaign.length > 0 && moment(campaign[0].d_start_date).unix() >= moment(ele.start_date).unix()) {
-                            ele.start_date = campaign[0].d_start_date;
+                        // if (campaign && campaign.length > 0 && moment(campaign[0].d_start_date).unix() >= moment(ele.start_date).unix()) {
+                        //     ele.start_date = campaign[0].d_start_date;
+                        // } //ZOMO-4473,4483
+                        if (campaign && moment(campaign.d_start_date).unix() >= moment(ele.start_date).unix()) {
+                            ele.start_date = campaign.d_start_date;
                         }
                         total_events += await this.shouldRemoveEvent(ele, user, health_plan, eventListAllLoc, eventListAllDept, removeEventList);
                     }
@@ -762,17 +782,17 @@ export class UserEventController {
                         notjoin = ele.status;
                     }
                     let monthname = ele.start_date ? moment(ele.start_date).format('MMMM') : null;
-                    monthname = ele.start_date ? await this.translatorService.frontendReadTranslation(req.lang, monthname.slice(0,3), `/LC_MESSAGES/Common/Month`, `static`) : null;
+                    monthname = ele.start_date ? req.lang == 'eng' ? monthname.slice(0,3) : await this.translatorService.frontendReadTranslation(req.lang, monthname.slice(0,3), `/LC_MESSAGES/Common/Month`, `static`) : null;
                     ele['dis_start_date'] = ele?.start_date ? monthname + ` ${moment(ele.start_date).format('DD, YYYY')}` : null;                                        
                     monthname = ele.end_date ? moment(ele.end_date).format('MMMM') : null;
-                    monthname = ele.end_date ? await this.translatorService.frontendReadTranslation(req.lang, monthname.slice(0,3), `/LC_MESSAGES/Common/Month`, `static`) : null;
+                    monthname = ele.end_date ? req.lang == 'eng' ? monthname.slice(0,3) : await this.translatorService.frontendReadTranslation(req.lang, monthname.slice(0,3), `/LC_MESSAGES/Common/Month`, `static`) : null;
                     ele['dis_end_date'] = ele?.end_date ? monthname + ` ${moment(ele.end_date).format('DD, YYYY')}` : null; 
                     //user timezone 
                     monthname = ele.user_start_date ? moment(ele.user_start_date).format('MMMM') : null;
-                    monthname = ele.user_start_date ? await this.translatorService.frontendReadTranslation(req.lang, monthname.slice(0,3), `/LC_MESSAGES/Common/Month`, `static`) : null;
+                    monthname = ele.user_start_date ? req.lang == 'eng' ? monthname.slice(0,3) : await this.translatorService.frontendReadTranslation(req.lang, monthname.slice(0,3), `/LC_MESSAGES/Common/Month`, `static`) : null;
                     ele['dis_user_start_date'] = ele?.user_start_date ? monthname + ` ${moment(ele.user_start_date).format('DD, YYYY')}` : null;                                        
                     monthname = ele.user_end_date ? moment(ele.user_end_date).format('MMMM') : null;
-                    monthname = ele.user_end_date ? await this.translatorService.frontendReadTranslation(req.lang, monthname.slice(0,3), `/LC_MESSAGES/Common/Month`, `static`) : null;
+                    monthname = ele.user_end_date ? req.lang == 'eng' ? monthname.slice(0,3) : await this.translatorService.frontendReadTranslation(req.lang, monthname.slice(0,3), `/LC_MESSAGES/Common/Month`, `static`) : null;
                     ele['dis_user_end_date'] = ele?.user_end_date ? monthname + ` ${moment(ele.user_end_date).format('DD, YYYY')}` : null;  
                     if (ele.userBookingList && ele.userBookingList.length) {
                         for (let userBooking of ele.userBookingList) {
@@ -790,21 +810,21 @@ export class UserEventController {
                                     registration_user_end_date_slot = Uendt.clone().tz(userTimezone);
                                 }
                                 let monthname = registration_event_start_date_slot ? moment(registration_event_start_date_slot).format('MMMM') : null;
-                                monthname = registration_event_start_date_slot ? await this.translatorService.frontendReadTranslation(req.lang, monthname.slice(0,3), `/LC_MESSAGES/Common/Month`, `static`) : null;
+                                monthname = registration_event_start_date_slot ? req.lang == 'eng' ? monthname.slice(0,3) : await this.translatorService.frontendReadTranslation(req.lang, monthname.slice(0,3), `/LC_MESSAGES/Common/Month`, `static`) : null;
                                 let periodIndicatorStart = registration_event_start_date_slot ? moment(registration_event_start_date_slot).format('A') : null;
-                                periodIndicatorStart = registration_event_start_date_slot ? await this.translatorService.frontendReadTranslation(req.lang, periodIndicatorStart, `/LC_MESSAGES/Common/Common`, `static`) : null;
+                                periodIndicatorStart = registration_event_start_date_slot ? req.lang == 'eng' ? periodIndicatorStart : await this.translatorService.frontendReadTranslation(req.lang, periodIndicatorStart, `/LC_MESSAGES/Common/Common`, `static`) : null;
                                 let periodIndicatorEnd = registration_event_end_date_slot ? moment(registration_event_end_date_slot).format('A') : null;
-                                periodIndicatorEnd = registration_event_end_date_slot ? await this.translatorService.frontendReadTranslation(req.lang, periodIndicatorEnd, `/LC_MESSAGES/Common/Common`, `static`) : null;
+                                periodIndicatorEnd = registration_event_end_date_slot ? req.lang == 'eng' ? periodIndicatorEnd : await this.translatorService.frontendReadTranslation(req.lang, periodIndicatorEnd, `/LC_MESSAGES/Common/Common`, `static`) : null;
                                 let date = registration_event_start_date_slot.format('DD');
                                 let year = registration_event_start_date_slot.format('YYYY');
                                 userBooking['registration_date_slot'] = `${date} ${monthname} ${year} - ${moment(registration_event_start_date_slot).format('hh:mm')} ${periodIndicatorStart} to ${moment(registration_event_end_date_slot).format('hh:mm')} ${periodIndicatorEnd}`
 
                                 monthname = registration_user_start_date_slot ? moment(registration_user_start_date_slot).format('MMMM') : null;
-                                monthname = registration_user_start_date_slot ? await this.translatorService.frontendReadTranslation(req.lang, monthname.slice(0,3), `/LC_MESSAGES/Common/Month`, `static`) : null;
+                                monthname = registration_user_start_date_slot ? req.lang == 'eng' ? monthname.slice(0,3) : await this.translatorService.frontendReadTranslation(req.lang, monthname.slice(0,3), `/LC_MESSAGES/Common/Month`, `static`) : null;
                                 periodIndicatorStart = registration_user_start_date_slot ? moment(registration_user_start_date_slot).format('A') : null;
-                                periodIndicatorStart = registration_user_start_date_slot ? await this.translatorService.frontendReadTranslation(req.lang, periodIndicatorStart, `/LC_MESSAGES/Common/Common`, `static`) : null;
+                                periodIndicatorStart = registration_user_start_date_slot ?  req.lang == 'eng' ? periodIndicatorStart : await this.translatorService.frontendReadTranslation(req.lang, periodIndicatorStart, `/LC_MESSAGES/Common/Common`, `static`) : null;
                                 periodIndicatorEnd = registration_user_end_date_slot ? moment(registration_user_end_date_slot).format('A') : null;
-                                periodIndicatorEnd = registration_user_end_date_slot ? await this.translatorService.frontendReadTranslation(req.lang, periodIndicatorEnd, `/LC_MESSAGES/Common/Common`, `static`) : null;
+                                periodIndicatorEnd = registration_user_end_date_slot ? req.lang == 'eng' ? periodIndicatorEnd : await this.translatorService.frontendReadTranslation(req.lang, periodIndicatorEnd, `/LC_MESSAGES/Common/Common`, `static`) : null;
                                 date = registration_user_start_date_slot.format('DD');
                                 year = registration_user_start_date_slot.format('YYYY');
                                 userBooking['registration_date_user_slot'] = `${date} ${monthname} ${year} - ${moment(registration_user_start_date_slot).format('hh:mm')} ${periodIndicatorStart} to ${moment(registration_user_end_date_slot).format('hh:mm')} ${periodIndicatorEnd}`
@@ -818,24 +838,25 @@ export class UserEventController {
                                     registration_date_user_slot = UstDt.clone().tz(userTimezone);
                                 } 
                                 let monthname = registration_date_slot ? moment(registration_date_slot).format('MMMM') : null;
-                                monthname = registration_date_slot ? await this.translatorService.frontendReadTranslation(req.lang, monthname.slice(0,3), `/LC_MESSAGES/Common/Month`, `static`) : null;
+                                monthname = registration_date_slot ? req.lang == 'eng' ? monthname.slice(0,3) : await this.translatorService.frontendReadTranslation(req.lang, monthname.slice(0,3), `/LC_MESSAGES/Common/Month`, `static`) : null;
                                 let periodIndicator = registration_date_slot ? moment(registration_date_slot).format('A') : null;
-                                periodIndicator = registration_date_slot ? await this.translatorService.frontendReadTranslation(req.lang, periodIndicator, `/LC_MESSAGES/Common/Common`, `static`) : null;
+                                periodIndicator = registration_date_slot ? req.lang == 'eng' ? periodIndicator : await this.translatorService.frontendReadTranslation(req.lang, periodIndicator, `/LC_MESSAGES/Common/Common`, `static`) : null;
                                 let date = registration_date_slot.format('DD');
                                 let year = registration_date_slot.format('YYYY');
                                 userBooking['registration_date_slot'] = `${date} ${monthname} ${year} - ${registration_date_slot.format('hh:mm')} ${periodIndicator}`;
                                 
                                 monthname = registration_date_user_slot ? moment(registration_date_user_slot).format('MMMM') : null;
-                                monthname = registration_date_user_slot ? await this.translatorService.frontendReadTranslation(req.lang, monthname.slice(0,3), `/LC_MESSAGES/Common/Month`, `static`) : null;
+                                monthname = registration_date_user_slot ? req.lang == 'eng' ? monthname.slice(0,3) : await this.translatorService.frontendReadTranslation(req.lang, monthname.slice(0,3), `/LC_MESSAGES/Common/Month`, `static`) : null;
                                 periodIndicator = registration_date_user_slot ? moment(registration_date_user_slot).format('A') : null;
-                                periodIndicator = registration_date_user_slot ? await this.translatorService.frontendReadTranslation(req.lang, periodIndicator, `/LC_MESSAGES/Common/Common`, `static`) : null;
+                                periodIndicator = registration_date_user_slot ? req.lang == 'eng' ? periodIndicator : await this.translatorService.frontendReadTranslation(req.lang, periodIndicator, `/LC_MESSAGES/Common/Common`, `static`) : null;
                                 date = registration_date_user_slot.format('DD');
                                 year = registration_date_user_slot.format('YYYY');
                                 userBooking['registration_date_user_slot'] = `${date} ${monthname} ${year} - ${registration_date_user_slot.format('hh:mm')} ${periodIndicator}`;
                             }                                
                             userBooking['lang_id'] = userBooking?.['lang_id'] == 1 ? 'Spanish' : 'English';
                         }
-                    }                                                                     
+                    }    
+                                                                                  
                     if (ele.event_type === 0 || ele.event_type === 2 || ele.event_type === 3) {
                         // changes added for issue ZOMO-205
                         let eventStartedDate = ele.started_date ? moment(ele.started_date,'YYYY-MM-DD HH:mm:ss') : '';
@@ -845,17 +866,17 @@ export class UserEventController {
                         // console.log(ele.id,'currentDate', currentDate.format('YYYY-MM-DD HH:mm:ss'), 'eventStartedDate', eventStartedDate.format('YYYY-MM-DD HH:mm:ss'));                   
                         // if (eventStartedDate && currentDate > eventStartedDate) {
                         if (eventStartedDate && currentDate.isAfter(eventStartedDate)) {
-                            joinStatus = await this.translatorService.frontendReadTranslation(req.lang, 'Registration Closed', `/LC_MESSAGES/Events/Events`, `static`);
+                            joinStatus = registrationClosedButtonText;
                             joinType = 3;
                         } else {
                             if (notjoin) {
                                 if (ele.event_type === 2) {
                                     let externalLink = ele.external_link;
                                     if (externalLink === "https://sso.preventioncloud.com/ehealth" || externalLink === "https://sso.preventioncloud.com/ehealth/view") {
-                                        joinStatus = await this.translatorService.frontendReadTranslation(req.lang, 'Join', `/LC_MESSAGES/Events/Events`, `static`);
+                                        joinStatus = joinButtonText;
                                         joinType = 1;
                                     } else {
-                                        joinStatus = await this.translatorService.frontendReadTranslation(req.lang, 'Join', `/LC_MESSAGES/Events/Events`, `static`);
+                                        joinStatus = joinButtonText;
                                         joinType = 1;
                                     }
                                 }
@@ -863,26 +884,26 @@ export class UserEventController {
                                     let totalRegistrations = ele.tot_register;
                                     let currentRegistrationCount = eventsIdListUserBookingList[ele.id] || 0;
                                     if (totalRegistrations === '' || totalRegistrations === 0 || currentRegistrationCount >= totalRegistrations) {
-                                        joinStatus = await this.translatorService.frontendReadTranslation(req.lang, 'Registration Full', `/LC_MESSAGES/Events/Events`, `static`);
+                                        joinStatus = registrationFullButtonText;
                                         joinType = 4;
                                     } else {
-                                        joinStatus = await this.translatorService.frontendReadTranslation(req.lang, 'Join', `/LC_MESSAGES/Events/Events`, `static`);
+                                        joinStatus = joinButtonText;
                                         joinType = 1;
                                     }
                                 } else {
                                     if (!ele.hasOwnProperty('started')) {
                                         let featchmonthfromid =  await this.featchMonthFromId(req, { id: ele.id, multipleSet: ele.signup_more_time, internal_call: 1 });
                                         if (featchmonthfromid && featchmonthfromid.length > 0) {
-                                            joinStatus = await this.translatorService.frontendReadTranslation(req.lang, 'Join', `/LC_MESSAGES/Events/Events`, `static`);
+                                            joinStatus = joinButtonText;
                                             joinType = 1;
                                         } else {
-                                            joinStatus = await this.translatorService.frontendReadTranslation(req.lang, 'Registration Closed', `/LC_MESSAGES/Events/Events`, `static`);
+                                            joinStatus = registrationClosedButtonText;
                                             joinType = 3;
                                         }
                                     }
                                 }
                             } else {
-                                joinStatus = await this.translatorService.frontendReadTranslation(req.lang, 'Going', `/LC_MESSAGES/Events/Events`, `static`);
+                                joinStatus = goingButtonText;
                                 joinType = 2;
                             }
                         }

@@ -38,15 +38,32 @@ export class CommunicationEmailController {
             postData = this.commonService.sanitizePayload(postData);
             let user = req.tokenUser;
             let userId = user?.id;
-            if (postData?.type && (postData?.type == 'inbox' || postData?.type == 'inbox_send')) {
+            if (postData?.type && (postData?.type == 'inbox' || postData?.type == 'inbox_send' || postData?.type == 'inbox_trash' || postData?.type == 'inbox_spam')) {
                 let mailId: any[] = [];
                 let parentId: any[] = [];
-                let emailToDetails = await this.communicationEmailToService.listRecord({
-                    user_id: userId,
-                    is_send: 1,
-                    is_spam: 0,
-                    is_trash: 0,
-                });
+                let where = {};
+                if (postData?.type == 'inbox_trash') {
+                    where = {
+                        user_id: userId,
+                        is_send: 1,
+                        is_trash: 1,
+                    };
+                }
+                else if (postData?.type == 'inbox_spam') {
+                    where = {
+                        user_id: userId,
+                        is_send: 1,
+                        is_spam: 1,
+                    }
+                } else {
+                    where = {
+                        user_id: userId,
+                        is_send: 1,
+                        is_spam: 0,
+                        is_trash: 0,
+                    };
+                }
+                let emailToDetails = await this.communicationEmailToService.listRecord(where);
                 if (emailToDetails && emailToDetails.length > 0) {
                     mailId = emailToDetails.map(item => item.mail_id);
                 }
@@ -89,6 +106,30 @@ export class CommunicationEmailController {
                             }
                         )
                     }
+                    if (postData?.type == 'inbox_trash') {
+                        sentWhere.push(
+                            {
+                                from_user_id: userId,
+                                is_send: 1,
+                                is_trash: 1,
+                            },
+                            {
+                                id: In(emailToId),
+                            }
+                        )
+                    }
+                    if (postData?.type == 'inbox_spam') {
+                        sentWhere.push(
+                            {
+                                from_user_id: userId,
+                                is_send: 1,
+                                is_spam: 1,
+                            },
+                            {
+                                id: In(emailToId),
+                            }
+                        )
+                    }
                     let sent = await this.communicationEmailService.listRecord(sentWhere);
                     let key = sent.map(item => item.id);
                     let value = sent.map(item => item.parent_id);
@@ -101,7 +142,13 @@ export class CommunicationEmailController {
                     if (postData?.type == 'inbox') {
                         subCondition = `user.id = communication.from_user_id`
                     }
-                    if( postData?.type == 'inbox_send') {
+                    if (postData?.type == 'inbox_send') {
+                        subCondition = `user.id = EmailTo.user_id`
+                    }
+                    if (postData?.type == 'inbox_trash') {
+                        subCondition = `user.id = EmailTo.user_id`
+                    }
+                    if (postData?.type == 'inbox_spam') {
                         subCondition = `user.id = EmailTo.user_id`
                     }
                     let emailInbox = await this.communicationEmailService.paginateWithEmT(
@@ -164,7 +211,16 @@ export class CommunicationEmailController {
                     });
                 }
             }
-            if (postData?.type && (postData?.type == 'inbox_send' || postData?.type == 'inbox')) {
+            if (
+                postData?.type
+                &&
+                (
+                    postData?.type == 'inbox_send' ||
+                    postData?.type == 'inbox' ||
+                    postData?.type == 'inbox_trash' ||
+                    postData?.type == 'inbox_spam'
+                )
+            ) {
                 return res.status(HttpStatus.OK).json({
                     statusCode: 200,
                     success: 1,
@@ -193,6 +249,11 @@ export class CommunicationEmailController {
             if (postData?.search_str) {
                 where += `AND(communication.state LIKE '%${postData?.search_str}%' OR communication.city LIKE '%${postData?.search_str}%')`;
             }
+            if (postData?.type && postData?.type == 'inbox_draft') {
+                where += `communication.is_send = 0 AND communication.from_user_id = ${userId} `;
+                postData.order_by = 'communication.id';
+                postData.order = 'DESC';
+            }
             const resultedData = await this.communicationEmailService.paginateList(
                 where,
                 postData,
@@ -200,6 +261,16 @@ export class CommunicationEmailController {
             resultedData['list'] = <any>(
                 await this.commonArrayService.formatToDto(CommunicationEmailDto, resultedData['list'], req.lang)
             );
+            if (postData?.type && postData?.type == 'inbox_draft') {
+                let emailCount = await this.communicationHelperService.getEmailCounting({ coach_id: userId }, req);
+                resultedData['emailCount'] = emailCount || {
+                    inbox: 0,
+                    sent: 0,
+                    draft: 0,
+                    trash: 0,
+                    spam: 0,
+                };
+            }
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
                 success: 1,

@@ -17,6 +17,7 @@ import { AccessGuard, TokenGuard } from '../../../guard';
 import {
     PaginateWithCompanyInput,
 } from "../../../input";
+import { EventUserBookingListsService } from '../userbookinglists/userbookinglists.service';
 import { CreateSlotsTimingsInput, DeleteSlotsTimingsInput, UpdateSlotsTimingsInput } from './input';
 import { EventSlotsTimingsService } from "./slotstimings.service";
 @Controller('events/slots-timings')
@@ -28,6 +29,7 @@ export class EventSlotsTimingsController {
         private readonly commonArrayService: CommonArrayService,
         private readonly translatorService: TranslationService,
         private readonly activityLogService: ActivityLogService,
+        private readonly eventUserBookingListsService: EventUserBookingListsService,
     ) {}
     @Post('paginate')
     async paginate(@Req() req: Request, @Res() res: Response, @Body() postData: PaginateWithCompanyInput) {
@@ -49,8 +51,10 @@ export class EventSlotsTimingsController {
             );
             await Promise.all(resultedData['list'].map(async (data: any) => {
                 data['total_booked'] = 0;
-                if (data.userbookinglists) {                
-                    data['total_booked'] = data.userbookinglists.length;
+                // ZOMO-4470
+                let userBookingList = await this.eventUserBookingListsService.listRecord(`eubl.slot_selected = ${data?.id} AND eubl.status = 1`,null,['eubl.id']);
+                if (userBookingList) {                
+                    data['total_booked'] = userBookingList.length;
                 }
             }));
             resultedData['list'] = <any>(

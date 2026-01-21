@@ -11,8 +11,12 @@ export class CampaignRequestsService {
         private readonly writeReplicaCampaignRequestsRepository: Repository<EmailCampaignRequestsEntity>,
     ) {}
     async createCampaignRequests(data: any) {
+        try {
         const savedResult = this.writeReplicaCampaignRequestsRepository.create(data);
         return await this.writeReplicaCampaignRequestsRepository.insert(savedResult);
+         } catch (error) {console.log("MICROSERVICE ERROR:", error); 
+             throw error;
+         }
     }
     async updateCampaignRequests(condition: any, data: any) {
         return await this.writeReplicaCampaignRequestsRepository
