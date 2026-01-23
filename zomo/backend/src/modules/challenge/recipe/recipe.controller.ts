@@ -169,13 +169,18 @@ export class RecipeController {
             }
             let recipe_name;
             if(postData?.recipe_name){
-                recipe_name = this.commonService.generateDynamicSearchQuery(postData?.recipe_name,['recipe.recipe_name']);
+                recipe_name = this.commonService.sanitizeInputfield(postData?.recipe_name || '');
             }        
-            let where = `recipe.schedule_id = ${postData?.schedule_id} AND recipe.user_id = ${postData?.user_id} AND recipe.org_id = ${postData?.org_id} AND recipe.status != 2${recipe_name}`;           
+            // as per talk to summit sir recipe name may same for differnt dates but not for same date.
+            let where = `recipe.schedule_id = ${postData?.schedule_id} AND recipe.user_id = ${postData?.user_id} AND recipe.org_id = ${postData?.org_id} AND recipe.status != 2 AND recipe.recipe_name = '${recipe_name}'`;
             const recordDetails = await this.recipeService.findOne(where);
             if (recordDetails) {
-                let errorMsgTrans = await this.translatorService.frontendReadTranslation(req.lang,`Recipe Name Already Taken.`, `/LC_MESSAGES/Challenge/MyChallenges`,`static`);
-                throw new Error(await this.translatorService.frontendReadTranslation(req.lang, errorMsgTrans));
+                let CreatedDate = this.commonDateService.getTodayDate(recordDetails['created']).format('YYYY-MM-DD');
+                let TodayDate = this.commonDateService.getTodayDate().format('YYYY-MM-DD');
+                if (CreatedDate === TodayDate) {
+                    let errorMsgTrans = await this.translatorService.frontendReadTranslation(req.lang, `Recipe Name Already Taken.`, `/LC_MESSAGES/Challenge/MyChallenges`, `static`);
+                    throw new Error(await this.translatorService.frontendReadTranslation(req.lang, errorMsgTrans));
+                }
             }
             let recipeResult = await this.recipeService.save({...postData});
             if (file && file.fieldname === 'recipe_image' && file.filename) {

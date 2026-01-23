@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { AppTimezoneConfigProvider } from './app-config.provider';
+import { AppActivityLogConfigProvider } from './app-config.provider';
 @Module({
-    providers: [AppTimezoneConfigProvider],
-    exports: [AppTimezoneConfigProvider],
+    providers: [AppActivityLogConfigProvider],
+    exports: [AppActivityLogConfigProvider],
 })
-export class AppTimezoneConfigModule {}
+export class AppActivityLogConfigModule {}

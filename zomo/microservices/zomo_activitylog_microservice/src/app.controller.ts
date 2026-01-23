@@ -22,7 +22,7 @@ export class AppController {
       return this.appService.createMultiple(postData);
     } catch (error) {
       console.log("error",error);
-      let data = {user_id: 0,end_point: 'create/logError', message: 'CreateLogError', log: `${JSON.stringify(postData)}`, req: JSON.stringify(postData) }
+      let data = {user_id: 0,end_point: 'create/multipleLogError', message: 'CreateMultipleLogError', log: `${JSON.stringify(postData)}`, req: JSON.stringify(postData) }
       this.appService.error_log(data);
     }
 
@@ -44,9 +44,7 @@ export class AppController {
       console.log("error",error);
     }
   }
-  // @MessagePattern({ cmd: 'find_log' })
-  // findLog(postData: any) {
-  // }
+
   @MessagePattern({ cmd: 'test' })
   test() {
     return true;

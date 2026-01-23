@@ -18,8 +18,10 @@ export class ActivityLogService {
             delete updatedValues?.modified_by;
             delete updatedValues?.added_by;
             await lastValueFrom(this.client.send({cmd: 'create_log'}, {id: data?.id, data: data, updatedData: updatedValues, event: event, table_name: table_name, remark: '', user_id: user_id }));
+            return
         } catch (error) {
             console.error('Error occurred in ActivityLogService:', error);
+            return
         }
     }
     
@@ -46,8 +48,10 @@ export class ActivityLogService {
                     );
                 }
             });
+            return
         } catch (error) {
             console.error('Error occurred in ActivityLogService:', error);
+            return
         }
     }
     async error_log(user_id: number = 0,endPoint: any = '',message: any = '', log: any = '', req: any = ''): Promise<void> {

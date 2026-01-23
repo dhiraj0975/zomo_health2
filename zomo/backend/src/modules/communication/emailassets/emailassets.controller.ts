@@ -211,7 +211,7 @@ export class EmailAssetsController {
                 const role_id = Number(req.tokenUser?.role_id);
                 let campRoleIdArr = [];
                 if (role_id == 1) {
-                    // Admin can delete assets of all these roles
+                  
                     campRoleIdArr = [1, 8, 11, 19, 20, 25, 37, 38, 39, 40, 41, 42, 43];
                 } else if (role_id == 38 || role_id == 43) {
                     campRoleIdArr = [38, 43, 39, 40, 41, 11];

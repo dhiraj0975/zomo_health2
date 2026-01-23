@@ -51,6 +51,34 @@ export class CommunicationEmailService {
             order: orderBy,
         });
     }
+    async listRecordWithEmailToUser(condition: any, orderBy: any = null ,  fields: string[] = ['communication'] ) {
+        if (!orderBy) {
+            orderBy = { id: 'DESC' };
+        }
+        return await this.readReplicacommunicationEmailRepository.createQueryBuilder('communication')
+            .innerJoinAndMapOne(
+                'communication.EmailTo',
+                tableConstant.COMMUNICATION.TBL_COM_EMAIL_TO,
+                'EmailTo',
+                `EmailTo.mail_id = communication.id`,
+            )
+            .leftJoinAndMapOne(
+                'communication.suser',
+                tableConstant.TBL_USERS,
+                'suser',
+                `suser.id = communication.from_user_id`,
+            )
+            .leftJoinAndMapOne(
+                'communication.ruser',
+                tableConstant.TBL_USERS,
+                'ruser',
+                `ruser.id = EmailTo.user_id`,
+            )
+            .where(condition)
+            .select(fields)
+            .orderBy(orderBy)
+            .getMany();
+    }
     async save(data: any) {
         const savedResult = this.writeReplicacommunicationEmailRepository.create(data);
         return await this.writeReplicacommunicationEmailRepository.insert(savedResult);

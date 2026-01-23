@@ -16,7 +16,7 @@ import { ScheduleChallengeService } from "src/modules/challenge/schedulechalleng
 import { ActivityLogService } from "src/modules/master/activitylog/activitylog.service";
 import { TranslationService } from "src/modules/translation/translation.service";
 import { In, Not } from "typeorm";
-import { CampaignGuard, TokenGuard } from '../../../guard';
+import { AccessGuard, TokenGuard } from '../../../guard';
 import { PaginateWithCompanyInput } from "../../../input";
 import { CampaignService } from "../campaign/campaign.service";
 import { CampaignCategoryService } from "../category/campaigncategory.service";
@@ -25,7 +25,7 @@ import { CampaignRewardService } from "../reward/campaignreward.service";
 import { CampaignActivityService } from "./campaignactivity.service";
 import { CreateCampaignActivityInput, UpdateCampaignActivityInput } from './input';
 @Controller('incentive/campaign-activity')
-@UseGuards(TokenGuard, CampaignGuard)
+@UseGuards(TokenGuard, AccessGuard)
 export class CampaignActivityController {
     constructor(
         private readonly campaignActivityService: CampaignActivityService,

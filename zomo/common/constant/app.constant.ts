@@ -1159,6 +1159,7 @@ export const appConstant = {
         ch_health_users_activity: 'challenge_activity',
         ch_health_week: 'challenge_activity',
         error_log: 'error_log',
+        default: 'default',
     },
     LINKED_DEFAULT_HEADER: { 'CA': 'Linked Emp Id'},
 

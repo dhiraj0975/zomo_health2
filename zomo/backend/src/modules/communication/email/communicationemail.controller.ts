@@ -1,9 +1,10 @@
-import { CommonArrayService, CommonDateService, CommonService, CommunicationEmailDto, tableConstant } from '@common-constants';
+import { CommonArrayService, CommonDateService, CommonService, CommunicationEmailDto, Status, tableConstant } from '@common-constants';
 import {
     Body,
     Controller,
     HttpException,
     HttpStatus,
+    Inject,
     Post, Put,
     Req,
     Res,
@@ -18,6 +19,12 @@ import { CommunicationEmailService } from "./communicationemail.service";
 import { CommunicationEmailToService } from '../emailto/communicationemailto.service';
 import { In, Not } from 'typeorm';
 import { CommunicationHelperService } from '../communicationHelper.service';
+import { EmailActionInput, getOneEmailInput } from './input';
+import { lastValueFrom } from 'rxjs';
+import { ClientProxy } from '@nestjs/microservices';
+import { EmailAttachmentsService } from '../emailattachments/emailattachments.service';
+const S3_URL = process.env.S3_URL_PROD
+
 @Controller('communication/email')
 @UseGuards(TokenGuard, RoleGuard, AccessGuard)
 export class CommunicationEmailController {
@@ -30,6 +37,9 @@ export class CommunicationEmailController {
         private readonly communicationEmailToService: CommunicationEmailToService,
         private readonly communicationHelperService: CommunicationHelperService,
         private readonly commonDateService: CommonDateService,
+        private readonly emailAttachmentsService: EmailAttachmentsService,
+        @Inject('COMMON_SERVICE')
+        private commonMicroservice: ClientProxy,
     ) {
     }
     @Post('paginate')
@@ -146,10 +156,10 @@ export class CommunicationEmailController {
                         subCondition = `user.id = EmailTo.user_id`
                     }
                     if (postData?.type == 'inbox_trash') {
-                        subCondition = `user.id = EmailTo.user_id`
+                        subCondition = `user.id = communication.from_user_id`
                     }
                     if (postData?.type == 'inbox_spam') {
-                        subCondition = `user.id = EmailTo.user_id`
+                        subCondition = `user.id = communication.from_user_id`
                     }
                     let emailInbox = await this.communicationEmailService.paginateWithEmT(
                         condition,
@@ -244,13 +254,13 @@ export class CommunicationEmailController {
             }
             let where = `communication.status !=0 `;
             if (postData?.parent_id) {
-                where += `AND communication.parent_id = '${postData?.parent_id}' `;
+                where += ` AND communication.parent_id = '${postData?.parent_id}' `;
             }
             if (postData?.search_str) {
-                where += `AND(communication.state LIKE '%${postData?.search_str}%' OR communication.city LIKE '%${postData?.search_str}%')`;
+                where += ` AND(communication.state LIKE '%${postData?.search_str}%' OR communication.city LIKE '%${postData?.search_str}%')`;
             }
             if (postData?.type && postData?.type == 'inbox_draft') {
-                where += `communication.is_send = 0 AND communication.from_user_id = ${userId} `;
+                where += ` AND communication.is_send = 0 AND communication.from_user_id = ${userId} `;
                 postData.order_by = 'communication.id';
                 postData.order = 'DESC';
             }
@@ -293,10 +303,154 @@ export class CommunicationEmailController {
         }
     }
     @Post('get-one')
-    async getOne(@Req() req: Request, @Res() res: Response, @Body() postData: any) {
+    async getOne(@Req() req: Request, @Res() res: Response, @Body() postData: getOneEmailInput) {
         try {
             if (!postData?.id) {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_REQUIRED_PARAM_MISSING"));
+            }
+            let mailId: number = postData?.id;
+            let user = req.tokenUser;
+            let userId = user?.id;
+            if (postData?.type && postData?.type == 'inbox_view') {
+                let emailWhere = `( communication.id = ${mailId} OR communication.parent_id = ${mailId} ) AND ( suser.id = ${userId} OR ruser.id = ${userId} )`;
+                const emailSent = await this.communicationEmailService.listRecordWithEmailToUser(
+                    emailWhere,
+                    {
+                        'communication.id': 'ASC'
+                    },
+                    [
+                        'communication.created_date',
+                        'communication.subject',
+                        'communication.email_body',
+                        'communication.id',
+                        'communication.from_user_id',
+                        'communication.is_attachment',
+                        'EmailTo',
+                        'suser.id',
+                        'suser.first_name',
+                        'ruser.id',
+                        'ruser.first_name',
+                        'suser.last_name',
+                        'ruser.last_name',
+                        'suser.email',
+                        'ruser.email',
+                        'suser.profile_image',
+                        'ruser.profile_image',
+                    ]
+                );
+                const allMailIdArray: number[] = [];
+                let email = [];
+                if (emailSent && emailSent.length > 0) {
+                    for (const emails of emailSent) {
+                        let emaildata = {};
+                        const emailId = emails?.id;
+                        if (!allMailIdArray.includes(emailId)) {
+                            allMailIdArray.push(emailId);
+                        }
+                        if (!emaildata) {
+                            emaildata = Object.create(null);
+                            if (emaildata['S_User'] === undefined) {
+                                emaildata['S_User'] = Object.create(null);
+                            }
+                            if (emaildata['R_User'] === undefined) {
+                                emaildata['R_User'] = Object.create(null);
+                            }
+                            if (emaildata['EmailTo'] === undefined) {
+                                emaildata['EmailTo'] = Object.create(null);
+                            }
+                        }
+                        emaildata['S_User'].S_id = emails?.['suser']?.id;
+                        emaildata['S_User'].S_name = `${emails?.['suser']?.first_name || ''} ${emails?.['suser']?.last_name || ''}`.trim();
+                        emaildata['S_User'].S_email = emails?.['suser']?.email;
+                        if (emails?.['suser']?.profile_image) {
+                            try {
+                                const fileData = await lastValueFrom(
+                                    this.commonMicroservice.send(
+                                        { cmd: 'check_file' },
+                                        { prefix: emails?.['suser']?.profile_image }
+                                    )
+                                );
+                                emaildata['S_User'].S_profile = fileData ? `${S3_URL}/${emails?.['suser']?.profile_image}` : '';
+                            } catch (error) {
+                                emaildata['S_User'].S_profile = '';
+                            }
+                        } else {
+                            emaildata['S_User'].S_profile = '';
+                        }
+                        const rUserId = emails?.['ruser']?.id;
+                        if (rUserId) {
+                            emaildata['R_User'] = {
+                                name: `${emails?.['ruser']?.first_name || ''} ${emails?.['ruser']?.last_name || ''}`.trim(),
+                                emaildata: emails?.['ruser']?.email,
+                            };
+                            if (emails?.['ruser']?.profile_image) {
+                                try {
+                                    const fileData = await lastValueFrom(
+                                        this.commonMicroservice.send(
+                                            { cmd: 'check_file' },
+                                            { prefix: emails?.['ruser']?.profile_image }
+                                        )
+                                    );
+                                    emaildata['R_User'].r_profile = fileData ? `${S3_URL}/${emails?.['ruser']?.profile_image}` : '';
+                                } catch (error) {
+                                    emaildata['R_User'].r_profile = '';
+                                }
+                            } else {
+                                emaildata['R_User'].r_profile = '';
+                            }
+                        }
+                        emaildata['subject'] = emails?.subject;
+                        emaildata['created_date'] = emails?.created_date;
+                        emaildata['id'] = emailId;
+                        emaildata['email_body'] = emails?.email_body;
+                        emaildata['from_user_id'] = emails?.from_user_id;
+                        emaildata['is_attachment'] = emails?.is_attachment;
+                        if (emails?.['EmailTo']) {
+                            emaildata['EmailTo'] = {
+                                id: emails?.['EmailTo']?.id,
+                                status: emails?.['EmailTo']?.status,
+                                is_important: emails?.['EmailTo']?.is_important
+                            };
+                        }
+                        email.push(emaildata);
+                    }
+                }
+                let allMailAttechments = await this.emailAttachmentsService.listRecordWithType(
+                    `attachment.mail_id IN (${allMailIdArray.length > 0 ? allMailIdArray.join(',') : null})`,
+                    { 'attachment.id': 'ASC' },
+                    ['attachment', 'type']
+                );
+                email.forEach(item => {
+                    const attachments = allMailAttechments.filter(att => att.mail_id == item.id);
+                    item['attachments'] = attachments;
+                });
+                let resultData = {};
+                resultData['email'] = email;
+                let emailCount = await this.communicationHelperService.getEmailCounting({ coach_id: userId }, req);
+                resultData['emailCount'] = emailCount || {
+                    inbox: 0,
+                    sent: 0,
+                    draft: 0,
+                    trash: 0,
+                    spam: 0,
+                };
+                resultData['emailSubject'] = email.length > 0 ? email[0]?.subject : '';
+                return res.status(HttpStatus.OK).json({
+                    statusCode: 200,
+                    success: 1,
+                    error: 0,
+                    data: resultData,
+                    message: 'success',
+                });
+            }
+            if (postData?.type && postData?.type == 'inbox_view') {
+                return res.status(HttpStatus.OK).json({
+                    statusCode: 200,
+                    success: 1,
+                    error: 0,
+                    data: null,
+                    message: 'success',
+                });
             }
             const where = { id: postData?.id };
             let biometricDetails = await this.communicationEmailService.findOne(where);
@@ -573,5 +727,176 @@ export class CommunicationEmailController {
             statusMap.set(emailId, result);
         });
         return statusMap;
+    }
+    @Post('email-action')
+    async emailAction(@Req() req: Request, @Res() res: Response, @Body() postData: EmailActionInput) {
+        try {
+            const userId = req.tokenUser?.id;
+            const mailId = postData?.id;
+            const selectedMailIds = this.commonArrayService.transformToArray(postData?.selected_mail_ids, ',') || [];
+            const isMulti = selectedMailIds.length > 0;
+            const baseIds: any =
+                isMulti ?
+                    selectedMailIds
+                    :
+                    (
+                        mailId ?
+                            [mailId]
+                            :
+                            []
+                    );
+            const updateEmail: any[] = [];
+            const updateEmailTo: any[] = [];
+            const getUserSentIds = async () => {
+                if (!baseIds.length) return [];
+                const records = await this.communicationEmailService.listRecord(
+                    [
+                        {
+                            id: In(baseIds),
+                            from_user_id: userId
+                        },
+                        {
+                            parent_id: In(baseIds),
+                            from_user_id: userId
+                        }
+                    ],
+                    null,
+                    {
+                        id: true
+                    }
+                );
+                return records.map(r => r.id);
+            };
+            const getFullThreadIds = async () => {
+                if (!baseIds.length) return [];
+                const records = await this.communicationEmailService.listRecord(
+                    [
+                        {
+                            id: In(baseIds)
+                        },
+                        {
+                            parent_id: In(baseIds)
+                        }
+                    ],
+                    null,
+                    {
+                        id: true
+                    }
+                );
+                return records.map(r => r.id);
+            };
+            const addToEmailTo = (records: any[], payload: Record<string, any>) => {
+                records.forEach(rec => updateEmailTo.push({ id: rec.id, ...payload }));
+            };
+            const action = postData?.type;
+            if (action) {
+                const userSentIds = await getUserSentIds();
+                const threadIds = await getFullThreadIds();
+                const inboxRecords = threadIds.length > 0
+                    ? await this.communicationEmailToService.listRecord(
+                        { mail_id: { $in: threadIds }, user_id: userId },
+                        null,
+                        { id: true }
+                    )
+                    : [];
+                switch (action) {
+                    case 'mark_as_read':
+                    case 'mark_as_unread': {
+                        const status = action === 'mark_as_read' ? 1 : 0;
+                        userSentIds.forEach(id => updateEmail.push({ id, status }));
+                        if (inboxRecords.length) {
+                            addToEmailTo(inboxRecords, { status });
+                        }
+                        break;
+                    }
+                    case 'add_star':
+                    case 'remove_star': {
+                        const isImportant = action === 'add_star' ? 1 : 0;
+                        userSentIds.forEach(id => updateEmail.push({ id, is_important: isImportant }));
+                        if (inboxRecords.length) {
+                            addToEmailTo(inboxRecords, { is_important: isImportant });
+                        }
+                        break;
+                    }
+                    case 'mark_as_spam': {
+                        userSentIds.forEach(id => updateEmail.push({ id, is_spam: 1, is_trash: 0 }));
+                        if (inboxRecords.length) {
+                            addToEmailTo(inboxRecords, { is_spam: 1, is_trash: 0 });
+                        }
+                        break;
+                    }
+                    case 'move_to_trash': {
+                        userSentIds.forEach(id => updateEmail.push({ id, is_spam: 0, is_trash: 1 }));
+                        if (inboxRecords.length) {
+                            addToEmailTo(inboxRecords, { is_spam: 0, is_trash: 1 });
+                        }
+                        break;
+                    }
+                    case 'move_to_inbox': {
+                        userSentIds.forEach(id => updateEmail.push({ id, is_trash: 0, is_spam: 0 }));
+                        if (inboxRecords.length) {
+                            addToEmailTo(inboxRecords, { is_trash: 0, is_spam: 0 });
+                        }
+                        break;
+                    }
+                    case 'permanent_delete': {
+                        userSentIds.forEach(id => updateEmail.push({ id, is_trash: 2 }));
+                        if (inboxRecords.length) {
+                            addToEmailTo(inboxRecords, { is_trash: 2 });
+                        }
+                        break;
+                    }
+                    case 'remove_draft': {
+                        userSentIds.forEach(id => updateEmail.push({ id, status: 2 }));
+                        if (inboxRecords.length) {
+                            addToEmailTo(inboxRecords, { status: 2 });
+                        }
+                        break;
+                    }
+                    default:
+                        break;
+                }
+            }
+            for (const email of updateEmail) {
+                const id = email.id;
+                delete email.id;
+                await this.communicationEmailService.update(
+                    {
+                        id: id
+                    },
+                    email
+                );
+            }
+            for (const emailTo of updateEmailTo) {
+                const id = emailTo.id;
+                delete emailTo.id;
+                await this.communicationEmailToService.update(
+                    {
+                        id: id
+                    },
+                    emailTo
+                );
+            }
+            let result = await this.translatorService.frontendReadTranslation(req.lang, "SUCCESS")
+            return res.status(HttpStatus.OK).json({
+                statusCode: 200,
+                success: 1,
+                error: 0,
+                data: result,
+                message: 'success',
+            });
+        } catch (error) {
+            this.activityLogService.error_log(req.tokenUser?.id, req?.originalUrl, error?.message, error, req);
+            throw new HttpException(
+                {
+                    statusCode: 401,
+                    success: 0,
+                    error: 1,
+                    message: error?.message,
+                    data: [],
+                },
+                HttpStatus.BAD_REQUEST,
+            );
+        }
     }
 }

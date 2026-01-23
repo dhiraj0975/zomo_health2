@@ -32,11 +32,11 @@ export class SquareUsersService {
         }
         return await this.readReplicaSquareUsersRepository.createQueryBuilder('squareuser')
        .leftJoinAndMapOne(
-        'squareuser.user',
-        tableConstant.TBL_USERS,
-        'user',
-        `user.id = squareuser.user_id AND user.status = 1`,
-      )
+            'squareuser.user',
+            tableConstant.TBL_USERS,
+            'user',
+            `user.id = squareuser.user_id AND user.status = 1`,
+        )
         .where(condition)
         .select(['squareuser','user.id','user.first_name','user.last_name','user.username','user.profile_image'])
         .orderBy(`squareuser.${Object.keys(orderBy)[0]}`, orderBy[Object.keys(orderBy)[0]])

@@ -394,9 +394,9 @@ export class CommonArrayService {
                     if (appConstant.DATE_COLUMNS.includes(key)) {
                         const dateValue = this.commonDateService.isValidDate(obj1[key]);
                         if (dateValue) {
-                            obj1[key] = dateValue;
-                        } else {
-                            delete obj1[key];
+                            obj1[key] = obj1[key] ? this.commonDateService.DateTimeFormat(obj1[key],'YYYY-MM-DD') : '';
+                        }else{
+                            obj1[key] = obj1[key] ? this.commonDateService.DateTimeFormat(obj1[key],'YYYY-MM-DD') : '';
                         }
                     }
                     if (
