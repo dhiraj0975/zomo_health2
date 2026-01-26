@@ -284,9 +284,6 @@ export class EmailCampaignRequestsController {
     )
     async create(@Req() req: Request, @Res() res: Response, @Body() postData: CreateCommunicationEmailCampaignRequestsInput, @UploadedFile() file: Express.Multer.File) {
         try {
-            if (req.tokenUser?.role_id == 41) {
-            throw new Error('Designer is not allowed to create campaigns.');
-        }
             if (!postData?.with_option || !postData?.campaign_title) {
                 if (
                     postData?.with_option === '0' &&
