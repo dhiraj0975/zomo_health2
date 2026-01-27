@@ -342,21 +342,20 @@ export class CommunicationEmailController {
                 let email = [];
                 if (emailSent && emailSent.length > 0) {
                     for (const emails of emailSent) {
-                        let emaildata = {};
+                        let emaildata = Object.create(null);
                         const emailId = emails?.id;
                         if (!allMailIdArray.includes(emailId)) {
                             allMailIdArray.push(emailId);
                         }
-                        if (!emaildata) {
-                            emaildata = Object.create(null);
+                        if (Object.keys(emaildata).length === 0) {
                             if (emaildata['S_User'] === undefined) {
                                 emaildata['S_User'] = Object.create(null);
                             }
                             if (emaildata['R_User'] === undefined) {
-                                emaildata['R_User'] = Object.create(null);
+                                emaildata['R_User'] = [];
                             }
                             if (emaildata['EmailTo'] === undefined) {
-                                emaildata['EmailTo'] = Object.create(null);
+                                emaildata['EmailTo'] = [];
                             }
                         }
                         emaildata['S_User'].S_id = emails?.['suser']?.id;
@@ -377,41 +376,55 @@ export class CommunicationEmailController {
                         } else {
                             emaildata['S_User'].S_profile = '';
                         }
-                        const rUserId = emails?.['ruser']?.id;
-                        if (rUserId) {
-                            emaildata['R_User'] = {
-                                name: `${emails?.['ruser']?.first_name || ''} ${emails?.['ruser']?.last_name || ''}`.trim(),
-                                emaildata: emails?.['ruser']?.email,
-                            };
-                            if (emails?.['ruser']?.profile_image) {
-                                try {
-                                    const fileData = await lastValueFrom(
-                                        this.commonMicroservice.send(
-                                            { cmd: 'check_file' },
-                                            { prefix: emails?.['ruser']?.profile_image }
-                                        )
-                                    );
-                                    emaildata['R_User'].r_profile = fileData ? `${S3_URL}/${emails?.['ruser']?.profile_image}` : '';
-                                } catch (error) {
-                                    emaildata['R_User'].r_profile = '';
+                        await Promise.all(
+                            emails?.['EmailTo']?.map(async (emailToItem) => {
+                                emaildata['EmailTo'].push({
+                                    id: emailToItem?.id,
+                                    status: emailToItem?.status,
+                                    is_important: emailToItem?.is_important,
+                                });
+                                let correctedData = Object.create(null);
+                                let rUserId = emailToItem?.['ruser']?.id;
+                                if (rUserId && rUserId == userId) {
+                                    correctedData['R_id'] = emailToItem?.['ruser']?.id;
+                                    correctedData['R_name'] = `${emailToItem?.['ruser']?.first_name || ''} ${emailToItem?.['ruser']?.last_name || ''}`.trim();
+                                    correctedData['R_email'] = emailToItem?.['ruser']?.email;
+                                    if (emailToItem?.['ruser']?.profile_image) {
+                                        try {
+                                            const fileData = await lastValueFrom(
+                                                this.commonMicroservice.send(
+                                                    { cmd: 'check_file' },
+                                                    { prefix: emailToItem?.['ruser']?.profile_image }
+                                                )
+                                            );
+                                            correctedData['R_profile'] = fileData ? `${S3_URL}/${emailToItem?.['ruser']?.profile_image}` : '';
+                                        } catch (error) {
+                                            correctedData['R_profile'] = '';
+                                        }
+                                    } else {
+                                        correctedData['R_profile'] = '';
+                                    }
                                 }
-                            } else {
-                                emaildata['R_User'].r_profile = '';
-                            }
-                        }
+                                emaildata['R_User'].push(correctedData);
+                            })
+                        );
                         emaildata['subject'] = emails?.subject;
-                        emaildata['created_date'] = emails?.created_date;
                         emaildata['id'] = emailId;
                         emaildata['email_body'] = emails?.email_body;
                         emaildata['from_user_id'] = emails?.from_user_id;
                         emaildata['is_attachment'] = emails?.is_attachment;
-                        if (emails?.['EmailTo']) {
-                            emaildata['EmailTo'] = {
-                                id: emails?.['EmailTo']?.id,
-                                status: emails?.['EmailTo']?.status,
-                                is_important: emails?.['EmailTo']?.is_important
-                            };
-                        }
+                        emaildata.created_date_copy = emails?.created_date;
+                        const addedDate = this.commonDateService.DateTimeFormat(
+                            emaildata.created_date_copy,
+                            'utcTimeFormat',
+                            'YYYY-MM-DD HH:mm:ss'
+                        );
+                        let monthName = this.commonDateService.DateTimeFormat(addedDate, 'MMM')?.toString();
+                        monthName = await this.translatorService.frontendReadTranslation(req.lang, monthName, `/LC_MESSAGES/Common/Month`, 'static');
+                        const formattedDate =
+                            monthName + ' ' + this.commonDateService.DateTimeFormat(addedDate, 'D') + ', ' + this.commonDateService.DateTimeFormat(addedDate, 'YYYY');
+
+                        emaildata.created_date = formattedDate + ' ' + this.commonDateService.getTodayDate(addedDate).format('HH:mm');
                         email.push(emaildata);
                     }
                 }
@@ -420,10 +433,16 @@ export class CommunicationEmailController {
                     { 'attachment.id': 'ASC' },
                     ['attachment', 'type']
                 );
-                email.forEach(item => {
-                    const attachments = allMailAttechments.filter(att => att.mail_id == item.id);
-                    item['attachments'] = attachments;
-                });
+                if (allMailAttechments.length > 0) {
+                    email.forEach(item => {
+                        const attachments = allMailAttechments.filter(att => att.mail_id == item.id);
+                        if (attachments.length > 0) {
+                            item['attachments'] = attachments;
+                        } else {
+                            item['attachments'] = [];
+                        }
+                    });
+                }
                 let resultData = {};
                 resultData['email'] = email;
                 let emailCount = await this.communicationHelperService.getEmailCounting({ coach_id: userId }, req);
@@ -883,6 +902,32 @@ export class CommunicationEmailController {
                 success: 1,
                 error: 0,
                 data: result,
+                message: 'success',
+            });
+        } catch (error) {
+            this.activityLogService.error_log(req.tokenUser?.id, req?.originalUrl, error?.message, error, req);
+            throw new HttpException(
+                {
+                    statusCode: 401,
+                    success: 0,
+                    error: 1,
+                    message: error?.message,
+                    data: [],
+                },
+                HttpStatus.BAD_REQUEST,
+            );
+        }
+    }
+
+    @Post('draft-email')
+    async draftEmail(@Req() req: Request, @Res() res: Response, @Body() postData: any) {
+        try {
+            let resultedData = {}
+            return res.status(HttpStatus.OK).json({
+                statusCode: 200,
+                success: 1,
+                error: 0,
+                data: resultedData,
                 message: 'success',
             });
         } catch (error) {

@@ -71,7 +71,7 @@ export class SubmitFormsController {
             let where = `sf.deleted = '0'`;
             if (postData?.submitted_date) {
                 let datefield = 'added_date';
-                if (postData?.filter_by == 'activity_date') {
+                if (postData?.filter_by == 'activity_date'  || postData?.filter_date_type == 'activity_date') {
                     datefield = 'activity_date';
                 }
                 let startDate = this.commonDateService.getTodayDate(postData?.submitted_date).format('YYYY-MM-DD');
@@ -105,6 +105,9 @@ export class SubmitFormsController {
                 where += ` AND sf.user_id = ${postData?.user_id}`;
             }
             if (postData?.search_str && postData?.search_str != '') {
+                if(postData?.filter_by && postData?.filter_by != '' && postData?.filter_by.toLowerCase() == 'activity_name'){
+                    postData.filter_by = 'activities';
+                }
                 if ([appConstant.ROLE.ADMIN, appConstant.ROLE.GLOBALCLIENTENGAGEMENTMANAGER, appConstant.ROLE.ORGADMIN].includes(req.tokenUser?.role_id)) {
                     switch (postData?.filter_by?.toLowerCase()) {
                         case 'id':

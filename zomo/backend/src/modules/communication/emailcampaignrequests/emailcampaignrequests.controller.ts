@@ -1098,6 +1098,7 @@ export class EmailCampaignRequestsController {
                     RequestData['testemail'] = tomail;
                     RequestData['sendtestmailstatus'] = 1;
                     RequestData['use_def_tem_id'] = postData?.use_def_tem_id || 0;
+                    RequestData['from_email_id'] = frommail;
 
                     if(postData?.template_type == 4 && postData?.template_item_id){
                         RequestData['template_item_sub_id'] = Array.isArray(postData?.template_item_sub_id) ? postData?.template_item_sub_id.join(',') : postData?.template_item_sub_id;

@@ -56,7 +56,7 @@ export class CommunicationEmailService {
             orderBy = { id: 'DESC' };
         }
         return await this.readReplicacommunicationEmailRepository.createQueryBuilder('communication')
-            .innerJoinAndMapOne(
+            .innerJoinAndMapMany(
                 'communication.EmailTo',
                 tableConstant.COMMUNICATION.TBL_COM_EMAIL_TO,
                 'EmailTo',
@@ -69,7 +69,7 @@ export class CommunicationEmailService {
                 `suser.id = communication.from_user_id`,
             )
             .leftJoinAndMapOne(
-                'communication.ruser',
+                'EmailTo.ruser',
                 tableConstant.TBL_USERS,
                 'ruser',
                 `ruser.id = EmailTo.user_id`,

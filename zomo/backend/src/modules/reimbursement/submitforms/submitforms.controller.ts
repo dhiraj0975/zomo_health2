@@ -68,7 +68,7 @@ export class SubmitFormsController {
             let where = `sf.deleted = '0'`;
             if (postData?.submitted_date) {
                 let datefield = 'added_date';
-                if (postData?.filter_by == 'activity_date') {
+                if (postData?.filter_by == 'activity_date' || postData?.filter_date_type == 'activity_date') {
                     datefield = 'activity_date';
                 }
                 let startDate = this.commonDateService.getTodayDate(postData?.submitted_date).format('YYYY-MM-DD');

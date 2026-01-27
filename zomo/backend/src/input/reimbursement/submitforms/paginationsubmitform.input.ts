@@ -11,4 +11,5 @@ export class PaginationReimbursementSubmitFormInput {
     @Allow() submitted_date: string;
     @Allow() status: number;
     @Allow() filter_by: string;
+    @Allow() filter_date_type: string;
 }

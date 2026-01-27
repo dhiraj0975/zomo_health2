@@ -76,7 +76,7 @@ export const appConstant = {
     FILE_SIZE_1MB: 1 * 1024 * 1024,
     RATE_LIMIT: process.env.RATE_LIMIT,
     FILE_UPLOAD_RATE_LIMIT: process.env.FILE_UPLOAD_RATE_LIMIT,
-    ADMIN_ROLE: [1, 8, 19, 20, 25, 37, 38, 39,40, 41, 42, 43],
+    ADMIN_ROLE: [1, 8, 19, 20, 25, 37, 38, 39, 40, 41, 42, 43],
     EXCLUDE_TIMEZONE_ROLE: [7, 18, 19, 20, 22, 23, 25, 35, 36, 37, 38, 39, 40, 41],
     ROLE: {
         "ADMIN": 1,
