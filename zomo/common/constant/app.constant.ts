@@ -35,6 +35,7 @@ export const appConstant = {
     REIMBURSEMENT_IMAGE_PATH: './public/upload/reimbursement/',
     HEALTH_CHECKUP_IMAGE_PATH: './public/upload/health_checkup/',
     HEALTH_CHECKUP_ZIP_PATH: './public/upload/health_checkup_zip/',
+    EMAIL_ATTACHMENT_PATH: './public/upload/email_attachment/',
     CATEGORY_ICON_IMAGE_PATH: './public/upload/category_icon/',
     QUIZ_ICON_IMAGE_PATH: './public/upload/quiz/',
     PLANS_ICON_IMAGE_PATH: './public/upload/my_plan/plans/',

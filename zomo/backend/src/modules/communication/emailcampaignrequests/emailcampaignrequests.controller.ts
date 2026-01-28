@@ -744,7 +744,12 @@ export class EmailCampaignRequestsController {
                                     i++;
                                 }
                             }
-                            postData.attachment = (attcArray.length > 0) ? JSON.stringify(attcArray) : '';
+
+                            if (attcArray.length > 0) {
+                                postData.attachment = JSON.stringify(attcArray);
+                            } else {
+                                delete postData.attachment;
+                            }
                         /* ATTACHMENT FILE MOVE */
                             if(getCampaignDetails['with_option'] == '2' && getCampaignDetails['group_id'] != 0 && currentCampHash != '' && currentCampHash != null && currentCampHash != undefined){
                                 postData.id = currentSubCampID;
@@ -2551,7 +2556,7 @@ export class EmailCampaignRequestsController {
         }
     }
     @UseGuards(AccessGuard)
-    @Post('get-email-contects')
+    @Post('get-email-contacts')
     async getEmailContects(@Req() req: Request, @Res() res: Response, @Body() postData: any) {
         try {
             if (!postData?.id && !postData?.hash) {

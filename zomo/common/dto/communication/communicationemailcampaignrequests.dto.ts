@@ -1,11 +1,26 @@
 import { Transform, Type, Expose } from 'class-transformer';
+const moment = require('moment-timezone');
 export class CommunicationEmailCampaignRequestsDto {
     @Expose() id: number;
     @Expose() subject: string;
     @Expose() file: string;
     @Expose() from_email_id: number;
     @Expose() template_content: string;
-    @Expose() schedule_datetime: string;
+    @Expose()
+    @Type(() => String)
+    @Transform(({ value }) => {
+        if (!value || value === 'null' || value === '0000-00-00 00:00:00') {
+            return null;
+        }
+        const date = moment(value);
+        if (date.isValid()) {
+            return date.format('MM-DD-YYYY hh:mm A');
+        }
+        return value;
+    }, {
+        toClassOnly: true,
+    })
+    schedule_datetime: string;
     @Expose() interval_from: string;
     @Expose() interval_to: string;
     @Expose() success_count: number;

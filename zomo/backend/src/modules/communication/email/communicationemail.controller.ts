@@ -1,4 +1,4 @@
-import { CommonArrayService, CommonDateService, CommonService, CommunicationEmailDto, Status, tableConstant } from '@common-constants';
+import { appConstant, CommonArrayService, CommonDateService, CommonFileService, CommonService, CommunicationEmailDto, tableConstant } from '@common-constants';
 import {
     Body,
     Controller,
@@ -8,7 +8,9 @@ import {
     Post, Put,
     Req,
     Res,
+    UploadedFiles,
     UseGuards,
+    UseInterceptors,
 } from "@nestjs/common";
 import { Request, Response } from "express";
 import { ActivityLogService } from "src/modules/master/activitylog/activitylog.service";
@@ -19,11 +21,16 @@ import { CommunicationEmailService } from "./communicationemail.service";
 import { CommunicationEmailToService } from '../emailto/communicationemailto.service';
 import { In, Not } from 'typeorm';
 import { CommunicationHelperService } from '../communicationHelper.service';
-import { EmailActionInput, getOneEmailInput } from './input';
+import { DraftEmailInput, EmailActionInput, getOneEmailInput } from './input';
 import { lastValueFrom } from 'rxjs';
 import { ClientProxy } from '@nestjs/microservices';
 import { EmailAttachmentsService } from '../emailattachments/emailattachments.service';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { fileName, filesFilter } from '@/utils/image-upload.utils';
+import { EmailAttachmentTypesService } from '../emailattachmenttypes/emailattachmenttypes.service';
 const S3_URL = process.env.S3_URL_PROD
+const path = require('path');
 
 @Controller('communication/email')
 @UseGuards(TokenGuard, RoleGuard, AccessGuard)
@@ -38,6 +45,8 @@ export class CommunicationEmailController {
         private readonly communicationHelperService: CommunicationHelperService,
         private readonly commonDateService: CommonDateService,
         private readonly emailAttachmentsService: EmailAttachmentsService,
+        private readonly commonFileService: CommonFileService,
+        private readonly emailAttachmentTypesService: EmailAttachmentTypesService,
         @Inject('COMMON_SERVICE')
         private commonMicroservice: ClientProxy,
     ) {
@@ -920,14 +929,132 @@ export class CommunicationEmailController {
     }
 
     @Post('draft-email')
-    async draftEmail(@Req() req: Request, @Res() res: Response, @Body() postData: any) {
+    @UseInterceptors(
+        FileFieldsInterceptor([
+            { 
+                name: 'attachments', 
+                maxCount: 5 
+            },
+        ], {
+            limits: { 
+                fileSize: appConstant.FILE_SIZE_10MB 
+            },
+            storage: diskStorage({
+                destination: `${appConstant.EMAIL_ATTACHMENT_PATH}`,
+                filename: fileName
+            }),
+            fileFilter: filesFilter
+        }),
+        AccessGuard
+    )
+    async draftEmail(@Req() req: Request, @Res() res: Response, @Body() postData: DraftEmailInput, @UploadedFiles() files: { attachments?: Express.Multer.File[] }) {
         try {
-            let resultedData = {}
+            let user = req.tokenUser;
+            let userId = user?.id;
+            let subject = postData?.subject || '';
+            let description = postData?.description || '';
+            let mailId = postData?.id || 0;
+            let emailTo = postData?.email_to || [];
+            let draftEmailData: any = {
+                from_user_id: userId,
+                subject: subject,
+                email_body: description,
+                is_send: 1,
+                is_spam: 0,
+                is_important: 0,
+                is_attachment: 0,
+                is_trash: 0,
+                status: 1,
+            };
+            if (files && files.attachments && files.attachments.length > 0) {
+                draftEmailData.is_attachment = 1;
+            }
+            if (mailId == 0) {
+                let savedEmailData = await this.communicationEmailService.save(draftEmailData);
+                mailId = savedEmailData?.['id'];
+            } else {
+                await this.communicationEmailService.update({ id: mailId }, draftEmailData);
+            }
+            if (emailTo && emailTo.length > 0) {
+                let oldEmailToRecord = await this.communicationEmailToService.listRecord(
+                    { 
+                        mail_id: mailId 
+                    }, 
+                    null, 
+                    { 
+                        id: true 
+                    }
+                );
+                let oldEmailTo = oldEmailToRecord.map(x => x.user_id);
+                let newEmailTo = emailTo.map(x => Number(x));
+                let deleteUserIds = oldEmailTo.filter(id => !newEmailTo.includes(id));
+                if (deleteUserIds.length) {
+                    await this.communicationEmailToService.delete({
+                        mail_id: mailId,
+                        user_id: In(deleteUserIds),
+                    });
+                }
+                let insertUserIds = newEmailTo.filter(id => !oldEmailTo.includes(id));
+                for (const userId of insertUserIds) {
+                    let emailToData = {
+                        mail_id: mailId,
+                        user_id: userId,
+                        status: 0,
+                        is_important: 0,
+                        is_send: 0,
+                        is_spam: 0,
+                        is_trash: 0,
+                    };
+                    await this.communicationEmailToService.save(emailToData);
+                }
+            }
+            else {
+                await this.communicationEmailToService.delete({ mail_id: mailId });
+            }
+            if (files && files.attachments && files.attachments.length > 0) {
+                let emailAttachmentTypes = await this.emailAttachmentTypesService.listRecord({});
+                let oldAttachment = await this.emailAttachmentsService.listRecord(
+                    { 
+                        mail_id: mailId 
+                    }
+                );
+                if (oldAttachment.length) {
+                    await this.emailAttachmentsService.delete({
+                        mail_id: mailId,
+                    });
+                    for (const oldAtt of oldAttachment) {
+                        await lastValueFrom(this.commonMicroservice.send({ cmd: 'delete_file' }, { prefix: `Email/${userId}/${oldAtt.name}` }));
+                    }
+                }
+                for (let fileData of files.attachments) {
+                    if (fileData.fieldname == 'attachments') {
+                        fileData.originalname = this.commonFileService.formatFileName(fileData.originalname);
+                        let fileName = `${this.commonDateService.getTodayDate().format('YYYY-MM-DD-HH-mm-ss')}_${fileData.filename}`;
+                        let fileExtention = fileData.originalname.split('.')[fileData.originalname.split('.').length - 1];
+                        let attachmentType = emailAttachmentTypes.find(x => x.extension.toLowerCase() == fileExtention.toLowerCase());
+                        fileData.filename = `Email/${userId}/${fileName}`;
+                        await lastValueFrom(this.commonMicroservice.send({ cmd: 'upload_file' }, { path: path.resolve(fileData.path), filename: fileData.filename, userBucket: 'private' }));
+                        let attachmentData = {
+                            mail_id: mailId,
+                            attachment_type_id: attachmentType?.id,
+                            name: fileName,
+                        };
+                        await this.emailAttachmentsService.save(attachmentData);
+                        await this.commonFileService.removeFileFromLocal(fileData.path);
+                    }
+                }
+            }
+            let result = {
+                mail_id: mailId,
+                subject: subject,
+                description: description,
+                email_to: emailTo,
+            }
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
                 success: 1,
                 error: 0,
-                data: resultedData,
+                data: result,
                 message: 'success',
             });
         } catch (error) {
