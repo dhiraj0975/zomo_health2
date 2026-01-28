@@ -1,4 +1,3 @@
-// activity-base.entity.ts
 import {
     BaseEntity,
     Column,

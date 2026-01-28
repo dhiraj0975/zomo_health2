@@ -1532,6 +1532,35 @@ export class CommonService {
             throw new Error(err.message);
         }
     }
+    sanitizeInputfield(inputStr: string): string {
+        try {
+            if (!inputStr || typeof inputStr !== 'string') {
+                return '';
+            }
+            let sanitized = inputStr;
+            sanitized = sanitized.replace(/(-{2,}|\/\*|\*\/)/g, ''); // Remove SQL comment sequences
+            sanitized = sanitized.replace(/(['"`%;\\])/g, ''); // Remove dangerous characters
+            const sqlKeywords = [
+                /(\bUNION\b|\bSELECT\b|\bINSERT\b|\bUPDATE\b|\bDELETE\b|\bDROP\b)/gi,
+                /(\bEXEC\b|\bEXECUTE\b|\bCAST\b|\bCONVERT\b)/gi,
+                /(\bDECLARE\b|\bCREATE\b|\bALTER\b|\bTRUNCATE\b)/gi,
+                /(\bSCRIPT\b|\bJAVASCRIPT\b|\bONERROR\b|\bONLOAD\b)/gi
+            ];
+            sqlKeywords.forEach(pattern => {
+                sanitized = sanitized.replace(pattern, '');
+            });             // Remove SQL keywords patterns (case-insensitive)
+            sanitized = sanitized.replace(/[\x00-\x1F\x7F]/g, '');     // Remove null bytes and control characters
+            sanitized = sanitized.replace(/\s+/g, ' ').trim();     // Remove multiple spaces
+            const maxLength = 255;
+            if (sanitized.length > maxLength) {
+                sanitized = sanitized.substring(0, maxLength); // Limit length (adjust as needed)
+            }
+            return sanitized;
+        } catch (err) {
+            console.error('Sanitization error:', err);
+            throw new Error(err.message);
+        }
+    }
     containsUnwantedCharacters(input) {
         try{
             const unwantedCharsRegex = /['`%]/; 

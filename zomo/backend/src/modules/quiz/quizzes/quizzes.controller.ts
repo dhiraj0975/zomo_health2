@@ -963,7 +963,7 @@ export class QuizQuizzesController {
                 let quizDescription = `quiz_description_${saveQuiz['id']}`
                 dynamicDataQuiz[`${quizDescription}`] = quizData?.quiz_description;
             }
-            await this.translatorService.DynamicEngJsonData('Quizzes', '0', dynamicDataQuiz, 'Add', 'Quizzes');
+            await this.translatorService.DynamicEngJsonData('Quizzes', '0', dynamicDataQuiz, 'Add', 'Quizzes', quizId);
             let questOrder = saveQuiz?.['quest_order'] || 0;
             let sectionsList = await this.quizSectionService.listRecord({ quiz_id: postData?.quiz_id, status: Not(2) }, { id: 'ASC' });
             for (let sectionDetails of sectionsList || []) {

@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { isNil } from 'lodash';
 @Injectable()
-export class AppTimezoneConfigProvider {
+export class AppActivityLogConfigProvider {
     constructor(private configService: ConfigService) {}
     private getTypeOrmConfig(suffix: string | number): TypeOrmModuleOptions {
         return {

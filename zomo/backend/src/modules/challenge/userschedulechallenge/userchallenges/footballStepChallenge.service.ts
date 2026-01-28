@@ -665,40 +665,40 @@ export class FootballStepChallengeService {
                     allTeams?.['Groups']?.sort((a, b) => b.groupmember - a.groupmember);
                 }
                 } 
-            if(allTeams?.['Teams'] && Object.keys(allTeams?.['Teams'])?.length){
-                allTeams['Teams'] = Object.values(allTeams?.['Teams']);
-                for(let ele of allTeams?.['Teams']){
-                    if(ele['teamMember'] && Object.keys(ele['teamMember'])?.length){
-                        ele['teamMember'] = Object.values(ele['teamMember']) ?? [];
-                    }
-                    else{
-                        ele['teamMember'] = [];
-                    }
-                    if (!(schedule.in_ranking == 0 && ele.teamMember.length == 0) || ele.group_id == 0 || ele.group_id != 0) {
-                        if(!(schedule.in_ranking == 0 && ele.teamMember.length == 0)){
-                            ele['show_team']= 1;
+                if(allTeams?.['Teams'] && Object.keys(allTeams?.['Teams'])?.length){
+                    allTeams['Teams'] = Object.values(allTeams?.['Teams']);
+                    for(let ele of allTeams?.['Teams']){
+                        if(ele['teamMember'] && Object.keys(ele['teamMember'])?.length){
+                            ele['teamMember'] = Object.values(ele['teamMember']) ?? [];
                         }
                         else{
-                            ele['show_team']= 0;
+                            ele['teamMember'] = [];
+                        }
+                        if (!(schedule.in_ranking == 0 && ele.teamMember.length == 0) || ele.group_id == 0 || ele.group_id != 0) {
+                            if(!(schedule.in_ranking == 0 && ele.teamMember.length == 0)){
+                                ele['show_team']= 1;
+                            }
+                            else{
+                                ele['show_team']= 0;
+                            }
                         }
                     }
                 }
+                if (rank_type === "touchdown") {
+                    allTeams?.['Teams']?.sort((a, b) => b.touchdown - a.touchdown);
+                } else if (rank_type === "average_steps") {
+                    allTeams?.['Teams']?.sort((a, b) => b.teamaveragesteps - a.teamaveragesteps);
+                } else {
+                    allTeams?.['Teams']?.sort((a, b) => {
+                        const rdifference = b.teamyards - a.teamyards;
+                        if (rdifference !== 0) {
+                            return rdifference;
+                        }
+                        return b.teamsteps - a.teamsteps;
+                    });
+                }
+                result['allteams'] = allTeams;
             }
-            if (rank_type === "touchdown") {
-                allTeams?.['Teams']?.sort((a, b) => b.touchdown - a.touchdown);
-            } else if (rank_type === "average_steps") {
-                allTeams?.['Teams']?.sort((a, b) => b.teamaveragesteps - a.teamaveragesteps);
-            } else {
-                allTeams?.['Teams']?.sort((a, b) => {
-                    const rdifference = b.teamyards - a.teamyards;
-                    if (rdifference !== 0) {
-                        return rdifference;
-                    }
-                    return b.teamsteps - a.teamsteps;
-                });
-            }
-            result['allteams'] = allTeams;
-        }
             else{
                 let currentDataTeam = [];
                 let totalYards = 0;
@@ -711,10 +711,11 @@ export class FootballStepChallengeService {
                     if (numberofstepsinfo && numberofstepsinfo.week_steps !== undefined) {
                         numberOfSteps = numberofstepsinfo?.week_steps;
                     }
-                    for (let i = 1; i <= totalDays; i++) {
+                    totalDays
+                    for (let i = 0; i <= totalDays; i++) {
                         let reached = 0;
                         let dailyAverageSteps = 0;
-                        const datematch = moment(schedule.sc.start_date).add(i ==0 ? 0 : i - 1, 'days');
+                        const datematch = moment(schedule.sc.start_date).add(i, 'days');
                         const datematchStr = datematch.format('YYYY-MM-DD');
                         if (i % 7 === 0 && i !== 0) {
                             if (yardCheck !== 0 && yardCheck >= (numberOfSteps * 7)) {

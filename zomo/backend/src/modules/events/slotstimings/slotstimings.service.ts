@@ -221,8 +221,11 @@ export class EventSlotsTimingsService {
             if (slotsToSave.length > 0) {
                 await this.writeReplicaEventSlotsTimingsRepository.save(slotsToSave);
             }
+            return
         }catch (error) {
-            throw new Error(error.message); 
+            // throw new Error(error.message); 
+            console.log(error.message); 
+            return
         }
     }
 }

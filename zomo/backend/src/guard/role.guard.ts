@@ -16,11 +16,7 @@ export class RoleGuard implements CanActivate {
         const request = context.switchToHttp().getRequest();
         try {
             const userDetails = request.tokenUser;
-            if (userDetails?.role_id == appConstant.ROLE.ADMIN || 
-                userDetails?.role_id == appConstant.ROLE.GLOBALCLIENTENGAGEMENTMANAGER || 
-                userDetails?.role_id == appConstant.ROLE.GLOBALMARKETINGMANAGER || 
-                userDetails?.role_id == appConstant.ROLE.NEWSLETTERDESIGNER || 
-                userDetails?.role_id == appConstant.ROLE.MARKETINGMANAGER) {
+            if (userDetails?.role_id == appConstant.ROLE.ADMIN || userDetails?.role_id == appConstant.ROLE.GLOBALCLIENTENGAGEMENTMANAGER) {
                 return true;
             }
             // const permission = await this.permissionService.findOne({

@@ -14,7 +14,7 @@ import {
 } from "@nestjs/common";
 import { Request, Response } from "express";
 import { TranslationService } from "src/modules/translation/translation.service";
-import { CampaignGuard, RoleGuard, TokenGuard } from '../../../guard';
+import { AccessGuard, RoleGuard, TokenGuard } from '../../../guard';
 import { ActivePluginService } from "../../company/activeplugins/activeplugin.service";
 import { ActivityLogService } from "../../master/activitylog/activitylog.service";
 import { FrontCalculationService } from "../front/frontcalculation.service";
@@ -23,7 +23,7 @@ import { CampaignDashboardService } from "./campaigndashboard.service";
 import { SpouseSettingsService } from '../spousesettings/spousesettings.service';
 const S3_URL = process.env.S3_URL_PROD;
 @Controller('campaign/front')
-@UseGuards(TokenGuard, RoleGuard, CampaignGuard)
+@UseGuards(TokenGuard, RoleGuard, AccessGuard)
 export class CampaignDashboardController {
     constructor(
         private readonly campaignService: CampaignDashboardService,

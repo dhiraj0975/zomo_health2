@@ -60,6 +60,7 @@ export class AuthController {
             if(userDetails?.preferred_language?.alias){
                 req.lang = userDetails?.preferred_language?.alias;
             }
+             console.log('userDetails.role_id', userDetails);
             if(userDetails && userDetails.status != 1){
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "The login/password combination was not found"));
             }
@@ -67,19 +68,19 @@ export class AuthController {
                 userDetails.new_password = null;
             }
             let activeCompany = false;
-            if((userDetails?.['company'] && userDetails?.['company']?.['status'] == 1 && userDetails?.['company']?.['deleted'] == 0) || (appConstant.ADMIN_ROLE.includes(userDetails?.role_id))){
+            if((userDetails?.['company'] && userDetails?.['company']?.['status'] == 1 && userDetails?.['company']?.['deleted'] == 0) || (appConstant.ADMIN_ROLE.includes(userDetails?.role_id) )){
                 activeCompany = true;
             }
             if (!userDetails || !activeCompany) {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_INVALID_LOGIN"));
             }
             postData['remember_me'] = postData['remember_me'] ? 1 : 0;
-            if (appConstant.ADMIN_ROLE.includes(userDetails.role_id)) {
-                if (postData?.role_id && postData?.role_id != 1 && postData?.role_id != userDetails.role_id) {
-                    throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_ACCESS_DENIED"));
-                }
-            } else {
-                if (postData?.role_id && postData?.role_id != userDetails.role_id) {
+           
+            if(postData?.role_id == 1 && appConstant.ADMIN_ROLE.includes(userDetails.role_id)){
+            }else{
+                if(!postData?.role_id && !appConstant.ADMIN_ROLE.includes(userDetails.role_id)){
+                }else{
+
                     throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_ACCESS_DENIED"));
                 }
             }

@@ -408,7 +408,11 @@ export class HydrateChallengeReportService {
                     if (percentDiff !== 0) {
                         return percentDiff;
                     }
-                    return (b?.['day_log'] ?? 0) - (a?.['day_log'] ?? 0);
+                    const daylogDiff = (b?.['day_log'] ?? 0) - (a?.['day_log'] ?? 0);
+                    if (daylogDiff !== 0) {
+                        return daylogDiff;
+                    }
+                    return (b?.['total_water'] ?? 0) - (a?.['total_water'] ?? 0);
                 });
                 let rank = 1;
                 if (result_type == 1) {

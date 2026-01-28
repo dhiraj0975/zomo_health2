@@ -892,7 +892,7 @@ export class UserDashboardController {
             if (userCompanyData && userCompanyData?.company && userCompanyData?.company?.meta) {
                 if(pluginName && pluginName.Biometricresult){
                     let biometricList = await this.biometricService.listRecord({status: 1});
-                    let biometricResult = await this.orgBiometricService.listRecord(`orgBiometric.company_id = ${orgId}`,{ is_optional: 'ASC' });
+                    let biometricResult = await this.orgBiometricService.listRecord(`orgBiometric.company_id = ${orgId} AND orgBiometric.status = 1`,{ is_optional: 'ASC' });
                     let biometricSetting = await this.biometricOrgSettingService.findOne({ org_id: orgId , status: 1});
                     let widgetbioTop = 'Not Started'; 
                     let widgetbioTopColor = '#575757'; 
@@ -1146,7 +1146,7 @@ export class UserDashboardController {
                                 HRAOptions = HRAOptionsArray[widgetbioval['biometricsList']['biometric']];
                             }    
                             if(widgetbioval['is_optional']!=0){                        
-                                OptionalData[widgetbioval['is_optional']] = widgetbiokey + 1;
+                                OptionalData[widgetbioval['is_optional']] = widgetbioval?.id;
                             } 
                             if(widgetbioval?.['data']?.['date1']){
                                 if(Date1Comp==''){
@@ -1547,15 +1547,17 @@ export class UserDashboardController {
                         }
                         for (const [widgetbiokey, widgetbioval] of biometricResult.entries()) {
                             if(OptionalData[widgetbioval['biometricsList']['id']]){
-                                const index = biometricResult.findIndex(user => user.id === OptionalData[widgetbioval['biometricsList']['id']]);
-                                biometricResult[index]['Sub']=widgetbioval;
-                                if(biometricResult[index]['data']['status'] && biometricResult[index]['data']['status']=='Goal met' && biometricResult[widgetbiokey]['data']['status']=='Goal met'){
-                                    Is_Completed--;   
+                                const index = biometricResult.findIndex(item => item.id === OptionalData[widgetbioval['biometricsList']['id']]);
+                                if(biometricResult[index]){
+                                    biometricResult[index]['Sub']=widgetbioval;
+                                    if(biometricResult[index]['data']['status'] && biometricResult[index]['data']['status']=='Goal met' && biometricResult[widgetbiokey]['data']['status']=='Goal met'){
+                                        Is_Completed--;   
+                                    }
+                                    if(biometricResult[index]['is_optional_type'] == 1 && ((biometricResult[index]['data']['status'] && biometricResult[index]['data']['status']==' Goal not met' && biometricResult[widgetbiokey]['data']['status']=='Goal met') || ( biometricResult[index]['data']['status'] && biometricResult[index]['data']['status']=='Goal met' && biometricResult[widgetbiokey]['data']['status']==' Goal not met'))){
+                                        Is_Completed--;
+                                    }
+                                    biometricResult.splice(widgetbiokey, 1)
                                 }
-                                if(biometricResult[index]['is_optional_type'] == 1 && ((biometricResult[index]['data']['status'] && biometricResult[index]['data']['status']==' Goal not met' && biometricResult[widgetbiokey]['data']['status']=='Goal met') || ( biometricResult[index]['data']['status'] && biometricResult[index]['data']['status']=='Goal met' && biometricResult[widgetbiokey]['data']['status']==' Goal not met'))){
-                                    Is_Completed--;
-                                }
-                                biometricResult.splice(widgetbiokey, 1)
                             }
                         }
                         if((Systolic==0 && Diastolic==1) || Systolic==1 && Diastolic==0){

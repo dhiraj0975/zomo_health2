@@ -309,7 +309,20 @@ export class EmailCampaignRequestsController {
             /* WITH OPTION 0 */
                 if(postData?.with_option === '0'){
                     if(file && typeof file !== undefined && file.fieldname === 'file' && file.filename && file.originalname && file.originalname != ''){
-                        let sheetData = await this.csvService.readCsv(file.path);
+                  
+                        const fileExt = pathInfo.extname(file.originalname).toLowerCase();
+                        let sheetData = [];
+                        if (fileExt === '.csv') {
+                            sheetData = await this.csvService.readCsv(file.path);
+                        } else if (fileExt === '.xlsx' || fileExt === '.xls') {
+                            const jsonFileName = await this.commonFileService.createFileToJson(file.path, 'excel_to_json.py', req);
+                            if (jsonFileName && jsonFileName['status'] === 1) {
+                                const jsonPath = file.path.replace(fileExt, '.json');
+                                sheetData = await this.commonFileService.readFile(jsonPath);
+                                await this.commonFileService.removeFileFromLocal(jsonPath);
+                            }
+                        }
+                      
                         let sheetTotalData = sheetData.length;
                         if(sheetTotalData > 1){
                             if(sheetTotalData <= 2001){
@@ -523,10 +536,7 @@ export class EmailCampaignRequestsController {
                 if(updateData){
                     await lastValueFrom(this.client.send({ cmd: 'update_campaign_requests' }, updateData));
                 }
-                resData = {
-                    id: lastInsertId,
-                    hash: lastInsertHash,
-                };
+                resData = {id: lastInsertId, hash: lastInsertHash,};
                 resMessage = 'Request created successfully.';
             }else{
                 resMessage = 'Somthing went wrong....';
@@ -616,9 +626,7 @@ export class EmailCampaignRequestsController {
                         const cam_org_id = getCampaignDetails['for_org_id'];
                         if(campRoleIdArr.includes(cam_role_id)){
                             accessStatus = 0;
-                            if(loged_role_id == 11 && loged_org_id != cam_org_id){
-                                accessStatus = 1;
-                            }
+                            if(loged_role_id == 11 && loged_org_id != cam_org_id){ accessStatus = 1;}
                         }
                     }
                     if(accessStatus == 0){
@@ -1090,6 +1098,7 @@ export class EmailCampaignRequestsController {
                     RequestData['testemail'] = tomail;
                     RequestData['sendtestmailstatus'] = 1;
                     RequestData['use_def_tem_id'] = postData?.use_def_tem_id || 0;
+                    RequestData['from_email_id'] = frommail;
 
                     if(postData?.template_type == 4 && postData?.template_item_id){
                         RequestData['template_item_sub_id'] = Array.isArray(postData?.template_item_sub_id) ? postData?.template_item_sub_id.join(',') : postData?.template_item_sub_id;

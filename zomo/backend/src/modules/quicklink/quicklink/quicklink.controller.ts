@@ -292,6 +292,27 @@ export class QuickLinkController {
             if (formCheck) {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_QUICKLINK_ALREADY_EXIST"));
             }
+            if (postData?.dispalybasedon !== undefined) {
+
+                if (postData.dispalybasedon == 0) {
+                    postData.fromdate = null;
+                    postData.todate = null;
+
+                } else if (postData.dispalybasedon == 1) {
+                    if (postData?.fromdate) {
+                        postData.fromdate = `${postData.fromdate} 00:00:00`;
+                    }
+                    postData.todate = null;
+
+                } else if (postData.dispalybasedon == 2) {
+                    if (postData?.fromdate) {
+                        postData.fromdate = `${postData.fromdate} 00:00:00`;
+                    }
+                    if (postData?.todate) {
+                        postData.todate = `${postData.todate} 23:59:59`;
+                    }
+                }
+            }
             const quicklinkData = await this.quickLinkService.save({...postData});
             let dynamicDatas = Object.create(null);
             if(postData?.title){
@@ -373,6 +394,26 @@ export class QuickLinkController {
             }
             if(company_ids.length && recordDetails.c_companies_id.toString() != postData?.c_companies_id){
                 postData.c_companies_id= '0';
+            }
+            if (postData?.dispalybasedon !== undefined) {
+                if (postData.dispalybasedon == 0) {
+                    postData.fromdate = null;
+                    postData.todate = null;
+
+                } else if (postData.dispalybasedon == 1) {
+                    if (postData?.fromdate) {
+                        postData.fromdate = `${postData.fromdate} 00:00:00`;
+                    }
+                    postData.todate = null;
+
+                } else if (postData.dispalybasedon == 2) {
+                    if (postData?.fromdate) {
+                        postData.fromdate = `${postData.fromdate} 00:00:00`;
+                    }
+                    if (postData?.todate) {
+                        postData.todate = `${postData.todate} 23:59:59`;
+                    }
+                }
             }
             await this.quickLinkService.update({ id: postData?.id },{...postData});
             let dynamicDatas = Object.create(null);

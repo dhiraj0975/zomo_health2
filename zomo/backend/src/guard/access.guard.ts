@@ -16,7 +16,8 @@ import { WellnessAssignmentService } from 'src/modules/company/wellnessassignmen
 import { DataManagersService } from 'src/modules/healthcheckup/datamanagers/datamanagers.service';
 import { TranslationService } from 'src/modules/translation/translation.service';
 import { Not } from 'typeorm';
-let allowedRole = [appConstant.ROLE.GLOBALCOACH, appConstant.ROLE.COACH, appConstant.ROLE.BROKERADMIN, appConstant.ROLE.BROKER,
+let allowedRole
+ = [appConstant.ROLE.GLOBALCOACH, appConstant.ROLE.COACH, appConstant.ROLE.BROKERADMIN, appConstant.ROLE.BROKER,appConstant.ROLE.MARKETINGMANAGER,
 appConstant.ROLE.ENGAGEMENTDATAMANAGER, appConstant.ROLE.DATAMANAGER, appConstant.ROLE.WCH, appConstant.ROLE.CLIENTENGAGEMENTMANAGER, appConstant.ROLE.REGIONALADMIN,
 ];
 
@@ -37,13 +38,10 @@ export class AccessGuard implements CanActivate, NestInterceptor {
     const userDetails = request.tokenUser;
     const requestBody = request.body ? JSON.parse(JSON.stringify(request.body)) : null;
 
-      if (
-        userDetails?.role_id == appConstant.ROLE.ADMIN ||
-        userDetails?.role_id == appConstant.ROLE.GLOBALCLIENTENGAGEMENTMANAGER ||
-        userDetails?.role_id == appConstant.ROLE.GLOBALMARKETINGMANAGER ||
-        userDetails?.role_id == appConstant.ROLE.NEWSLETTERDESIGNER ||
-        userDetails?.role_id == appConstant.ROLE.MARKETINGMANAGER
-      ) {
+    if (
+      userDetails?.role_id === appConstant.ROLE.ADMIN ||
+      userDetails?.role_id === appConstant.ROLE.GLOBALCLIENTENGAGEMENTMANAGER
+    ) {
       return true;
     }
     if (requestBody?.company_id) {

@@ -1,4 +1,4 @@
-import { appConstant, CommonArrayService, CommonFileService, CommunicationEmailAttachmentEntity } from '@common-constants';
+import { appConstant, CommonArrayService, CommonFileService, CommunicationEmailAttachmentEntity, tableConstant } from '@common-constants';
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
@@ -65,5 +65,22 @@ export class EmailAttachmentsService {
     }
     async delete(condition: any) {
         await this.writeReplicacommunicationEmailAttachmentRepository.delete(condition);
+    }
+    async listRecordWithType(condition: any, orderBy: any = null, feilds: string[] = ['attachment', 'type']) {
+        if (!orderBy) {
+            orderBy = { id: 'DESC' };
+        }
+        let result = await this.readReplicacommunicationEmailAttachmentRepository.createQueryBuilder('attachment')
+            .innerJoinAndMapOne(
+                'attachment.type',
+                tableConstant.COMMUNICATION.TBL_COM_EMAIL_ATTACHMENT_TYPE,
+                'type',
+                `type.id = attachment.attachment_type_id`,
+            )
+            .where(condition)
+            .orderBy(orderBy)
+            .select(feilds)
+            .getMany();
+        return result;
     }
 }

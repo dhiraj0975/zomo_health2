@@ -237,8 +237,8 @@ export class UserScheduleChallengeController {
                 logo: S3_URL + postData?.custom_logo, 
                 type: 'update'
             };
+            let check
             if (postData?.type == 'add') {
-                console.log("square verification add");
                 if(postData['frequencydata'] && postData['frequencylimit'] && postData['frequencylimit']!='' && postData['frequencylimit']!=0 && (postData['frequencydata']=='daily' || postData['frequencydata']=='weekly' || postData['frequencydata']=='monthly')){
                     if(postData['frequencydata']=='daily'){
                         let frqdata = await this.squareUsersService.listRecord(`squareuser.user_id = ${postData?.user_id} AND squareuser.status != 2 AND squareuser.schedule_id = ${postData?.schedule_id} AND DATE_FORMAT(squareuser.created_date,"%Y-%m-%d") = '${this.commonDateService.getTodayDate().format('YYYY-MM-DD')}'`,null,'square_id, DATE_FORMAT(`created_date`,"%Y-%m-%d")');
@@ -271,7 +271,7 @@ export class UserScheduleChallengeController {
                         }
                     }   
                }
-               let check = await this.squareUsersService.findOne({square_id: postData?.square_id, user_id: postData?.user_id,card_id: postData?.card_id, schedule_id: postData?.schedule_id, status: 1 , verified_userid: postData?.verified_userid});
+               check = await this.squareUsersService.findOne({square_id: postData?.square_id, user_id: postData?.user_id,card_id: postData?.card_id, schedule_id: postData?.schedule_id, status: 1 , verified_userid: postData?.verified_userid});
                 if(check){
                     let errorMsgTrans = await this.translatorService.frontendReadTranslation(req.lang,'Challenge_Verification_Already_Sent', `/LC_MESSAGES/Api`,`static`);
                     throw new Error(errorMsgTrans);
@@ -285,7 +285,11 @@ export class UserScheduleChallengeController {
                     square_id: postData?.square_id,
                     card_id: postData?.card_id
                 });
-                postData.id = savedData?.['id'];
+                postData.id ??= savedData?.['id'];
+            }
+            if(!postData?.id){
+                check = await this.squareUsersService.findOne({square_id: postData?.square_id, user_id: postData?.user_id,card_id: postData?.card_id, schedule_id: postData?.schedule_id, status: 1 , verified_userid: postData?.verified_userid});
+                postData.id ??= check?.['id'];
             }
             if (postData?.type == 'remove') {
                 await this.squareUsersService.update({id: postData?.id, user_id: req.tokenUser?.id},{status: 2});
@@ -295,10 +299,11 @@ export class UserScheduleChallengeController {
             if (postData?.type == 'verify') {
                 await this.squareUsersService.update({id: postData?.id, verified_userid: req.tokenUser?.id},{verified_status: 1});
                 this.activityLogService.create({id: postData?.id, verified_userid: req.tokenUser?.id, verified_status: 0}, {verified_status: 1}, tableConstant.CHALLENGE.TBL_CH_SQUARE_USERS, req.tokenUser?.id, 'verify');
-            }    
+            }
             if(postData?.id && postData?.type != 'remove'){
                 let verificationRequest: any = await this.squareUsersService.GetVerificationRequest(`squareuser.id = ${postData?.id}`);
                 verificationRequest = verificationRequest?.[0];
+                console.log("square verification before verificationRequest :",verificationRequest);
                 if (postData?.type == 'add') {
                     notificationData['message'] = `You have been Invited for Square Verification by ${verificationRequest?.user?.first_name} ${verificationRequest?.user?.last_name}.`;
                 }

@@ -635,7 +635,8 @@ export class MoveChallengeReportService {
                                         row.push(total_locations === location_goal_met ? 'Yes' : 'No');
                                         row.push(location_goal_met);
                                     }
-                                    const alltotalsteps: number = Number(user.alltotalsteps || 0);
+                                    // const alltotalsteps: number = Number(user.alltotalsteps || 0);
+                                    const alltotalsteps: number = Number(user?.steps || 0); //ZOMO-4482
                                     row.push(alltotalsteps);
                                     return row;
                                 }),

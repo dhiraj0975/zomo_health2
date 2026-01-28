@@ -68,6 +68,7 @@ export class WeightChallengeReportService {
             let weightWhere;
             let result = [];
             let usersDailyDetail = {};
+            endDate = this.commonDateService.DateTimeFormat(schedule?.['start_date'],'timestamp',);
             endDate = this.commonDateService.DateTimeFormat(schedule?.['end_date'],'timestamp',);
             let now: any = this.commonDateService.DateTimeFormat('now','timestamp',);
             if (now >= endDate) {
@@ -281,6 +282,8 @@ export class WeightChallengeReportService {
                 }
             }
             else {
+                startDate = this.commonDateService.DateTimeFormat(schedule?.['start_date'],'YYYY-MM-DD');
+                endDate = this.commonDateService.DateTimeFormat(schedule?.['end_date'],'YYYY-MM-DD');
                 if (schedule['backdating_frequency'] &&this.commonDateService.DateTimeFormat(schedule['backdating_frequency']) > this.commonDateService.DateTimeFormat(schedule['start_date'])) {
                     gStartDate = this.commonDateService.DateTimeFormat(schedule['backdating_frequency'],'YYYY-MM-DD HH:mm:ss');
                 } else {
@@ -291,7 +294,7 @@ export class WeightChallengeReportService {
                     gStartDate = this.commonDateService.DateTimeFormat(schedule?.['rangestartdate'],'YYYY-MM-DD HH:mm:ss');
                     gEndDate = this.commonDateService.getTodayDate(schedule['s_rangeenddate']).format('YYYY-MM-DD') + ' 23:59:59';
                 }
-                weightWhere = ` AND((weight.added_date BETWEEN '${startDate}' AND '${endDate} 23:59:59') OR (weight.added_date BETWEEN '${gStartDate}' AND '${gEndDate}') )`;
+                weightWhere = ` AND((weight.added_date BETWEEN '${startDate} 00:00:00' AND '${endDate} 23:59:59') OR (weight.added_date BETWEEN '${gStartDate}' AND '${gEndDate}') )`;
                 if (schedule['s_rangestartdate'] != null && schedule['s_rangeenddate'] != null ) {
                     startDate = this.commonDateService.DateTimeFormat(schedule?.['rangestartdate'],'YYYY-MM-DD HH:mm:ss',);
                     endDate = this.commonDateService.getTodayDate(schedule['rangeenddate']).format('YYYY-MM-DD') + ' 23:59:59';
@@ -409,7 +412,7 @@ export class WeightChallengeReportService {
                         let firstWeight = Number(firstWeightArr.weight ?? 0);
                         let lastWeightArr = userWeights.length > 0 ? userWeights[0] : firstWeightArr;
                         let lastWeight = Number(lastWeightArr.weight ?? 0);
-                        let diffWeight = firstWeight - lastWeight;
+                        let diffWeight = lastWeight == 0 ? 0 : firstWeight - lastWeight;
                         if (bioWeightUsers[users_id].length < 1 || diffWeight <= 0) {
                             diffWeight = 0;
                         }
@@ -477,7 +480,7 @@ export class WeightChallengeReportService {
                         let firstWeight = 'No';
                         let lastWeight = 'No';
                         let dWeight = "No";
-                        if (schedule.s_rangestartdate !== null && schedule.s_rangeenddate !== null) {
+                        if (schedule.s_rangestartdate && schedule.s_rangeenddate) {
                             const weightInfo = [...item.weightInfo]; 
                             const firstWeightArr = weightInfo.pop();
                             const lastWeightArr = weightInfo.shift();
@@ -583,7 +586,7 @@ export class WeightChallengeReportService {
                             if(role_id && role_id == 1){
                                 row.push(user?.firstWeightValue || '');
                                 row.push(user?.lastWeightValue || '');
-                                row.push(user?.totalweightloss || '');
+                                row.push(user?.totalweightloss || 0);
                                 row.push(user?.rank || '');
                             }
                             else{
