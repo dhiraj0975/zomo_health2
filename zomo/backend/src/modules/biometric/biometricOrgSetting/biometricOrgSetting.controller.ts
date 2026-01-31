@@ -303,7 +303,7 @@ export class BiometricOrgSettingController {
             const biometricResult = await this.orgBiometricService.listRecord(`orgBiometric.company_id = ${org_id} AND orgBiometric.status != 2`);
             const biometricTestSetting = postData?.setting;
             delete postData?.setting;
-            const recordDetails = await this.biometricOrgSettingService.findOne({org_id: postData?.org_id}); 
+            let recordDetails: any = await this.biometricOrgSettingService.findOne({org_id: postData?.org_id}); 
             if(postData['qualifie_type']==2){
                 postData['option'] = postData['option1']; 
             }
@@ -338,8 +338,22 @@ export class BiometricOrgSettingController {
                 update = 1;
             }
             else{
-                await this.biometricOrgSettingService.save(postData);
+                recordDetails = await this.biometricOrgSettingService.save(postData);
             }
+            let dynamicData = Object.create(null);
+            if(postData['is_complete_message']!=''){
+               let title = `complete_${recordDetails['id']}`;
+                dynamicData[`${title}`]= postData?.is_complete_message;
+            }
+            if(postData['is_incomplete_message']!=''){
+                let title = `incomplete_${recordDetails['id']}`;
+                dynamicData[`${title}`]= postData?.is_incomplete_message;
+            }
+            if(postData['is_ontrack_message']!=''){
+                let title = `ontrack_${recordDetails['id']}`;
+                dynamicData[`${title}`]= postData?.is_ontrack_message;
+            }
+            await this.translatorService.DynamicEngJsonData('Dashboard',postData?.org_id,dynamicData,'Edit','HealthyBiometricsProgram',null);
             let invalidBlocks = [];
             for(const biometric of biometricTestSetting){
                 if(biometric?.id){

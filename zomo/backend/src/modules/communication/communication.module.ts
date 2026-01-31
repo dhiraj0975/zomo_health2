@@ -27,10 +27,12 @@ import { MailSchedulersController } from "./mailschedulers/mailschedulers.contro
 import { CommunicationTemplateTextsController } from './templatetexts/communicationtemplatetexts.controller';
 import { CommunicationTemplateTextsService } from './templatetexts/communicationtemplatetexts.service';
 import { CommunicationHelperService } from './communicationHelper.service';
+import { CompanyModule } from '../company/company.module';
 @Module({
     imports: [
         TypeOrmModule.forFeature([CommunicationEmailEntity, CommunicationEmailAttachmentEntity, CommunicationEmailAttachmentTypeEntity, CommunicationEmailToEntity, CommunicationTemplateTextsEntity], appConstant.READ_REPLICA.toLowerCase()),
         TypeOrmModule.forFeature([CommunicationEmailEntity, CommunicationEmailAttachmentEntity, CommunicationEmailAttachmentTypeEntity, CommunicationEmailToEntity, CommunicationTemplateTextsEntity], appConstant.MAIN.toLowerCase()),
+        CompanyModule,
     ],
     providers: [
         CommunicationEmailService,

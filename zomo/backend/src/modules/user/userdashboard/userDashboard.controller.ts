@@ -900,18 +900,30 @@ export class UserDashboardController {
                     let todayDate = this.commonDateService.getTodayDate().startOf('day');
 
                     if(biometricResult.length > 0 && biometricSetting && (biometricSetting['is_hire']==0 || hireDate=='' || this.commonDateService.getTodayDate(hireDate).startOf('day').isSameOrBefore(this.commonDateService.getTodayDate(biometricSetting.is_hire_date).startOf('day')))){
+                        let biometricText = await this.translatorService.frontendReadTranslation(req.lang, 'Healthy Biometrics Program', `/LC_MESSAGES/Dashboard/HealthyBiometricsProgram`, `static`);
+                        let seeBellowText = await this.translatorService.frontendReadTranslation(req.lang, '(See below)', `/LC_MESSAGES/Dashboard/HealthyBiometricsProgram`, `static`);
+                        let completeHalfText = await this.translatorService.frontendReadTranslation(req.lang, 'Complete Half Text', `/LC_MESSAGES/Dashboard/HealthyBiometricsProgram`, `static`);
+                        let completeText = await this.translatorService.frontendReadTranslation(req.lang, 'Complete Text', `/LC_MESSAGES/Dashboard/HealthyBiometricsProgram`, `static`);
+                        let notCompleteText = await this.translatorService.frontendReadTranslation(req.lang, 'Not Completed', `/LC_MESSAGES/Dashboard/HealthyBiometricsProgram`, `static`);
+                        let dynamicCompleteText = biometricSetting['is_complete_message'] ? await this.translatorService.frontendReadTranslation(req.lang, `complete_${biometricSetting['id']}`, `/LC_MESSAGES/Dashboard/HealthyBiometricsProgram/${orgId}`, `dynamic`) : null;
+                        let dynamicInCompleteText = biometricSetting['is_incomplete_message'] ? await this.translatorService.frontendReadTranslation(req.lang, `incomplete_${biometricSetting['id']}` , `/LC_MESSAGES/Dashboard/HealthyBiometricsProgram/${orgId}`, `dynamic`) : null;
+                        let dynamicOnTarckText = biometricSetting['is_ontrack_message'] ? await this.translatorService.frontendReadTranslation(req.lang, `ontrack_${biometricSetting['id']}` , `/LC_MESSAGES/Dashboard/HealthyBiometricsProgram/${orgId}`, `dynamic`) : null;
+                        let onTrackText = await this.translatorService.frontendReadTranslation(req.lang, 'On Track', `/LC_MESSAGES/Dashboard/HealthyBiometricsProgram`, `static`);
+                        let toCompleteText = await this.translatorService.frontendReadTranslation(req.lang, 'To Complete', `/LC_MESSAGES/Dashboard/HealthyBiometricsProgram`, `static`);
+                        let toQualifyText = await this.translatorService.frontendReadTranslation(req.lang, 'To Qualify', `/LC_MESSAGES/Dashboard/HealthyBiometricsProgram`, `static`);
+
                         for(let index = 0; index<=1; index++){
                             const startDate = this.commonDateService.getTodayDate(biometricResult[0][`test${index + 1}_start_date`]);
                             const endDate   = this.commonDateService.getTodayDate(biometricResult[0][`test${index + 1}_end_date`]);
                             if (todayDate.isSameOrAfter(startDate) && todayDate.isSameOrBefore(endDate)) {
-                                widgetbioTop = 'Important! You are on track but <span style="text-decoration: underline;">you still have steps to complete</span> in order to qualify for the <br>Healthy Biometrics Program. (See below)';
+                                widgetbioTop = dynamicOnTarckText ?? `${onTrackText} <span style="text-decoration: underline;">${toCompleteText}</span> ${toQualifyText} <br>${biometricText}. ${seeBellowText}`;
                                 widgetbioTopColor = regionColor['Moderate risk'];
                             }
 
                             if (todayDate.isAfter(startDate) && todayDate.isAfter(endDate)) {
                                 widgetbioTopColor = regionColor['Very High risk'];
                                 IsDeadLine = 1;
-                                widgetbioTop = 'You have not completed all the required steps, nor have you met the outcomes to qualify for the <br>Healthy Biometrics Program. (See below)';
+                                widgetbioTop = dynamicInCompleteText ?? `${notCompleteText} <br>${biometricText}. ${seeBellowText}`;
                             } else {
                                 IsDeadLine = 0;
                             }
@@ -1575,7 +1587,7 @@ export class UserDashboardController {
                             widgetbioheader[2]['Color'] = regionColor['Low risk'];
                         }
                         if((widgetbioheader[1]['Color'] && widgetbioheader[1]['Color']==regionColor['Low risk'] && widgetbioheader[2]['Color'] && widgetbioheader[2]['Color']==regionColor['Low risk']) || ((biometricSetting['is_based']==1 || biometricSetting['qualifie_type']==4) && (biometricSetting['qualifie_type']==0 || biometricSetting['qualifie_type']==2 || biometricSetting['qualifie_type']==4) && widgetbioheader[2]['Color'] && widgetbioheader[2]['Color']==regionColor['Low risk'])){ 
-                            widgetbioTop = 'Congratulations! You have completed all the required steps and met the outcomes for the <b>Healthy Biometrics Program!</b>';
+                            widgetbioTop = dynamicCompleteText ?? `${completeText} <b>${biometricText}!</b>`;
                             widgetbioTopColor = regionColor['Low risk'];
                             widgetbioheader[3]['Status'] = 'All required biometrics are in range.';
                             widgetbioheader[3]['Color'] = regionColor['Low risk']; 
@@ -1586,11 +1598,11 @@ export class UserDashboardController {
                         }
                         if(IsDeadLine==1 && Date1CompTo >=Is_Required && Date2Comp=='' && Date1Comp!=''){
                             widgetbioTopColor = regionColor['Very High risk'];
-                            widgetbioTop = 'You have not completed all the required steps, nor have you met the outcomes to qualify for the <b>Healthy Biometrics Program.</b> (See below)';
+                            widgetbioTop = dynamicInCompleteText ?? `${notCompleteText} <b>${biometricText}.</b> ${seeBellowText}`;
                         }
                         if(IsDeadLine==1 && Is_Completed < Is_Required && Date2Comp!='' && Date1Comp!=''){
                             widgetbioTopColor = regionColor['Very High risk'];
-                            widgetbioTop = 'You have not completed all the required steps, nor have you met the outcomes to qualify for the <b>Healthy Biometrics Program.</b> (See below)';
+                            widgetbioTop = dynamicInCompleteText ?? `${notCompleteText} <b>${biometricText}.</b> ${seeBellowText}`;
                         }
                         let widgetbiotmpdate = await this.orgBiometricService.findOne(`orgBiometric.company_id = ${orgId}`,{ is_optional: 'ASC' });
                         widgetbioheader[1]['Title']= 'Complete Test 1 <br>(Results need to be from ' + this.commonDateService.getTodayDate(widgetbiotmpdate['test1_start_date']).format('MM/DD/YYYY') + ' - ' + this.commonDateService.getTodayDate(widgetbiotmpdate['test1_end_date']).format('MM/DD/YYYY')+ ')';
@@ -1606,7 +1618,7 @@ export class UserDashboardController {
                             widgetbioheader[2]['Color'] = regionColor['Very High risk'];
                         }
                         if(Date2Comp!='' && Date1Comp!='' && (widgetbioheader[2]['Color']==regionColor['Very High risk'] || widgetbioheader[1]['Color']==regionColor['Very High risk'])){
-                            widgetbioTop = 'You have completed all of the required steps, however you have not met the outcomes to qualify for the <br>Healthy Biometrics Program. (See Below)';
+                            widgetbioTop = `${completeHalfText} <br>${biometricText}. ${seeBellowText}`;
                         }
                         if(Date2Comp!='' && widgetbioheader[2]['Color']==regionColor['Very High risk']){
                             widgetbioheader[2]['Status'] = 'Completed On Test 2 ' + this.commonDateService.getTodayDate(Date2Comp).format('MM/DD/YYYY');

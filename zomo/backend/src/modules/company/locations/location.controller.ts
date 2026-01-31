@@ -454,6 +454,8 @@ export class LocationController {
                     }
                 }));
             }
+
+            /*console.log('EmailCampaign Locations =>', result.map((l) => ({ id: l.id, location_name: l.location_name })));*/
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
                 success: 1,

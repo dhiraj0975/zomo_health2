@@ -199,6 +199,10 @@ export class CommunicationEmailController {
                                 is_important: statusInfo.important,
                                 total_count: statusInfo.count,
                             };
+                            item.status = statusInfo.read;
+                            item.is_readed = statusInfo.read;
+                            item.is_important = statusInfo.important;
+                            item.total_count = statusInfo.count;
                             item.created_date_copy = item.created_date;
                             const addedDate = this.commonDateService.DateTimeFormat(
                                 item.created_date,
@@ -775,6 +779,7 @@ export class CommunicationEmailController {
                     );
             const updateEmail: any[] = [];
             const updateEmailTo: any[] = [];
+            let message = 'SUCCESS';
             const getUserSentIds = async () => {
                 if (!baseIds.length) return [];
                 const records = await this.communicationEmailService.listRecord(
@@ -835,6 +840,8 @@ export class CommunicationEmailController {
                         if (inboxRecords.length) {
                             addToEmailTo(inboxRecords, { status });
                         }
+                        message = action === 'mark_as_read' ?
+                            "MARKED_AS_READ" : "MARKED_AS_UNREAD";
                         break;
                     }
                     case 'add_star':
@@ -844,6 +851,8 @@ export class CommunicationEmailController {
                         if (inboxRecords.length) {
                             addToEmailTo(inboxRecords, { is_important: isImportant });
                         }
+                        message = action === 'add_star' ?
+                            "ADDED_STAR" : "REMOVED_STAR";
                         break;
                     }
                     case 'mark_as_spam': {
@@ -851,6 +860,7 @@ export class CommunicationEmailController {
                         if (inboxRecords.length) {
                             addToEmailTo(inboxRecords, { is_spam: 1, is_trash: 0 });
                         }
+                        message = "MARKED_AS_SPAM";
                         break;
                     }
                     case 'move_to_trash': {
@@ -858,6 +868,7 @@ export class CommunicationEmailController {
                         if (inboxRecords.length) {
                             addToEmailTo(inboxRecords, { is_spam: 0, is_trash: 1 });
                         }
+                        message = "MOVED_TO_TRASH";
                         break;
                     }
                     case 'move_to_inbox': {
@@ -865,6 +876,7 @@ export class CommunicationEmailController {
                         if (inboxRecords.length) {
                             addToEmailTo(inboxRecords, { is_trash: 0, is_spam: 0 });
                         }
+                        message = "MOVED_TO_INBOX";
                         break;
                     }
                     case 'permanent_delete': {
@@ -872,6 +884,7 @@ export class CommunicationEmailController {
                         if (inboxRecords.length) {
                             addToEmailTo(inboxRecords, { is_trash: 2 });
                         }
+                        message = "PERMANENTLY_DELETED";
                         break;
                     }
                     case 'remove_draft': {
@@ -879,9 +892,11 @@ export class CommunicationEmailController {
                         if (inboxRecords.length) {
                             addToEmailTo(inboxRecords, { status: 2 });
                         }
+                        message = "DRAFT_REMOVED";
                         break;
                     }
                     default:
+                        message = "SUCCESS";
                         break;
                 }
             }
@@ -905,13 +920,14 @@ export class CommunicationEmailController {
                     emailTo
                 );
             }
-            let result = await this.translatorService.frontendReadTranslation(req.lang, "SUCCESS")
+            let result = await this.translatorService.frontendReadTranslation(req.lang, "SUCCESS");
+            message = await this.translatorService.frontendReadTranslation(req.lang, message);
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
                 success: 1,
                 error: 0,
                 data: result,
-                message: 'success',
+                message: message,
             });
         } catch (error) {
             this.activityLogService.error_log(req.tokenUser?.id, req?.originalUrl, error?.message, error, req);
@@ -931,13 +947,13 @@ export class CommunicationEmailController {
     @Post('draft-email')
     @UseInterceptors(
         FileFieldsInterceptor([
-            { 
-                name: 'attachments', 
-                maxCount: 5 
+            {
+                name: 'attachments',
+                maxCount: 5
             },
         ], {
-            limits: { 
-                fileSize: appConstant.FILE_SIZE_10MB 
+            limits: {
+                fileSize: appConstant.FILE_SIZE_10MB
             },
             storage: diskStorage({
                 destination: `${appConstant.EMAIL_ATTACHMENT_PATH}`,
@@ -949,6 +965,19 @@ export class CommunicationEmailController {
     )
     async draftEmail(@Req() req: Request, @Res() res: Response, @Body() postData: DraftEmailInput, @UploadedFiles() files: { attachments?: Express.Multer.File[] }) {
         try {
+            if (postData?.type && postData?.type == 'send_email') {
+                if (
+                    !postData?.subject ||
+                    !postData?.description ||
+                    !postData?.email_to ||
+                    postData?.email_to.length == 0 ||
+                    postData?.id === undefined ||
+                    postData?.id === null ||
+                    postData?.id == 0
+                ) {
+                    throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_REQUIRED_PARAM_MISSING"));
+                }
+            }
             let user = req.tokenUser;
             let userId = user?.id;
             let subject = postData?.subject || '';
@@ -959,12 +988,12 @@ export class CommunicationEmailController {
                 from_user_id: userId,
                 subject: subject,
                 email_body: description,
-                is_send: 1,
+                is_send: 0,
                 is_spam: 0,
                 is_important: 0,
                 is_attachment: 0,
                 is_trash: 0,
-                status: 1,
+                status: 0,
             };
             if (files && files.attachments && files.attachments.length > 0) {
                 draftEmailData.is_attachment = 1;
@@ -973,16 +1002,19 @@ export class CommunicationEmailController {
                 let savedEmailData = await this.communicationEmailService.save(draftEmailData);
                 mailId = savedEmailData?.['id'];
             } else {
+                if(postData?.type && postData?.type == 'send_email'){
+                    draftEmailData.is_send = 1;
+                }
                 await this.communicationEmailService.update({ id: mailId }, draftEmailData);
             }
             if (emailTo && emailTo.length > 0) {
                 let oldEmailToRecord = await this.communicationEmailToService.listRecord(
-                    { 
-                        mail_id: mailId 
-                    }, 
-                    null, 
-                    { 
-                        id: true 
+                    {
+                        mail_id: mailId
+                    },
+                    null,
+                    {
+                        id: true
                     }
                 );
                 let oldEmailTo = oldEmailToRecord.map(x => x.user_id);
@@ -1007,6 +1039,17 @@ export class CommunicationEmailController {
                     };
                     await this.communicationEmailToService.save(emailToData);
                 }
+                if(postData?.type && postData?.type == 'send_email'){
+                    await this.communicationEmailToService.update(
+                        {
+                            mail_id: mailId,
+                            user_id: In(newEmailTo),
+                        },
+                        {
+                            is_send: 1,
+                        }
+                    );
+                }
             }
             else {
                 await this.communicationEmailToService.delete({ mail_id: mailId });
@@ -1014,8 +1057,8 @@ export class CommunicationEmailController {
             if (files && files.attachments && files.attachments.length > 0) {
                 let emailAttachmentTypes = await this.emailAttachmentTypesService.listRecord({});
                 let oldAttachment = await this.emailAttachmentsService.listRecord(
-                    { 
-                        mail_id: mailId 
+                    {
+                        mail_id: mailId
                     }
                 );
                 if (oldAttachment.length) {

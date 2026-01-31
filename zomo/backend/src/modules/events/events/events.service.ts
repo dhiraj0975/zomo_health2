@@ -79,7 +79,7 @@ export class EventService {
           let userBooking = await this.readReplicaUserBookingRepository
           .createQueryBuilder('bookings') 
           .innerJoinAndMapOne('bookings.user',tableConstant.TBL_USERS,'user','user.id = bookings.ev_user_id AND user.status != 2')           
-          .where(`bookings.ev_events_id = ${element.id} AND bookings.status != 2`)
+          .where(`bookings.ev_events_id = ${element.id} AND bookings.status = 1`)
           // added for to show single entry for user
           // .groupBy('bookings.ev_user_id')
           .getMany();  

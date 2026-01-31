@@ -219,7 +219,9 @@ export class EventSlotsTimingsService {
                 created_by: 1, // Replace this with the appropriate user ID
             }));
             if (slotsToSave.length > 0) {
-                await this.writeReplicaEventSlotsTimingsRepository.save(slotsToSave);
+                for (let i = 0; i < slotsToSave.length; i += 2000) {
+                    await this.writeReplicaEventSlotsTimingsRepository.insert( slotsToSave.slice(i, i + 2000) );
+                }
             }
             return
         }catch (error) {

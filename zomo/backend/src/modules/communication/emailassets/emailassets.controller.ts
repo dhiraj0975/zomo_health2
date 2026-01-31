@@ -40,6 +40,10 @@ export class EmailAssetsController {
         try {
             const role_id = req.tokenUser?.role_id;
             const companyId = req.tokenUser?.org_id;
+            const page = Number(postData?.page) || 1;
+            const limit = Number(postData?.limit) || 10;
+            const order = (postData?.order || 'DESC').toString().toUpperCase();
+            const orderBy = (postData?.order_by || 'LastModified').toString();
             let prefixs = [];
             if(role_id === 11){
                 prefixs = ['zhOrgImg/11/'+companyId];
@@ -54,22 +58,38 @@ export class EmailAssetsController {
                     ];
                 }
             }
-            const data = await lastValueFrom(this.commonMicroservice.send({cmd: 'list_assests'}, {maxKeys: 20, prefixes: prefixs, continuationToken: postData?.continuationToken}));
-            const sortedAssets = (data?.datas || []).sort(
-                (a, b) =>
-                    new Date(b.LastModified).getTime() -
-                    new Date(a.LastModified).getTime()
-            );
-            const formattedAssets = sortedAssets.map(item => ({
+            const data = await lastValueFrom(this.commonMicroservice.send({ cmd: 'list_assests' },{ maxKeys: 100, prefixes: prefixs, continuationToken: postData?.continuationToken }));
+            const assets = (data?.datas || []).sort((a, b) => {
+                if (orderBy === 'Key' || orderBy === 'name') {
+                    const keyA = (a?.Key || '').toString();
+                    const keyB = (b?.Key || '').toString();
+                    return order === 'ASC' ? keyA.localeCompare(keyB) : keyB.localeCompare(keyA);
+                }
+                const timeA = new Date(a?.LastModified || 0).getTime();
+                const timeB = new Date(b?.LastModified || 0).getTime();
+                return order === 'ASC' ? timeA - timeB : timeB - timeA;
+            });
+            const formattedAssets = assets.map(item => ({
                 ...item,
                 url: `${S3COMMUNICATION_URL}/${item.Key}`,
             }));
-            return res.status(HttpStatus.CREATED).json({
-                statusCode: 201,
+            const total = formattedAssets.length;
+            const safeLimit = limit > 0 ? limit : total || 1;
+            const pages = Math.max(1, Math.ceil((total || 1) / safeLimit));
+            const safePage = Math.min(Math.max(page, 1), pages);
+            const start = (safePage - 1) * safeLimit;
+            const end = start + safeLimit;
+            const list = formattedAssets.slice(start, end);
+            return res.status(HttpStatus.OK).json({
+                statusCode: 200,
                 success: 1,
                 error: 0,
                 data: {
-                    datas: formattedAssets,
+                    list,
+                    page: safePage,
+                    pages,
+                    limit: safeLimit,
+                    total,
                 },
                 message: 'Assets successfully uploaded',
             });

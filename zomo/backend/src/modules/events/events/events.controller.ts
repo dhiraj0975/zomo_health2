@@ -798,14 +798,14 @@ export class EventController {
             }
             if (postData?.org_id) {
                 where += ` ${where.length ? 'AND' : ''} event.organization_id = ${postData?.org_id}`;
-                let globaleventList = await this.eventGlobalService.listRecord(
+                let globalEventList = await this.eventGlobalService.listRecord(
                     ["ge.id", "ge.event_id", "ge.orderid", "ge.status"],
                     `ge.organization_id In(${postData?.org_id}) and ge.status != 2 and ev.status != 2 ${postData?.event_type == 0 ? `AND ev.event_type in(0,1)` : postData?.event_type ? `AND ev.event_type = ${postData?.event_type}` : ``}`,
                     null,
                     [tableConstant.EVENTS.TBL_EV_EVENTS]
                 );
-                if(globaleventList.length){
-                    where += ` OR event.id IN(${globaleventList.map((ele) => ele.event_id).toString()})`;
+                if(globalEventList.length){
+                    where += ` OR event.id IN(${globalEventList.map((ele) => ele.event_id).toString()})`;
                 }
 
             }
@@ -1364,11 +1364,11 @@ export class EventController {
             );
             eventData = <any>(await this.commonArrayService.formatToDto(EventDto, eventData, req.lang));
 
-            let globaleventList = await this.eventGlobalService.listRecord(
+            let globalEventList = await this.eventGlobalService.listRecord(
                 ["ge.id", "ge.event_id", "ge.orderid", "ge.status"],
                 `ge.organization_id In(${postData?.org_id}) and ge.status != 2`
             );
-            globaleventList = globaleventList.reduce((acc, item) => {
+            globalEventList = globalEventList.reduce((acc, item) => {
                 acc.set(item.event_id, item);
                 return acc;
             }, new Map());
@@ -1376,11 +1376,11 @@ export class EventController {
             let counter = 1;
             for (let i = eventData.length - 1; i >= 0; i--) {
                 const value = eventData[i];
-                if (value.organization_id === 0 && !globaleventList.has(value.id)) {
+                if (value.organization_id === 0 && !globalEventList.has(value.id)) {
                     eventData.splice(i, 1);
                 } else {
                     if (value.organization_id === 0) {
-                        value.orderid = globaleventList.get(value.id).orderid;
+                        value.orderid = globalEventList.get(value.id).orderid;
                     }
                     value.listorder = value?.orderid || counter++;
                     value.TYPE = 'event';

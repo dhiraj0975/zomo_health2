@@ -1076,6 +1076,44 @@ export class UserController {
             const order = postData && postData?.order ? postData?.order : 'DESC';
             const orderBy = postData && postData?.order_by ? postData?.order_by.includes('user') ? postData?.order_by : `user.${postData?.order_by}` : 'user.id';
             let where = `user.status = 1`;
+            /* type = 3 for email user listing */
+            if (postData?.type == 3) {
+                let roleId = req.tokenUser?.role_id;
+                let userId = req.tokenUser?.id;
+                let memberShipCode = '';
+                if (roleId == appConstant.ROLE.GLOBALCOACH) {
+                    // remain
+                } else if (roleId == appConstant.ROLE.COACH) {
+                    // remain
+                } else {
+                    memberShipCode = req.tokenUser?.membership_code;
+                }
+                if (postData?.role_id) {
+                    where += ` AND user.role_id IN (${postData?.role_id})`;
+                } else {
+                    where += ` AND user.role_id NOT IN ("2","11","19","20")`;
+                }
+                where += ` AND user.role_id != ${appConstant.ROLE.ADMIN} AND user.id != ${userId} AND ( user.role_id IN ("20", "19") OR user.membership_code IN ('${memberShipCode}') )`;
+                if (postData?.search_str) {
+                    where += this.commonService.generateDynamicSearchQuery(postData?.search_str, ['full_name', 'email', 'username', 'code']);
+                }
+                let resultedData: any = await this.userService.usersList(
+                    where,
+                    ['id', 'first_name', 'last_name', 'username', 'CONCAT(first_name, " ", last_name) AS full_name', 'email', 'code'],
+                    { [orderBy]: order }
+                );
+                const resultDataFinal = resultedData.map(user => ({
+                    id: user.id,
+                    full_name: `${user.full_name} :: ${user.email}`,
+                }));
+                return res.status(HttpStatus.OK).json({
+                    statusCode: 200,
+                    success: 1,
+                    error: 0,
+                    data: resultDataFinal,
+                    message: 'success',
+                });
+            }
             /* org wise user listing only specific field and table */
             if (postData?.type == 2) {
                 if (postData?.org_id) {
@@ -1519,6 +1557,8 @@ export class UserController {
             }
             const uniqueInsurancePlans = new Set();
             const filteredData = recordDetails.filter(item => !uniqueInsurancePlans.has(item.insurance_plan_name) && uniqueInsurancePlans.add(item.insurance_plan_name));
+            
+            /*console.log('EmailCampaign HealthPlans =>', filteredData.map((e) => e.insurance_plan_name));*/
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
                 success: 1,

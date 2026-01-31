@@ -1170,6 +1170,7 @@ export class UserEventController {
             let user = Object.create(req.tokenUser);
             let month = await this.categoriesCommon(postData?.id, postData?.multipleSet, 'months', null, null, req);
             let allslots = [];
+            const translatedMonth = await this.commonDateService.readTranslation(req.lang, `/LC_MESSAGES/Common/Month/static.json`);
             if (user?.company?.id == 1131 && postData?.id == 186) {
                 month = month.filter(sub => sub.months <= 11);
             }
@@ -1178,7 +1179,7 @@ export class UserEventController {
                 for (let mValue of month) {
                     const slotdate = this.commonDateService.getTodayDate(mValue.est_slotdate);
                     let monthname = slotdate.format('MMMM');
-                    monthname = await this.translatorService.frontendReadTranslation(req.lang, monthname, `/LC_MESSAGES/Common/Month`, `static`);
+                    monthname = translatedMonth.find(item => item.type == monthname)?.['translate'];
                     allslots.push({
                         ev_slots_id: mValue.est_ev_slots_id,
                         event_id: mValue.est_ev_events_id,
@@ -1191,7 +1192,7 @@ export class UserEventController {
                 for (let mValue of month) {
                     const slotdate = this.commonDateService.getTodayDate(mValue.est_slotdate);
                     let monthname = slotdate.format('MMMM');
-                    monthname = await this.translatorService.frontendReadTranslation(req.lang, monthname, `/LC_MESSAGES/Common/Month`, `static`);
+                    monthname = translatedMonth.find(item => item.type == monthname)?.['translate'];
                     allslots.push({
                         ev_slots_id: mValue.est_ev_slots_id,
                         event_id: mValue.est_ev_events_id,
@@ -1464,40 +1465,47 @@ export class UserEventController {
     @Post('get-slot-date-list')
     async getSlotsListReport(@Req() req: Request, @Res() res: Response, @Body() postData: any) {
         try {
-            if (!postData?.id) {
+            let user = req.tokenUser;
+            if (!postData?.id && (user?.role_id != appConstant.ROLE.ORGADMIN && user?.role_id != appConstant.ROLE.ADMIN )) {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_REQUIRED_PARAM_MISSING"));
             }
             let multipleSet = postData['multipleSet'];
             let months = [];
-            for(let id of postData?.id?.split(',')){
-                let event_id = id;
-                let monthData = await this.featchMonthFromId(req, {id: event_id, multipleSet: postData?.multipleSet});
-                for(let month of monthData){   
-                    let monthValue = month?.['month_id'];
-                    let monthList = await this.categoriesCommon(event_id, multipleSet, 'date', monthValue, null, req);
-                    if(monthList){
-                        months = months.concat(monthList);
-                    }
-                }
-            }
             let result = [];
-            if (months && months.length) {
-                for (let mValue of months) {
-                    const slotDate = this.commonDateService.getTodayDate(mValue.est_slotdate);
+            const translatedMonth = await this.commonDateService.readTranslation(req.lang, `/LC_MESSAGES/Common/Month/static.json`);
+            if(user?.role_id == appConstant.ROLE.ORGADMIN || user?.role_id == appConstant.ROLE.ADMIN){
+                let where = `es.status != 2`;
+                if(!postData?.id){
+                    let globalEventList = await this.eventGlobalService.listRecord(["ge.id", "ge.event_id", "ge.orderid"], `ge.organization_id = ${postData?.org_id ?? user?.org_id} and ge.status != 2`,);
+                    let eventcondition = `event.organization_id IN(0,${postData?.org_id ?? user?.org_id})`;
+                    if(globalEventList.length){
+                        eventcondition = `(${eventcondition} OR event.id IN(${globalEventList.map(ele => ele.event_id).join(',')}))`;
+                    }
+                    let eventData = await this.eventService.eventsList(['event.id'], `${eventcondition} AND event.status != 2`);
+                    if(eventData.length){
+                        postData.id = eventData.map(ele => ele.id).join(',');
+                    } 
+                }
+                if(postData?.id){
+                    where += ` AND es.ev_events_id in(${postData?.id})`;
+                }
+                let slotData = await this.eventSlotsService.listRecord(where, null, ['es']);
+                for (let mValue of slotData) {
+                    const slotDate = this.commonDateService.getTodayDate(mValue.start_date);
                     let day = slotDate.date();
                     let month = slotDate.format('MM');
                     let year = slotDate.format('YYYY');
                     let monthname = slotDate.format('MMMM');
-                    monthname = await this.translatorService.frontendReadTranslation(req.lang, monthname, `/LC_MESSAGES/Common/Month`, `static`);
-                    let checkExist = result?.find(r => r.Dayid === slotDate.format('YYYY-MM-DD'));
+                    monthname = translatedMonth.find(item => item.type == monthname)?.['translate'];
+                    let checkExist = result?.find(r => r.Daytime === slotDate.format('YYYY-MM-DD') + ' ' + mValue.start_time);
                     if(!checkExist){
                         result.push({
                             id: slotDate.format('MM-DD-YYYY'),
                             multipleSet,
-                            Slottiming_id: mValue.est_ev_slots_id,
-                            event_id: mValue.est_ev_events_id,
-                            slotid: mValue.est_ev_slots_id,
+                            event_id: mValue.ev_events_id,
+                            slotid: mValue.id,
                             Dayid: slotDate.format('YYYY-MM-DD'),
+                            Daytime: slotDate.format('YYYY-MM-DD hh:mm:ss'),
                             month_id: month,
                             month: monthname,
                             date: `${day} ${monthname.substring(0, 3)} ${year}`
@@ -1505,6 +1513,44 @@ export class UserEventController {
                     }
                 };
             }
+            if(user?.role_id == appConstant.ROLE.REGISTERED || user?.role_id == appConstant.ROLE.SPOUSE){
+                for(let id of postData?.id?.split(',')){
+                    let event_id = id;
+                    let monthData = await this.featchMonthFromId(req, {id: event_id, multipleSet: postData?.multipleSet});
+                    for(let month of monthData){   
+                        let monthValue = month?.['month_id'];
+                        let monthList = await this.categoriesCommon(event_id, multipleSet, 'date', monthValue, null, req);
+                        if(monthList){
+                            months = months.concat(monthList);
+                        }
+                    }
+                }
+                if (months && months.length) {
+                    for (let mValue of months) {
+                        const slotDate = this.commonDateService.getTodayDate(mValue.est_slotdate);
+                        let day = slotDate.date();
+                        let month = slotDate.format('MM');
+                        let year = slotDate.format('YYYY');
+                        let monthname = slotDate.format('MMMM');
+                        monthname = translatedMonth.find(item => item.type == monthname)?.['translate'];
+                        let checkExist = result?.find(r => r.Dayid === slotDate.format('YYYY-MM-DD'));
+                        if(!checkExist){
+                            result.push({
+                                id: slotDate.format('MM-DD-YYYY'),
+                                multipleSet,
+                                Slottiming_id: mValue.est_ev_slots_id,
+                                event_id: mValue.est_ev_events_id,
+                                slotid: mValue.est_ev_slots_id,
+                                Dayid: slotDate.format('YYYY-MM-DD'),
+                                month_id: month,
+                                month: monthname,
+                                date: `${day} ${monthname.substring(0, 3)} ${year}`
+                            });
+                        }
+                    };
+                }
+            }
+            
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
                 success: 1,

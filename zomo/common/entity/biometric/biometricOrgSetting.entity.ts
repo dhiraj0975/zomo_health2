@@ -41,6 +41,8 @@ export class BiometricOrgSettingEntity extends BaseEntity {
     is_complete_message: string;
     @Column({ type: 'text', nullable: true })
     is_incomplete_message: string;
+    @Column({ type: 'text', nullable: true })
+    is_ontrack_message: string;
     @Column({ type: 'int', default: 1 })
     status: number;
     @CreateDateColumn({ nullable: true, default: () => 'CURRENT_TIMESTAMP' })

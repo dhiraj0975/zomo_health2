@@ -412,6 +412,9 @@ export class AutoReportSettingController {
                             ] as const;
                             const filtered: Record<string, any> = {};
                             let hasData = false;
+                            if(parsed['event_list']?.length){
+                                parsed['event_list'] = await this.eventService.eventsListRecord(["event.id AS id", "event.event_name AS event_name"], `event.status = 1 AND event.id IN (${parsed['event_list'].map(ele=>Number(ele)).join(',')})`);
+                            }
                             relevantFields.forEach(field => {
                                 if (field in parsed) {
                                     filtered[field] = parsed[field] ?? null;
@@ -1279,7 +1282,9 @@ export class AutoReportSettingController {
                 }
                 const otherOptions = {
                     event_dates: postData?.event_dates,
-                    event_type: postData?.event_type
+                    deviced_type: postData?.deviced_type,
+                    event_type: postData?.event_type,
+                    event_list: postData?.event_list,
                 };
                 reportData['otheroptions'] = JSON.stringify(otherOptions);
             }

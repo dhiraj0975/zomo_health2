@@ -60,7 +60,6 @@ export class AuthController {
             if(userDetails?.preferred_language?.alias){
                 req.lang = userDetails?.preferred_language?.alias;
             }
-             console.log('userDetails.role_id', userDetails);
             if(userDetails && userDetails.status != 1){
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "The login/password combination was not found"));
             }

@@ -15,6 +15,7 @@ export class BiometricOrgSettingDto {
     @Expose() is_learn_more: string;
     @Expose() is_complete_message: string;
     @Expose() is_incomplete_message: string;
+    @Expose() is_ontrack_message: string;
     @Expose() status: number;
     @Expose()
     created: string

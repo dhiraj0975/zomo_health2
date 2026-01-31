@@ -503,6 +503,8 @@ export class CompanyController {
                     ele.state = stateData.find(ele => ele.statecode == ele?.state || ele.state == ele?.state);
                 }
             }));
+
+            console.log('EmailCampaign Orgs =>', result.map((c) => ({ id: c.id, company_name: c.company_name })));
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
                 success: 1,

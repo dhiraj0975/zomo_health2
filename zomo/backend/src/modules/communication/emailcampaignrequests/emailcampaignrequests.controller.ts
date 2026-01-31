@@ -29,6 +29,8 @@ import { CampaignService } from 'src/modules/campaign/campaign/campaign.service'
 import { CampaignRewardService } from 'src/modules/campaign/reward/campaignreward.service';
 import { ScheduleChallengeService } from 'src/modules/challenge/schedulechallenge/schedulechallenge.service';
 import { CompanyService } from 'src/modules/company/companies/company.service';
+import { DepartmentService } from 'src/modules/company/departments/department.service';
+import { LocationService } from 'src/modules/company/locations/location.service';
 import { EventService } from 'src/modules/events/events/events.service';
 import { EventGlobalEventsService } from 'src/modules/events/globalevents/globalevents.service';
 import { QuizAssignQuizOrgService } from 'src/modules/quiz/assignquizorgs/assignquizorgs.service';
@@ -53,6 +55,8 @@ export class EmailCampaignRequestsController {
         private readonly translatorService: TranslationService,
         private readonly csvService: CsvService,
         private readonly companyService: CompanyService,
+        private readonly departmentService: DepartmentService,
+        private readonly locationService: LocationService,
         private readonly htmlTagService: HtmlTagService,
         private readonly userService: UserService,
         private readonly scheduleChallengeService: ScheduleChallengeService,
@@ -237,6 +241,32 @@ export class EmailCampaignRequestsController {
                 const modifiedHtml = this.htmlTagService.appendImageToLogoDivs(campaignRequests['template_content'], companyLogo); /* Append image */
                 campaignRequests['template_content'] = modifiedHtml;
             }
+            if (campaignRequests.with_option == 1 && campaignOrgID && campaignOrgID != 0) {
+                campaignRequests['company'] = null;
+                campaignRequests['departments'] = [];
+                campaignRequests['locations'] = [];
+                try {
+                    const whereCompany = `company.deleted = 0 AND company.id = '${campaignOrgID}'`;
+                    const companyDetails = await this.companyService.findOne(whereCompany);
+                    if (companyDetails) {
+                        campaignRequests['company'] = { id: companyDetails.id, company_name: companyDetails.company_name || '' };
+                    }
+                } catch (e) {
+                    this.activityLogService.error_log(req.tokenUser?.id, req?.originalUrl, e?.message, e, req);
+                }
+                try {
+                    const deptList = await this.departmentService.listRecord({ status: 1, company_id: campaignOrgID, deleted: 0 }, { id: 'ASC' }, ['id', 'dept_name']) || [];
+                    campaignRequests['departments'] = (deptList || []).map((d: any) => ({ id: d.id, dept_name: d.dept_name || '' }));
+                } catch (e) {
+                    this.activityLogService.error_log(req.tokenUser?.id, req?.originalUrl, e?.message, e, req);
+                }
+                try {
+                    const locList = await this.locationService.listRecord(['id', 'location_name'], { status: 1, company_id: campaignOrgID, deleted: 0 }, { id: 'ASC' }) || [];
+                    campaignRequests['locations'] = (locList || []).map((l: any) => ({ id: l.id, location_name: l.location_name || '' }));
+                } catch (e) {
+                    this.activityLogService.error_log(req.tokenUser?.id, req?.originalUrl, e?.message, e, req);
+                }
+            }
             let responseData = {};
             if(campaignRequests.with_option == '2' && campaignRequests.group_id && campaignRequests.group_id !== null && campaignRequests.group_id !== undefined){
                 if(nextCampaignId !== null && prevCampaignId !== null){
@@ -390,11 +420,11 @@ export class EmailCampaignRequestsController {
                         eligibility : (req.body.eligibility && req.body.eligibility !== null && req.body.eligibility !== undefined) ? req.body.eligibility : "7",
                     };
                     let getTestUser = await this.userFileterData('testUser', postData?.for_org_id, orgFilertDatas);
-                    if(!getTestUser ||
-                        getTestUser === null ||
-                        getTestUser === undefined ||
-                        (Array.isArray(getTestUser) && getTestUser.length === 0) ||
-                        (typeof getTestUser === 'object' && Object.keys(getTestUser).length === 0)){
+                    // console.log('getTestUser', getTestUser);
+                    // console.log('orgFilertDatas', orgFilertDatas);
+                    // console.log('postData', postData);
+                    // return;
+                    if(!getTestUser || getTestUser === null || getTestUser === undefined || (Array.isArray(getTestUser) && getTestUser.length === 0) || (typeof getTestUser === 'object' && Object.keys(getTestUser).length === 0)){
                         throw new Error('Your filter according user not found.');
                     }
                     getTestUser = await this.convertToIndexedObject(getTestUser);
@@ -948,9 +978,7 @@ export class EmailCampaignRequestsController {
             const withOption = CheckRequest['with_option'];
 
             let accessStatus = 0;
-            if(!campRoleIdArr.includes(cam_role_id) || (loged_role_id == 11 && cam_org_id != loged_org_id)){
-                accessStatus = 1;
-            }
+            if(!campRoleIdArr.includes(cam_role_id) || (loged_role_id == 11 && cam_org_id != loged_org_id)){ accessStatus = 1; }
 
             if(accessStatus == 1){
                 if (files && files.length > 0) {
@@ -2898,6 +2926,7 @@ export class EmailCampaignRequestsController {
                 }else{
                     whereCon += ` AND user.role_id IN (2,16) `;
                 }
+                // console.log('whereCon',whereCon);
                 return await this.userService.userFilerForCampaign(type, whereCon, pageid, limit);
             }else if(type == 'GroupTestUser'){
                 let OrgIdArr = con_id.map(item => `'${item}'`);

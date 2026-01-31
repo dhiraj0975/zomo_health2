@@ -353,12 +353,12 @@ export class FrontService {
         });
     }
     async assessmentResultsExists(condition: any) {
-        return this.readReplicaAssessmentResultsRepository.exist({
+        return this.readReplicaAssessmentResultsRepository.exists({
             where: condition
         });
     }
     async assessmentSettingsExists(condition: any) {
-        return this.readReplicaAssessmentSettingsRepository.exist({
+        return this.readReplicaAssessmentSettingsRepository.exists({
             where: condition
         });
     }

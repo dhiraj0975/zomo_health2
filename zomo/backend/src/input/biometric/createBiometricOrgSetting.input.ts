@@ -17,6 +17,7 @@ export class CreateBiometricOrgSettingInput {
     @Allow() is_hire_date: string;
     @Allow() is_complete_message: string;
     @Allow() is_incomplete_message: string;
+    @Allow() is_ontrack_message: string;
     @Allow() status: number;
     // @Allow() 
     // setting?: CreateOrgBiometricInput[];
