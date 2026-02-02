@@ -40,56 +40,56 @@ export class EmailAssetsController {
         try {
             const role_id = req.tokenUser?.role_id;
             const companyId = req.tokenUser?.org_id;
-            const page = Number(postData?.page) || 1;
-            const limit = Number(postData?.limit) || 10;
-            const order = (postData?.order || 'DESC').toString().toUpperCase();
-            const orderBy = (postData?.order_by || 'LastModified').toString();
-            let prefixs = [];
-            if(role_id === 11){
-                prefixs = ['zhOrgImg/11/'+companyId];
-            }else{
+            const limit = Math.min(Number(postData?.limit) || 10, 100);
+            const page = Math.max(1, Number(postData?.page) || 1);
+            const order = (postData?.order || 'DESC').toUpperCase() === 'ASC' ? 'ASC' : 'DESC';
+            const orderBy = postData?.order_by || 'LastModified';
+            const searchStr = postData?.search_str ?? postData?.searchstr ?? '';
+            let prefixs: string[] = [];
+            if (Number(role_id) === 11) {
+                prefixs = ['zhOrgImg/11/' + (companyId ?? 0), 'zhGloImg'];
+            } else {
                 prefixs = ['zhGloImg'];
-                if(postData?.searchstr && postData?.searchstr !== ''){
-                    prefixs = [
-                        `zhGloImg/38/0/${postData?.searchstr}`,
-                        `zhGloImg/39/0/${postData?.searchstr}`,
-                        `zhGloImg/40/0/${postData?.searchstr}`,
-                        `zhGloImg/41/0/${postData?.searchstr}`,
-                    ];
+                if (searchStr && String(searchStr).trim() !== '') {
+                    const str = String(searchStr).trim();
+                    prefixs = [`zhGloImg/38/0/${str}`, `zhGloImg/39/0/${str}`, `zhGloImg/40/0/${str}`, `zhGloImg/41/0/${str}`];
                 }
             }
-            const data = await lastValueFrom(this.commonMicroservice.send({ cmd: 'list_assests' },{ maxKeys: 100, prefixes: prefixs, continuationToken: postData?.continuationToken }));
-            const assets = (data?.datas || []).sort((a, b) => {
-                if (orderBy === 'Key' || orderBy === 'name') {
-                    const keyA = (a?.Key || '').toString();
-                    const keyB = (b?.Key || '').toString();
-                    return order === 'ASC' ? keyA.localeCompare(keyB) : keyB.localeCompare(keyA);
-                }
-                const timeA = new Date(a?.LastModified || 0).getTime();
-                const timeB = new Date(b?.LastModified || 0).getTime();
-                return order === 'ASC' ? timeA - timeB : timeB - timeA;
-            });
-            const formattedAssets = assets.map(item => ({
-                ...item,
-                url: `${S3COMMUNICATION_URL}/${item.Key}`,
-            }));
-            const total = formattedAssets.length;
-            const safeLimit = limit > 0 ? limit : total || 1;
-            const pages = Math.max(1, Math.ceil((total || 1) / safeLimit));
-            const safePage = Math.min(Math.max(page, 1), pages);
-            const start = (safePage - 1) * safeLimit;
-            const end = start + safeLimit;
-            const list = formattedAssets.slice(start, end);
-            return res.status(HttpStatus.OK).json({
-                statusCode: 200,
+            const needTotal = !postData?.continuationToken;
+            const data = await lastValueFrom(
+                this.commonMicroservice.send(
+                    { cmd: 'list_assests' },
+                    { maxKeys: limit, prefixes: prefixs, continuationToken: postData?.continuationToken ?? null, returnTotal: needTotal }
+                ),
+                { defaultValue: { datas: [], nextContinuationToken: null, total: null } }
+            );
+            const sortKey = orderBy === 'id' ? 'Key' : (orderBy === 'LastModified' || orderBy === 'Key' || orderBy === 'Size' ? orderBy : 'LastModified');
+            const list = (data?.datas || [])
+                .filter((item: any) => item?.Key)
+                .sort((a: any, b: any) => {
+                    let va: any = a[sortKey];
+                    let vb: any = b[sortKey];
+                    if (sortKey === 'LastModified') {
+                        va = new Date(va || 0).getTime();
+                        vb = new Date(vb || 0).getTime();
+                    }
+                    return order === 'ASC' ? (va < vb ? -1 : va > vb ? 1 : 0) : (va > vb ? -1 : va < vb ? 1 : 0);
+                });
+            const formattedList = list.map((item: any) => ({ ...item, url: `${S3COMMUNICATION_URL}/${item.Key}` }));
+            return res.status(HttpStatus.CREATED).json({
+                statusCode: 201,
                 success: 1,
                 error: 0,
                 data: {
-                    list,
-                    page: safePage,
-                    pages,
-                    limit: safeLimit,
-                    total,
+                    list: formattedList,
+                    datas: formattedList,
+                    limit,
+                    page,
+                    total: data?.total ?? null,
+                    order,
+                    order_by: orderBy,
+                    search_str: searchStr,
+                    nextContinuationToken: data?.nextContinuationToken ?? null,
                 },
                 message: 'Assets successfully uploaded',
             });
@@ -323,10 +323,7 @@ export class EmailAssetsController {
             const role_id = req.tokenUser?.role_id;
             const optionType = postData?.optionType;
             const continuationToken = postData?.continuationToken;
-            let companyId = req.tokenUser?.org_id;
-            if(companyId){
-                companyId = 0;
-            }
+            const companyId = req.tokenUser?.org_id ?? 0;
             let folderPrefix = ['zhGloImg'];
             if(ImageType === 'icon'){
                 if(optionType === 'global'){
