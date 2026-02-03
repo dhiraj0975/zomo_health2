@@ -39,6 +39,8 @@ export class ThemeSettingsEntity extends BaseEntity {
     progress_very_high_color: string;
     @Column('varchar', { length: 50, nullable: true, default: '#209985' })
     table_color: string;
+    @Column('varchar', { length: 50, nullable: true, default: '#F1F7F8' })
+    background_color: string;
     @Column('integer', { nullable: true, default: 0 })
     enable_theme_mode: number;
 

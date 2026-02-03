@@ -22,9 +22,8 @@ import * as path from 'path';
 import { lastValueFrom } from "rxjs";
 import { CompanyService } from 'src/module/company/company.service';
 import { UserService } from 'src/module/user/user.service';
-import { Between, In, Not, Raw, Repository } from 'typeorm';
+import { In, Not, Raw, Repository } from 'typeorm';
 import { CronCommonService } from "../../../common";
-const S3_URL = process.env.S3_URL_PROD;
 import {
     assessmentOptionsInterface, NoOfRisk, ReportRow, RiskCalculator,
     RiskCounter, RiskLevel, ShowResultType
@@ -44,6 +43,7 @@ import { AssessmentService } from "../../healthassessment/assessments.service";
 import { FtBiometricsService } from "../../tracker";
 import { BiometricsService } from "../biometrics/biometrics.service";
 import { healthReportInput } from "./inputs";
+const S3_URL = process.env.S3_URL_PROD;
 @Injectable()
 export class HealthReportService extends BaseService<HealthReReportEntity> {
     constructor (
@@ -683,7 +683,8 @@ export class HealthReportService extends BaseService<HealthReReportEntity> {
 
     async generateBiometricSummary(
         usersIds: number[],
-        postData: healthReportInput
+        postData: healthReportInput,
+        camp_id = null
     ) {
         try {
             let hraBiometricDate: string = '',hcBiometricDate: string = '',ftBiometricDate: string = '';
@@ -820,7 +821,7 @@ export class HealthReportService extends BaseService<HealthReReportEntity> {
                 let currentYear = await this.commonDateService.DateTimeFormat('now', 'YYYY');
                 let year = await this.commonDateService.DateTimeFormat(postData?.end_date, 'YYYY');
                 for(let user of screeningResults){
-                    ({screeningResult, screeningBiometricResult} = await this.screeningSummary(user,screeningResult, currentYear == year ? screeningBiometricResult : null));
+                    ({screeningResult, screeningBiometricResult} = await this.screeningSummary(user,screeningResult, currentYear == year || camp_id ? screeningBiometricResult : null));
                 }
             }
             let bioTable = await this.commonHealthService.calculateBiometricRisks(screeningResults);

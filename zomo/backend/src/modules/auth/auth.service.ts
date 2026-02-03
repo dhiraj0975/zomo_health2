@@ -176,6 +176,7 @@ export class AuthService {
                 'theme_setting.progress_hra_very_high_color',
                 'theme_setting.progress_very_high_color',
                 'theme_setting.table_color',
+                'theme_setting.background_color',
                 'theme_setting.enable_theme_mode',
                 'preferred_language.id',
                 'preferred_language.title',

@@ -899,24 +899,34 @@ export class QuizAssignQuizOrgController {
                     resultedData[i].end_date = this.commonDateService.getTodayDate(qzStartDate).add(totalDays, 'days').format('YYYY-MM-DD');
                 }
                 let timezoneDetails = await lastValueFrom(this.client.send({ cmd: 'find_postcode' }, { id: resultedData[i].timezone }));
+                if (timezoneDetails) {
+                    timezoneDetails = timezoneDetails[0];
+                }
                 let checkStartDate: any = resultedData[i].start_date + ' ' + resultedData[i].start_time;
                 let checkEndDate: any = resultedData[i].end_date + ' ' + resultedData[i].end_time;
-                checkStartDate = await this.commonDateService.DateTimeFormat(checkStartDate, 'YYYY-MM-DD HH:mm:ss', 'YYYY-MM-DD HH:mm:ss', timezoneDetails['timezone_name'], 1);
-                checkEndDate = await this.commonDateService.DateTimeFormat(checkEndDate, 'YYYY-MM-DD HH:mm:ss', 'YYYY-MM-DD HH:mm:ss', timezoneDetails['timezone_name'], 1);
-                if (resultedData[i].is_timezone && resultedData[i].is_timezone === 1) {
-                    checkStartDate = await this.commonDateService.DateTimeFormat(checkStartDate, 'YYYY-MM-DD HH:mm:ss', 'YYYY-MM-DD HH:mm:ss', userTimeZone, 1);
-                    checkEndDate = await this.commonDateService.DateTimeFormat(checkEndDate, 'YYYY-MM-DD HH:mm:ss', 'YYYY-MM-DD HH:mm:ss', userTimeZone, 1);
+                const startMoment: any = await this.commonDateService.DateTimeFormat(checkStartDate, 'assignTimezone', 'YYYY-MM-DD HH:mm:ss', timezoneDetails?.timezone_name || 'UTC');
+                const endMoment: any = await this.commonDateService.DateTimeFormat(checkEndDate, 'assignTimezone', 'YYYY-MM-DD HH:mm:ss', timezoneDetails?.timezone_name || 'UTC');
+
+                let displayStart = startMoment.clone();
+                let displayEnd = endMoment.clone();
+                if (resultedData[i].is_timezone && resultedData[i].is_timezone === 1 && userTimeZone) {
+                    displayStart = await this.commonDateService.DateTimeFormat(startMoment, 'assignTimezone', undefined, userTimeZone);
+                    displayEnd = await this.commonDateService.DateTimeFormat(endMoment, 'assignTimezone', undefined, userTimeZone);
                 }
-                let checkCurrentDate: any = await this.commonDateService.DateTimeFormat(new Date(), 'YYYY-MM-DD HH:mm:ss', 'YYYY-MM-DD HH:mm:ss', 'UTC', 1)
+
+                const checkStartDateUTC = await this.commonDateService.DateTimeFormat(startMoment, 'utcTimeFormat', 'YYYY-MM-DD HH:mm:ss');
+                const checkEndDateUTC = await this.commonDateService.DateTimeFormat(endMoment, 'utcTimeFormat', 'YYYY-MM-DD HH:mm:ss');
+                const checkCurrentDate: any = await this.commonDateService.DateTimeFormat(new Date(), 'utcTimeFormat', 'YYYY-MM-DD HH:mm:ss');
+
                 resultedData[i].current_date = checkCurrentDate;
                 if (resultedData[i].is_timezone && resultedData[i].is_timezone === 1) {
-                    resultedData[i].start_date = await this.commonDateService.DateTimeFormat(checkStartDate, 'YYYY-MM-DD', 'YYYY-MM-DD HH:mm:ss');
-                    resultedData[i].start_time = await this.commonDateService.DateTimeFormat(checkStartDate, 'HH:mm:ss', 'YYYY-MM-DD HH:mm:ss');
-                    resultedData[i].end_date = await this.commonDateService.DateTimeFormat(checkEndDate, 'YYYY-MM-DD', 'YYYY-MM-DD HH:mm:ss');
-                    resultedData[i].end_time = await this.commonDateService.DateTimeFormat(checkEndDate, 'HH:mm:ss', 'YYYY-MM-DD HH:mm:ss');
+                    resultedData[i].start_date = displayStart.format('YYYY-MM-DD');
+                    resultedData[i].start_time = displayStart.format('HH:mm:ss');
+                    resultedData[i].end_date = displayEnd.format('YYYY-MM-DD');
+                    resultedData[i].end_time = displayEnd.format('HH:mm:ss');
                 }
-                let checkCurrentDateTs: any = await this.commonDateService.DateTimeFormat(checkCurrentDate, 'timestamp');
-                let checkEndDateTs: any = await this.commonDateService.DateTimeFormat(checkEndDate, 'timestamp');
+                const checkCurrentDateTs: any = await this.commonDateService.DateTimeFormat(checkCurrentDate, 'timestamp', 'YYYY-MM-DD HH:mm:ss');
+                const checkEndDateTs: any = await this.commonDateService.DateTimeFormat(checkEndDateUTC, 'timestamp', 'YYYY-MM-DD HH:mm:ss');
                 if (checkCurrentDateTs > checkEndDateTs) {
                     resultedData.splice(i, 1);
                     i--;
@@ -926,7 +936,7 @@ export class QuizAssignQuizOrgController {
                     sqlCompleted[i] = await this.userDetailsService.listRecord(['COUNT(*) AS count'], { ...where, ...{ score: '100.00' } });
                     resultedData[i].balance_retake = resultedData[i].retakes - sqlCountReTake[i][0].count;
                     let score: any = await this.frontService.userDetailsData(['ud.created_date', 'ud.score'], { membership_code: postData?.organization_id, user_id: postData?.user_id, quiz_id: resultedData[i].quiz.id, completed: 'yes' }, { "ud.score": "DESC", "ud.created_date": "DESC" }, null, 'getOne');
-                    let checkStartDateTs: any = await this.commonDateService.DateTimeFormat(checkStartDate, 'timestamp');
+                    let checkStartDateTs: any = await this.commonDateService.DateTimeFormat(checkStartDateUTC, 'timestamp', 'YYYY-MM-DD HH:mm:ss');
                     if (checkCurrentDateTs >= checkStartDateTs) {
                         let scoreCreatedDate: any = await this.commonDateService.DateTimeFormat(score?.created_date, 'timestamp', 'YYYY-MM-DD HH:mm:ss');
                         if (!score || ((score && scoreCreatedDate < checkStartDateTs) || (score && scoreCreatedDate > checkEndDateTs))) {

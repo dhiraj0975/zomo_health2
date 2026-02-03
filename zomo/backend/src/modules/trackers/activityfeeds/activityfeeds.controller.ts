@@ -1,5 +1,5 @@
 import { TeamMembersService } from '@/modules/challenge/teammembers/teammembers.service';
-import { AnctivityFeedsDto, appConstant, CommonArrayService, CommonDateService, CommonService, tableConstant } from '@common-constants';
+import { ActivityFeedsDto, appConstant, CommonArrayService, CommonDateService, CommonService, tableConstant } from '@common-constants';
 import {
     Body,
     Controller,
@@ -60,7 +60,7 @@ export class ActivityFeedsController {
                 postData,
             );
             resultedData['list'] = <any>(
-                await this.commonArrayService.formatToDto(AnctivityFeedsDto, resultedData['list'], req.lang)
+                await this.commonArrayService.formatToDto(ActivityFeedsDto, resultedData['list'], req.lang)
             );
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
@@ -102,17 +102,17 @@ export class ActivityFeedsController {
                 });
             }
             biometricDetails = <any>(
-                await this.commonArrayService.formatToDto(AnctivityFeedsDto, biometricDetails, req.lang)
+                await this.commonArrayService.formatToDto(ActivityFeedsDto, biometricDetails, req.lang)
             );
             let duration = this.commonDateService.formatTime(biometricDetails.duration);
             if(duration){
-                biometricDetails['d_hour'] = duration.split(':')[0]
-                biometricDetails['d_minutes'] = duration.split(':')[1]
-                biometricDetails['d_seconds'] = duration.split(':')[2]
+                biometricDetails['d_hour'] = Number(duration.split(':')[0]);
+                biometricDetails['d_minutes'] = Number(duration.split(':')[1]);
+                biometricDetails['d_seconds'] = Number(duration.split(':')[2]);
             }
             if(biometricDetails.startTime.includes(':')){
-                biometricDetails['s_hour'] = biometricDetails.startTime.split(':')[0];
-                biometricDetails['s_minutes'] = biometricDetails.startTime.split(':')[1];
+                biometricDetails['s_hour'] = Number(biometricDetails.startTime.split(':')[0]);
+                biometricDetails['s_minutes'] = Number(biometricDetails.startTime.split(':')[1]);
             }
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
@@ -400,7 +400,7 @@ export class ActivityFeedsController {
             }
             let resultedData = await this.activityFeedsService.listRecord(where);
             resultedData = <any>(
-                await this.commonArrayService.formatToDto(AnctivityFeedsDto, resultedData, req.lang)
+                await this.commonArrayService.formatToDto(ActivityFeedsDto, resultedData, req.lang)
             );
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,

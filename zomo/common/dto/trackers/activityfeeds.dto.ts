@@ -1,5 +1,5 @@
-import {Expose, Transform, Type} from 'class-transformer';
-export class AnctivityFeedsDto {
+import { Expose } from 'class-transformer';
+export class ActivityFeedsDto {
     @Expose() acId: number;
     @Expose() user_id: number;
     @Expose() userName: string;

@@ -225,7 +225,7 @@ export class MediaCategoryController {
                 postData['img'] = filename;
                 await this.mediaCategoryService.update({id: resultedData['id']},{...postData});
             }
-            /* Side bar media name change check category not exist and name blank then Fitness Video default name show start */
+            /* Side bar media name change check category not exist and name blank then Fitness Video default name show start
             let sideMenuSettingsData = await this.frontService.sideMenuSettingsData(['sms.org_id','sms.datasettingmenu','sms.showmenulist'],{org_id: postData?.org_id, status: '1'});
             if (sideMenuSettingsData?.datasettingmenu && sideMenuSettingsData?.showmenulist) {
                 sideMenuSettingsData.showmenulist =  JSON.parse(sideMenuSettingsData.showmenulist);
@@ -245,7 +245,7 @@ export class MediaCategoryController {
                     }
                 }
             }
-            /* Side bar media name change check category not exist and name blank then Fitness Video default name show end */
+            Side bar media name change check category not exist and name blank then Fitness Video default name show end */
             return res.status(HttpStatus.CREATED).json({
                 statusCode: 201,
                 success: 1,
@@ -313,7 +313,7 @@ export class MediaCategoryController {
                     await this.updateStatus(ele.id, postData.status, req);
                 }
             }
-            /* Side bar media name change check category not exist and name blank then Fitness Video default name show start */
+            /* Side bar media name change check category not exist and name blank then Fitness Video default name show start
             let sideMenuSettingsData = await this.frontService.sideMenuSettingsData(['sms.org_id','sms.datasettingmenu','sms.showmenulist'],{org_id: postData?.org_id, status: '1'});
             if (sideMenuSettingsData?.datasettingmenu && sideMenuSettingsData?.showmenulist) {
                 sideMenuSettingsData.showmenulist =  JSON.parse(sideMenuSettingsData.showmenulist);
@@ -333,7 +333,7 @@ export class MediaCategoryController {
                     }
                 }
             }
-            /* Side bar media name change check category not exist and name blank then Fitness Video default name show end */
+            Side bar media name change check category not exist and name blank then Fitness Video default name show end */
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
                 success: 1,
@@ -443,7 +443,7 @@ export class MediaCategoryController {
                     await this.updateStatus(ele.id, postData.status, req);
                 }
             }
-            /* Side bar media name change check category not exist and name blank then Fitness Video default name show start */
+            /* Side bar media name change check category not exist and name blank then Fitness Video default name show start
             let sideMenuSettingsData = await this.frontService.sideMenuSettingsData(['sms.org_id','sms.datasettingmenu','sms.showmenulist'],{org_id: postData?.org_id, status: '1'});
             if (sideMenuSettingsData?.datasettingmenu && sideMenuSettingsData?.showmenulist) {
                 sideMenuSettingsData.showmenulist =  JSON.parse(sideMenuSettingsData.showmenulist);
@@ -463,7 +463,7 @@ export class MediaCategoryController {
                     }
                 }
             }
-            /* Side bar media name change check category not exist and name blank then Fitness Video default name show end */
+            Side bar media name change check category not exist and name blank then Fitness Video default name show end */
             
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,

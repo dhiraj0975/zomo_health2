@@ -174,6 +174,7 @@ export class EmailCampaignRequestsController {
     @Post('get-one')
     async getOne(@Req() req: Request, @Res() res: Response, @Body() postData: any) {
         try {
+            console.log('[EDIT get-one] API hit - postData:', JSON.stringify(postData));
             if (!postData?.id) {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_REQUIRED_PARAM_MISSING"));
             }
@@ -267,6 +268,26 @@ export class EmailCampaignRequestsController {
                     this.activityLogService.error_log(req.tokenUser?.id, req?.originalUrl, e?.message, e, req);
                 }
             }
+            /* Autofill - organization object for frontend */
+            if (campaignOrgID && campaignOrgID != 0) {
+                if (campaignRequests['company']) {
+                    campaignRequests['organization'] = campaignRequests['company'];
+                } else {
+                    try {
+                        const whereCompany = `company.deleted = 0 AND company.id = '${campaignOrgID}'`;
+                        const companyDetails = await this.companyService.findOne(whereCompany);
+                        campaignRequests['organization'] = companyDetails
+                            ? { id: companyDetails.id, company_name: companyDetails.company_name || '' }
+                            : { id: campaignOrgID, company_name: '' };
+                    } catch (e) {
+                        campaignRequests['organization'] = { id: campaignOrgID, company_name: '' };
+                    }
+                }
+            } else {
+                campaignRequests['organization'] = null;
+            }
+            /* DEBUG: Edit time autofill check - remove after testing */
+            // console.log('[EDIT get-one] id:', postData?.id, '| for_org_id:', campaignOrgID, '| organization:', JSON.stringify(campaignRequests['organization']), '| campaign_title:', campaignRequests['campaign_title']);
             let responseData = {};
             if(campaignRequests.with_option == '2' && campaignRequests.group_id && campaignRequests.group_id !== null && campaignRequests.group_id !== undefined){
                 if(nextCampaignId !== null && prevCampaignId !== null){
@@ -314,6 +335,14 @@ export class EmailCampaignRequestsController {
     )
     async create(@Req() req: Request, @Res() res: Response, @Body() postData: CreateCommunicationEmailCampaignRequestsInput, @UploadedFile() file: Express.Multer.File) {
         try {
+            /* organization object se for_org_id extract - draft save ke time frontend organization bhe rha */
+            if ((!postData.for_org_id || postData.for_org_id === 0) && postData?.organization) {
+                const org = typeof postData.organization === 'string' ? (() => { try { return JSON.parse(postData.organization); } catch { return null; } })() : postData.organization;
+                if (org && (org.id || org.for_org_id)) {
+                    postData.for_org_id = org.id || org.for_org_id;
+                }
+            }
+            console.log('[CREATE] with_option:', postData?.with_option, 'for_org_id:', postData?.for_org_id, 'organization:', postData?.organization, 'campaign_title:', postData?.campaign_title);
             if (!postData?.with_option || !postData?.campaign_title) {
                 if (
                     postData?.with_option === '0' &&
@@ -325,7 +354,8 @@ export class EmailCampaignRequestsController {
                 }
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_REQUIRED_PARAM_MISSING"));
             }
-            if(postData?.with_option === '0' && !file){
+            /* with_option 0: file + organization required */
+            if(postData?.with_option === '0' && (!file || !postData?.for_org_id)){
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_REQUIRED_PARAM_MISSING"));
             }else if(postData?.with_option === '1' && !postData?.for_org_id){
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_REQUIRED_PARAM_MISSING"));
@@ -376,7 +406,7 @@ export class EmailCampaignRequestsController {
                                         postData.file = file.path;
                                         postData.sheet_header = JSON.stringify(MainheaderData);
                                         postData.test_mail_user_data = JSON.stringify(testUserData);
-                                        postData.for_org_id = 0;
+                                        /* for_org_id mat overwrite - organization already extract ho chuka hai */
                                     }
                                 }else{
                                     throw new Error('Data not found.');
@@ -494,6 +524,7 @@ export class EmailCampaignRequestsController {
             }
             postData.created_by = req.tokenUser?.id;
             postData.role_id = req.tokenUser?.role_id;
+            console.log('[CREATE] saving - for_org_id:', postData?.for_org_id, 'with_option:', postData?.with_option);
             const campaignDatas = await lastValueFrom(this.client.send({ cmd: 'create_campaign_requests' }, postData));
             if(campaignDatas && campaignDatas !== null && campaignDatas !== undefined && campaignDatas['identifiers'] && campaignDatas['identifiers'].length > 0){
                 lastInsertId = campaignDatas['identifiers'][0]['id'];
@@ -614,6 +645,13 @@ export class EmailCampaignRequestsController {
     )
     async stepTwo(@Req() req: Request, @Res() res: Response, @Body() postData: CreateCommunicationEmailCampaignRequestsInput, @UploadedFiles() file: Express.Multer.File) {
         try {
+            /* organization object se for_org_id extract - draft save ke time */
+            if ((!postData.for_org_id || postData.for_org_id === 0) && postData?.organization) {
+                const org = typeof postData.organization === 'string' ? (() => { try { return JSON.parse(postData.organization); } catch { return null; } })() : postData.organization;
+                if (org && (org.id || org.for_org_id)) {
+                    postData.for_org_id = org.id || org.for_org_id;
+                }
+            }
             if (!postData?.id && !postData?.hash) {
                 if (file && Object.keys(file).length > 0) {
                     const imageKeys = Object.keys(file);
@@ -2044,6 +2082,14 @@ export class EmailCampaignRequestsController {
     )
     async update(@Req() req: Request, @Res() res: Response, @Body() postData: CreateCommunicationEmailCampaignRequestsInput, @UploadedFile() file: Express.Multer.File) {
         try {
+            /* organization object se for_org_id extract - edit/update ke time */
+            if (postData?.organization && (!postData.for_org_id || postData.for_org_id === 0)) {
+                const org = typeof postData.organization === 'string' ? (() => { try { return JSON.parse(postData.organization); } catch { return null; } })() : postData.organization;
+                if (org && (org.id || org.for_org_id)) {
+                    postData.for_org_id = org.id || org.for_org_id;
+                }
+            }
+            console.log('[UPDATE] id:', postData?.id, 'hash:', postData?.hash, 'with_option:', postData?.with_option, 'for_org_id:', postData?.for_org_id, 'organization:', postData?.organization);
             if (!postData?.hash && !postData?.id) {
                 if (
                     postData?.with_option === '0' &&
@@ -2115,7 +2161,7 @@ export class EmailCampaignRequestsController {
                                                     postData.file = file.path;
                                                     postData.sheet_header = JSON.stringify(MainheaderData);
                                                     postData.test_mail_user_data = JSON.stringify(testUserData);
-                                                    postData.for_org_id = 0;
+                                                    /* for_org_id mat overwrite - organization preserve karo */
                                                 }
                                             }else{
                                                 throw new Error('Data not found.');
@@ -2128,6 +2174,10 @@ export class EmailCampaignRequestsController {
                                     }
                                 }else{
                                     delete postData?.file;
+                                    /* Edit without new file: existing for_org_id preserve karo */
+                                    if((!postData.for_org_id || postData.for_org_id === 0) && getCampaignDetails?.for_org_id){
+                                        postData.for_org_id = getCampaignDetails.for_org_id;
+                                    }
                                 }
                             }
                         /* WITH OPTION 0 */
@@ -2189,6 +2239,7 @@ export class EmailCampaignRequestsController {
                                     postData.file = `${postData?.hash}${fileExt}`;
                                 }
                             /* WITH OPTION 0 */
+                            console.log('[UPDATE] saving - for_org_id:', postData?.for_org_id, 'with_option:', postData?.with_option);
                             const campaignDatas = await lastValueFrom(this.client.send({ cmd: 'update_campaign_requests' }, postData));
                             if(campaignDatas && campaignDatas !== null && campaignDatas !== undefined){
                                 /* WITH OPTION 2 */

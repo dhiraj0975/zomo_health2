@@ -77,13 +77,13 @@ export class SideMenuSettingsService extends BaseService<CompanySideMenuSettings
         await this.writeReplicasideMenuSettingsRepository.delete(condition);
     }
     async sideMenuSettingJson(sideMenuSettingObj: any,orgId: number) {
-        const jsonMenu = '{"Dashboard":"Dashboard","Agreement":"Agreement","Activities":"Activities","Activity Forms":"Activity Forms","Submit Form":"Submit Form","Submitted Forms":"Submitted Forms","Reimbursements":"Reimbursements","reimbursements_submit_form":"Submit Form","reimbursements_submitted_forms":"Submitted Forms","Health Forms":"Health Forms","Submit Forms":"Submit Forms","health_forms_submitted_forms":"Submitted Forms","Devices Sync":"Fitbit Sync","My Health":"My Health","Assessment":"Assessment","Health Data":"Health Data","Results":"Results","Plans":"My Plan","Trackers":"Trackers","Nutrition":"Nutrition","Exercise":"Exercise","Measurements":"Measurements","Biometrics":"Biometrics","Fitbit Sync":"Fitbit Sync","Sleep":"Sleep","Covid Passport":"Covid Passport","Events":"Events","Challenges":"Challenges","Join Challenges":"Join Challenges","My Challenges":"My Challenges","Quizzes":"Quizzes","Support":"Support","Internalmail":"Internalmail","Email":"Email","Emotional Well-Being":"Emotional Well-Being","Media":"Media","Fitness Videos":"Fitness Videos","Media Dashboard":"Media Dashboard","Quicklink":"Quicklink","Weight Log":"Weight Log","Blood Pressure Log":"Blood Pressure Log","Cholesterol Log":"Cholesterol Log","Blood Glucose Log":"Blood Glucose Log"}';
+        const jsonMenu = '{"Dashboard":"Dashboard","Agreement":"Agreement","Activities":"Activities","Activity Forms":"Activity Forms","Submit Form":"Submit Form","Submitted Forms":"Submitted Forms","Reimbursements":"Reimbursements","reimbursements_submit_form":"Submit Form","reimbursements_submitted_forms":"Submitted Forms","Health Forms":"Health Forms","Submit Forms":"Submit Forms","health_forms_submitted_forms":"Submitted Forms","Devices Sync":"Devices Sync","My Health":"My Health","Assessment":"Assessment","Health Data":"Health Data","Results":"Results","Plans":"My Plan","Trackers":"Trackers","Nutrition":"Nutrition","Exercise":"Exercise","Measurements":"Measurements","Biometrics":"Biometrics","Fitbit Sync":"Fitbit Sync","Sleep":"Sleep","Covid Passport":"Covid Passport","Events":"Events","Challenges":"Challenges","Join Challenges":"Join Challenges","My Challenges":"My Challenges","Quizzes":"Quizzes","Support":"Support","Internalmail":"Internalmail","Email":"Email","Emotional Well-Being":"Emotional Well-Being","Media":"Media","Fitness Videos":"Fitness Videos","Media Dashboard":"Media Dashboard","Quicklink":"Quicklink","Weight Log":"Weight Log","Blood Pressure Log":"Blood Pressure Log","Cholesterol Log":"Cholesterol Log","Blood Glucose Log":"Blood Glucose Log"}';
         const jsonDecodeMenu = JSON.parse(jsonMenu);
         const dynamicDatas = {};
         Object.keys(jsonDecodeMenu).forEach(jsmenukey => {
             dynamicDatas[`${jsmenukey}_${orgId}`] = jsonDecodeMenu[jsmenukey];
         });
-        /* Side bar media name change check category not exist and name blank then Fitness Video default name show start */
+        /* Side bar media name change check category not exist and name blank then Fitness Video default name show start
         const showMenuList = sideMenuSettingObj?.showmenulist;
         if (Object.keys(showMenuList).length) {
             for (let i = 0; i < Object.keys(showMenuList).length; i++) {
@@ -98,7 +98,7 @@ export class SideMenuSettingsService extends BaseService<CompanySideMenuSettings
                 }
             }
         }
-        /* Side bar media name change check category not exist and name blank then Fitness Video default name show end */
+        Side bar media name change check category not exist and name blank then Fitness Video default name show end */
         const sideMenuSetting = sideMenuSettingObj?.datasettingmenu;
         if (Object.keys(sideMenuSetting).length) {
             Object.keys(sideMenuSetting).forEach(Mekey => {

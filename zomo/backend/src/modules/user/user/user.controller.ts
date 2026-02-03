@@ -54,7 +54,7 @@ import { UserService } from './user.service';
 const argon2 = require('argon2');
 const moment = require('moment-timezone');
 const path = require('path');
-const S3_URL =  process.env.S3_URL_PROD
+const S3_URL = process.env.S3_URL_PROD
 const filePath = appConstant.PERMISSIONS_DIR;
 
 @Controller('user')
@@ -82,34 +82,34 @@ export class UserController {
         private readonly urlManageService: UrlManageService,
         private readonly languagesService: LanguagesService,
         @Inject('TIMEZONE_SERVICE')
-            private timezoneMicroservice: ClientProxy,
+        private timezoneMicroservice: ClientProxy,
     ) { }
     @UseGuards(AccessGuard)
     @Post('paginate')
     async paginate(@Req() req: Request, @Res() res: Response, @Body() postData: PaginateWithUserInput) {
         try {
             postData = this.commonService.sanitizePayload(postData);
-            let tableData = [tableConstant.MASTER.TBL_ROLES,tableConstant.COMPANIES.TBL_COMPANY,tableConstant.COMPANIES.TBL_DEPARTMENT,tableConstant.TBL_USERS],
-            fields = ['user.id','user.role_id','user.code','user.username','user.email','user.first_name','user.last_name','user.status','user.created','user.updated','company.id','company.company_name','company.code','company.company_logo','department.id','department.dept_name','role.id','role.title'];
-            if(postData?.call_type == 'form_send'){
-                tableData = [...tableData,tableConstant.COMPANIES.TBL_LOCATION]
-                fields = [...fields,'user.on_insurance_plan','user.insurance_plan_name','user.location','Location.id','Location.location_name'];
+            let tableData = [tableConstant.MASTER.TBL_ROLES, tableConstant.COMPANIES.TBL_COMPANY, tableConstant.COMPANIES.TBL_DEPARTMENT, tableConstant.TBL_USERS],
+                fields = ['user.id', 'user.role_id', 'user.code', 'user.username', 'user.email', 'user.first_name', 'user.last_name', 'user.status', 'user.created', 'user.updated', 'company.id', 'company.company_name', 'company.code', 'company.company_logo', 'department.id', 'department.dept_name', 'role.id', 'role.title'];
+            if (postData?.call_type == 'form_send') {
+                tableData = [...tableData, tableConstant.COMPANIES.TBL_LOCATION]
+                fields = [...fields, 'user.on_insurance_plan', 'user.insurance_plan_name', 'user.location', 'Location.id', 'Location.location_name'];
             }
-            let where = req.tokenUser?.role_id == appConstant.ROLE.ADMIN && postData?.role_id ? `user.id != ${req.tokenUser?.id} AND user.status != 2 ` : postData?.status ? 
+            let where = req.tokenUser?.role_id == appConstant.ROLE.ADMIN && postData?.role_id ? `user.id != ${req.tokenUser?.id} AND user.status != 2 ` : postData?.status ?
                 `user.role_id != ${appConstant.ROLE.ADMIN} AND user.id != ${req.tokenUser?.id} `
                 : `user.role_id != ${appConstant.ROLE.ADMIN} AND user.id != ${req.tokenUser?.id} AND user.status != 2  `;
-            if(req.tokenUser?.role_id == appConstant.ROLE.GLOBALCOACH || req.tokenUser?.role_id == appConstant.ROLE.COACH){
+            if (req.tokenUser?.role_id == appConstant.ROLE.GLOBALCOACH || req.tokenUser?.role_id == appConstant.ROLE.COACH) {
                 /* Global coach coaches & user condition*/
                 if (postData?.role_id) {
-                    tableData = [tableConstant.COMPANIES.TBL_COMPANY,tableConstant.TBL_USERS_SETTINGS];
-                    fields = ['user.id','user.code','user.dob','user.gender','user.username','user.first_name','user.last_name','user.email','user.status','user.created','user.updated','company.id','company.company_name','settings.id','settings.communication_type','settings.coach_area'];
+                    tableData = [tableConstant.COMPANIES.TBL_COMPANY, tableConstant.TBL_USERS_SETTINGS];
+                    fields = ['user.id', 'user.code', 'user.dob', 'user.gender', 'user.username', 'user.first_name', 'user.last_name', 'user.email', 'user.status', 'user.created', 'user.updated', 'company.id', 'company.company_name', 'settings.id', 'settings.communication_type', 'settings.coach_area'];
                     where = `user.role_id != ${appConstant.ROLE.ADMIN} AND user.id != ${req.tokenUser?.id} AND user.status != 2 `;
                 } else {
-                    tableData = [tableConstant.MASTER.TBL_ROLES,tableConstant.COMPANIES.TBL_COMPANY,tableConstant.COMPANIES.TBL_COMPANY_SETTINGS];
-                    fields = ['user.id','user.code','user.dob','user.gender','user.username','user.first_name','user.last_name','user.email','user.status','user.created','user.updated','company_setting.is_emo_health_asssessments','company.id','company.company_name','role.id','role.title'];
+                    tableData = [tableConstant.MASTER.TBL_ROLES, tableConstant.COMPANIES.TBL_COMPANY, tableConstant.COMPANIES.TBL_COMPANY_SETTINGS];
+                    fields = ['user.id', 'user.code', 'user.dob', 'user.gender', 'user.username', 'user.first_name', 'user.last_name', 'user.email', 'user.status', 'user.created', 'user.updated', 'company_setting.is_emo_health_asssessments', 'company.id', 'company.company_name', 'role.id', 'role.title'];
                     let coachCondition = req.tokenUser?.role_id == appConstant.ROLE.GLOBALCOACH ? `coach.coach_manager_id = ${req.tokenUser?.id} AND coach.status = 1` : `coach.user_id = '${req.tokenUser?.id}' AND coach.is_global = 1 AND coach.status = 1`;
-                    let coach = await this.coachesService.listRecord(coachCondition,null,['coach.org_id'],'coach.org_id');
-                    if(coach.length == 0 && !postData.org_id){
+                    let coach = await this.coachesService.listRecord(coachCondition, null, ['coach.org_id'], 'coach.org_id');
+                    if (coach.length == 0 && !postData.org_id) {
                         return res.status(HttpStatus.OK).json({
                             statusCode: 200,
                             success: 1,
@@ -119,21 +119,21 @@ export class UserController {
                                 total: 0,
                                 pages: postData?.page,
                                 limit: postData?.limit,
-                                page: 1, 
+                                page: 1,
                             },
                             message: 'success',
                         });
                     }
-                    postData.org_id = postData?.org_id ? coach.filter(item => postData?.org_id.includes(item.org_id.toString())).map((ele)=> ele.org_id).join(',') : coach.map((ele)=> ele.org_id).join(',');
+                    postData.org_id = postData?.org_id ? coach.filter(item => postData?.org_id.includes(item.org_id.toString())).map((ele) => ele.org_id).join(',') : coach.map((ele) => ele.org_id).join(',');
                     where = `user.role_id != ${appConstant.ROLE.ADMIN} AND user.id != ${req.tokenUser?.id} AND user.status = 1 AND user.role_id IN(2,16) `;
                 }
             }
-            if (appConstant.ROLE.CLIENTENGAGEMENTMANAGER == req.tokenUser?.role_id){
-                let resultedData = await this.clientManagerAssignService.listRecord({user_id: req.tokenUser?.id,status: 1},null);
-                if(resultedData.length > 0){
-                    postData.org_id = resultedData.map(ele=>ele.org_id).join(',');
+            if (appConstant.ROLE.CLIENTENGAGEMENTMANAGER == req.tokenUser?.role_id) {
+                let resultedData = await this.clientManagerAssignService.listRecord({ user_id: req.tokenUser?.id, status: 1 }, null);
+                if (resultedData.length > 0) {
+                    postData.org_id = resultedData.map(ele => ele.org_id).join(',');
                 }
-                else{
+                else {
                     return res.status(HttpStatus.OK).json({
                         statusCode: 200,
                         success: 1,
@@ -149,26 +149,26 @@ export class UserController {
                     });
                 }
             }
-            if(postData?.search_str && postData?.search_str != ''){
+            if (postData?.search_str && postData?.search_str != '') {
                 if (postData?.filter_by) {
                     if (postData?.filter_by?.toLowerCase() == 'user_id') {
-                        where +=  this.commonService.generateDynamicSearchQuery(postData?.search_str ?? '','user.code');
+                        where += this.commonService.generateDynamicSearchQuery(postData?.search_str ?? '', 'user.code');
                     }
                     if (postData?.filter_by?.toLowerCase() == 'org_name') {
-                        const companyData = await this.companyService.listRecord({ company_name: Like(`%${postData?.search_str}%`), deleted: 0, status: 1 },null,['company.id']);
+                        const companyData = await this.companyService.listRecord({ company_name: Like(`%${postData?.search_str}%`), deleted: 0, status: 1 }, null, ['company.id']);
                         postData.org_id = companyData && companyData.length ? companyData.map((e) => e.id).join(',') : '001';
                     }
                     if (postData?.filter_by?.toLowerCase() == 'dept_name') {
-                        const departmentData = await this.departmentService.listRecord({ dept_name: Like(`%${postData?.search_str}%`), deleted: 0 },null,['id']);
-                        if(departmentData.length == 0 && postData?.call_type == 'form_send'){
-                            return res.status(HttpStatus.OK).json({statusCode: 200, success: 1, error: 0, data: [], message: 'success'});
+                        const departmentData = await this.departmentService.listRecord({ dept_name: Like(`%${postData?.search_str}%`), deleted: 0 }, null, ['id']);
+                        if (departmentData.length == 0 && postData?.call_type == 'form_send') {
+                            return res.status(HttpStatus.OK).json({ statusCode: 200, success: 1, error: 0, data: [], message: 'success' });
                         }
                         postData.department_id = departmentData && departmentData.length ? departmentData.map((e) => e.id).join(',') : '';
                     }
-                    if (postData?.filter_by?.toLowerCase() == 'loc_name') {               
-                        const locationData = await this.locationService.listRecord(['id'],{ location_name: Like(`%${postData?.search_str}%`), deleted: 0 },null);
-                        if(locationData.length == 0 && postData?.call_type == 'form_send'){
-                            return res.status(HttpStatus.OK).json({statusCode: 200, success: 1, error: 0, data: [], message: 'success'});
+                    if (postData?.filter_by?.toLowerCase() == 'loc_name') {
+                        const locationData = await this.locationService.listRecord(['id'], { location_name: Like(`%${postData?.search_str}%`), deleted: 0 }, null);
+                        if (locationData.length == 0 && postData?.call_type == 'form_send') {
+                            return res.status(HttpStatus.OK).json({ statusCode: 200, success: 1, error: 0, data: [], message: 'success' });
                         }
                         postData.location_id = locationData && locationData.length ? locationData.map((e) => e.id).join(',') : '';
                     }
@@ -185,22 +185,22 @@ export class UserController {
                         where += `AND location.location_name = '${postData?.search_str}' `;
                     }
                     if (postData?.filter_by?.toLowerCase() == 'username') {
-                        where +=  this.commonService.generateDynamicSearchQuery(postData?.search_str ?? '',['user.username'] ,false);
+                        where += this.commonService.generateDynamicSearchQuery(postData?.search_str ?? '', ['user.username'], false);
                     }
                     if (postData?.filter_by?.toLowerCase() == 'full_name') {
-                        where +=  this.commonService.generateDynamicSearchQuery(postData?.search_str ?? '',['full_name'] , false);
+                        where += this.commonService.generateDynamicSearchQuery(postData?.search_str ?? '', ['full_name'], false);
                     }
                     if (postData?.filter_by?.toLowerCase() == 'email') {
                         where += ` AND  user.email LIKE '%${postData?.search_str}%' `;
                     }
                     if (postData?.filter_by?.toLowerCase() == 'communication_type') {
-                        where +=  this.commonService.generateDynamicSearchQuery(postData?.search_str ?? '','settings.communication_type' ,false);
+                        where += this.commonService.generateDynamicSearchQuery(postData?.search_str ?? '', 'settings.communication_type', false);
                     }
                     if (postData?.filter_by?.toLowerCase() == 'userview') {
-                        where +=  this.commonService.generateDynamicSearchQuery(postData?.search_str ?? '','settings.coach_area' ,false);
+                        where += this.commonService.generateDynamicSearchQuery(postData?.search_str ?? '', 'settings.coach_area', false);
                     }
                 } else {
-                    where += this.commonService.generateDynamicSearchQuery(postData?.search_str, ['full_name','user.username']);
+                    where += this.commonService.generateDynamicSearchQuery(postData?.search_str, ['full_name', 'user.username']);
                 }
             }
             if (postData?.role_id) {
@@ -252,7 +252,7 @@ export class UserController {
                     let companies = await this.companyService.findOneV1(
                         `company.id IN (${orgId}) AND company.status = 1`,
                         [tableConstant.COMPANIES.TBL_LOCATION],
-                        ['company.id', 'company.code','locations?.id','locations?.location_name']
+                        ['company.id', 'company.code', 'locations?.id', 'locations?.location_name']
                     );
                     if (!companies) {
                         throw new Error(
@@ -262,7 +262,7 @@ export class UserController {
                             ),
                         );
                     }
-                    let locationDetails : object = companies?.locations || {};
+                    let locationDetails: object = companies?.locations || {};
                     let membershipCode = companies?.code;
                     where = `user.membership_code = '${membershipCode}' AND user.location IN(${postData?.location_id.split(',')}) AND user.status = 1`;
                     if (postData?.search_str) {
@@ -322,12 +322,12 @@ export class UserController {
             resultedData['list'] = <any>(
                 await this.commonArrayService.formatToDto(UserDto, resultedData['list'], req.lang)
             );
-            if(req.tokenUser?.role_id == appConstant.ROLE.GLOBALCOACH || req.tokenUser?.role_id == appConstant.ROLE.COACH){
-                if(resultedData['list']?.length && resultedData['list']?.find(record => record.company)){
+            if (req.tokenUser?.role_id == appConstant.ROLE.GLOBALCOACH || req.tokenUser?.role_id == appConstant.ROLE.COACH) {
+                if (resultedData['list']?.length && resultedData['list']?.find(record => record.company)) {
                     resultedData['company'] = (resultedData['list']?.find(record => record.company))['company'];
                     resultedData['company']['company_name'] = resultedData['company']['name'];
                 }
-                else{
+                else {
                     resultedData['company'] = postData?.org_id ? await this.companyService.companyFindOne({ id: In(postData?.org_id?.split(',')), status: Not(2) }) : null;
                 }
             }
@@ -339,17 +339,17 @@ export class UserController {
                 message: 'success',
             });
         } catch (error) {
-            this.activityLogService.error_log(req.tokenUser?.id,req?.originalUrl, error?.message, error, req);
+            this.activityLogService.error_log(req.tokenUser?.id, req?.originalUrl, error?.message, error, req);
             throw new HttpException(
                 {
-                  statusCode: 401,
-                  success: 0,
-                  error: 1,
-                  message: error?.message,
-                  data: null,
+                    statusCode: 401,
+                    success: 0,
+                    error: 1,
+                    message: error?.message,
+                    data: null,
                 },
                 HttpStatus.BAD_REQUEST,
-              );
+            );
         }
     }
     @UseGuards(AccessGuard)
@@ -365,7 +365,7 @@ export class UserController {
                 );
             }
             const where = { id: postData?.id };
-            if(postData?.org_id){
+            if (postData?.org_id) {
                 where['org_id'] = postData?.org_id;
             }
             this.commonFileService.addMembershipCodeCondition(req, where);
@@ -378,33 +378,33 @@ export class UserController {
                     ),
                 );
             }
-            if(recordDetails?.['profile_image']){
-                let fileData = await lastValueFrom(this.commonMicroservice.send({cmd: 'check_file'}, {prefix: recordDetails?.['profile_image'] }));
-                if(!fileData){
+            if (recordDetails?.['profile_image']) {
+                let fileData = await lastValueFrom(this.commonMicroservice.send({ cmd: 'check_file' }, { prefix: recordDetails?.['profile_image'] }));
+                if (!fileData) {
                     recordDetails['profile_image'] = '';
                 }
             }
             recordDetails = <any>(
                 await this.commonArrayService.formatToDto(UserDto, recordDetails, req.lang)
             );
-            if(!recordDetails['settings']){
+            if (!recordDetails['settings']) {
                 recordDetails['settings'] = await this.userSettingsService.save({ user_id: recordDetails['id'], wphone: '', cphone: '', hphone: '' });
             }
-            if(recordDetails.role_id == appConstant.ROLE.CLIENTENGAGEMENTMANAGER){
-                let orgList: any = await this.clientManagerAssignService.listRecord({user_id: recordDetails?.id,status: 1});
-                recordDetails['orgList'] = orgList?.map(ele => { return {id: ele['company'].id, company_name: ele['company'].company_name} });
+            if (recordDetails.role_id == appConstant.ROLE.CLIENTENGAGEMENTMANAGER) {
+                let orgList: any = await this.clientManagerAssignService.listRecord({ user_id: recordDetails?.id, status: 1 });
+                recordDetails['orgList'] = orgList?.map(ele => { return { id: ele['company'].id, company_name: ele['company'].company_name } });
             }
             let stateData = await this.companyService.stateList(recordDetails?.['settings']?.state);
-            if(recordDetails?.['settings']?.state){
+            if (recordDetails?.['settings']?.state) {
                 let state = stateData.find(ele => ele.statecode == recordDetails['settings']?.state || ele.state == recordDetails['settings']?.state);
                 recordDetails['settings'].state = state?.['state'];
                 recordDetails['settings']['statecode'] = state?.['statecode'];
             }
-            if(recordDetails.timezone){
+            if (recordDetails.timezone) {
                 let timezoneData = await lastValueFrom(this.timezoneMicroservice.send({ cmd: 'find_postcode' }, {}));
                 recordDetails.timezone = await timezoneData.find((e) => e.timezone_name == recordDetails.timezone);
             }
-            if(recordDetails?.last_login){
+            if (recordDetails?.last_login) {
                 recordDetails['last_login'] = this.commonDateService.DateTimeFormat(recordDetails.last_login, "ll", "YYYY-MM-DD HH:mm:ss", (recordDetails?.['timezone']?.['timezone_name'] || 'UTC'));
             }
             return res.status(HttpStatus.OK).json({
@@ -415,17 +415,17 @@ export class UserController {
                 message: 'success',
             });
         } catch (error) {
-            this.activityLogService.error_log(req.tokenUser?.id,req?.originalUrl, error?.message, error, req);
+            this.activityLogService.error_log(req.tokenUser?.id, req?.originalUrl, error?.message, error, req);
             throw new HttpException(
                 {
-                  statusCode: 401,
-                  success: 0,
-                  error: 1,
-                  message: error?.message,
-                  data: null,
+                    statusCode: 401,
+                    success: 0,
+                    error: 1,
+                    message: error?.message,
+                    data: null,
                 },
                 HttpStatus.BAD_REQUEST,
-              );
+            );
         }
     }
     @Post('create')
@@ -475,9 +475,9 @@ export class UserController {
                     ),
                 );
             }
-            if(tokenUser.role_id == appConstant.ROLE.GLOBALCOACH && (!postData.username || postData.username == '')){
-                postData.username = await this.commonService.createUsername(postData?.first_name,postData?.last_name)
-                postData.new_password = await this.commonService.createUsername(postData?.first_name,postData?.last_name)
+            if (tokenUser.role_id == appConstant.ROLE.GLOBALCOACH && (!postData.username || postData.username == '')) {
+                postData.username = await this.commonService.createUsername(postData?.first_name, postData?.last_name)
+                postData.new_password = await this.commonService.createUsername(postData?.first_name, postData?.last_name)
             }
             postData.email = postData?.email.toLowerCase();
             const emailCheck = await this.userService.findOne({
@@ -540,22 +540,22 @@ export class UserController {
             if (postData['securitycode'] && postData['securitycode'] != '') {
                 postData['securitycode'] = Buffer.from(postData['securitycode']).toString('base64');
             }
-            const companyDetails = await this.companyService.findOne({ id: postData?.org_id, deleted: 0, status: 1 },[tableConstant.COMPANIES.TBL_COMPANY_META],['company','companyMeta']);
+            const companyDetails = await this.companyService.findOne({ id: postData?.org_id, deleted: 0, status: 1 }, [tableConstant.COMPANIES.TBL_COMPANY_META], ['company', 'companyMeta']);
             let password = postData?.password || moment(postData?.dob).format('MMDDYYYY');
             let pass_text
             const companyData = await this.companySettingsService.findOne({ org_id: postData?.org_id });
             let comPrefix = companyData?.pre_first_login_by ?? '';
-            if((!postData?.autouser || postData?.autouser != 1) && !postData?.password){
+            if ((!postData?.autouser || postData?.autouser != 1) && !postData?.password) {
                 pass_text = this.commonService.admin_mail_data(companyData.first_login_by, comPrefix)
             }
-            if((postData.role_id == appConstant.ROLE.BROKER || postData.role_id == appConstant.ROLE.BROKERADMIN || postData.role_id == appConstant.ROLE.REGIONALADMIN) && (!companyDetails || !companyDetails?.code?.includes('BF'))){
-                throw Error(await this.translatorService.frontendReadTranslation(req.lang,'The User could not be saved. Please, select broker organization'));  
+            if ((postData.role_id == appConstant.ROLE.BROKER || postData.role_id == appConstant.ROLE.BROKERADMIN || postData.role_id == appConstant.ROLE.REGIONALADMIN) && (!companyDetails || !companyDetails?.code?.includes('BF'))) {
+                throw Error(await this.translatorService.frontendReadTranslation(req.lang, 'The User could not be saved. Please, select broker organization'));
             }
-            if((postData.role_id == appConstant.ROLE.PHYSICIAN) && (!companyDetails || !companyDetails?.code?.includes('HC'))){
-                throw Error(await this.translatorService.frontendReadTranslation(req.lang,'The User could not be saved. Please, select helathcare organization'));  
+            if ((postData.role_id == appConstant.ROLE.PHYSICIAN) && (!companyDetails || !companyDetails?.code?.includes('HC'))) {
+                throw Error(await this.translatorService.frontendReadTranslation(req.lang, 'The User could not be saved. Please, select helathcare organization'));
             }
-            if(([appConstant.ROLE.REGISTERED,appConstant.ROLE.SPOUSE,appConstant.ROLE.ORGADMIN,appConstant.ROLE.WCH].includes(postData.role_id)) && (!companyDetails || !companyDetails?.code?.includes('CI'))){
-                throw Error(await this.translatorService.frontendReadTranslation(req.lang,'The User could not be saved. Please, select normal organization'));  
+            if (([appConstant.ROLE.REGISTERED, appConstant.ROLE.SPOUSE, appConstant.ROLE.ORGADMIN, appConstant.ROLE.WCH].includes(postData.role_id)) && (!companyDetails || !companyDetails?.code?.includes('CI'))) {
+                throw Error(await this.translatorService.frontendReadTranslation(req.lang, 'The User could not be saved. Please, select normal organization'));
             }
             if ((postData?.autouser && postData?.autouser == 1 && !postData?.username) || (postData?.autouser && postData?.autouser == 1 && !postData?.password)) {
                 let username = postData?.first_name + postData?.last_name;
@@ -577,8 +577,8 @@ export class UserController {
                 postData.password = comPrefix != '' ? comPrefix + password : password;
                 password = postData?.password;
             }
-            else{
-                if((!postData?.username || postData?.username == '') && (!postData?.password || postData?.password == '') && (!postData?.autouser || postData?.autouser == 0)){
+            else {
+                if ((!postData?.username || postData?.username == '') && (!postData?.password || postData?.password == '') && (!postData?.autouser || postData?.autouser == 0)) {
                     throw Error(
                         await this.translatorService.frontendReadTranslation(
                             req.lang,
@@ -586,7 +586,7 @@ export class UserController {
                         ),
                     );
                 }
-                if(!postData?.password && postData?.autouser && postData?.autouser == 0){
+                if (!postData?.password && postData?.autouser && postData?.autouser == 0) {
                     throw Error(
                         await this.translatorService.frontendReadTranslation(
                             req.lang,
@@ -600,14 +600,14 @@ export class UserController {
             postData['new_password'] = postData?.password ?? '';
             delete postData?.password;
             //tushar condtion provided
-            if(postData.role_id == appConstant.ROLE.GLOBALDATAMANAGER || postData.role_id == appConstant.ROLE.ENGAGEMENTDATAMANAGER){
+            if (postData.role_id == appConstant.ROLE.GLOBALDATAMANAGER || postData.role_id == appConstant.ROLE.ENGAGEMENTDATAMANAGER) {
                 postData.org_id = 0;
                 postData.membership_code = '';
             }
-            if(!postData?.timezone || postData?.timezone == 'undefined'){
+            if (!postData?.timezone || postData?.timezone == 'undefined') {
                 postData.timezone = 'UTC';
             }
-            if(!postData?.companytype_id){
+            if (!postData?.companytype_id) {
                 postData.companytype_id = companyDetails?.companytype_id;
             }
             const createdUser = await this.userService.save({
@@ -615,18 +615,18 @@ export class UserController {
                 password: '',
                 created_by: req.tokenUser?.id,
             }, req);
-            if(postData.role_id == appConstant.ROLE.CLIENTENGAGEMENTMANAGER){
-                for(let org_id of postData?.assign_org?.split(',')){
-                    await this.clientManagerAssignService.save({org_id: org_id, user_id: createdUser['id'], status: 1});
+            if (postData.role_id == appConstant.ROLE.CLIENTENGAGEMENTMANAGER) {
+                for (let org_id of postData?.assign_org?.split(',')) {
+                    await this.clientManagerAssignService.save({ org_id: org_id, user_id: createdUser['id'], status: 1 });
                 }
             }
             await this.userSettingsService.save({ user_id: createdUser['id'], wphone: '', cphone: '', hphone: '' });
             const updateData = {};
             let prefix = 'CI';
-            if(postData.role_id == appConstant.ROLE.PHYSICIAN){
+            if (postData.role_id == appConstant.ROLE.PHYSICIAN) {
                 prefix = 'HC';
             }
-            if(postData.role_id == appConstant.ROLE.BROKER || postData.role_id == appConstant.ROLE.BROKERADMIN || postData.role_id == appConstant.ROLE.REGIONALADMIN){
+            if (postData.role_id == appConstant.ROLE.BROKER || postData.role_id == appConstant.ROLE.BROKERADMIN || postData.role_id == appConstant.ROLE.REGIONALADMIN) {
                 prefix = 'BF';
             }
             let userCode = this.commonService.generateCode(
@@ -646,36 +646,36 @@ export class UserController {
             if (file && file.fieldname === 'profile_image' && file.filename) {
                 file.originalname = this.commonFileService.formatFileName(file.originalname);
                 file.filename = this.commonFileService.generateFileName('profileimages', createdUser['id'].toString(), 'proimg_', file.originalname.split('.')[file.originalname.split('.').length - 1]);
-                await lastValueFrom(this.commonMicroservice.send({cmd: 'upload_file'}, {path: path.resolve(file.path),  filename: file.filename}));
+                await lastValueFrom(this.commonMicroservice.send({ cmd: 'upload_file' }, { path: path.resolve(file.path), filename: file.filename }));
                 createdUser['profile_image'] = file.filename;
             }
             let encoded = this.commonService.generateMD5(Date.now() + Math.random().toString());
             await this.userService.update({
                 id: createdUser['id']
             },
-            {
-                code: userCode,
-                activation_key:  encoded
-            });
+                {
+                    code: userCode,
+                    activation_key: encoded
+                });
             let passwordEncrypt = this.commonService.passwordEncrypt(`${updateData['code']}:::::${createdUser['id']}:::::${postData?.new_password}`);
-            await this.commonService.makeCurlRequest('POST',process.env.PASSWORDENCRYPTION, {encrypted_assertion: passwordEncrypt},{'Authorization': `Bearer ${encoded}`,'Content-Type': 'application/x-www-form-urlencoded'});
+            await this.commonService.makeCurlRequest('POST', process.env.PASSWORDENCRYPTION, { encrypted_assertion: passwordEncrypt }, { 'Authorization': `Bearer ${encoded}`, 'Content-Type': 'application/x-www-form-urlencoded' });
             /* need to configure email code more here this is sample code to send email.
                 need to add functionality for attachment here for sending pdf 
              */
-            if((!stopmailsend || stopmailsend == 0) && [appConstant.ROLE.ORGADMIN,appConstant.ROLE.ADMIN,appConstant.ROLE.CLIENTENGAGEMENTMANAGER,appConstant.ROLE.GLOBALCLIENTENGAGEMENTMANAGER,appConstant.ROLE.WCH,appConstant.ROLE.BROKERADMIN,appConstant.ROLE.REGIONALADMIN,appConstant.ROLE.PUBLIC,appConstant.ROLE.MGR,appConstant.ROLE.OPPSADMIN,appConstant.ROLE.OTHER].includes(req.tokenUser?.role_id)){
-                if([appConstant.ROLE.REGISTERED,appConstant.ROLE.SPOUSE,appConstant.ROLE.ORGADMIN,appConstant.ROLE.WCH,appConstant.ROLE.BROKER,appConstant.ROLE.BROKERADMIN,appConstant.ROLE.REGIONALADMIN,appConstant.ROLE.PUBLIC,appConstant.ROLE.MGR,appConstant.ROLE.OPPSADMIN,appConstant.ROLE.OTHER].includes(postData?.role_id)){
+            if ((!stopmailsend || stopmailsend == 0) && [appConstant.ROLE.ORGADMIN, appConstant.ROLE.ADMIN, appConstant.ROLE.CLIENTENGAGEMENTMANAGER, appConstant.ROLE.GLOBALCLIENTENGAGEMENTMANAGER, appConstant.ROLE.WCH, appConstant.ROLE.BROKERADMIN, appConstant.ROLE.REGIONALADMIN, appConstant.ROLE.PUBLIC, appConstant.ROLE.MGR, appConstant.ROLE.OPPSADMIN, appConstant.ROLE.OTHER].includes(req.tokenUser?.role_id)) {
+                if ([appConstant.ROLE.REGISTERED, appConstant.ROLE.SPOUSE, appConstant.ROLE.ORGADMIN, appConstant.ROLE.WCH, appConstant.ROLE.BROKER, appConstant.ROLE.BROKERADMIN, appConstant.ROLE.REGIONALADMIN, appConstant.ROLE.PUBLIC, appConstant.ROLE.MGR, appConstant.ROLE.OPPSADMIN, appConstant.ROLE.OTHER].includes(postData?.role_id)) {
                     let attachemnt = [];
                     companyDetails.companyMeta.emailattachment = companyDetails?.companyMeta?.emailattachment ? JSON.parse(companyDetails.companyMeta.emailattachment) : [];
-                    if(companyDetails.companyMeta.emailattachment && companyDetails.companyMeta.emailattachment.length){
-                        for(let ele of companyDetails.companyMeta.emailattachment){
-                            let file = ele.includes(S3_URL.replace(process.env.AWS_BUCKET_PUBLIC_PROD,process.env.AWS_BUCKET_PRIVATE_PROD)) ? ele.replace((S3_URL.replace(process.env.AWS_BUCKET_PUBLIC_PROD,process.env.AWS_BUCKET_PRIVATE_PROD)),'') : ele;
-                            let fileData = await lastValueFrom(this.commonMicroservice.send({cmd: 'get_file'}, {path: ele,  userBucket: 'private'}));
-                            if(fileData){
-                                let filename = file.split('/')[file.split('/').length -1]; 
+                    if (companyDetails.companyMeta.emailattachment && companyDetails.companyMeta.emailattachment.length) {
+                        for (let ele of companyDetails.companyMeta.emailattachment) {
+                            let file = ele.includes(S3_URL.replace(process.env.AWS_BUCKET_PUBLIC_PROD, process.env.AWS_BUCKET_PRIVATE_PROD)) ? ele.replace((S3_URL.replace(process.env.AWS_BUCKET_PUBLIC_PROD, process.env.AWS_BUCKET_PRIVATE_PROD)), '') : ele;
+                            let fileData = await lastValueFrom(this.commonMicroservice.send({ cmd: 'get_file' }, { path: ele, userBucket: 'private' }));
+                            if (fileData) {
+                                let filename = file.split('/')[file.split('/').length - 1];
                                 const directory = `${appConstant.COMPANY_EMAIL_ATTACHMENT}/${companyDetails.id}`;
                                 let filePath = path.join(directory, filename);
                                 let filePathh = path.join(`${directory}`);
-                                let writeFile = await this.commonFileService.writePDFFile(filePathh,fileData.Body,filename);
+                                let writeFile = await this.commonFileService.writePDFFile(filePathh, fileData.Body, filename);
                                 if (writeFile?.status == 'success') {
                                     attachemnt.push({
                                         filename: filename,
@@ -685,21 +685,21 @@ export class UserController {
                             }
                         }
                     }
-                    const templateText = await this.communicationTemplateTextService.findOne({org_id: In([postData?.org_id,0]), type: 1})
-                    let templateNewText = await this.urlManageService.onmapUrlContent(templateText?.['new_text'],'mailTemplate') || templateText?.['text'];
+                    const templateText = await this.communicationTemplateTextService.findOne({ org_id: In([postData?.org_id, 0]), type: 1 })
+                    let templateNewText = await this.urlManageService.onmapUrlContent(templateText?.['new_text'], 'mailTemplate') || templateText?.['text'];
                     let emaildata = {
                         sender: ``,
                         receiver: postData?.email,
                         subject: 'Welcome to ZomoHealth: New Account Created',
-                        content: {Username: postData?.username, Password: pass_text || password, 'Company Name': companyDetails.company_name, "First Name": postData?.first_name, type: 1, 'Company Text': companyDetails.companyMeta.custom_text},
+                        content: { Username: postData?.username, Password: pass_text || password, 'Company Name': companyDetails.company_name, "First Name": postData?.first_name, type: 1, 'Company Text': companyDetails.companyMeta.custom_text },
                         template: templateNewText,
                         attachment: attachemnt
                     }
                     await lastValueFrom(this.commonMicroservice.send({ cmd: 'send_email' }, emaildata));
                 }
-                else{
-                    const templateText = await this.communicationTemplateTextService.findOne({org_id: In([postData?.org_id,0]), type: 5})
-                    let templateNewText = await this.urlManageService.onmapUrlContent(templateText?.['new_text'],'mailTemplate', 1) || templateText?.['text'];
+                else {
+                    const templateText = await this.communicationTemplateTextService.findOne({ org_id: In([postData?.org_id, 0]), type: 5 })
+                    let templateNewText = await this.urlManageService.onmapUrlContent(templateText?.['new_text'], 'mailTemplate', 1) || templateText?.['text'];
                     let emailDetails = {
                         Username: postData?.username,
                         Password: pass_text || password,
@@ -710,8 +710,8 @@ export class UserController {
                                 companyDetails?.company_name !== '' &&
                                 companyDetails?.company_name !== undefined &&
                                 companyDetails?.company_name !== null
-                            ) ? 
-                            companyDetails?.company_name : 'Zomo health') 
+                            ) ?
+                                companyDetails?.company_name : 'Zomo health')
                             || 'Zomo health',
                         "First Name": postData?.first_name,
                         type: 5
@@ -745,17 +745,17 @@ export class UserController {
             if (file && file.fieldname === 'profile_image' && file.filename) {
                 await this.commonFileService.removeFileFromLocal(file.path);
             }
-            this.activityLogService.error_log(req.tokenUser?.id,req?.originalUrl, error?.message, error, req);
+            this.activityLogService.error_log(req.tokenUser?.id, req?.originalUrl, error?.message, error, req);
             throw new HttpException(
                 {
-                  statusCode: 401,
-                  success: 0,
-                  error: 1,
-                  message: error?.message,
-                  data: null,
+                    statusCode: 401,
+                    success: 0,
+                    error: 1,
+                    message: error?.message,
+                    data: null,
                 },
                 HttpStatus.BAD_REQUEST,
-              );
+            );
         }
     }
     @UseGuards(AccessGuard)
@@ -780,11 +780,11 @@ export class UserController {
                         'ERR_RECORD_NOT_FOUND',
                     ),
                 );
-            } 
-            await this.userService.update({ id: postData?.id }, { status: 2, username: recordDetails.username + '__DELETED' + `${moment().unix()}`, email: recordDetails.email + '__DELETED' + `${moment().unix()}`});
-            this.activityLogService.create(recordDetails, { status: 2, username: recordDetails.username + '__DELETED' + `${moment().unix()}`, email: recordDetails.email + '__DELETED' + `${moment().unix()}`}, tableConstant.TBL_USERS, req.tokenUser?.id, 'delete');
+            }
+            await this.userService.update({ id: postData?.id }, { status: 2, username: recordDetails.username + '__DELETED' + `${moment().unix()}`, email: recordDetails.email + '__DELETED' + `${moment().unix()}` });
+            this.activityLogService.create(recordDetails, { status: 2, username: recordDetails.username + '__DELETED' + `${moment().unix()}`, email: recordDetails.email + '__DELETED' + `${moment().unix()}` }, tableConstant.TBL_USERS, req.tokenUser?.id, 'delete');
             const settingDetails = await this.userSettingsService.findOne({ user_id: postData?.id });
-            await this.userSettingsService.update({ user_id: postData?.id },{});
+            await this.userSettingsService.update({ user_id: postData?.id }, {});
             this.activityLogService.create(recordDetails, { jobtitle: settingDetails }, tableConstant.TBL_USERS, req.tokenUser?.id, 'delete');
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
@@ -794,17 +794,17 @@ export class UserController {
                 message: 'success',
             });
         } catch (error) {
-            this.activityLogService.error_log(req.tokenUser?.id,req?.originalUrl, error?.message, error, req);
+            this.activityLogService.error_log(req.tokenUser?.id, req?.originalUrl, error?.message, error, req);
             throw new HttpException(
                 {
-                  statusCode: 401,
-                  success: 0,
-                  error: 1,
-                  message: error?.message,
-                  data: null,
+                    statusCode: 401,
+                    success: 0,
+                    error: 1,
+                    message: error?.message,
+                    data: null,
                 },
                 HttpStatus.BAD_REQUEST,
-              );
+            );
         }
     }
     @Put('update')
@@ -846,7 +846,7 @@ export class UserController {
             }
             const where = { id: postData?.id };
             this.commonFileService.addMembershipCodeCondition(req, where);
-            let  recordDetails: any = await this.userService.findOne(where);
+            let recordDetails: any = await this.userService.findOne(where);
             if (!recordDetails) {
                 if (
                     file &&
@@ -898,26 +898,26 @@ export class UserController {
                     );
                 }
             }
-            const companyDetails = await this.companyService.findOne({ id: recordDetails.org_id, deleted: 0, status: 1 },[tableConstant?.COMPANIES?.TBL_COMPANY_SETTINGS],['company','companySetting']);
-            if((postData?.password && postData?.password != '') || (postData?.new_password && postData?.new_password != '')){
+            const companyDetails = await this.companyService.findOne({ id: recordDetails.org_id, deleted: 0, status: 1 }, [tableConstant?.COMPANIES?.TBL_COMPANY_SETTINGS], ['company', 'companySetting']);
+            if ((postData?.password && postData?.password != '') || (postData?.new_password && postData?.new_password != '')) {
                 message = 'Password Updated Successfully';
                 postData.password = postData?.password || postData?.new_password;
-                if(recordDetails.new_password){
+                if (recordDetails.new_password) {
                     let isMatch = await argon2.verify(Buffer.from(recordDetails.new_password, 'base64').toString('ascii'), postData?.password);
-                    if(isMatch) {
-                        throw new Error(await this.translatorService.frontendReadTranslation(req.lang, 'Make sure your new password is different than your current password','/LC_MESSAGES/Common/LoginPopup','static'));
+                    if (isMatch) {
+                        throw new Error(await this.translatorService.frontendReadTranslation(req.lang, 'Make sure your new password is different than your current password', '/LC_MESSAGES/Common/LoginPopup', 'static'));
                     }
                 }
                 postData.new_password = postData?.password;
                 delete postData?.password;
                 let encoded = this.commonService.generateMD5(Date.now() + Math.random().toString());
-                await this.userService.update(where, {activation_key: encoded});
+                await this.userService.update(where, { activation_key: encoded });
                 let passwordEncrypt = this.commonService.passwordEncrypt(`${recordDetails.code}:::::${recordDetails.id}:::::${postData?.new_password}`);
-                await this.commonService.makeCurlRequest('POST',process.env.PASSWORDENCRYPTION, {encrypted_assertion: passwordEncrypt},{'Authorization': `Bearer ${encoded}`,'Content-Type': 'application/x-www-form-urlencoded'});
+                await this.commonService.makeCurlRequest('POST', process.env.PASSWORDENCRYPTION, { encrypted_assertion: passwordEncrypt }, { 'Authorization': `Bearer ${encoded}`, 'Content-Type': 'application/x-www-form-urlencoded' });
             }
             if ((postData?.username && (req.tokenUser?.role_id == appConstant.ROLE.ADMIN || appConstant.ROLE.GLOBALCLIENTENGAGEMENTMANAGER == req.tokenUser?.role_id)) || (postData?.username && companyDetails && companyDetails?.companySetting?.lock_username == 0)) {
                 message = 'Username Updated Successfully';
-                if(postData?.username == recordDetails.username){
+                if (postData?.username == recordDetails.username) {
                     throw Error(
                         await this.translatorService.frontendReadTranslation(
                             req.lang,
@@ -945,7 +945,7 @@ export class UserController {
                         ),
                     );
                 }
-                if(postData?.password || postData?.new_password){
+                if (postData?.password || postData?.new_password) {
                     message = await this.translatorService.frontendReadTranslation(
                         req.lang,
                         'Username and Password Updated Successfully',
@@ -954,8 +954,8 @@ export class UserController {
                     );
                 }
             }
-            else{
-                if(postData?.username && companyDetails && companyDetails?.companySetting?.lock_username == 1){
+            else {
+                if (postData?.username && companyDetails && companyDetails?.companySetting?.lock_username == 1) {
                     throw Error(
                         await this.translatorService.frontendReadTranslation(
                             req.lang,
@@ -969,14 +969,14 @@ export class UserController {
             }
             if (postData?.on_insurance_plan) {
                 postData.on_insurance_plan =
-                YesNo[postData?.on_insurance_plan.toUpperCase()];
+                    YesNo[postData?.on_insurance_plan.toUpperCase()];
             }
             postData.date_of_hire = (postData.date_of_hire === '' || postData.date_of_hire === 'undefined' || postData.date_of_hire === undefined || postData.date_of_hire === 'null' || postData.date_of_hire === null || (typeof postData.date_of_hire === 'string' && postData.date_of_hire.trim() === '')) ? recordDetails?.date_of_hire ?? null : postData.date_of_hire;
             if (file && file.fieldname === 'profile_image' && file.filename) {
-                await lastValueFrom(this.commonMicroservice.send({cmd: 'delete_file'}, {prefix: recordDetails.profile_image}));
+                await lastValueFrom(this.commonMicroservice.send({ cmd: 'delete_file' }, { prefix: recordDetails.profile_image }));
                 file.originalname = this.commonFileService.formatFileName(file.originalname);
                 file.filename = this.commonFileService.generateFileName('profileimages', postData['id'].toString(), 'proimg_', file.originalname.split('.')[file.originalname.split('.').length - 1])
-                let filedata = await lastValueFrom(this.commonMicroservice.send({cmd: 'upload_file'}, {path: path.resolve(file.path),  filename: file.filename}));
+                let filedata = await lastValueFrom(this.commonMicroservice.send({ cmd: 'upload_file' }, { path: path.resolve(file.path), filename: file.filename }));
                 postData['profile_image'] = file.filename;
             }
             if (postData['securitycode'] && postData['securitycode'] != '') {
@@ -985,63 +985,63 @@ export class UserController {
             postData.updated_by = req.tokenUser?.id;
             postData.id = Number(postData?.id);
             delete postData?.autouser;
-            if(postData?.location == ''){
+            if (postData?.location == '') {
                 delete postData?.location
             }
             await this.userService.update(where, postData);
-            if(recordDetails?.role_id == appConstant.ROLE.CLIENTENGAGEMENTMANAGER || postData?.role_id == appConstant.ROLE.CLIENTENGAGEMENTMANAGER){
-                const orglist = await this.clientManagerAssignService.listRecord({user_id: postData?.id, status: Not(2)},null,['clientManager.id','company.id']);
+            if (recordDetails?.role_id == appConstant.ROLE.CLIENTENGAGEMENTMANAGER || postData?.role_id == appConstant.ROLE.CLIENTENGAGEMENTMANAGER) {
+                const orglist = await this.clientManagerAssignService.listRecord({ user_id: postData?.id, status: Not(2) }, null, ['clientManager.id', 'company.id']);
                 const removedOrgs = postData?.assign_org.length ? orglist?.map((e) => e['company'].id.toString()).filter(element => !postData?.assign_org.includes(element)) : [];
                 const addedOrgs = orglist.length ? postData?.assign_org?.split(',')?.filter(element => !orglist.map((e) => e['company'].id.toString()).includes(element)) : orglist.length == 0 && postData?.assign_org.length ? postData?.assign_org : [];
-                for(let org_id of addedOrgs){
-                    const check = await this.clientManagerAssignService.findOne({org_id: org_id, user_id: postData['id']});
-                    if(check){
-                        await this.clientManagerAssignService.update({id: check.id}, {status: 1});
+                for (let org_id of addedOrgs) {
+                    const check = await this.clientManagerAssignService.findOne({ org_id: org_id, user_id: postData['id'] });
+                    if (check) {
+                        await this.clientManagerAssignService.update({ id: check.id }, { status: 1 });
                     }
-                    else{
-                        await this.clientManagerAssignService.save({org_id: org_id, user_id: postData['id'], status: 1});
+                    else {
+                        await this.clientManagerAssignService.save({ org_id: org_id, user_id: postData['id'], status: 1 });
                     }
                 }
-                for(let org_id of removedOrgs){
-                    await this.clientManagerAssignService.update({org_id: org_id, user_id: postData['id']}, {status: 2});
+                for (let org_id of removedOrgs) {
+                    await this.clientManagerAssignService.update({ org_id: org_id, user_id: postData['id'] }, { status: 2 });
                 }
             }
             this.activityLogService.create(recordDetails, postData, tableConstant.TBL_USERS, req.tokenUser?.id);
-            if((!stopmailsend || stopmailsend == 0) && req.tokenUser?.role_id == appConstant.ROLE.ORGADMIN){
-                const templateText = await this.communicationTemplateTextService.findOne({org_id: In([postData?.org_id,0]), type: 21});
-                let templateNewText = await this.urlManageService.onmapUrlContent(templateText?.['new_text'],'mailTemplate') || templateText?.['text'];
+            if ((!stopmailsend || stopmailsend == 0) && req.tokenUser?.role_id == appConstant.ROLE.ORGADMIN) {
+                const templateText = await this.communicationTemplateTextService.findOne({ org_id: In([postData?.org_id, 0]), type: 21 });
+                let templateNewText = await this.urlManageService.onmapUrlContent(templateText?.['new_text'], 'mailTemplate') || templateText?.['text'];
                 let emaildata = {
                     sender: ``,
                     receiver: recordDetails.email,
                     subject: `Your account has been updated`,
-                    content: {'Company Name': companyDetails.company_name, "First Name": recordDetails.first_name, type: 21},
+                    content: { 'Company Name': companyDetails.company_name, "First Name": recordDetails.first_name, type: 21 },
                     template: templateNewText
                 }
                 await lastValueFrom(this.commonMicroservice.send({ cmd: 'send_email' }, emaildata));
             }
-            if(postData?.['profile_image']){
-                let fileData = await lastValueFrom(this.commonMicroservice.send({cmd: 'check_file'}, {prefix: postData?.['profile_image'] }));
-                if(!fileData){
+            if (postData?.['profile_image']) {
+                let fileData = await lastValueFrom(this.commonMicroservice.send({ cmd: 'check_file' }, { prefix: postData?.['profile_image'] }));
+                if (!fileData) {
                     postData['profile_image'] = '';
                 }
-                else{
+                else {
                     postData['profile_image'] = postData['profile_image'].includes('profileimages') ? S3_URL + postData['profile_image'] : '';
                 }
             }
             if (postData?.gender) {
                 postData.gender = Object.keys(Gender).find(key => Gender[key] === postData?.gender);
             }
-            if(postData.timezone){
+            if (postData.timezone) {
                 let timezoneData = await lastValueFrom(this.timezoneMicroservice.send({ cmd: 'find_postcode' }, {}));
                 postData.timezone = await timezoneData.find((e) => e.timezone_name == postData.timezone);
             }
-            if(postData.location){
-                postData['Location'] = await this.locationService.findOne({ id: postData.location, deleted: 0 },['location.id','location.location_name']) as any;
+            if (postData.location) {
+                postData['Location'] = await this.locationService.findOne({ id: postData.location, deleted: 0 }, ['location.id', 'location.location_name']) as any;
             }
-            if(postData?.popup_status != undefined || postData?.popup_status != null){
-                await this.userSettingsService.update({ user_id: postData?.id },{popup_status: postData?.popup_status});
+            if (postData?.popup_status != undefined || postData?.popup_status != null) {
+                await this.userSettingsService.update({ user_id: postData?.id }, { popup_status: postData?.popup_status });
             }
-            if(postData.preferred_lang){
+            if (postData.preferred_lang) {
                 postData['preferred_language'] = await this.languagesService.findOne({ id: postData.preferred_lang });
             }
             return res.status(HttpStatus.OK).json({
@@ -1049,20 +1049,20 @@ export class UserController {
                 success: 1,
                 error: 0,
                 data: postData,
-                message: await this.translatorService.frontendReadTranslation(req.lang, message, `/LC_MESSAGES/Dashboard/Profile`,`static`),
+                message: await this.translatorService.frontendReadTranslation(req.lang, message, `/LC_MESSAGES/Dashboard/Profile`, `static`),
             });
         } catch (error) {
             if (file && file.fieldname === 'profile_image' && file.filename) {
                 await this.commonFileService.removeFileFromLocal(file.path);
             }
-            this.activityLogService.error_log(req.tokenUser?.id,req?.originalUrl, error?.message, error, req);
+            this.activityLogService.error_log(req.tokenUser?.id, req?.originalUrl, error?.message, error, req);
             throw new HttpException(
                 {
-                  statusCode: 401,
-                  success: 0,
-                  error: 1,
-                  message: error?.message,
-                  data: null,
+                    statusCode: 401,
+                    success: 0,
+                    error: 1,
+                    message: error?.message,
+                    data: null,
                 },
                 HttpStatus.BAD_REQUEST,
             );
@@ -1082,9 +1082,79 @@ export class UserController {
                 let userId = req.tokenUser?.id;
                 let memberShipCode = '';
                 if (roleId == appConstant.ROLE.GLOBALCOACH) {
-                    // remain
+                    let coachCondition = `coach.coach_manager_id = ${userId} AND coach.status = 1`;
+                    let coach = await this.coachesService.listRecord(coachCondition, null, ['coach.org_id'], 'coach.org_id');
+                    if (coach && coach.length) {
+                        let orgIds = coach.map(ele => ele.org_id);
+                        let memberShipIds = await this.companyService.companyListRecord(['id', 'code'], { status: 1, id: In(orgIds) });
+                        memberShipCode = memberShipIds.map(ele => ele.code).join("','");
+                    } else {
+                        memberShipCode = null;
+                    }
                 } else if (roleId == appConstant.ROLE.COACH) {
-                    // remain
+                    let coachAssignAllOrg = await this.coachesService.globalCoachList(
+                        `coach.user_id = ${userId}`,
+                        null,
+                        ['coach.org_id'],
+                        'coach.org_id'
+                    );
+                    let coachAssignCoachOrg: any = await this.coachesService.globalCoachList(
+                        `coach.user_id = ${userId} AND coach.is_global = 1`,
+                        null,
+                        ['coach.org_id'],
+                        'coach.org_id'
+                    );
+                    coachAssignCoachOrg = (coachAssignCoachOrg && coachAssignCoachOrg.length == 0)
+                        ?
+                        null :
+                        coachAssignCoachOrg.map(ele => ({ org_id: ele.org_id }));
+                    let userMembershipCode: any = await this.companyService.companyListRecord(
+                        ['id', 'code'],
+                        {
+                            status: 1,
+                            id: In(coachAssignCoachOrg.map(ele => ele.org_id))
+                        }
+                    );
+                    userMembershipCode = userMembershipCode.map(ele => ele.code).join("','");
+                    userMembershipCode = userMembershipCode ? userMembershipCode : null;
+                    let outerInnerCondition = `coach.created_date >= DATE(NOW()) - INTERVAL 30 DAY`;
+                    // let innerCondition = `( (coach.location = user.location AND user.location != '') OR (coach.department = user.department_id `+
+                    //     ` AND user.department_id != 0)` +
+                    //     ` OR (coach.state = settings.state AND settings.city != '') OR (coach.city = settings.city AND settings.state != '')` +
+                    //     ` OR (user.membership_code = '${userMembershipCode}' AND user.membership_code != '') ) `;
+                    // let outerCondition = `( coach.org_id IN (${coachAssignAllOrg.map(ele => ele.org_id).join(",")}) AND` +
+                    //     ` ${outerInnerCondition} AND ( coach.location != 0 OR coach.department != 0 ` +
+                    //     ` OR coach.city != '' OR coach.state != '' OR coach.is_global = 1 ) )`;
+                    let innerCondition = `( (coach.location = user.location AND user.location != '') ` +
+                        `OR (coach.department = user.department_id AND user.department_id != 0) ` +
+                        `OR (user.membership_code IN ('${userMembershipCode}') AND user.membership_code != '') )`;
+                    let outerCondition = `( coach.org_id IN (${coachAssignAllOrg.map(ele => ele.org_id).join(",")}) AND` +
+                        ` ${outerInnerCondition} AND ( coach.location != 0 OR coach.department != 0 ` +
+                        ` OR coach.city != '' OR coach.state != '' OR coach.is_global = 1 ) )` +
+                        ` AND ( (coach.state = settings.state AND settings.city != '') OR (coach.city = settings.city AND settings.state != '') OR coach.is_global = 1 )`;
+                    let joinTableList = [
+                        {
+                            'alias': 'user',
+                            'table': tableConstant.TBL_USERS,
+                            'on': innerCondition,
+                            'connect': 'coach',
+                            'type': 'INNER'
+                        },
+                        {
+                            'alias': 'settings',
+                            'table': tableConstant.TBL_USERS_SETTINGS,
+                            'on': 'user.id = settings.user_id',
+                            'connect': 'user',
+                            'type': 'LEFT'
+                        },
+                    ];
+                    let resultData = await this.coachesService.getAssignOrgList(
+                        outerCondition,
+                        ['coach.id', 'user.membership_code', 'settings.id', 'user.id'],
+                        joinTableList,
+                        'user.id'
+                    );
+                    memberShipCode = resultData.map(ele => ele?.['user']?.['membership_code']).join("','");
                 } else {
                     memberShipCode = req.tokenUser?.membership_code;
                 }
@@ -1099,13 +1169,18 @@ export class UserController {
                 }
                 let resultedData: any = await this.userService.usersList(
                     where,
-                    ['id', 'first_name', 'last_name', 'username', 'CONCAT(first_name, " ", last_name) AS full_name', 'email', 'code'],
-                    { [orderBy]: order }
+                    [
+                        'user.id AS id', 'user.first_name AS first_name', 'user.last_name AS last_name',
+                        'user.username AS username', 'CONCAT(user.first_name, " ", user.last_name) AS full_name',
+                        'user.email AS email', 'user.code AS code'
+                    ],
                 );
-                const resultDataFinal = resultedData.map(user => ({
-                    id: user.id,
-                    full_name: `${user.full_name} :: ${user.email}`,
-                }));
+                const resultDataFinal = resultedData.map((user) => {
+                    return {
+                        id: user.id,
+                        full_name: `${user.full_name} :: ${user.email}`
+                    };
+                });
                 return res.status(HttpStatus.OK).json({
                     statusCode: 200,
                     success: 1,
@@ -1120,13 +1195,13 @@ export class UserController {
                     where += ` AND user.org_id = ${postData?.org_id}`;
                 }
                 if (postData?.search_str) {
-                    where +=  this.commonService.generateDynamicSearchQuery(postData?.search_str,'full_name');
+                    where += this.commonService.generateDynamicSearchQuery(postData?.search_str, 'full_name');
                 }
                 if (postData?.role_id && postData?.role_id.length > 0) {
                     const roles = Array.isArray(postData?.role_id) ? postData?.role_id : JSON.parse(postData?.role_id);
                     where += ` AND(user.role_id IN(${roles.filter((id) => id !== appConstant.ROLE.ADMIN)}))`;
                 }
-                let resultedData: any = await this.userService.usersList(where,['id','first_name','last_name','username','CONCAT(first_name, " ", last_name) AS full_name'],{ [orderBy]: order });
+                let resultedData: any = await this.userService.usersList(where, ['id', 'first_name', 'last_name', 'username', 'CONCAT(first_name, " ", last_name) AS full_name'], { [orderBy]: order });
                 return res.status(HttpStatus.OK).json({
                     statusCode: 200,
                     success: 1,
@@ -1142,35 +1217,35 @@ export class UserController {
                 where += ` AND user.department_id IN (${postData?.department_id})`;
             }
             if (postData?.search_str) {
-                where +=  this.commonService.generateDynamicSearchQuery(postData?.search_str,'full_name');
+                where += this.commonService.generateDynamicSearchQuery(postData?.search_str, 'full_name');
             }
             if (postData?.role_id && postData?.role_id.length > 0) {
                 const roles = Array.isArray(postData?.role_id)
                     ? postData?.role_id
                     : JSON.parse(postData?.role_id);
-                if(roles.includes(appConstant.ROLE.COACH) || roles.includes(appConstant.ROLE.GLOBALCOACH)){
+                if (roles.includes(appConstant.ROLE.COACH) || roles.includes(appConstant.ROLE.GLOBALCOACH)) {
                     let whereInner = `user.role_id IN(${roles.filter((id) => id !== appConstant.ROLE.ADMIN)})`;
-                    if(roles.includes(appConstant.ROLE.ORGADMIN)){
-                        whereInner = `((user.org_id in(${postData?.org_id}) AND user.role_id = ${appConstant.ROLE.ORGADMIN}) OR (user.role_id IN(${roles.filter((id) => ![appConstant.ROLE.ADMIN,appConstant.ROLE.ORGADMIN].includes(id))})))`;
+                    if (roles.includes(appConstant.ROLE.ORGADMIN)) {
+                        whereInner = `((user.org_id in(${postData?.org_id}) AND user.role_id = ${appConstant.ROLE.ORGADMIN}) OR (user.role_id IN(${roles.filter((id) => ![appConstant.ROLE.ADMIN, appConstant.ROLE.ORGADMIN].includes(id))})))`;
                     }
-                    let data = await this.userService.listRecord(whereInner, { [orderBy]: order },['user.id']);
-                    if(data && data.length){
+                    let data = await this.userService.listRecord(whereInner, { [orderBy]: order }, ['user.id']);
+                    if (data && data.length) {
                         where += ` AND(user.id IN(${data.map(ele => ele.id).join(',')}))`;
                     }
                 }
-                else{
+                else {
                     where += ` AND(user.role_id IN(${roles.filter((id) => id !== appConstant.ROLE.ADMIN)}))`;
                 }
             }
-            else{
+            else {
                 where += ` AND(user.role_id NOT IN(${appConstant.ROLE.ADMIN}))`
             }
-            if (appConstant.ROLE.CLIENTENGAGEMENTMANAGER == req.tokenUser?.role_id){
-                let resultedData = await this.clientManagerAssignService.listRecord({user_id: req.tokenUser?.id,status: 1},null);
-                if(resultedData.length > 0){
-                    where += `AND user.org_id IN (${resultedData.map(ele=>ele.org_id).join(',')})`;
+            if (appConstant.ROLE.CLIENTENGAGEMENTMANAGER == req.tokenUser?.role_id) {
+                let resultedData = await this.clientManagerAssignService.listRecord({ user_id: req.tokenUser?.id, status: 1 }, null);
+                if (resultedData.length > 0) {
+                    where += `AND user.org_id IN (${resultedData.map(ele => ele.org_id).join(',')})`;
                 }
-                else{
+                else {
                     return res.status(HttpStatus.OK).json({
                         statusCode: 200,
                         success: 1,
@@ -1180,35 +1255,34 @@ export class UserController {
                     });
                 }
             }
-            if (postData?.org_id && !where.includes('user.id Not IN') && !where.includes(`user.role_id IN(${appConstant.ROLE.CLIENTENGAGEMENTMANAGER}`) && !where.includes(`user.role_id IN(${appConstant.ROLE.GLOBALCLIENTENGAGEMENTMANAGER}`) && (appConstant.ROLE.ADMIN != req.tokenUser?.role_id && ![2, 16].some(role => postData?.role_id.includes(role))) || (postData?.org_id && [appConstant.ROLE.ORGADMIN,appConstant.ROLE.REGISTERED,appConstant.ROLE.SPOUSE].includes(req.tokenUser?.role_id))) {
-                if(postData?.role_id && postData?.role_id.length > 0 && [appConstant.ROLE.ORGADMIN,appConstant.ROLE.COACH,appConstant.ROLE.GLOBALCOACH].every(role => postData?.role_id?.includes(role))){
+            if (postData?.org_id && !where.includes('user.id Not IN') && !where.includes(`user.role_id IN(${appConstant.ROLE.CLIENTENGAGEMENTMANAGER}`) && !where.includes(`user.role_id IN(${appConstant.ROLE.GLOBALCLIENTENGAGEMENTMANAGER}`) && (appConstant.ROLE.ADMIN != req.tokenUser?.role_id && ![2, 16].some(role => postData?.role_id.includes(role))) || (postData?.org_id && [appConstant.ROLE.ORGADMIN, appConstant.ROLE.REGISTERED, appConstant.ROLE.SPOUSE].includes(req.tokenUser?.role_id))) {
+                if (postData?.role_id && postData?.role_id.length > 0 && [appConstant.ROLE.ORGADMIN, appConstant.ROLE.COACH, appConstant.ROLE.GLOBALCOACH].every(role => postData?.role_id?.includes(role))) {
                 }
-                else{
+                else {
                     where += ` AND user.org_id = ${postData?.org_id}`;
                 }
-            }           
+            }
             if ([appConstant.ROLE.WCH].includes(req.tokenUser?.role_id) && !postData?.role_id) {
                 const user = req.tokenUser;
                 const userList = await this.userService.usersDataWellness(user, `user.role_id != 1 AND user.id != ${user.id} AND user.membership_code = '${user['membership_code']}' AND user.status =1`);
                 if (!userList || userList.length == 0) {
-                    where += ` AND user.id = 0`; 
-                }else{
-                    where += ` AND user.id IN (${userList.map(ele => ele.id).join(',')})`; 
+                    where += ` AND user.id = 0`;
+                } else {
+                    where += ` AND user.id IN (${userList.map(ele => ele.id).join(',')})`;
                 }
             }
-            if(postData?.role_id && postData?.org_id && (postData?.type == 1))
-            {
+            if (postData?.role_id && postData?.org_id && (postData?.type == 1)) {
                 let user = req.tokenUser;
                 let where = {
-                    org_id:postData?.org_id,
-                    role_id:In(postData?.role_id),
+                    org_id: postData?.org_id,
+                    role_id: In(postData?.role_id),
                 }
-                if(postData?.subtype && postData?.subtype == 'report'){
-                    if(postData?.status != undefined && postData?.status != null){
+                if (postData?.subtype && postData?.subtype == 'report') {
+                    if (postData?.status != undefined && postData?.status != null) {
                         where['status'] = postData?.status;
                     }
                 }
-                else{
+                else {
                     where['status'] = 1;
                 }
                 if (user.role_id == appConstant.ROLE.WCH) {
@@ -1220,7 +1294,7 @@ export class UserController {
                         where['id'] = In(userWellnessIds);
                     }
                 }
-                let resultedData = await this.userService.findAllUserRecord(where,['id','first_name','last_name','code']);
+                let resultedData = await this.userService.findAllUserRecord(where, ['id', 'first_name', 'last_name', 'code']);
                 resultedData = <any>(
                     await this.commonArrayService.formatToDto(UserDto, resultedData, req.lang)
                 );
@@ -1232,12 +1306,12 @@ export class UserController {
                     message: 'success',
                 });
             }
-            if( postData?.role_id && appConstant.ROLE.BROKERADMIN == req.tokenUser?.role_id && postData?.type == 1){
+            if (postData?.role_id && appConstant.ROLE.BROKERADMIN == req.tokenUser?.role_id && postData?.type == 1) {
                 let where = {
-                    role_id:In(postData?.role_id),
-                    status:1
+                    role_id: In(postData?.role_id),
+                    status: 1
                 }
-                let resultedData = await this.userService.findAllUserRecord(where,['id','first_name','last_name','code']);
+                let resultedData = await this.userService.findAllUserRecord(where, ['id', 'first_name', 'last_name', 'code']);
                 resultedData = <any>(
                     await this.commonArrayService.formatToDto(UserDto, resultedData, req.lang)
                 );
@@ -1253,10 +1327,10 @@ export class UserController {
             resultedData = <any>(
                 await this.commonArrayService.formatToDto(UserDto, resultedData, req.lang)
             );
-            if(postData?.location_id && postData?.location){
+            if (postData?.location_id && postData?.location) {
                 let locationData = resultedData[0]?.['location_id'];
-                if(resultedData.length == 0){
-                    locationData = await this.locationService.findOne({ id: postData?.location_id, deleted: 0 },['location.id','location.location_name']);
+                if (resultedData.length == 0) {
+                    locationData = await this.locationService.findOne({ id: postData?.location_id, deleted: 0 }, ['location.id', 'location.location_name']);
                 }
                 resultedData = {
                     location: locationData,
@@ -1271,17 +1345,17 @@ export class UserController {
                 message: 'success',
             });
         } catch (error) {
-            this.activityLogService.error_log(req.tokenUser?.id,req?.originalUrl, error?.message, error, req);
+            this.activityLogService.error_log(req.tokenUser?.id, req?.originalUrl, error?.message, error, req);
             throw new HttpException(
                 {
-                  statusCode: 401,
-                  success: 0,
-                  error: 1,
-                  message: error?.message,
-                  data: null,
+                    statusCode: 401,
+                    success: 0,
+                    error: 1,
+                    message: error?.message,
+                    data: null,
                 },
                 HttpStatus.BAD_REQUEST,
-              );
+            );
         }
     }
 
@@ -1300,41 +1374,41 @@ export class UserController {
                     ),
                 );
             }
-            if(!recordDetails['settings']){
+            if (!recordDetails['settings']) {
                 recordDetails['settings'] = await this.userSettingsService.save({ user_id: recordDetails['id'], wphone: '', cphone: '', hphone: '' });
             }
             recordDetails['settings'] = <any>(
-                await this.commonArrayService.formatToDto(UserSettingsDto, recordDetails['settings'],req.lang)
+                await this.commonArrayService.formatToDto(UserSettingsDto, recordDetails['settings'], req.lang)
             );
-            if(recordDetails?.['profile_image']){
-                let fileData = await lastValueFrom(this.commonMicroservice.send({cmd: 'check_file'}, {prefix: recordDetails?.['profile_image'] }));
-                if(!fileData){
+            if (recordDetails?.['profile_image']) {
+                let fileData = await lastValueFrom(this.commonMicroservice.send({ cmd: 'check_file' }, { prefix: recordDetails?.['profile_image'] }));
+                if (!fileData) {
                     recordDetails['profile_image'] = '';
                 }
             }
             let dob = recordDetails.dob
             let dateOfHire = recordDetails.date_of_hire
             recordDetails = <any>(
-                await this.commonArrayService.formatToDto(UserProfileDto, recordDetails,req.lang)
+                await this.commonArrayService.formatToDto(UserProfileDto, recordDetails, req.lang)
             );
             /* date translation issue fix */
             recordDetails.dob = dob
             recordDetails.date_of_hire = dateOfHire
             let stateData = await this.companyService.stateList(recordDetails['settings']?.state);
-            if(recordDetails['settings']?.state){
+            if (recordDetails['settings']?.state) {
                 let state = stateData.find(ele => ele.statecode == recordDetails['settings']?.state || ele.state == recordDetails['settings']?.state);
                 recordDetails['settings'].state = state?.['state'];
                 recordDetails['settings']['statecode'] = state?.['statecode'];
             }
-            if(recordDetails.timezone){
+            if (recordDetails.timezone) {
                 let timezoneData = await lastValueFrom(this.timezoneMicroservice.send({ cmd: 'find_postcode' }, {}));
                 recordDetails.timezone = await timezoneData.find((e) => e.timezone_name == recordDetails.timezone);
             }
-            if(recordDetails?.department && req?.lang != 'eng'){
-                let deptName = await this.translatorService.frontendReadTranslation(req.lang,`department_name_${recordDetails?.department?.id}`, `/LC_MESSAGES/OrgAdmin/Department/${recordDetails?.org_id}/${recordDetails?.department?.id}`,`dynamic`);
+            if (recordDetails?.department && req?.lang != 'eng') {
+                let deptName = await this.translatorService.frontendReadTranslation(req.lang, `department_name_${recordDetails?.department?.id}`, `/LC_MESSAGES/OrgAdmin/Department/${recordDetails?.org_id}/${recordDetails?.department?.id}`, `dynamic`);
                 recordDetails.department['name'] = (deptName == '' || deptName == `department_name_${recordDetails?.department?.id}`) ? recordDetails?.department?.name : deptName;
             }
-            if(recordDetails?.locations && req?.lang != 'eng'){
+            if (recordDetails?.locations && req?.lang != 'eng') {
                 if (recordDetails?.locations?.location_name) {
                     let customName = await this.translatorService.frontendReadTranslation(req.lang, `location_name_${recordDetails?.locations['id']}`, `/LC_MESSAGES/OrgAdmin/Location/${recordDetails?.org_id}/${recordDetails?.locations['id']}`, `dynamic`);
                     recordDetails.locations.location_name = (customName == '' || customName == `location_name_${recordDetails?.locations['id']}`) ? recordDetails?.locations['location_name'] : customName;
@@ -1372,17 +1446,17 @@ export class UserController {
                 message: 'success',
             });
         } catch (error) {
-            this.activityLogService.error_log(req.tokenUser?.id,req?.originalUrl, error?.message, error, req);
+            this.activityLogService.error_log(req.tokenUser?.id, req?.originalUrl, error?.message, error, req);
             throw new HttpException(
                 {
-                  statusCode: 401,
-                  success: 0,
-                  error: 1,
-                  message: error?.message,
-                  data: null,
+                    statusCode: 401,
+                    success: 0,
+                    error: 1,
+                    message: error?.message,
+                    data: null,
                 },
                 HttpStatus.BAD_REQUEST,
-              );
+            );
         }
     }
 
@@ -1405,19 +1479,19 @@ export class UserController {
                     ),
                 );
             }
-            if(([appConstant.ROLE.ADMIN,appConstant.ROLE.GLOBALCLIENTENGAGEMENTMANAGER,appConstant.ROLE.ORGADMIN,appConstant.ROLE.CLIENTENGAGEMENTMANAGER,appConstant.ROLE.WCH].includes(req.tokenUser?.role_id)) && !postData?.new_password && !postData?.old_password){
-                let update: any = { password: '', new_password: '', updated_by: req.tokenUser?.id};
+            if (([appConstant.ROLE.ADMIN, appConstant.ROLE.GLOBALCLIENTENGAGEMENTMANAGER, appConstant.ROLE.ORGADMIN, appConstant.ROLE.CLIENTENGAGEMENTMANAGER, appConstant.ROLE.WCH].includes(req.tokenUser?.role_id)) && !postData?.new_password && !postData?.old_password) {
+                let update: any = { password: '', new_password: '', updated_by: req.tokenUser?.id };
                 // const companyDetails = await this.companyService.findOne({ id: recordDetails.org_id, deleted: 0, status: 1 });
-                if(postData?.email && postData?.email == 1){
-                    let passkey= await this.commonService.generatePassKey();
+                if (postData?.email && postData?.email == 1) {
+                    let passkey = await this.commonService.generatePassKey();
                     let encoded = this.commonService.generateMD5(Date.now() + Math.random().toString());
-                    update = { new_password: passkey, activation_key: encoded, updated_by: req.tokenUser?.id};
+                    update = { new_password: passkey, activation_key: encoded, updated_by: req.tokenUser?.id };
                     await this.userService.update(where, update);
                     this.activityLogService.create(recordDetails, update, tableConstant.TBL_USERS, req.tokenUser?.id, 'reset-password');
                     let passwordEncrypt = this.commonService.passwordEncrypt(`${recordDetails.code}:::::${recordDetails.id}:::::${passkey}`);
-                    await this.commonService.makeCurlRequest('POST',process.env.PASSWORDENCRYPTION, {encrypted_assertion: passwordEncrypt},{'Authorization': `Bearer ${encoded}`,'Content-Type': 'application/x-www-form-urlencoded'});
-                    let templateText = await this.communicationTemplateTextService.findOne({org_id:In([recordDetails.org_id,0]),type:19}) 
-                    let templateNewText = await this.urlManageService.onmapUrlContent(templateText?.['new_text'],'mailTemplate') || templateText?.['text'];
+                    await this.commonService.makeCurlRequest('POST', process.env.PASSWORDENCRYPTION, { encrypted_assertion: passwordEncrypt }, { 'Authorization': `Bearer ${encoded}`, 'Content-Type': 'application/x-www-form-urlencoded' });
+                    let templateText = await this.communicationTemplateTextService.findOne({ org_id: In([recordDetails.org_id, 0]), type: 19 })
+                    let templateNewText = await this.urlManageService.onmapUrlContent(templateText?.['new_text'], 'mailTemplate') || templateText?.['text'];
                     let emaildata = {
                         sender: `Zomo Health<noreply@${process.env.DOMAIN}>`,
                         receiver: recordDetails.email,
@@ -1439,7 +1513,7 @@ export class UserController {
                     message: await this.translatorService.frontendReadTranslation(req.lang, postData?.email ? 'Password has been reset & emailed to User.' : 'Password has been reset successfully')
                 });
             }
-            if(req.tokenUser?.role_id != appConstant.ROLE.ADMIN && appConstant.ROLE.GLOBALCLIENTENGAGEMENTMANAGER != req.tokenUser?.role_id && recordDetails.new_password && recordDetails.new_password != ''){
+            if (req.tokenUser?.role_id != appConstant.ROLE.ADMIN && appConstant.ROLE.GLOBALCLIENTENGAGEMENTMANAGER != req.tokenUser?.role_id && recordDetails.new_password && recordDetails.new_password != '') {
                 const isMatch = await argon2.verify(Buffer.from(recordDetails.new_password, 'base64').toString('ascii'), postData?.old_password || postData?.new_password);
                 if (!isMatch) {
                     // throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "Password could not be changed. Please enter the correct old password."));
@@ -1448,29 +1522,29 @@ export class UserController {
             }
             let encoded = this.commonService.generateMD5(Date.now() + Math.random().toString());
             postData['activation_key'] = encoded;
-            await this.userService.update(where, { new_password: postData?.new_password, updated_by: req.tokenUser?.id, activation_key:  encoded});
+            await this.userService.update(where, { new_password: postData?.new_password, updated_by: req.tokenUser?.id, activation_key: encoded });
             let passwordEncrypt = this.commonService.passwordEncrypt(`${recordDetails.code}:::::${recordDetails.id}:::::${postData?.new_password}`);
-            await this.commonService.makeCurlRequest('POST',process.env.PASSWORDENCRYPTION, {encrypted_assertion: passwordEncrypt},{'Authorization': `Bearer ${encoded}`,'Content-Type': 'application/x-www-form-urlencoded'});
+            await this.commonService.makeCurlRequest('POST', process.env.PASSWORDENCRYPTION, { encrypted_assertion: passwordEncrypt }, { 'Authorization': `Bearer ${encoded}`, 'Content-Type': 'application/x-www-form-urlencoded' });
             this.activityLogService.create(recordDetails, { new_password: postData?.new_password }, tableConstant.TBL_USERS, req.tokenUser?.id, 'reset-password');
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
                 success: 1,
                 error: 0,
                 data: null,
-                message: await this.translatorService.frontendReadTranslation(req.lang,'Password has been changed successfully')
+                message: await this.translatorService.frontendReadTranslation(req.lang, 'Password has been changed successfully')
             });
         } catch (error) {
-            this.activityLogService.error_log(req.tokenUser?.id,req?.originalUrl, error?.message, error, req);
+            this.activityLogService.error_log(req.tokenUser?.id, req?.originalUrl, error?.message, error, req);
             throw new HttpException(
                 {
-                  statusCode: 401,
-                  success: 0,
-                  error: 1,
-                  message: error?.message,
-                  data: null,
+                    statusCode: 401,
+                    success: 0,
+                    error: 1,
+                    message: error?.message,
+                    data: null,
                 },
                 HttpStatus.BAD_REQUEST,
-              );
+            );
         }
     }
     @UseGuards(AccessGuard)
@@ -1490,7 +1564,7 @@ export class UserController {
                     ),
                 );
             }
-            const companyDetails = await this.companyService.findOne({ id: recordDetails.org_id, deleted: 0, status: 1 },[tableConstant.COMPANIES.TBL_COMPANY_SETTINGS],['company','companySetting']);
+            const companyDetails = await this.companyService.findOne({ id: recordDetails.org_id, deleted: 0, status: 1 }, [tableConstant.COMPANIES.TBL_COMPANY_SETTINGS], ['company', 'companySetting']);
             if ((postData?.username && (req.tokenUser?.role_id == appConstant.ROLE.ADMIN || appConstant.ROLE.GLOBALCLIENTENGAGEMENTMANAGER == req.tokenUser?.role_id)) || (postData?.username && companyDetails && companyDetails?.companySetting?.lock_username == 0)) {
                 const userName = await this.userService.findOne({
                     username: postData?.username,
@@ -1504,8 +1578,8 @@ export class UserController {
                     );
                 }
             }
-            else{
-                if(postData?.username && companyDetails && companyDetails?.companySetting?.lock_username == 1){
+            else {
+                if (postData?.username && companyDetails && companyDetails?.companySetting?.lock_username == 1) {
                     throw Error(
                         await this.translatorService.frontendReadTranslation(
                             req.lang,
@@ -1522,20 +1596,20 @@ export class UserController {
                 success: 1,
                 error: 0,
                 data: recordDetails,
-                message: await this.translatorService.frontendReadTranslation(req.lang,'Username has been changed successfully.', `/LC_MESSAGES/Dashboard/Profile`,`static`)
+                message: await this.translatorService.frontendReadTranslation(req.lang, 'Username has been changed successfully.', `/LC_MESSAGES/Dashboard/Profile`, `static`)
             });
         } catch (error) {
-            this.activityLogService.error_log(req.tokenUser?.id,req?.originalUrl, error?.message, error, req);
+            this.activityLogService.error_log(req.tokenUser?.id, req?.originalUrl, error?.message, error, req);
             throw new HttpException(
                 {
-                  statusCode: 401,
-                  success: 0,
-                  error: 1,
-                  message: error?.message,
-                  data: null,
+                    statusCode: 401,
+                    success: 0,
+                    error: 1,
+                    message: error?.message,
+                    data: null,
                 },
                 HttpStatus.BAD_REQUEST,
-              );
+            );
         }
     }
     @UseGuards(AccessGuard)
@@ -1557,7 +1631,7 @@ export class UserController {
             }
             const uniqueInsurancePlans = new Set();
             const filteredData = recordDetails.filter(item => !uniqueInsurancePlans.has(item.insurance_plan_name) && uniqueInsurancePlans.add(item.insurance_plan_name));
-            
+
             /*console.log('EmailCampaign HealthPlans =>', filteredData.map((e) => e.insurance_plan_name));*/
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
@@ -1567,24 +1641,24 @@ export class UserController {
                 message: 'success',
             });
         } catch (error) {
-            this.activityLogService.error_log(req.tokenUser?.id,req?.originalUrl, error?.message, error, req);
+            this.activityLogService.error_log(req.tokenUser?.id, req?.originalUrl, error?.message, error, req);
             throw new HttpException(
                 {
-                  statusCode: 401,
-                  success: 0,
-                  error: 1,
-                  message: error?.message,
-                  data: null,
+                    statusCode: 401,
+                    success: 0,
+                    error: 1,
+                    message: error?.message,
+                    data: null,
                 },
                 HttpStatus.BAD_REQUEST,
-              );
+            );
         }
     }
     @UseGuards(AccessGuard)
     @Post('generate-passkey')
     async geenratepasskey(@Req() req: Request, @Res() res: Response, @Body() postData: CreateUserInput) {
         try {
-            if(req.tokenUser?.role_id != appConstant.ROLE.ADMIN && req.tokenUser?.role_id != appConstant.ROLE.SUPPORT_LEVEL_1 && appConstant.ROLE.GLOBALCLIENTENGAGEMENTMANAGER != req.tokenUser?.role_id){
+            if (req.tokenUser?.role_id != appConstant.ROLE.ADMIN && req.tokenUser?.role_id != appConstant.ROLE.SUPPORT_LEVEL_1 && appConstant.ROLE.GLOBALCLIENTENGAGEMENTMANAGER != req.tokenUser?.role_id) {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_ACCESS_DENIED"));
             }
             if (!postData?.id) {
@@ -1600,25 +1674,25 @@ export class UserController {
                     ),
                 );
             }
-            let passkey= await this.commonService.generatePassKey();
-            await this.userSettingsService.update({id: recordDetails['id']}, { otp_key: passkey, otp_created: this.commonDateService.getTodayDate().format('YYYY-MM-DD HH:mm:ss'), otp_generated_by:  req.tokenUser?.role_id});
-            this.activityLogService.create(recordDetails, { otp_key: passkey, otp_created: this.commonDateService.getTodayDate().format('YYYY-MM-DD HH:mm:ss'), otp_generated_by:  req.tokenUser?.role_id}, tableConstant.TBL_USERS, req.tokenUser?.id, 'reset-username');
+            let passkey = await this.commonService.generatePassKey();
+            await this.userSettingsService.update({ id: recordDetails['id'] }, { otp_key: passkey, otp_created: this.commonDateService.getTodayDate().format('YYYY-MM-DD HH:mm:ss'), otp_generated_by: req.tokenUser?.role_id });
+            this.activityLogService.create(recordDetails, { otp_key: passkey, otp_created: this.commonDateService.getTodayDate().format('YYYY-MM-DD HH:mm:ss'), otp_generated_by: req.tokenUser?.role_id }, tableConstant.TBL_USERS, req.tokenUser?.id, 'reset-username');
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
                 success: 1,
                 error: 0,
-                data: {passkey},
+                data: { passkey },
                 message: 'success',
             });
         } catch (error) {
-            this.activityLogService.error_log(req.tokenUser?.id,req?.originalUrl, error?.message, error, req);
+            this.activityLogService.error_log(req.tokenUser?.id, req?.originalUrl, error?.message, error, req);
             throw new HttpException(
                 {
-                  statusCode: 401,
-                  success: 0,
-                  error: 1,
-                  message: error?.message,
-                  data: null,
+                    statusCode: 401,
+                    success: 0,
+                    error: 1,
+                    message: error?.message,
+                    data: null,
                 },
                 HttpStatus.BAD_REQUEST,
             );
@@ -1629,10 +1703,10 @@ export class UserController {
      * @api {post} /user/user-champion-settings User Champion Settings
      * @apiName userChampionSettings
     **/
-   @UseGuards(AccessGuard)
+    @UseGuards(AccessGuard)
     @Post('user-champion-settings')
-    async userChampionSettings(@Req() req: Request, @Res() res: Response, @Body() postData: any){
-        try{
+    async userChampionSettings(@Req() req: Request, @Res() res: Response, @Body() postData: any) {
+        try {
             let user = await this.userService.findUserFullRecord(`user.id = ${req.tokenUser?.id} AND user.status = 1`,
                 [
                     'user.id',
@@ -1660,7 +1734,7 @@ export class UserController {
                     ),
                 );
             }
-            let wellnessAssignData = await this.userService.usersDataWellness(user, '','','userWise');
+            let wellnessAssignData = await this.userService.usersDataWellness(user, '', '', 'userWise');
             if (!wellnessAssignData) {
                 throw new Error(
                     await this.translatorService.frontendReadTranslation(
@@ -1679,7 +1753,7 @@ export class UserController {
                 userData['code'] = user.code;
                 userData['membership_code'] = user.membership_code;
                 let wellnessAssignIds = wellnessAssignData[0]?.['wellnessAssignment']?.map((ele: any) => ele.id);
-                let theme_setting = await this.themeSettingsService.findOne({ org_id: In([user.org_id,0]), reference_id: In([0, wellnessAssignIds]) });
+                let theme_setting = await this.themeSettingsService.findOne({ org_id: In([user.org_id, 0]), reference_id: In([0, wellnessAssignIds]) });
                 userData['theme_setting'] = theme_setting ? theme_setting : null;
                 let logoSet = false;
                 let darkLogoSet = false;
@@ -1702,7 +1776,7 @@ export class UserController {
                             if (user?.['company']?.company_logo_dark && user?.['company']?.company_logo_dark != '' && user?.['company']?.company_logo_dark != null && user?.['company']?.company_logo_dark != undefined) {
                                 userData['company_logo_dark'] = `${S3_URL}companylogos/${ele.org_id}/${user?.['company']?.company_logo_dark}`;
                             } else {
-                                userData['company_logo_dark'] ='';
+                                userData['company_logo_dark'] = '';
                             }
                         }
                     }
@@ -1718,14 +1792,14 @@ export class UserController {
                 message: 'success',
             });
         } catch (error) {
-            this.activityLogService.error_log(req.tokenUser?.id,req?.originalUrl, error?.message, error, req);
+            this.activityLogService.error_log(req.tokenUser?.id, req?.originalUrl, error?.message, error, req);
             throw new HttpException(
                 {
-                statusCode: 401,
-                success: 0,
-                error: 1,
-                message: error?.message,
-                data: null,
+                    statusCode: 401,
+                    success: 0,
+                    error: 1,
+                    message: error?.message,
+                    data: null,
                 },
                 HttpStatus.BAD_REQUEST,
             );
@@ -1733,13 +1807,13 @@ export class UserController {
     }
     @UseGuards(AccessGuard)
     @Post('champions-list')
-    async championList(@Req() req: Request, @Res() res: Response, @Body() postData: any){
-        try{
-            if(!postData.membership_code){
+    async championList(@Req() req: Request, @Res() res: Response, @Body() postData: any) {
+        try {
+            if (!postData.membership_code) {
                 throw new Error(
-                    await this.translatorService.frontendReadTranslation( 
+                    await this.translatorService.frontendReadTranslation(
                         req.lang,
-                        'ERR_REQUIRED_PARAM_MISSING',   
+                        'ERR_REQUIRED_PARAM_MISSING',
                     ),
                 );
             }
@@ -1759,14 +1833,14 @@ export class UserController {
                 message: 'success',
             });
         } catch (error) {
-            this.activityLogService.error_log(req.tokenUser?.id,req?.originalUrl, error?.message, error, req);
+            this.activityLogService.error_log(req.tokenUser?.id, req?.originalUrl, error?.message, error, req);
             throw new HttpException(
                 {
-                statusCode: 401,
-                success: 0,
-                error: 1,
-                message: error?.message,
-                data: null,
+                    statusCode: 401,
+                    success: 0,
+                    error: 1,
+                    message: error?.message,
+                    data: null,
                 },
                 HttpStatus.BAD_REQUEST,
             );

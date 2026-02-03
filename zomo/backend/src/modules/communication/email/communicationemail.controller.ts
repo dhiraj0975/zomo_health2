@@ -192,7 +192,12 @@ export class CommunicationEmailController {
                     let resultData = {};
                     await Promise.all(
                         emailInbox['list'].map(async item => {
-                            const statusInfo = emailStatusMap.get(item.id) || { read: 0, important: 0, count: 0 };
+                            const statusInfo = emailStatusMap.get(item.id)
+                                || {
+                                read: 0,
+                                important: 0,
+                                count: 0
+                            };
                             resultData[item.id] = {
                                 ...item,
                                 status: statusInfo.read,
@@ -217,7 +222,12 @@ export class CommunicationEmailController {
                             item.created_date = formattedDate + ' ' + this.commonDateService.getTodayDate(addedDate).format('HH:mm');
                         })
                     );
-                    let emailCount = await this.communicationHelperService.getEmailCounting({ coach_id: userId }, req);
+                    let emailCount = await this.communicationHelperService.getEmailCounting(
+                        {
+                            coach_id: userId
+                        },
+                        req
+                    );
                     emailInbox['emailCount'] = emailCount || {
                         inbox: 0,
                         sent: 0,
@@ -265,7 +275,10 @@ export class CommunicationEmailController {
                     message: 'success',
                 });
             }
-            let where = `communication.status !=0 `;
+            let where = `communication.status != 0 `;
+            if (postData?.type && postData?.type == 'inbox_draft') {
+                where = `communication.status IN ( 0 , 1 ) `;
+            }
             if (postData?.parent_id) {
                 where += ` AND communication.parent_id = '${postData?.parent_id}' `;
             }
@@ -285,7 +298,12 @@ export class CommunicationEmailController {
                 await this.commonArrayService.formatToDto(CommunicationEmailDto, resultedData['list'], req.lang)
             );
             if (postData?.type && postData?.type == 'inbox_draft') {
-                let emailCount = await this.communicationHelperService.getEmailCounting({ coach_id: userId }, req);
+                let emailCount = await this.communicationHelperService.getEmailCounting(
+                    {
+                        coach_id: userId
+                    },
+                    req
+                );
                 resultedData['emailCount'] = emailCount || {
                     inbox: 0,
                     sent: 0,
@@ -449,6 +467,16 @@ export class CommunicationEmailController {
                 if (allMailAttechments.length > 0) {
                     email.forEach(item => {
                         const attachments = allMailAttechments.filter(att => att.mail_id == item.id);
+                        attachments.forEach(att => {
+                            att.name = (
+                                att.name == '' ||
+                                att.name == null ||
+                                att.name == undefined
+                            ) ?
+                                ''
+                                :
+                                S3_URL + '/Email/' + att.name;
+                        });
                         if (attachments.length > 0) {
                             item['attachments'] = attachments;
                         } else {
@@ -475,7 +503,52 @@ export class CommunicationEmailController {
                     message: 'success',
                 });
             }
-            if (postData?.type && postData?.type == 'inbox_view') {
+            if (postData?.type && postData?.type == 'inbox_draft') {
+                const where = { id: postData?.id, from_user_id: userId, is_send: 0 };
+                let draftDetails = await this.communicationEmailService.findOne(where);
+                if (!draftDetails) {
+                    throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_RECORD_NOT_FOUND"));
+                }
+                draftDetails = <any>(
+                    await this.commonArrayService.formatToDto(CommunicationEmailDto, draftDetails, req.lang)
+                );
+                let emailToDetails = await this.communicationEmailToService.listRecord(
+                    {
+                        mail_id: draftDetails.id
+                    }
+                );
+                draftDetails['email_to'] = emailToDetails.map(item => item.user_id);
+                let attachmentDetails = await this.emailAttachmentsService.listRecord(
+                    {
+                        mail_id: draftDetails.id
+                    }
+                );
+                draftDetails['attachments'] = attachmentDetails.map(item => ({
+                    id: item.id,
+                    name: item.name,
+                    attachment_type_id: item.attachment_type_id,
+                    status: item.status,
+                }));
+                draftDetails['attachments'].map((att) => {
+                    att.name =
+                        (
+                            att.name == '' ||
+                            att.name == null ||
+                            att.name == undefined
+                        ) ?
+                            ''
+                            :
+                            S3_URL + '/Email/' + att.name;
+                });
+                return res.status(HttpStatus.OK).json({
+                    statusCode: 200,
+                    success: 1,
+                    error: 0,
+                    data: draftDetails,
+                    message: 'success',
+                });
+            }
+            if (postData?.type && (postData?.type == 'inbox_view' || postData?.type == 'inbox_draft')) {
                 return res.status(HttpStatus.OK).json({
                     statusCode: 200,
                     success: 1,
@@ -984,6 +1057,7 @@ export class CommunicationEmailController {
             let description = postData?.description || '';
             let mailId = postData?.id || 0;
             let emailTo = postData?.email_to || [];
+            let selectedRoleId = postData?.selected_role_id || 0;
             let draftEmailData: any = {
                 from_user_id: userId,
                 subject: subject,
@@ -1000,9 +1074,22 @@ export class CommunicationEmailController {
             }
             if (mailId == 0) {
                 let savedEmailData = await this.communicationEmailService.save(draftEmailData);
-                mailId = savedEmailData?.['id'];
+                if (savedEmailData) {
+                    if (savedEmailData?.['id']) {
+                        mailId = savedEmailData?.['id'];
+                    }
+                    else if (savedEmailData['identifiers']?.[0]?.id) {
+                        mailId = savedEmailData['identifiers'][0].id;
+                    }
+                    else if (savedEmailData['generatedMaps']?.[0]?.id) {
+                        mailId = savedEmailData['generatedMaps'][0].id;
+                    }
+                    else if (savedEmailData['raw']?.[0]?.id) {
+                        mailId = savedEmailData['raw'][0].id;
+                    }
+                }
             } else {
-                if(postData?.type && postData?.type == 'send_email'){
+                if (postData?.type && postData?.type == 'send_email') {
                     draftEmailData.is_send = 1;
                 }
                 await this.communicationEmailService.update({ id: mailId }, draftEmailData);
@@ -1039,7 +1126,7 @@ export class CommunicationEmailController {
                     };
                     await this.communicationEmailToService.save(emailToData);
                 }
-                if(postData?.type && postData?.type == 'send_email'){
+                if (postData?.type && postData?.type == 'send_email') {
                     await this.communicationEmailToService.update(
                         {
                             mail_id: mailId,
@@ -1075,7 +1162,7 @@ export class CommunicationEmailController {
                         let fileName = `${this.commonDateService.getTodayDate().format('YYYY-MM-DD-HH-mm-ss')}_${fileData.filename}`;
                         let fileExtention = fileData.originalname.split('.')[fileData.originalname.split('.').length - 1];
                         let attachmentType = emailAttachmentTypes.find(x => x.extension.toLowerCase() == fileExtention.toLowerCase());
-                        fileData.filename = `Email/${userId}/${fileName}`;
+                        fileData.filename = `Email/${fileName}`;
                         await lastValueFrom(this.commonMicroservice.send({ cmd: 'upload_file' }, { path: path.resolve(fileData.path), filename: fileData.filename, userBucket: 'private' }));
                         let attachmentData = {
                             mail_id: mailId,
@@ -1092,6 +1179,7 @@ export class CommunicationEmailController {
                 subject: subject,
                 description: description,
                 email_to: emailTo,
+                selected_role_id: selectedRoleId
             }
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,

@@ -567,6 +567,7 @@ export class S3FileUploader {
         }
         const command = new ListObjectsV2Command(params);
         const data = await S3Com.send(command);
+        // console.log('[listAssetsPaginate] prefix:', key, '| returned objects:', data?.Contents?.length ?? 0);
         const search = '';
         const filteredContents = data?.Contents?.filter(item => item?.Key?.includes(search));
 

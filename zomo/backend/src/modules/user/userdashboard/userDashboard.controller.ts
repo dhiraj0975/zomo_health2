@@ -1309,7 +1309,7 @@ export class UserDashboardController {
                                 if(biometricSetting['qualifie_type']==1){
                                     biometricResult[widgetbiokey]['data']['GoalActualstatus'] = '';
                                     biometricResult[widgetbiokey]['data']['Goalstatus'] = '---';
-                                    if(widgetbioval['data']['value1'] && widgetbioval['data']['value1']!='' && widgetbioval['data']['value1']!=0 && biometricSetting['option']){
+                                    if(widgetbioval['data']['value1'] && widgetbioval['data']['value1']!='' && widgetbioval['data']['value1']!=0 && biometricSetting.hasOwnProperty('option')){
                                         if(widgetbioval['biometricsList']['biometric']=='HDL Cholesterol'){
                                             biometricResult[widgetbiokey]['data']['Goalstatus'] =  widgetbioval['data']['value1'] + ((widgetbioval['data']['value1']*biometricSetting['option'])/100) + '  or higher';
                                             biometricResult[widgetbiokey]['data']['GoalActualstatus'] = widgetbioval['data']['value1'] + ((widgetbioval['data']['value1']*biometricSetting['option'])/100); 
@@ -1327,7 +1327,7 @@ export class UserDashboardController {
                                             biometricResult[widgetbiokey]['data']['Goalstatus'] = String(biometricResult[widgetbiokey]['data']['Goalstatus']).replace(/or/g, "inches or");
                                         } 
                                     } 
-                                    if(widgetbioval['data']['value1'] && widgetbioval['data']['value2'] && biometricSetting['option'] && biometricResult[widgetbiokey]['data']['GoalActualstatus']!='' && ((widgetbioval['biometricsList']['biometric']=='HDL Cholesterol' &&  widgetbioval['data']['value2'] >= widgetbioval['data']['value1'] && widgetbioval['data']['value2'] >= biometricResult[widgetbiokey]['data']['GoalActualstatus'] && ((widgetbioval['data']['value2']==widgetbioval['data']['value1']) ? widgetbioval['data']['value2']>=widgetbioval['start_range_male'] : '1')) || (widgetbioval['biometricsList']['biometric']!='HDL Cholesterol' && widgetbioval['data']['value1'] >= widgetbioval['data']['value2'] &&  widgetbioval['data']['value2'] <= biometricResult[widgetbiokey]['data']['GoalActualstatus'] && ((widgetbioval['data']['value2']==widgetbioval['data']['value1']) ? widgetbioval['data']['value2']<=widgetbioval['end_range_male'] : '1')))){
+                                    if(widgetbioval['data']['value1'] && widgetbioval['data']['value2'] && biometricSetting.hasOwnProperty('option') && biometricResult[widgetbiokey]['data']['GoalActualstatus']!='' && ((widgetbioval['biometricsList']['biometric']=='HDL Cholesterol' &&  widgetbioval['data']['value2'] >= widgetbioval['data']['value1'] && widgetbioval['data']['value2'] >= biometricResult[widgetbiokey]['data']['GoalActualstatus'] && ((widgetbioval['data']['value2']==widgetbioval['data']['value1']) ? widgetbioval['data']['value2']>=widgetbioval['start_range_male'] : '1')) || (widgetbioval['biometricsList']['biometric']!='HDL Cholesterol' && widgetbioval['data']['value1'] >= widgetbioval['data']['value2'] &&  widgetbioval['data']['value2'] <= biometricResult[widgetbiokey]['data']['GoalActualstatus'] && ((widgetbioval['data']['value2']==widgetbioval['data']['value1']) ? widgetbioval['data']['value2']<=widgetbioval['end_range_male'] : '1')))){
                                         biometricResult[widgetbiokey]['data']['status'] = 'Goal met';
                                         biometricResult[widgetbiokey]['data']['color'] = regionColor['Low risk'];
                                         Is_Completed++;
@@ -1395,10 +1395,10 @@ export class UserDashboardController {
                                                 }
                                             }
                                             if(sameStatus==''){
-                                                biometricResult[widgetbiokey]['data']['Goalstatus'] += "<br>" + await this.commonHealthService.getClassificationAchivement(HRAOptions,biometricResult[widgetbiokey]['data']['Goalactualstatus']);
+                                                biometricResult[widgetbiokey]['data']['Goalstatus'] += "" + await this.commonHealthService.getClassificationAchivement(HRAOptions,biometricResult[widgetbiokey]['data']['Goalactualstatus']);
                                             }
                                             else{
-                                                biometricResult[widgetbiokey]['data']['Goalstatus'] += "<br>" + sameStatus;
+                                                biometricResult[widgetbiokey]['data']['Goalstatus'] += "" + sameStatus;
                                             } 
                                     }else{
                                         biometricResult[widgetbiokey]['data']['Goalstatus'] = '---';
@@ -1449,7 +1449,7 @@ export class UserDashboardController {
                                     let AcceptRangecheckgoal = 0;
                                     biometricResult[widgetbiokey]['data']['GoalActualstatus'] = '';
                                     biometricResult[widgetbiokey]['data']['Goalstatus'] = '---';
-                                    if(widgetbioval['data']['value1'] && widgetbioval['data']['value1']!='' && widgetbioval['data']['value1']!=0 && biometricSetting['option']){
+                                    if(widgetbioval['data']['value1'] && widgetbioval['data']['value1']!='' && widgetbioval['data']['value1']!=0 && biometricSetting.hasOwnProperty('option')){
                                         if(widgetbioval['data']['value1'] > widgetbioval['start_range_male'] && widgetbioval['data']['value1'] < widgetbioval['end_range_male']){
                                             AcceptRangecheckgoal = 1;
                                         }
@@ -1471,7 +1471,7 @@ export class UserDashboardController {
                                             biometricResult[widgetbiokey]['data']['Goalstatus'] = String(biometricResult[widgetbiokey]['data']['Goalstatus']).replace(/or/g, "inches or");
                                         } 
                                     } 
-                                    if(widgetbioval['data']['value1'] && widgetbioval['data']['value2'] && biometricSetting['option'] && biometricResult[widgetbiokey]['data']['GoalActualstatus']!='' && ((widgetbioval['biometricsList']['biometric']=='HDL Cholesterol' &&  widgetbioval['data']['value2'] >= widgetbioval['data']['value1'] && widgetbioval['data']['value2'] >= biometricResult[widgetbiokey]['data']['GoalActualstatus'] && ((widgetbioval['data']['value2']==widgetbioval['data']['value1']) ? widgetbioval['data']['value2']>=widgetbioval['start_range_male'] : '1')) || (widgetbioval['biometricsList']['biometric']!='HDL Cholesterol' && widgetbioval['data']['value1'] >= widgetbioval['data']['value2'] &&  widgetbioval['data']['value2'] <= biometricResult[widgetbiokey]['data']['GoalActualstatus'] && ((widgetbioval['data']['value2']==widgetbioval['data']['value1']) ? widgetbioval['data']['value2']<=widgetbioval['end_range_male'] : '1')))){
+                                    if(widgetbioval['data']['value1'] && widgetbioval['data']['value2'] && biometricSetting.hasOwnProperty('option') && biometricResult[widgetbiokey]['data']['GoalActualstatus']!='' && ((widgetbioval['biometricsList']['biometric']=='HDL Cholesterol' &&  widgetbioval['data']['value2'] >= widgetbioval['data']['value1'] && widgetbioval['data']['value2'] >= biometricResult[widgetbiokey]['data']['GoalActualstatus'] && ((widgetbioval['data']['value2']==widgetbioval['data']['value1']) ? widgetbioval['data']['value2']>=widgetbioval['start_range_male'] : '1')) || (widgetbioval['biometricsList']['biometric']!='HDL Cholesterol' && widgetbioval['data']['value1'] >= widgetbioval['data']['value2'] &&  widgetbioval['data']['value2'] <= biometricResult[widgetbiokey]['data']['GoalActualstatus'] && ((widgetbioval['data']['value2']==widgetbioval['data']['value1']) ? widgetbioval['data']['value2']<=widgetbioval['end_range_male'] : '1')))){
                                         biometricResult[widgetbiokey]['data']['status'] = 'Goal met';
                                         biometricResult[widgetbiokey]['data']['color'] = regionColor['Low risk'];
                                         Is_Completed++;
@@ -1657,7 +1657,7 @@ export class UserDashboardController {
                             widgetbioheader[3]['Color'] = regionColor['Very High risk'];
                         }
                         // changes added for new design
-                        widgetbioheader[3]['Status'] = widgetbioheader[3]['Title'];
+                        // widgetbioheader[3]['Status'] = widgetbioheader[3]['Title']; // ZOMO-4517
                         widgetbioheader = Object.fromEntries(
                             Object.entries(widgetbioheader).sort(
                                 ([a], [b]) =>  a.localeCompare(b)

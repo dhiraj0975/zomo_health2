@@ -1134,7 +1134,7 @@ export class WeightProgressChallengeService {
                 if(bioweightuserss.has(user.id)){
                     result['userweight'] = bioweightuserss.get(user.id);
                 }
-                let Allusers = await this.bioWeightService.listRecord(`weight.schedule_id = ${schedule_id} AND weight.status = 1`,{'weight.added_date': 'DESC', 'weight.id': 'DESC'},['weight.user_id','user.profile_image','user.first_name','user.last_name'],'weight.user_id', ['user']);
+                let Allusers = await this.bioWeightService.listRecord(`weight.schedule_id = ${schedule_id} AND weight.status = 1 AND weight.status = 1`,{'weight.added_date': 'DESC', 'weight.id': 'DESC'},['weight.user_id','user.profile_image','user.first_name','user.last_name'],'weight.user_id', ['userinner']);
                 let teammemberscore = [];
                 let k = 0;
                 for (let tuser of Allusers) {

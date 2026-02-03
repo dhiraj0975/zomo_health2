@@ -26,6 +26,7 @@ export class CreateCommunicationEmailCampaignRequestsInput {
     @Allow() testemail: string;
     @Allow() sendtestmailstatus: number;
     @Allow() for_org_id: number;
+    @Allow() organization: any; 
     @Allow() with_option: string;
     @Allow() org_filter_data: string;
     @Allow() use_def_tem_id: number;

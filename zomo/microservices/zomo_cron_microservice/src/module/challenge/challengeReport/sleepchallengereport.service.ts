@@ -393,6 +393,7 @@ export class SleepChallengeReportService {
                 if (result_type == 1) {
                     let resultData = {
                         user_id: userId,
+                        user_code: user?.code || '',
                         first_name: user.first_name || '',
                         last_name: user.last_name || '',
                         company_name: user.company?.company_name || '',
@@ -428,6 +429,7 @@ export class SleepChallengeReportService {
                     let resultData = {
                         user: userDetails,
                         user_id: userId,
+                        user_code: user?.code || '',
                         first_name: user.first_name || '',
                         last_name: user.last_name || '',
                         company_name: user.company?.company_name || '',
@@ -465,7 +467,11 @@ export class SleepChallengeReportService {
                     if (daylogDiff !== 0) {
                         return daylogDiff;
                     }
-                    return (b?.['total_sleep'] ?? 0) - (a?.['total_sleep'] ?? 0);
+                    const totalSleepDiff = (b?.['total_sleep'] ?? 0) - (a?.['total_sleep'] ?? 0);
+                    if (totalSleepDiff !== 0) {
+                        return totalSleepDiff;
+                    }
+                    return (b?.['user_code'] ?? 0) - (a?.['user_code'] ?? 0);
                 });
                 let rank = 1;
                 if (result_type == 1) {

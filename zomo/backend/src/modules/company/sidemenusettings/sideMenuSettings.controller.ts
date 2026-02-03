@@ -226,12 +226,48 @@ export class SideMenuSettingsController {
                     postData
                 );
             }
-            if(postData?.datasettingmenu){
+            if (postData?.showmenulist) {
+                try {
+                    const navIconNameList = appConstant.NAV_ICON_NAME_LIST;
+                    const iconLookup = navIconNameList.reduce((acc, cur) => {
+                        if (cur.icon !== null && cur.icon !== undefined && String(cur.icon).toLowerCase() !== 'null') {
+                            acc[cur.title] = cur.icon;
+                        }
+                        return acc;
+                    }, {} as Record<string, string>);
+
+                    let showMenu = JSON.parse(postData.showmenulist);
+                    const updateIconsRecursively = (node: any) => {
+                        if (!node || typeof node !== 'object') return;
+                        if (node.Mainmenuname && iconLookup[node.Mainmenuname]) {
+                            node.Newiconmenus = iconLookup[node.Mainmenuname];
+                        }
+                        if (node.Submenuname && iconLookup[node.Submenuname]) {
+                            node.Newiconmenus = iconLookup[node.Submenuname];
+                        }
+                        if (Array.isArray(node.Submenus)) {
+                            node.Submenus.forEach((child: any) => updateIconsRecursively(child));
+                        }
+                    };
+
+                    Object.keys(showMenu).forEach(key => {
+                        updateIconsRecursively(showMenu[key]);
+                    });
+
+                    postData.showmenulist = JSON.stringify(showMenu);
+                } catch (err) {
+                    console.error('Error updating Newiconmenus:', err);
+                }
+            }
+
+            console.log('update side menu settings postData', postData.showmenulist);
+
+            if (postData?.datasettingmenu) {
                 let sideMenuSettingObj = {
                     'showmenulist': JSON.parse(postData?.showmenulist),
                     'datasettingmenu': JSON.parse(postData?.datasettingmenu),
                 }
-                await this.sideMenuSettingsService.sideMenuSettingJson(sideMenuSettingObj,postData?.org_id)
+                await this.sideMenuSettingsService.sideMenuSettingJson(sideMenuSettingObj, postData?.org_id)
             }
             await this.sideMenuSettingsService.update(where, postData);
             let resultDetails = {
@@ -247,7 +283,7 @@ export class SideMenuSettingsController {
                 statusCode: 200,
                 success: 1,
                 error: 0,
-                data: null,
+                data: postData,
                 message: 'The Organization menu setting has been updated successfully.',
             });
         } catch (error) {
@@ -310,7 +346,7 @@ export class SideMenuSettingsController {
                         dynamicDatas[`Plans_${item.org_id}`] = 'My Plan';
                         await this.translatorService.DynamicEngJsonData('Common', item.org_id, dynamicDatas,'Edit','Menu');
                     }
-                    if (key == 'Devices_Sync' && resultDetails.showmenulist[key]?.['Mainmenucustomname'] == '') {
+                    /*if (key == 'Devices_Sync' && resultDetails.showmenulist[key]?.['Mainmenucustomname'] == '') {
                         const dynamicDatas = {};
                         dynamicDatas[`Devices Sync_${item.org_id}`] = 'Fitbit Sync';
                         await this.translatorService.DynamicEngJsonData('Common', item.org_id, dynamicDatas,'Edit','Menu');
@@ -324,7 +360,7 @@ export class SideMenuSettingsController {
                             dynamicDatas[`${key}_${item.org_id}`] = await this.translatorService.frontendReadTranslation(req.lang,'Media', `/LC_MESSAGES/Media/Media`,`static`);
                         }
                         await this.translatorService.DynamicEngJsonData('Common', item.org_id, dynamicDatas,'Edit','Menu');
-                    }
+                    }*/
                 }
                 let fileName = `side_menu_${item.org_id}.json`
                 let bucketFileName = `local/sidemenu/${item.org_id}/${fileName}`;

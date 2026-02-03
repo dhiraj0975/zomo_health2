@@ -14,6 +14,7 @@ export class CreateThemeSettingsInput {
     @Allow() progress_hra_very_high_color: string;
     @Allow() progress_very_high_color: string;
     @Allow() table_color: string;
+    @Allow() background_color: string;
     @Allow() enable_theme_mode: number;
     @Allow() status: number;
     @Allow() reference_id: number;

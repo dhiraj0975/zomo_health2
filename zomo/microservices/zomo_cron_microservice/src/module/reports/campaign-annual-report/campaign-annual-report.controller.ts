@@ -50,11 +50,15 @@ export class CampaignAnnualReportController {
     async campaignAnnualReport() {
         try {
             const reportWhereClause = {status: 0, report_type: 'CRA', system_type: System_Type.NEW, cron_status: CronStatus.COMPILATION}
-            let reportData: IncentiveReportsEntity[] | [] = await this.incentiveReportsService.getAll(reportWhereClause,['id','user_id','condition','camp_id','org_id','membership_code','system_type','cron_status','user_role'],{id: "ASC"})
+            let reportData: IncentiveReportsEntity[] | [] = await this.incentiveReportsService.getAll(reportWhereClause,['id','user_id','condition','camp_id','org_id','membership_code','system_type','cron_status','user_role','start_date_range','end_date_range'],{id: "ASC"})
             if (reportData.length == 0) {
                 return true;
             }
             for(let record of reportData){
+                if(record?.start_date_range && record?.end_date_range){
+                    const startYear = this.commonDateService.getTodayDate(record?.start_date_range).format('YYYY');
+                    record['year'] = startYear;
+                }
                 await this.downloadPpt(record);
             }
             return true;
@@ -75,7 +79,14 @@ export class CampaignAnnualReportController {
             const activePlugins = await this.activePluginService.getActivePluginList(company_id);
             let companyData = await this.companyService.findOne(`company.id = ${company_id} AND company.status != 2`,[tableConstant.COMPANIES.TBL_COMPANY_SETTINGS,tableConstant.HEALTH_ASSESSMENT.TBL_HA_ASSESSMENT_SETTINGS],['company','companySetting.id','companySetting.is_emo_health_asssessments','assessment_settings.id','assessment_settings.status']);
             let companyDetails = <any>(await this.commonArrayService.formatToDto(CompaniesDto, companyData, 'eng'));
-            let campaignsData = await this.campaignDataService.getCampaignList(`campaign.organization_id = ${company_id} AND campaign.status = 1`,{ end_date: 'DESC' },['campaign.id', 'campaign.campaign_name', 'campaign.tab_titled', 'campaign.tab_order','campaign.start_date','campaign.end_date'],0);
+            let campaignWhere =`campaign.organization_id = ${company_id} AND campaign.status = 1`;
+            if(data?.camp_id){
+                campaignWhere += ` AND campaign.id IN (${data?.camp_id})`;
+            }
+            if(data.year){
+                campaignWhere += ` AND(campaign.start_date <= '${data?.year}-12-31' AND campaign.end_date >= '${data?.year}-01-01')`;
+            }
+            let campaignsData = await this.campaignDataService.getCampaignList(campaignWhere,{ end_date: 'DESC' },['campaign.id', 'campaign.campaign_name', 'campaign.tab_titled', 'campaign.tab_order','campaign.start_date','campaign.end_date'],0);
             let where = `user.org_id = ${company_id} AND user.role_id in(2,16)`;
             if(data?.condition?.includes('user.status')){
                 where += ` AND user.status = 1`;
@@ -88,7 +99,7 @@ export class CampaignAnnualReportController {
             let showCombinedData = true;
             let totalSpouse = userList?.filter(user => user.role_id == 16)?.length;
             showCombinedData = totalSpouse == 0 ? false : true;
-            let year = this.commonDateService.getTodayDate().format('YYYY');
+            let year = this.commonDateService.getTodayDate(data?.year ?? null).format('YYYY');
             let graphYear;
             let userListCombined = [];
             let userListEmployee = [];
@@ -299,7 +310,9 @@ export class CampaignAnnualReportController {
                         };
                     }
                 }
-
+                if(data?.camp_id){
+                    year = Object.keys(campaignsDetails)[0];
+                }
                 const dynamicData = JSON.parse(JSON.stringify(reportFieldsConstant?.AnnualReportFieldForPPT));
                 dynamicData.presentationTitle = dynamicData.presentationTitle + year;
                 dynamicData.company_name = companyDetails?.company_name;
@@ -514,7 +527,7 @@ export class CampaignAnnualReportController {
                 }
                 dynamicData.slides[10]['data']['year'] = year;
                 /* biometric Summary */
-                let biometricSummary = userList.length ? await this.biometricSummary(userList, year) : [];
+                let biometricSummary = userList.length ? await this.biometricSummary(userList, year, data?.camp_id) : [];
                 /* biometric Summary */
                 if(Object.keys(biometricSummary)?.length > 0){
                     graphYear = biometricSummary == 1 ? `${Object.keys(biometricSummary)[0]}` : `${Object.keys(biometricSummary)[0]}-${Object.keys(biometricSummary)[Object.keys(biometricSummary).length - 1]}`;
@@ -753,7 +766,7 @@ export class CampaignAnnualReportController {
             throw new Error(error.message);
         }
     }
-    async biometricSummary(userList, currentYear) {
+    async biometricSummary(userList, currentYear, camp_id = null) {
         try{
             const mergedMap = new Map();
             const groupedByYear = {};
@@ -794,12 +807,15 @@ export class CampaignAnnualReportController {
                 groupedByYear[entry.years].push(entry);
             }
             for(let year of Object.keys(groupedByYear)){
-                let resultData: any = await this.healthReportService.generateBiometricSummary(userArray,{
-                    role_id: 11,
-                    source_option: [1,2,3],
-                    start_date: year + '-01-01',
-                    end_date: year + '-12-31',
-                });
+                let resultData: any = await this.healthReportService.generateBiometricSummary(userArray,
+                    {
+                        role_id: 11,
+                        source_option: [1,2,3],
+                        start_date: year + '-01-01',
+                        end_date: year + '-12-31',
+                    },
+                    currentYear == year && camp_id ? camp_id : null,
+                );
                 
                 result[year] = {
                     avg_bmi: resultData?.['biometric_data']?.length ? resultData?.['biometric_data'][0]['average'] : null,
@@ -821,7 +837,7 @@ export class CampaignAnnualReportController {
                     total_participant: resultData?.['totalParticipant'],
                     screeningResult: resultData?.['screeningResult'],
                 };
-                if(currentYear == year){
+                if(currentYear == year || camp_id){
                     result[year]['screeningBiometricResult'] = resultData?.['screeningBiometricResult'];
                 }
             }

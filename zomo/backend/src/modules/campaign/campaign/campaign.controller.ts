@@ -271,6 +271,16 @@ export class CampaignController {
             if (postData?.company_id) {
                 where += ` AND campaign.organization_id In(${postData?.company_id.toString().split(',')}) `;
             }
+            if (postData.date) {
+                const formats = {
+                    4: "YYYY",
+                    7: "YYYY-MM",
+                    10: "YYYY-MM-DD"
+                };
+                const format = formats[postData.date.length] || "YYYY-MM-DD";
+                const date = moment(postData.date, format).format("YYYY-MM-DD");
+                where += ` AND(campaign.start_date <= '${date}-12-31' AND campaign.end_date >= '${date}-01-01')`;
+            }
             const order = postData && postData?.order ? postData?.order : 'DESC';
             const orderBy = postData && postData?.order_by ? postData?.order_by : 'id';
             if(postData.pointsleaderboardpopup){
@@ -974,6 +984,71 @@ export class CampaignController {
                   error: 1,
                   message: error?.message,
                   data: null,
+                },
+                HttpStatus.BAD_REQUEST,
+            );
+        }
+    }
+
+    @Post('year-list')
+    async yearList(@Req() req: Request, @Res() res: Response, @Body() postData: PaginateWithCampaignInput) {
+        try {
+            postData = this.commonService.sanitizePayload(postData);
+            let where = `campaign.status != 2 `;
+            if (postData?.id) {
+                where += ` AND campaign.id in(${postData?.id})`;
+            }
+            if (postData?.search_str) {
+                where += this.commonService.generateDynamicSearchQuery(postData?.search_str, 'campaign.campaign_name');
+            }
+            if (appConstant.ROLE.CLIENTENGAGEMENTMANAGER == req.tokenUser?.role_id) {
+                let resultedData = await this.clientManagerAssignService.listRecord({ user_id: req.tokenUser?.id, status: 1 }, null);
+                if (resultedData.length > 0) {
+                    postData.company_id = resultedData.map((e) => e.org_id).join(',');
+                }
+                else {
+                    return res.status(HttpStatus.OK).json({
+                        statusCode: 200,
+                        success: 1,
+                        error: 0,
+                        data: [],
+                        message: 'success',
+                    });
+                }
+            }
+            if (postData?.company_id) {
+                where += ` AND campaign.organization_id In(${postData?.company_id.toString().split(',')}) `;
+            }
+            let result = await this.campaignService.listRecord(where);
+            let yearArr = [];
+            if (result && result.length) {
+                for (const item of result) {
+                    const startYear = this.commonDateService.getTodayDate(item.start_date).format('YYYY');
+                    const endYear = this.commonDateService.getTodayDate(item.end_date).format('YYYY');
+                    if (!yearArr.includes(startYear)) {
+                        yearArr.push(startYear);
+                    }
+                    if (!yearArr.includes(endYear)) {
+                        yearArr.push(endYear);
+                    }
+                }
+            }
+            return res.status(HttpStatus.OK).json({
+                statusCode: 200,
+                success: 1,
+                error: 0,
+                data: yearArr,
+                message: 'success',
+            });
+        } catch (error) {
+            this.activityLogService.error_log(req.tokenUser?.id, req?.originalUrl, error?.message, error, req);
+            throw new HttpException(
+                {
+                    statusCode: 401,
+                    success: 0,
+                    error: 1,
+                    message: error?.message,
+                    data: null,
                 },
                 HttpStatus.BAD_REQUEST,
             );

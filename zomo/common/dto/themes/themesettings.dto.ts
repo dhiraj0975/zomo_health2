@@ -13,6 +13,7 @@ export class ThemeSettingsDto {
     @Expose() progress_hra_high_color: string;
     @Expose() progress_hra_very_high_color: string;
     @Expose() table_color: string;
+    @Expose() background_color: string;
     @Expose() enable_theme_mode: number;
     @Expose() reference_id: number;
     @Expose() status: number;

@@ -413,13 +413,16 @@ export class CoachesService extends BaseService<CoachesEntity>{
       }
   }
   async globalCoachList(condition: any, orderBy: any = null, field: any[] = ['coach'], groupBy: any = null) {
-      if (!orderBy) {
-          orderBy = { id: 'DESC' };
-      }
-      let query = this.readReplicaCoachRepository.createQueryBuilder('coach')
-        .where(condition)
-        .select(field)
-        .orderBy(`coach.${Object.keys(orderBy)[0]}`, orderBy[Object.keys(orderBy)[0]]);
-        return await query.getMany();
+    if (!orderBy) {
+      orderBy = { id: 'DESC' };
+    }
+    let query = this.readReplicaCoachRepository.createQueryBuilder('coach')
+      .where(condition)
+      .select(field)
+      .orderBy(`coach.${Object.keys(orderBy)[0]}`, orderBy[Object.keys(orderBy)[0]]);
+    if (groupBy) {
+      query = query.groupBy(groupBy);
+    }
+    return await query.getMany();
   }
 }

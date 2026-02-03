@@ -1,4 +1,4 @@
-import { appConstant, CommonFileService } from '@common-constants';
+import { appConstant, CommonArrayService, CommonFileService } from '@common-constants';
 import {
     Body,
     Controller,
@@ -29,6 +29,7 @@ const S3COMMUNICATION_URL = process.env.AWS_COMMUNICATION_BUCKET_URL;
 export class EmailAssetsController {
     constructor(
         private readonly commonFileService: CommonFileService,
+        private readonly commonArrayService: CommonArrayService,
         private readonly translatorService: TranslationService,
         @Inject('COMMON_SERVICE')
         private commonMicroservice: ClientProxy,
@@ -40,57 +41,42 @@ export class EmailAssetsController {
         try {
             const role_id = req.tokenUser?.role_id;
             const companyId = req.tokenUser?.org_id;
-            const limit = Math.min(Number(postData?.limit) || 10, 100);
-            const page = Math.max(1, Number(postData?.page) || 1);
-            const order = (postData?.order || 'DESC').toUpperCase() === 'ASC' ? 'ASC' : 'DESC';
-            const orderBy = postData?.order_by || 'LastModified';
-            const searchStr = postData?.search_str ?? postData?.searchstr ?? '';
-            let prefixs: string[] = [];
+            let prefixs = [];
             if (Number(role_id) === 11) {
                 prefixs = ['zhOrgImg/11/' + (companyId ?? 0), 'zhGloImg'];
             } else {
                 prefixs = ['zhGloImg'];
-                if (searchStr && String(searchStr).trim() !== '') {
-                    const str = String(searchStr).trim();
-                    prefixs = [`zhGloImg/38/0/${str}`, `zhGloImg/39/0/${str}`, `zhGloImg/40/0/${str}`, `zhGloImg/41/0/${str}`];
+                if(postData?.searchstr && postData?.searchstr !== ''){
+                    prefixs = [
+                        `zhGloImg/38/0/${postData?.searchstr}`,
+                        `zhGloImg/39/0/${postData?.searchstr}`,
+                        `zhGloImg/40/0/${postData?.searchstr}`,
+                        `zhGloImg/41/0/${postData?.searchstr}`,
+                    ];
                 }
             }
-            const needTotal = !postData?.continuationToken;
-            const data = await lastValueFrom(
-                this.commonMicroservice.send(
-                    { cmd: 'list_assests' },
-                    { maxKeys: limit, prefixes: prefixs, continuationToken: postData?.continuationToken ?? null, returnTotal: needTotal }
-                ),
-                { defaultValue: { datas: [], nextContinuationToken: null, total: null } }
+            const paginateObj = this.commonArrayService.getPaginationVar(postData?.page || 1, postData?.limit || postData?.take);
+            let allDatas: any[] = [];
+            for (const prefix of prefixs) {
+                let continuationToken: string = null;
+                do {
+                    const data = await lastValueFrom(this.commonMicroservice.send({cmd: 'list_assests'}, {maxKeys: 1000, prefixes: [prefix], continuationToken}), { defaultValue: { datas: [], nextContinuationToken: null } });
+                    const batch = (data?.datas || []).filter(item => item?.Key);
+                    allDatas = allDatas.concat(batch);
+                    continuationToken = data?.nextContinuationToken || null;
+                } while (continuationToken);
+            }
+            const sortedAssets = allDatas.sort(
+                (a, b) => new Date(b.LastModified || 0).getTime() - new Date(a.LastModified || 0).getTime()
             );
-            const sortKey = orderBy === 'id' ? 'Key' : (orderBy === 'LastModified' || orderBy === 'Key' || orderBy === 'Size' ? orderBy : 'LastModified');
-            const list = (data?.datas || [])
-                .filter((item: any) => item?.Key)
-                .sort((a: any, b: any) => {
-                    let va: any = a[sortKey];
-                    let vb: any = b[sortKey];
-                    if (sortKey === 'LastModified') {
-                        va = new Date(va || 0).getTime();
-                        vb = new Date(vb || 0).getTime();
-                    }
-                    return order === 'ASC' ? (va < vb ? -1 : va > vb ? 1 : 0) : (va > vb ? -1 : va < vb ? 1 : 0);
-                });
-            const formattedList = list.map((item: any) => ({ ...item, url: `${S3COMMUNICATION_URL}/${item.Key}` }));
+            const formattedAssets = sortedAssets.map(item => ({ ...item, url: `${S3COMMUNICATION_URL}/${item.Key}` }));
+            const total = formattedAssets.length;
+            const paginationResponse = this.commonArrayService.paginationResponseChallengeReport(formattedAssets, total, paginateObj);
             return res.status(HttpStatus.CREATED).json({
                 statusCode: 201,
                 success: 1,
                 error: 0,
-                data: {
-                    list: formattedList,
-                    datas: formattedList,
-                    limit,
-                    page,
-                    total: data?.total ?? null,
-                    order,
-                    order_by: orderBy,
-                    search_str: searchStr,
-                    nextContinuationToken: data?.nextContinuationToken ?? null,
-                },
+                data: paginationResponse,
                 message: 'Assets successfully uploaded',
             });
         } catch (error) {
@@ -323,7 +309,10 @@ export class EmailAssetsController {
             const role_id = req.tokenUser?.role_id;
             const optionType = postData?.optionType;
             const continuationToken = postData?.continuationToken;
-            const companyId = req.tokenUser?.org_id ?? 0;
+            let companyId = req.tokenUser?.org_id;
+            if(companyId){
+                companyId = 0;
+            }
             let folderPrefix = ['zhGloImg'];
             if(ImageType === 'icon'){
                 if(optionType === 'global'){

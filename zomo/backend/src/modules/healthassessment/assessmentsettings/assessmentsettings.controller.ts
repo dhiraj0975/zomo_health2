@@ -471,7 +471,7 @@ export class AssessmentSettingsController {
             if (!postData?.from_org || !postData?.to_org) {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_REQUIRED_PARAM_MISSING"));
             }
-            let checkExist: any = await this.frontService.assessmentSettingsExists({copied_organization: postData?.from_org, status: Not('2')});
+            let checkExist: any = await this.frontService.assessmentSettingsExists({organization_id: postData?.from_org, status: Not('2')});
             if (!checkExist) {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_COPY"));
             }

@@ -948,14 +948,14 @@ export class ReportController {
                     insertRequestData['user_id'] = userId;
                     insertRequestData['user_role'] = roleId;
                     insertRequestData['membership_code'] = membershipCode;
-                    insertRequestData['camp_id'] = 0;
+                    insertRequestData['camp_id'] = postData?.camp_id ?? 0;
                     insertRequestData['report_type'] = 'CRA';
                     insertRequestData['condition'] = condition;
                     insertRequestData['request_date'] = await this.commonDateService.DateTimeFormat('now', 'YYYY-MM-DD HH:mm:ss', '', 'UTC');
                     insertRequestData['email'] = notifyEmail;
                     insertRequestData['is_range'] = 0;
-                    insertRequestData['start_date_range'] = null;
-                    insertRequestData['end_date_range'] = null;
+                    insertRequestData['start_date_range'] = postData?.year ? `${postData?.year}-01-01 00:00:00` : null;
+                    insertRequestData['end_date_range'] = postData?.year ? `${postData?.year}-12-31 23:59:59` : null;
                     insertRequestData['status'] = 0;
                     insertRequestData['system_type'] = System_Type.NEW;
                     insertRequestData['cron_status'] = CronStatus.COMPILATION;
