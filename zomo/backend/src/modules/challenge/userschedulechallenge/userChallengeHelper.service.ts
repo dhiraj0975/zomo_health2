@@ -1281,6 +1281,7 @@ export class UserChallengeHelperService {
             const user_id = req.tokenUser['id'];
             const org_id = req.tokenUser?.org_id;
             const schedule_id = challengeData?.id;
+            const schedule_join_id = challengeData?.AlreadyjoinId;
             let timezone = req.tokenUser['timezone']; 
             let countStepsWith = challengeData?.countstepswith;
             let is_set_weekend = challengeData?.is_set_weekend;
@@ -1445,18 +1446,20 @@ export class UserChallengeHelperService {
                         resultCount = await this.streakCalculator({records: healthUserActivitiesTemp}, req);     
                     }
                     else if (challengeData['is_all_activities'] == 1) { // need to apply proper conditions 
-                        let daysData = await this.daysUsersService.listRecord(`du.challenge_id = ${challengeData['ch']['id']} AND du.schedule_id = ${schedule_id} AND du.user_id = ${user_id} AND du.status != 2`,
+                        const weekData = await this.weeksUsersService.list(`cwu.challenge_id = ${challengeData['ch']['id']} AND cwu.schedule_id = ${schedule_join_id} AND cwu.user_id = ${req.tokenUser?.id} AND cwu.status = 1`,{ id: 'DESC' });
+                        let daysData = await this.daysUsersService.listRecord(`du.challenge_id = ${challengeData['ch']['id']} AND du.schedule_id = ${schedule_join_id} AND du.user_id = ${user_id} AND du.status != 2`,
                             {day_id : 'ASC'},
                             ['du','ac.activity_name','days.site_activity_desc','days.manual_activity','days.manual_desc','days.logofile','days.manuallink','days.m_long','days.m_yesno','days.m_short','days.m_numeric']
                         );  
-                        resultCount = await this.streakCalculator({records: daysData}, req);         
+                        resultCount = await this.streakCalculator({records: daysData?.length ? daysData : weekData}, req);         
                     }
-                    else {  // need to apply proper conditions 
-                        let daysData = await this.daysUsersService.listRecord(`du.challenge_id = ${challengeData['ch']['id']} AND du.schedule_id = ${schedule_id} AND du.user_id = ${user_id} AND du.status != 2`,
+                    else {  // need to apply proper conditions //ZOMO-4387
+                        const weekData = await this.weeksUsersService.list(`cwu.challenge_id = ${challengeData['ch']['id']} AND cwu.schedule_id = ${schedule_join_id} AND cwu.user_id = ${req.tokenUser?.id} AND cwu.status = 1`,{ id: 'DESC' });
+                        let daysData = await this.daysUsersService.listRecord(`du.challenge_id = ${challengeData['ch']['id']} AND du.schedule_id = ${schedule_join_id} AND du.user_id = ${user_id} AND du.status != 2`,
                             {day_id : 'ASC'},
                             ['du','ac.activity_name','days.site_activity_desc','days.manual_activity','days.manual_desc','days.logofile','days.manuallink','days.m_long','days.m_yesno','days.m_short','days.m_numeric']
                         );  
-                        resultCount = await this.streakCalculator({records: daysData}, req);    
+                        resultCount = await this.streakCalculator({records: daysData?.length ? daysData : weekData}, req);    
                     } 
                 }                    
                 if(challengeData['ch']['challenge_type']?.trim() == "R"){                       
@@ -1483,6 +1486,9 @@ export class UserChallengeHelperService {
                 }
                 if (row?.submission_date) {
                     row.day = this.commonDateService.getTodayDate(row.submission_date).format('YYYY-MM-DD');
+                }
+                else if (row?.update_date) {
+                    row.day = this.commonDateService.getTodayDate(row.update_date).format('YYYY-MM-DD');
                 }
                 else if (row?.added_date) {
                     row.day = this.commonDateService.getTodayDate(row.added_date).format('YYYY-MM-DD');

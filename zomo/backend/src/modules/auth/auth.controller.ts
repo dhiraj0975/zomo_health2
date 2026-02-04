@@ -60,7 +60,8 @@ export class AuthController {
             if(userDetails?.preferred_language?.alias){
                 req.lang = userDetails?.preferred_language?.alias;
             }
-            if(userDetails && userDetails.status != 1){
+            // TEMPORARY: allow status 0 (inactive) to login - REVERT after testing (only block deleted=2)
+            if(userDetails && userDetails.status == 2){
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "The login/password combination was not found"));
             }
             if(userDetails?.new_password == ''){

@@ -1,0 +1,112 @@
+---
+description: Email assets - Tareeka 3 cache update (CREATE/UPDATE/DELETE modify cache, no full invalidation)
+globs: **/communication/emailassets/**/*.ts
+alwaysApply: false
+---
+
+# Email Assets – Tareeka 3: Cache Update (Advanced)
+
+## Principle
+
+- **Cache delete nahi hota** – cache key remove mat karo.
+- **Cache modify hota hai** – list/total update karo.
+- **CREATE** → cache me naya record add.
+- **DELETE** → cache se woh record remove.
+- **Paginate** → pehle cache check; hit ho to wahi use, miss ho to S3 se fetch karke cache set.
+
+---
+
+## Cache Key Format
+
+Single format use karo sab jagah:
+
+```ts
+const searchStr = (postData?.searchstr && postData?.searchstr !== '') ? postData.searchstr : '';
+const cacheKey = `email-assets-list-${role_id}-${companyId ?? 0}-${searchStr}`;
+```
+
+- **TTL**: 60000 ms (1 min) same rahega.
+
+Cache value shape:
+
+```ts
+{ list: Array<{ Key, LastModified, Size?, ETag?, url }>, total: number }
+```
+
+`list` wahi format me hona chahiye jo paginate response me jata hai (Key, LastModified, url, etc.).
+
+---
+
+## 1. Paginate – Cache Read + Miss Pe S3 + Set Cache
+
+**Kya karna hai:**
+
+1. `role_id`, `companyId`, `searchStr` se `cacheKey` banao.
+2. `this.cacheService.getCache(cacheKey)` karo.
+3. **Agar cached mila** (list + total):
+   - `paginationResponseChallengeReport(cached.list, cached.total, paginateObj)` se current page nikaalo.
+   - Response: `data: { ...paginationResponse, from_cache: true }`.
+4. **Agar cache miss**:
+   - Existing logic: prefixs se S3 `list_assests` (loop with continuationToken), sort by LastModified desc, map url.
+   - `formattedAssets` aur `total` banao.
+   - `this.cacheService.setCache(cacheKey, JSON.stringify({ list: formattedAssets, total }), 60000)`.
+   - Response: `data: { ...paginationResponseChallengeReport(formattedAssets, total, paginateObj), from_cache: false }`.
+
+**Dependency:** Controller me `CacheService` inject karna hoga (aur module me provide hona chahiye; app-level pe already hai).
+
+---
+
+## 2. Create – S3 Upload + Cache Me Naya Record Add + Turant Total
+
+**Kya karna hai:**
+
+1. **Pehle wahi create flow** – S3 upload (upload_file_communication), `folderPrefix` same (zhOrgImg/11/orgId ya zhGloImg/role_id/orgId).
+2. **Upload success ke baad**, har uploaded file ke liye ek cache entry item banao:
+   - `Key` = full S3 key (e.g. `zhOrgImg/11/5/filename.png`).
+   - `LastModified` = `new Date().toISOString()` (abhi upload hua).
+   - `url` = `${S3COMMUNICATION_URL}/${Key}`.
+   - Baaki optional: Size, ETag agar microservice return kare to daal do.
+3. **Affected cache key(s)** decide karo:
+   - **Org upload (role 11, orgId)** → sirf ek key: `email-assets-list-11-${orgId}-` (searchStr '').
+   - **Global upload (zhGloImg/role_id/0)** → sirf ek key: `email-assets-list-${role_id}-0-`.
+4. **Cache update (modify, delete nahi)**:
+   - `this.cacheService.getCache(cacheKey)` karo.
+   - Agar cache hai: parsed = `{ list, total }`. Naye items list ke **start** me add karo (newest first), `total += uploadedFiles.length`. `setCache(cacheKey, JSON.stringify({ list, total }), 60000)`.
+   - Agar cache nahi hai: kuch mat karo (next paginate S3 se bharega).
+5. **Response** me turant total dikhao:
+   - Agar cache update kiya to naya total = `total` (updated).
+   - Response: `data: { uploadedKeys: uploadedFiles, total: <updated_total> }` (ya jo structure frontend expect kare). Message: "Assets successfully uploaded".
+
+**Important:** Create response me `total` zaroor bhejo taaki UI turant total entities dikha sake.
+
+---
+
+## 3. Delete – S3 Remove + Cache Se Record Hata Do
+
+**Kya karna hai:**
+
+1. **Pehle wahi delete flow** – permission check (campRoleIdArr, assetsRoleId), phir `remove_file_communication` with `postData.key`.
+2. **Delete success ke baad**:
+   - Affected cache key: current user context se – `role_id`, `companyId`, searchStr '' → `email-assets-list-${role_id}-${companyId}-`.
+   - `this.cacheService.getCache(cacheKey)` karo.
+   - Agar cache hai: list se woh item hatao jiska `Key === postData.key` (ya `item.Key === postData.key`). `total -= 1`. `setCache(cacheKey, JSON.stringify({ list, total }), 60000)`.
+   - Agar cache nahi hai: kuch mat karo.
+3. **Response** same rahe: success, message "Asset successfully deleted". Optional: agar chaho to `data: { total: <updated_total> }` bhi bhej sakte ho.
+
+---
+
+## 4. Implementation Checklist
+
+- [ ] `EmailAssetsController` me `CacheService` inject karo (constructor). Communication module me `CacheService` import/provide karo agar app se inherit nahi hota.
+- [ ] **paginate**: cacheKey banao → getCache → hit pe return with from_cache true; miss pe S3 fetch → sort → format → setCache → return with from_cache false.
+- [ ] **create**: S3 upload same; success pe affected cacheKey nikaalo; getCache → list start me naye items add, total update → setCache; response me `total` include karo.
+- [ ] **delete**: S3 delete same; success pe cacheKey (current user); getCache → list se key match item remove, total-- → setCache.
+- [ ] Cache value hamesha `{ list, total }` format me; list items me `Key`, `LastModified`, `url` minimum; sort order same rahe (LastModified desc).
+
+---
+
+## 5. Edge Cases
+
+- **Multiple prefixes (e.g. role 11: zhOrgImg + zhGloImg)** – ek hi cache key use karo `email-assets-list-11-${companyId}-`; cache me merged list already sorted rehti hai.
+- **Search** – searchStr non-empty pe alag cache key; create/delete pe hum sirf searchStr '' wala key update karte hain (simple). Agar search result me bhi naya item dikhana ho to optional: searchStr '' update se enough hai, search cache next paginate pe refresh ho jayega.
+- **Create/delete ke time cache miss** – koi error nahi; next paginate S3 se fresh list layega aur cache set karega.

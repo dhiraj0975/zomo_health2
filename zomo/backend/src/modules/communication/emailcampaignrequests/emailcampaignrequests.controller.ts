@@ -286,7 +286,6 @@ export class EmailCampaignRequestsController {
             } else {
                 campaignRequests['organization'] = null;
             }
-            /* DEBUG: Edit time autofill check - remove after testing */
             // console.log('[EDIT get-one] id:', postData?.id, '| for_org_id:', campaignOrgID, '| organization:', JSON.stringify(campaignRequests['organization']), '| campaign_title:', campaignRequests['campaign_title']);
             let responseData = {};
             if(campaignRequests.with_option == '2' && campaignRequests.group_id && campaignRequests.group_id !== null && campaignRequests.group_id !== undefined){
@@ -335,7 +334,7 @@ export class EmailCampaignRequestsController {
     )
     async create(@Req() req: Request, @Res() res: Response, @Body() postData: CreateCommunicationEmailCampaignRequestsInput, @UploadedFile() file: Express.Multer.File) {
         try {
-            /* organization object se for_org_id extract - draft save ke time frontend organization bhe rha */
+            /* organization object se for_org_id extract - draft save ke time frontend organization bhej rha */
             if ((!postData.for_org_id || postData.for_org_id === 0) && postData?.organization) {
                 const org = typeof postData.organization === 'string' ? (() => { try { return JSON.parse(postData.organization); } catch { return null; } })() : postData.organization;
                 if (org && (org.id || org.for_org_id)) {

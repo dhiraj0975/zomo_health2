@@ -1,4 +1,4 @@
-import { appConstant, CommonArrayService, CommonFileService } from '@common-constants';
+import { appConstant, CacheService, CommonArrayService, CommonFileService } from '@common-constants';
 import {
     Body,
     Controller,
@@ -30,6 +30,7 @@ export class EmailAssetsController {
     constructor(
         private readonly commonFileService: CommonFileService,
         private readonly commonArrayService: CommonArrayService,
+        private readonly cacheService: CacheService,
         private readonly translatorService: TranslationService,
         @Inject('COMMON_SERVICE')
         private commonMicroservice: ClientProxy,
@@ -41,42 +42,61 @@ export class EmailAssetsController {
         try {
             const role_id = req.tokenUser?.role_id;
             const companyId = req.tokenUser?.org_id;
-            let prefixs = [];
-            if (Number(role_id) === 11) {
-                prefixs = ['zhOrgImg/11/' + (companyId ?? 0), 'zhGloImg'];
-            } else {
-                prefixs = ['zhGloImg'];
-                if(postData?.searchstr && postData?.searchstr !== ''){
-                    prefixs = [
-                        `zhGloImg/38/0/${postData?.searchstr}`,
-                        `zhGloImg/39/0/${postData?.searchstr}`,
-                        `zhGloImg/40/0/${postData?.searchstr}`,
-                        `zhGloImg/41/0/${postData?.searchstr}`,
-                    ];
-                }
-            }
+            const searchStr = (postData?.searchstr && postData?.searchstr !== '') ? postData?.searchstr : '';
+            const cacheKey = `email-assets-list-${role_id}-${companyId ?? 0}-${searchStr}`;
             const paginateObj = this.commonArrayService.getPaginationVar(postData?.page || 1, postData?.limit || postData?.take);
-            let allDatas: any[] = [];
-            for (const prefix of prefixs) {
-                let continuationToken: string = null;
-                do {
-                    const data = await lastValueFrom(this.commonMicroservice.send({cmd: 'list_assests'}, {maxKeys: 1000, prefixes: [prefix], continuationToken}), { defaultValue: { datas: [], nextContinuationToken: null } });
-                    const batch = (data?.datas || []).filter(item => item?.Key);
-                    allDatas = allDatas.concat(batch);
-                    continuationToken = data?.nextContinuationToken || null;
-                } while (continuationToken);
+
+            let paginationResponse: any;
+            let from_cache: boolean;
+
+            const cached = this.cacheService.getCache(cacheKey);
+            if (cached && Array.isArray(cached?.list) && typeof cached?.total === 'number') {
+                console.log('[EmailAssets paginate] cache HIT', { cacheKey, total: cached.total, listLength: cached.list?.length });
+                paginationResponse = this.commonArrayService.paginationResponseChallengeReport(cached.list, cached.total, paginateObj);
+                from_cache = true;
+            } else {
+                console.log('[EmailAssets paginate] cache MISS', { cacheKey });
+                let prefixs = [];
+                if (Number(role_id) === 11) {
+                    prefixs = ['zhOrgImg/11/' + (companyId ?? 0), 'zhGloImg'];
+                } else {
+                    prefixs = ['zhGloImg'];
+                    if (postData?.searchstr && postData?.searchstr !== '') {
+                        prefixs = [
+                            `zhGloImg/38/0/${postData?.searchstr}`,
+                            `zhGloImg/39/0/${postData?.searchstr}`,
+                            `zhGloImg/40/0/${postData?.searchstr}`,
+                            `zhGloImg/41/0/${postData?.searchstr}`,
+                        ];
+                    }
+                }
+                let allDatas: any[] = [];
+                for (const prefix of prefixs) {
+                    let continuationToken: string = null;
+                    do {
+                        const data = await lastValueFrom(this.commonMicroservice.send({cmd: 'list_assests'}, {maxKeys: 1000, prefixes: [prefix], continuationToken}), { defaultValue: { datas: [], nextContinuationToken: null } });
+                        const batch = (data?.datas || []).filter(item => item?.Key);
+                        allDatas = allDatas.concat(batch);
+                        continuationToken = data?.nextContinuationToken || null;
+                    } while (continuationToken);
+                }
+                const sortedAssets = allDatas.sort(
+                    (a, b) => new Date(b.LastModified || 0).getTime() - new Date(a.LastModified || 0).getTime()
+                );
+                const formattedAssets = sortedAssets.map(item => ({ ...item, url: `${S3COMMUNICATION_URL}${item.Key}` }));
+                const total = formattedAssets.length;
+
+                this.cacheService.setCache(cacheKey, JSON.stringify({ list: formattedAssets, total }), 60000);
+                console.log('[EmailAssets paginate] cache SET', { cacheKey, total, listLength: formattedAssets.length });
+                paginationResponse = this.commonArrayService.paginationResponseChallengeReport(formattedAssets, total, paginateObj);
+                from_cache = false;
             }
-            const sortedAssets = allDatas.sort(
-                (a, b) => new Date(b.LastModified || 0).getTime() - new Date(a.LastModified || 0).getTime()
-            );
-            const formattedAssets = sortedAssets.map(item => ({ ...item, url: `${S3COMMUNICATION_URL}/${item.Key}` }));
-            const total = formattedAssets.length;
-            const paginationResponse = this.commonArrayService.paginationResponseChallengeReport(formattedAssets, total, paginateObj);
+
             return res.status(HttpStatus.CREATED).json({
                 statusCode: 201,
                 success: 1,
                 error: 0,
-                data: paginationResponse,
+                data: { ...paginationResponse, from_cache },
                 message: 'Assets successfully uploaded',
             });
         } catch (error) {
@@ -187,12 +207,32 @@ export class EmailAssetsController {
                 }
             }
 
+            let total: number | null = null;
+            const cacheKey = role_id === 11
+                ? `email-assets-list-${role_id}-${orgId}-`
+                : `email-assets-list-${role_id}-0-`;
+            const cached = this.cacheService.getCache(cacheKey);
+            if (cached && Array.isArray(cached?.list) && typeof cached?.total === 'number') {
+                const baseUrl = (S3COMMUNICATION_URL || '').replace(/\/$/, '');
+                const newItems = uploadedFiles.map(Key => ({
+                    Key,
+                    LastModified: new Date().toISOString(),
+                    url: `${baseUrl}/${Key}`,
+                })).reverse();
+                const list = [...newItems, ...cached.list];
+                total = list.length;
+                this.cacheService.setCache(cacheKey, JSON.stringify({ list, total }), 60000);
+                console.log('[EmailAssets create] cache UPDATED', { cacheKey, total, added: uploadedFiles.length });
+            } else {
+                console.log('[EmailAssets create] cache NOT UPDATED (no cache)', { cacheKey });
+            }
+
             return res.status(201).json({
                 statusCode: 201,
                 success: 1,
                 error: 0,
                 message: 'Assets successfully uploaded',
-                data: uploadedFiles
+                data: { list: uploadedFiles, total }
             });
 
         } catch (error) {
@@ -239,12 +279,25 @@ export class EmailAssetsController {
                         await lastValueFrom(
                             this.commonMicroservice.send({ cmd: 'remove_file_communication' }, { path: postData?.key })
                         );
-                        console.log('deleted',res);
+
+                        let total: number | null = null;
+                        const companyId = req.tokenUser?.org_id ?? 0;
+                        const cacheKey = `email-assets-list-${role_id}-${companyId}-`;
+                        const cached = this.cacheService.getCache(cacheKey);
+                        if (cached && Array.isArray(cached?.list) && typeof cached?.total === 'number') {
+                            const list = (cached.list as any[]).filter(item => item?.Key !== postData?.key);
+                            total = list.length;
+                            this.cacheService.setCache(cacheKey, JSON.stringify({ list, total }), 60000);
+                            console.log('[EmailAssets delete] cache UPDATED', { cacheKey, total, removedKey: postData?.key });
+                        } else {
+                            console.log('[EmailAssets delete] cache NOT UPDATED (no cache)', { cacheKey });
+                        }
+
                         return res.status(200).json({
                             success: 1,
                             error: 0,
                             message: 'Asset successfully deleted',
-                            data: null,
+                            data: total !== null ? { total } : null,
                         });
                     } catch (error) {
                         let message = error?.message || 'Something went wrong';

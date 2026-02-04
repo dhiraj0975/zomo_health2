@@ -195,7 +195,7 @@ export class CampaignAnnualReportController {
                 }
                 if (Object.keys(campaignsDetails)?.length) {
                     for (const yearKey of Object.keys(campaignsDetails).reverse()) {
-                        let userList = await this.userService.listRecord(`user.org_id = ${company_id} AND user.role_id in(2,16) AND user.status != 2 AND user.created < '${yearKey}-12-31 23:59:59'`,['user.id','user.role_id']);
+                        let userList = await this.userService.listRecord(`${where} AND user.created < '${yearKey}-12-31 23:59:59'`,['user.id','user.role_id']);
                         let totalEmployee = userList?.length;
                         let totalCombinedUser = userList?.length;
                         let totalSpouse = userList?.filter(user => user.role_id == 16 || user.user_role_id == 16)?.length;

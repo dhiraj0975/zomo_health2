@@ -1,4 +1,4 @@
-import { CommonDateService, CommonService } from '@common-constants';
+import { CommonArrayService, CommonDateService, CommonService } from '@common-constants';
 import { Inject, Injectable } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
 import { Request } from "express";
@@ -28,6 +28,7 @@ export class MoveMoreChallengeService {
         @Inject('COMMON_SERVICE')
             private commonMicroservice: ClientProxy,
         private readonly activityLogService: ActivityLogService,
+        private readonly commonArrayService: CommonArrayService,
     ) {}
 
 
@@ -770,17 +771,17 @@ export class MoveMoreChallengeService {
                             overalltotalParkCompletedSteps = overalltotalParkSteps;
                         }
                         result['overall_total_completed_steps'] = overalltotalParkCompletedSteps || 0;
-                        result['overall_total_steps_str'] = Math.round(overalltotalParkCompletedSteps).toLocaleString('en-US') +'/'+ Math.round(overalltotalParkSteps).toLocaleString('en-US') + ' '+ await this.translatorService.frontendReadTranslation(req.lang,'Overall Total Steps Completed', `/LC_MESSAGES/Dashboard/ChallengeProgress`,`static`);
+                        result['overall_total_steps_str'] = this.commonArrayService.formatUSStyle(Math.round(overalltotalParkCompletedSteps)) +'/'+ this.commonArrayService.formatUSStyle(Math.round(overalltotalParkSteps)) + ' '+ await this.translatorService.frontendReadTranslation(req.lang,'Overall Total Steps Completed', `/LC_MESSAGES/Dashboard/ChallengeProgress`,`static`);
                         result['overall_average_steps'] = overalltotalParkASteps || 0;
                         if(Math.round(overalltotalParkACompletedSteps) > Math.round(overalltotalParkASteps)){
                             overalltotalParkACompletedSteps = overalltotalParkASteps;
                         }
                         result['overall_average_completed_steps'] = overalltotalParkACompletedSteps || 0;
-                        result['overall_average_steps_str'] = Math.round(overalltotalParkACompletedSteps).toLocaleString('en-US') +'/'+ Math.round(overalltotalParkASteps).toLocaleString('en-US') + ' '+ await this.translatorService.frontendReadTranslation(req.lang,'Overall Average Steps Completed', `/LC_MESSAGES/Dashboard/ChallengeProgress`,`static`);
+                        result['overall_average_steps_str'] = this.commonArrayService.formatUSStyle(Math.round(overalltotalParkACompletedSteps)) +'/'+ this.commonArrayService.formatUSStyle(Math.round(overalltotalParkASteps)) + ' '+ await this.translatorService.frontendReadTranslation(req.lang,'Overall Average Steps Completed', `/LC_MESSAGES/Dashboard/ChallengeProgress`,`static`);
                         result['overall_progress'] = filanoverallprogress || 0;
                         if(parkData != null){
-                            parkData['in_steps_str'] = (parkData?.in_steps > 0) ? parkData.in_steps.toLocaleString('en-US') + ' '+ await this.translatorService.frontendReadTranslation(req.lang,'Steps/Movement', `/LC_MESSAGES/Dashboard/ChallengeProgress`,`static`) : '0 '+ await this.translatorService.frontendReadTranslation(req.lang,'Steps/Movement', `/LC_MESSAGES/Dashboard/ChallengeProgress`,`static`);
-                            parkData['steps_str'] = (parkData?.steps > 0) ? parkData.steps.toLocaleString('en-US') + ' '+ await this.translatorService.frontendReadTranslation(req.lang,'Of Goal', `/LC_MESSAGES/Dashboard/ChallengeProgress`,`static`) : '0 ' + await this.translatorService.frontendReadTranslation(req.lang,'Of Goal', `/LC_MESSAGES/Dashboard/ChallengeProgress`,`static`);
+                            parkData['in_steps_str'] = (parkData?.in_steps > 0) ? this.commonArrayService.formatUSStyle(parkData.in_steps) + ' '+ await this.translatorService.frontendReadTranslation(req.lang,'Steps/Movement', `/LC_MESSAGES/Dashboard/ChallengeProgress`,`static`) : '0 '+ await this.translatorService.frontendReadTranslation(req.lang,'Steps/Movement', `/LC_MESSAGES/Dashboard/ChallengeProgress`,`static`);
+                            parkData['steps_str'] = (parkData?.steps > 0) ? this.commonArrayService.formatUSStyle(parkData.steps) + ' '+ await this.translatorService.frontendReadTranslation(req.lang,'Of Goal', `/LC_MESSAGES/Dashboard/ChallengeProgress`,`static`) : '0 ' + await this.translatorService.frontendReadTranslation(req.lang,'Of Goal', `/LC_MESSAGES/Dashboard/ChallengeProgress`,`static`);
                         }
                         result['MoveMoreParkData'] = parkData || {}
                     }

@@ -511,4 +511,9 @@ export class CommonArrayService {
         }
         return values;
     }
+    formatUSStyle(value: number | string): string {
+        return Number(value).toLocaleString('en-US', {
+            maximumSignificantDigits: 6
+        });
+    }
 }

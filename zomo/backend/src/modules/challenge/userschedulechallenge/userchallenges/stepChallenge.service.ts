@@ -1,4 +1,4 @@
-import { CommonDateService, CommonService, tableConstant } from '@common-constants';
+import { CommonArrayService, CommonDateService, CommonService, tableConstant } from '@common-constants';
 import { Inject, Injectable } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
 import { Request } from "express";
@@ -33,6 +33,7 @@ export class StepChallengeService {
         @Inject('COMMON_SERVICE')
             private commonMicroservice: ClientProxy,
         private readonly activityLogService: ActivityLogService,
+        private readonly commonArrayService: CommonArrayService,
     ) {}
 
     async stepChallenge(schedule: any, req: Request, show_type = 1) {
@@ -127,9 +128,9 @@ export class StepChallengeService {
             result = {
                 rankingHideShow: rankingHideShow,
                 dailysteps: Math.round(dailySteps) || dailySteps,
-                dailysteps_str: Math.round(dailySteps).toLocaleString('en-US') + ' ' + await this.translatorService.frontendReadTranslation(req.lang,'Avg. Daily Steps Required', `/LC_MESSAGES/Challenge/MyChallenges`,`static`),
+                dailysteps_str: this.commonArrayService.formatUSStyle(Math.round(dailySteps)) + ' ' + await this.translatorService.frontendReadTranslation(req.lang,'Avg. Daily Steps Required', `/LC_MESSAGES/Challenge/MyChallenges`,`static`),
                 totalsteps: Math.round(totalSteps),
-                totalsteps_str: Math.round(totalSteps).toLocaleString('en-US')+ ' ' + await this.translatorService.frontendReadTranslation(req.lang,'Total Steps Required', `/LC_MESSAGES/Challenge/MyChallenges`,`static`),
+                totalsteps_str: this.commonArrayService.formatUSStyle(Math.round(totalSteps))+ ' ' + await this.translatorService.frontendReadTranslation(req.lang,'Total Steps Required', `/LC_MESSAGES/Challenge/MyChallenges`,`static`),
                 currentCheckPointId: 0,
                 nextCheckPointId: 0
             };
@@ -447,7 +448,7 @@ export class StepChallengeService {
             }
 
             result.totalstepscompleted = stepsWalks;
-            result.totalstepscompleted_str = Math.round(stepsWalks).toLocaleString('en-US')+ ' ' + await this.translatorService.frontendReadTranslation(req.lang,stepsWalks > 1 ? 'Steps Completed' : 'Step Completed', `/LC_MESSAGES/Challenge/MyChallenges`,`static`);
+            result.totalstepscompleted_str = this.commonArrayService.formatUSStyle(Math.round(stepsWalks))+ ' ' + await this.translatorService.frontendReadTranslation(req.lang,stepsWalks > 1 || stepsWalks == 0 ? 'Steps Completed' : 'Step Completed', `/LC_MESSAGES/Challenge/MyChallenges`,`static`);
             result.todaysteps = stepsDaily;
 
             const percentage = totalSteps !== 0 ? Math.round((stepsWalks * 100 / totalSteps) * 100) / 100 : 0;
@@ -456,11 +457,11 @@ export class StepChallengeService {
             let remainSteps = totalSteps - stepsWalks;
             if (remainSteps < 0) {
                 result.beyond = Math.round(Math.abs(remainSteps));
-                result.beyond_str = Math.round(Math.abs(remainSteps)).toLocaleString('en-US') + ' ' + await this.translatorService.frontendReadTranslation(req.lang,'Step Beyond The Goal', `/LC_MESSAGES/Challenge/MyChallenges`,`static`);
+                result.beyond_str = this.commonArrayService.formatUSStyle(Math.round(Math.abs(remainSteps))) + ' ' + await this.translatorService.frontendReadTranslation(req.lang,'Step Beyond The Goal', `/LC_MESSAGES/Challenge/MyChallenges`,`static`);
                 remainSteps = 0;
             } else {
                 result.remainsteps = Math.round(Math.abs(remainSteps));
-                result.remainsteps_str = Math.round(Math.abs(remainSteps)).toLocaleString('en-US') + ' ' + await this.translatorService.frontendReadTranslation(req.lang,'More Step To Goal', `/LC_MESSAGES/Challenge/MyChallenges`,`static`);
+                result.remainsteps_str = this.commonArrayService.formatUSStyle(Math.round(Math.abs(remainSteps))) + ' ' + await this.translatorService.frontendReadTranslation(req.lang,'More Step To Goal', `/LC_MESSAGES/Challenge/MyChallenges`,`static`);
             }
 
             if (totalSteps !== 0) {
@@ -468,7 +469,7 @@ export class StepChallengeService {
             }
 
             result.averagesteps = Math.round(averageSteps);
-            result.averagesteps_str = Math.round(averageSteps).toLocaleString('en-US') + ' ' + await this.translatorService.frontendReadTranslation(req.lang,averageSteps > 1 ? 'Avg. Daily Steps' : 'Avg. Daily Step', `/LC_MESSAGES/Challenge/MyChallenges`,`static`);
+            result.averagesteps_str = this.commonArrayService.formatUSStyle(Math.round(averageSteps)) + ' ' + await this.translatorService.frontendReadTranslation(req.lang,averageSteps > 1 || averageSteps == 0 ? 'Avg. Daily Steps' : 'Avg. Daily Step', `/LC_MESSAGES/Challenge/MyChallenges`,`static`);
 
             let myGroupID:any = '';
             let myTeamID:any = '';
@@ -840,10 +841,10 @@ export class StepChallengeService {
                         }
                         allteams['Teams'][teamId]['teamCount'] = teamCount;
                         allteams['Teams'][teamId]['completedsteps'] = parseFloat(teamCompeletedSteps.toFixed(2));
-                        allteams['Teams'][teamId]['completedsteps_str'] = parseFloat(teamCompeletedSteps.toFixed(2)).toLocaleString('en-US') + ' '+ (teamCompeletedSteps > 1 ? stepsCompletedtrans : stepCompletedtrans);
+                        allteams['Teams'][teamId]['completedsteps_str'] = this.commonArrayService.formatUSStyle(parseFloat(teamCompeletedSteps.toFixed(2))) + ' '+ (teamCompeletedSteps > 1 || teamCompeletedSteps == 0 ? stepsCompletedtrans : stepCompletedtrans);
                         allteams['Teams'][teamId]['realcompetedsteps'] = parseFloat(teamRealSteps.toFixed(2));
                         allteams['Teams'][teamId]['dailysteps'] = DailyStepsForAll;
-                        allteams['Teams'][teamId]['dailysteps_str'] = DailyStepsForAll.toLocaleString('en-US') + ' '+ (DailyStepsForAll > 1 ? avgDailyStepsRequiredtrans : avgDailyStepRequiredtrans);
+                        allteams['Teams'][teamId]['dailysteps_str'] = this.commonArrayService.formatUSStyle(DailyStepsForAll) + ' '+ (DailyStepsForAll > 1 || DailyStepsForAll == 0 ? avgDailyStepsRequiredtrans : avgDailyStepRequiredtrans);
                         allteams['Teams'][teamId]['totaldailysteps'] = DailyStepsForTeam * totaldays;
     
                         if(allteams['Teams'][teamId]['teamMember']){
@@ -872,10 +873,10 @@ export class StepChallengeService {
                         
                         if(allUsersIdArray.includes(userId)){
                             result['myTeamDetails']['completedsteps'] = parseFloat(teamCompeletedSteps.toFixed(2));
-                            result['myTeamDetails']['completedsteps_str'] = parseFloat(teamCompeletedSteps.toFixed(2)).toLocaleString('en-US') + ' '+ (teamCompeletedSteps > 1? stepsCompletedtrans: stepCompletedtrans);
+                            result['myTeamDetails']['completedsteps_str'] = this.commonArrayService.formatUSStyle(parseFloat(teamCompeletedSteps.toFixed(2))) + ' '+ (teamCompeletedSteps > 1 || teamCompeletedSteps == 0 ? stepsCompletedtrans: stepCompletedtrans);
                             result['myTeamDetails']['realcompetedsteps'] = parseFloat(teamRealSteps.toFixed(2));
                             result['myTeamDetails']['dailysteps'] = DailyStepsForAll;
-                            result['myTeamDetails']['dailysteps_str'] = DailyStepsForAll.toLocaleString('en-US') + ' '+ (DailyStepsForAll > 1 ? avgDailyStepsRequiredtrans : avgDailyStepRequiredtrans);
+                            result['myTeamDetails']['dailysteps_str'] = this.commonArrayService.formatUSStyle(DailyStepsForAll) + ' '+ (DailyStepsForAll > 1 || DailyStepsForAll == 0 ? avgDailyStepsRequiredtrans : avgDailyStepRequiredtrans);
                             result['myTeamDetails']['totaldailysteps'] = DailyStepsForTeam * totaldays;
                             if(!result['myTeamDetails']['today']){
                                 result['myTeamDetails']['today'] = Object.create(null);
@@ -891,7 +892,7 @@ export class StepChallengeService {
                         }
                         if (matchStartDate <= ucurrentdate) { 
                                 allteams['Teams'][teamId]['today']['completedsteps'] = Math.round(todayTotal);
-                                allteams['Teams'][teamId]['today']['completedsteps_str'] = Math.round(todayTotal).toLocaleString('en-US') + ' '+ (todayTotal > 1 ? stepsCompletedtrans : stepCompletedtrans);
+                                allteams['Teams'][teamId]['today']['completedsteps_str'] = this.commonArrayService.formatUSStyle(Math.round(todayTotal)) + ' '+ (todayTotal > 1 || todayTotal == 0 ? stepsCompletedtrans : stepCompletedtrans);
                                 if (todayTotal > todayBeyondTotal) {
                                     todayTotal = todayTotal - todayBeyondTotal;
                                 }
@@ -908,7 +909,7 @@ export class StepChallengeService {
                                     }
                                 }       
                                 allteams['Teams'][teamId]['today']['averagesteps'] = Math.round(teamTodayTotalAverageSteps);
-                                allteams['Teams'][teamId]['today']['averagesteps_str'] = Math.round(teamTodayTotalAverageSteps).toLocaleString('en-US') + ' '+ (teamTodayTotalAverageSteps > 1 ? avgDailyStepstrans : avgDailySteptrans);
+                                allteams['Teams'][teamId]['today']['averagesteps_str'] = this.commonArrayService.formatUSStyle(Math.round(teamTodayTotalAverageSteps)) + ' '+ (teamTodayTotalAverageSteps > 1 || teamTodayTotalAverageSteps == 0 ? avgDailyStepstrans : avgDailySteptrans);
                                 if (teamTodayProcess >= 100) {
                                     teamTodayProcess = 100;
                                 }                  
@@ -945,7 +946,7 @@ export class StepChallengeService {
                             }
                             allteams['Teams'][teamId]['averagesteps'] = Math.round(averagestepsteam);
                         }
-                        allteams['Teams'][teamId]['averagesteps_str'] = Math.round(averagestepsteam).toLocaleString('en-US') + ' '+ (averagestepsteam > 1 ? avgDailyStepstrans : avgDailySteptrans);
+                        allteams['Teams'][teamId]['averagesteps_str'] = this.commonArrayService.formatUSStyle(Math.round(averagestepsteam)) + ' '+ (averagestepsteam > 1 || averagestepsteam == 0 ? avgDailyStepstrans : avgDailySteptrans);
                         if(teamProgress >= 100){
                             teamProgress = 100;
                         }
@@ -953,7 +954,7 @@ export class StepChallengeService {
                         allteams['Teams'][teamId]['progress'] = teamProgress;
                         if(allUsersIdArray.includes(userId)){
                             result['myTeamDetails']['averagesteps'] = allteams['Teams'][teamId]['averagesteps'];
-                            result['myTeamDetails']['averagesteps_str'] = allteams['Teams'][teamId]['averagesteps'].toLocaleString('en-US') + ' '+ (allteams['Teams'][teamId]['averagesteps'] > 1 ? avgDailyStepstrans : avgDailySteptrans);
+                            result['myTeamDetails']['averagesteps_str'] = this.commonArrayService.formatUSStyle(allteams['Teams'][teamId]['averagesteps']) + ' '+ (allteams['Teams'][teamId]['averagesteps'] > 1 || allteams['Teams'][teamId]['averagesteps'] == 0 ? avgDailyStepstrans : avgDailySteptrans);
                             result['myTeamDetails']['beyondtotal'] = parseFloat(allteams['Teams'][teamId]['beyondtotal'].toFixed(2));
                             result['myTeamDetails']['progress'] = allteams['Teams'][teamId]['progress'];
                             result['myTeamDetails']['remainsteps'] = allteams['Teams'][teamId]['remainsteps'];
@@ -992,11 +993,11 @@ export class StepChallengeService {
                                 allgroups['Groups'][groupId]['today'] = Object.create(null);
                             }
                             allgroups['Groups'][groupId]['today']['completedsteps'] = Math.round(groupTodayCompletedSteps);
-                            allgroups['Groups'][groupId]['today']['completedsteps_str'] = Math.round(groupTodayCompletedSteps).toLocaleString('en-US') + ' '+ (groupTodayCompletedSteps > 1 ? stepsCompletedtrans : stepCompletedtrans);
+                            allgroups['Groups'][groupId]['today']['completedsteps_str'] = this.commonArrayService.formatUSStyle(Math.round(groupTodayCompletedSteps)) + ' '+ (groupTodayCompletedSteps > 1 || groupTodayCompletedSteps == 0 ? stepsCompletedtrans : stepCompletedtrans);
                             allgroups['Groups'][groupId]['today']['beyond'] = groupTodayBeyond;
                             allgroups['Groups'][groupId]['today']['remainsteps'] = groupTodayRemainSteps;
                             allgroups['Groups'][groupId]['today']['averagesteps'] = Math.round(groupTodayAvarageSteps);
-                            allgroups['Groups'][groupId]['today']['completedsteps_str'] = Math.round(groupTodayAvarageSteps).toLocaleString('en-US') + ' '+ (groupTodayAvarageSteps > 1 ? avgDailyStepstrans : avgDailySteptrans);
+                            allgroups['Groups'][groupId]['today']['completedsteps_str'] = this.commonArrayService.formatUSStyle(Math.round(groupTodayAvarageSteps)) + ' '+ (groupTodayAvarageSteps > 1 || groupTodayAvarageSteps == 0 ? avgDailyStepstrans : avgDailySteptrans);
                             groupTodayProgress = groupTodayProgress / groupTodayMemberCount;
                             if(groupTodayProgress >= 100){
                                 groupTodayProgress = 100;
@@ -1041,11 +1042,11 @@ export class StepChallengeService {
                                 groupProgress = parseFloat(teamProgress.toFixed(2));
                             }
                             allgroups['Groups'][groupId]['completedsteps'] = parseFloat(groupComplatedSteps.toFixed(2));
-                            allgroups['Groups'][groupId]['completedsteps_str'] = parseFloat(groupComplatedSteps.toFixed(2)).toLocaleString('en-US') + ' '+ (groupComplatedSteps > 1 ? stepsCompletedtrans : stepCompletedtrans);
+                            allgroups['Groups'][groupId]['completedsteps_str'] = this.commonArrayService.formatUSStyle(parseFloat(groupComplatedSteps.toFixed(2))) + ' '+ (groupComplatedSteps > 1 || groupComplatedSteps == 0 ? stepsCompletedtrans : stepCompletedtrans);
                             allgroups['Groups'][groupId]['averagestep'] = groupAverageSteps;
-                            allgroups['Groups'][groupId]['averagestep_str'] = groupAverageSteps.toLocaleString('en-US') + ' '+ (groupAverageSteps > 1 ? avgDailyStepstrans : avgDailySteptrans);
+                            allgroups['Groups'][groupId]['averagestep_str'] = this.commonArrayService.formatUSStyle(groupAverageSteps) + ' '+ (groupAverageSteps > 1 || groupAverageSteps == 0 ? avgDailyStepstrans : avgDailySteptrans);
                             allgroups['Groups'][groupId]['dailysteps'] = groupDailySteps;
-                            allgroups['Groups'][groupId]['dailysteps_str'] = groupDailySteps.toLocaleString('en-US') + ' '+ (groupDailySteps > 1 ? avgDailyStepsRequiredtrans : avgDailyStepRequiredtrans);
+                            allgroups['Groups'][groupId]['dailysteps_str'] = this.commonArrayService.formatUSStyle(groupDailySteps) + ' '+ (groupDailySteps > 1 || groupDailySteps == 0 ? avgDailyStepsRequiredtrans : avgDailyStepRequiredtrans);
                             allgroups['Groups'][groupId]['totaldailysteps'] = groupDailyTotalSteps;
                             allgroups['Groups'][groupId]['beyond'] = groupRemainSteps;
                             allgroups['Groups'][groupId]['beyond'] += allteams['Teams'][teamId]['beyondtotal'];
@@ -1742,7 +1743,7 @@ export class StepChallengeService {
                         teamProgress += member.progress
                         teamProgressToday += member?.today?.progress;
                         if (!!(member?.completedsteps || member?.completedsteps == 0)) {
-                            let translate = await this.translatorService.frontendReadTranslation(req.lang, member?.completedsteps > 1 ? `Steps Completed` : `Step Completed`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
+                            let translate = await this.translatorService.frontendReadTranslation(req.lang, member?.completedsteps > 1 || member?.completedsteps == 0 ? `Steps Completed` : `Step Completed`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
                             let leftText = Math.abs(member?.completedsteps || 0).toLocaleString() + ` ${translate}`;
                             member['leftText']= leftText;
                         }
@@ -1752,7 +1753,7 @@ export class StepChallengeService {
                             member['rightText']= rightText;
                         }
                         if (!!(member?.today?.completedsteps || member?.today?.completedsteps == 0)) {
-                            let translate = await this.translatorService.frontendReadTranslation(req.lang, member?.today?.completedsteps > 1 ? `Steps Completed` : `Step Completed`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
+                            let translate = await this.translatorService.frontendReadTranslation(req.lang, member?.today?.completedsteps > 1 || member?.today?.completedsteps == 0 ? `Steps Completed` : `Step Completed`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
                             let leftText = Math.abs(member?.today?.completedsteps || 0).toLocaleString() + ` ${translate}`;
                             member['today']['leftText']= leftText;
                         }
@@ -1772,7 +1773,8 @@ export class StepChallengeService {
                         let translate = await this.translatorService.frontendReadTranslation(req.lang, `Step Completed`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
                         let translate1 = await this.translatorService.frontendReadTranslation(req.lang, `Step Beyond The Goal`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
                         let translate2 = await this.translatorService.frontendReadTranslation(req.lang, type.includes('Avg.') ? `Avg. Daily Step Required` : `Daily Steps Required`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
-                        let translate4 = await this.translatorService.frontendReadTranslation(req.lang, `Avg. Daily Step`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
+                        // let translate4 = await this.translatorService.frontendReadTranslation(req.lang, `Avg. Daily Step`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);//ZOMO-4374
+                        let translate4 = await this.translatorService.frontendReadTranslation(req.lang, `Avg. Daily Steps`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
                         let leftText = Math.abs(0).toLocaleString() + ` ${translate}`;
                         team['leftText']= leftText;
                         let rightText = Math.abs(0).toLocaleString() + ` ${translate1}`;
@@ -1815,7 +1817,7 @@ export class StepChallengeService {
                         teamAverage = teamAverage == 0 ? team?.['today']?.['averagesteps'] : teamAverage;
                     }
                     if (team?.completedsteps || team?.completedsteps == 0) {
-                        let translate = await this.translatorService.frontendReadTranslation(req.lang, team?.completedsteps > 1 ? `Steps Completed` : `Step Completed`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
+                        let translate = await this.translatorService.frontendReadTranslation(req.lang, team?.completedsteps > 1 || team?.completedsteps == 0 ? `Steps Completed` : `Step Completed`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
                         leftText = Math.abs(team?.completedsteps || 0).toLocaleString() + ` ${translate}`;
                         completedsteps += Math.abs(team?.completedsteps || 0);
                         team['leftText']= leftText;
@@ -1830,28 +1832,28 @@ export class StepChallengeService {
                         team['rightText']= rightText;
                     }
                     if (team?.averagesteps  || team?.averagesteps == 0) {
-                        let translate = await this.translatorService.frontendReadTranslation(req.lang,team?.averagesteps > 1 ? `Avg. Daily Steps` : `Avg. Daily Step`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
+                        let translate = await this.translatorService.frontendReadTranslation(req.lang,team?.averagesteps > 1 || team?.averagesteps == 0 ? `Avg. Daily Steps` : `Avg. Daily Step`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
                         bottomLeftText = Math.abs(team?.averagesteps || 0).toLocaleString() + ` ${translate}`;
                         team['bottomLeftText']= bottomLeftText;
                         result['today']['bottomLeftText']= bottomLeftText;
                     }
                     let bottomRightText = '';
                     if (team?.dailysteps  || team?.dailysteps == 0) {
-                        let translate = await this.translatorService.frontendReadTranslation(req.lang, type.includes('Avg.') ? team?.dailysteps > 1 ? `Avg. Daily Steps Required` : `Avg. Daily Step Required` : team?.dailysteps > 1 ? `Daily Steps Required` : `Daily Step Required`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
+                        let translate = await this.translatorService.frontendReadTranslation(req.lang, type.includes('Avg.') ? team?.dailysteps > 1 || team?.dailysteps == 0 ? `Avg. Daily Steps Required` : `Avg. Daily Step Required` : team?.dailysteps > 1 || team?.dailysteps == 0 ? `Daily Steps Required` : `Daily Step Required`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
                         bottomRightText = Math.abs(team?.dailysteps || 0).toLocaleString() + ` ${translate}`;
                         team['bottomRightText']= bottomRightText;
                         team['today']['bottomRightText']= bottomRightText;
                     }
                     if (team?.totaldailysteps  || team?.totaldailysteps == 0) {
-                        let translate = await this.translatorService.frontendReadTranslation(req.lang,team?.totaldailysteps > 1 ? `Total Steps Required` : `Total Step Required`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
+                        let translate = await this.translatorService.frontendReadTranslation(req.lang,team?.totaldailysteps > 1 || team?.totaldailysteps == 0 ? `Total Steps Required` : `Total Step Required`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
                         team['totalStepsText'] = (team?.totaldailysteps).toLocaleString() + ` ${translate}`;
                     }
                     if (teamCompleted  || teamCompleted == 0) {
-                        let translate = await this.translatorService.frontendReadTranslation(req.lang, teamCompleted > 1 ? `Steps Completed` : `Step Completed`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
+                        let translate = await this.translatorService.frontendReadTranslation(req.lang, teamCompleted > 1 || teamCompleted == 0 ? `Steps Completed` : `Step Completed`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
                         team['today']['leftText'] = (teamCompleted).toLocaleString() + ` ${translate}`;
                     }
                     if (teamBeyondToday && teamBeyondToday >= 0) {
-                        let translate = await this.translatorService.frontendReadTranslation(req.lang,teamBeyondToday > 1 ? `Steps Beyond The Goal` : `Step Beyond The Goal`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
+                        let translate = await this.translatorService.frontendReadTranslation(req.lang,teamBeyondToday > 1 || teamBeyondToday == 0 ? `Steps Beyond The Goal` : `Step Beyond The Goal`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
                         rightText = Math.abs(teamBeyondToday || 0).toLocaleString() + ` ${translate}`;
                         team['today']['rightText']= rightText;
                     } else {
@@ -1861,7 +1863,7 @@ export class StepChallengeService {
                         else{
                             rightText = Math.abs((teamTodayRemaining >= team.dailysteps ? teamTodayRemaining : team.dailysteps) || 0).toLocaleString();
                         }
-                        let translate = await this.translatorService.frontendReadTranslation(req.lang, Number(rightText) > 1 ? `More Steps To Goal` : `More Step To Goal`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
+                        let translate = await this.translatorService.frontendReadTranslation(req.lang, Number(rightText) > 1 || Number(rightText) == 0 ? `More Steps To Goal` : `More Step To Goal`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
                         remainSteps += Math.abs(team?.remainsteps || 0);
                         team['today']['rightText']= rightText + translate;
                     }
@@ -1890,19 +1892,19 @@ export class StepChallengeService {
                 }
                 result.allteams = JSON.parse(JSON.stringify(filteredTeams));
                 if (completedsteps || completedsteps == 0) {
-                    let translate = await this.translatorService.frontendReadTranslation(req.lang, completedsteps > 1 ? `Steps Completed` : `Step Completed`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
+                    let translate = await this.translatorService.frontendReadTranslation(req.lang, completedsteps > 1 || completedsteps == 0 ? `Steps Completed` : `Step Completed`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
                     result.leaderboard['rightText']= Math.abs(completedsteps || 0).toLocaleString() + ` ${translate}`;
                 }
                 if (result.today &&  Object.prototype.hasOwnProperty.call(result.today, 'completedsteps')) {
-                    let translate = await this.translatorService.frontendReadTranslation(req.lang, completedsteps > 1 ? `Steps Completed` : `Step Completed`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
+                    let translate = await this.translatorService.frontendReadTranslation(req.lang, completedsteps > 1 || completedsteps == 0 ? `Steps Completed` : `Step Completed`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
                     result.today['rightText']= Math.abs(completedsteps || 0).toLocaleString() + ` ${translate}`;
                 }
                 if (result?.today?.beyond && result?.today?.beyond !== 0 && result?.today?.beyond !== '' && result?.today?.beyond <= 0) {
-                    let translate = await this.translatorService.frontendReadTranslation(req.lang, result?.today?.beyond > 1 ? `Steps Beyond The Goal` : `Step Beyond The Goal`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
+                    let translate = await this.translatorService.frontendReadTranslation(req.lang, result?.today?.beyond > 1 || result?.today?.beyond == 0 ? `Steps Beyond The Goal` : `Step Beyond The Goal`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
                     result.today['bottomLeftText']= Math.abs(result?.today?.beyond || 0).toLocaleString() + ` ${translate}`;
                 }
                 else if(result?.today?.remainsteps){
-                    let translate = await this.translatorService.frontendReadTranslation(req.lang,result?.today?.remainsteps > 1 ? `More Steps To Goal` : `More Step To Goal`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
+                    let translate = await this.translatorService.frontendReadTranslation(req.lang,result?.today?.remainsteps > 1 || result?.today?.remainsteps == 0 ? `More Steps To Goal` : `More Step To Goal`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
                     result.today['bottomLeftText']= Math.abs(result?.today?.remainsteps || 0).toLocaleString() + ` ${translate}`;
                 }
                 let steps = (result?.leaderboard?.dailytotalsteps * totaldays) - TeamCompletedProgress;
@@ -1913,23 +1915,23 @@ export class StepChallengeService {
                 remainSteps = 1000
                 result.leaderboard.remainsteps = result?.leaderboard.remainsteps > teamcompleted ? ((result?.leaderboard?.dailytotalsteps * totaldays) - result?.leaderboard?.completedsteps) : result?.leaderboard?.completedsteps - teamcompleted;
                 if (teamBeyond && teamBeyond !== 0 && teamBeyond >= 0) {
-                    let translate = await this.translatorService.frontendReadTranslation(req.lang,teamBeyond > 1 ? `Steps Beyond The Goal` : `Step Beyond The Goal`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
+                    let translate = await this.translatorService.frontendReadTranslation(req.lang,teamBeyond > 1 || teamBeyond == 0 ? `Steps Beyond The Goal` : `Step Beyond The Goal`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
                     result.leaderboard['bottomLeftText'] = Math.abs(teamBeyond || 0).toLocaleString() + ` ${translate}`;
                 }
                 else if (!!((result?.leaderboard?.remainsteps || result?.leaderboard?.remainsteps == 0) || (result.totalremainsteps || result.totalremainsteps == 0) || (remainSteps || remainSteps == 0))) {
                     let resultStep = Math.abs(result?.leaderboard?.remainsteps || remainSteps || result?.totalremainsteps || 0);
-                    let translate = await this.translatorService.frontendReadTranslation(req.lang,resultStep > 1 ? `More Steps To Goal` : `More Step To Goal`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
+                    let translate = await this.translatorService.frontendReadTranslation(req.lang,resultStep > 1 || resultStep == 0 ? `More Steps To Goal` : `More Step To Goal`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
                     result.leaderboard['bottomLeftText'] = resultStep + ` ${translate}`;
                 }
 
                 if (totalTeamMember  || totalTeamMember == 0) {
                     let count = (result?.leaderboard?.dailytotalsteps > (totalTeamMember * (schedule?.sc?.numberofsteps || dailymaxstepscnt)) ? result?.leaderboard?.dailytotalsteps : (totalTeamMember * (schedule?.sc?.numberofsteps || dailymaxstepscnt)));
-                    let translate = await this.translatorService.frontendReadTranslation(req.lang, type.includes('Avg.') ? count > 1 ? `Avg. Daily Steps Required` : `Avg. Daily Step Required` : count > 1 ? `Daily Steps Required` : `Daily Step Required`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
+                    let translate = await this.translatorService.frontendReadTranslation(req.lang, type.includes('Avg.') ? count > 1 || count == 0 ? `Avg. Daily Steps Required` : `Avg. Daily Step Required` : count > 1 ? `Daily Steps Required` : `Daily Step Required`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
                     result.leaderboard['bottomRightText'] = count.toLocaleString() + ` ${translate}`;
                 }
 
                 if (result.totalsteps) {
-                    let translate = await this.translatorService.frontendReadTranslation(req.lang,result.totalsteps > 1 ? `Total Steps Required` : `Total Step Required`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
+                    let translate = await this.translatorService.frontendReadTranslation(req.lang,result.totalsteps > 1 || result.totalsteps == 0 ? `Total Steps Required` : `Total Step Required`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
                     result.leaderboard['totalStepsText'] = (result.totalsteps).toLocaleString() + ` ${translate}`;
                 }
             }
@@ -1953,56 +1955,56 @@ export class StepChallengeService {
                         group.remainsteps = Math.abs(group.completedsteps - group.totaldailysteps);
                     }
                     if (group?.completedsteps || group?.completedsteps == 0) {
-                        let translate = await this.translatorService.frontendReadTranslation(req.lang, group?.completedsteps > 1 ? `Steps Completed` : `Step Completed`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
+                        let translate = await this.translatorService.frontendReadTranslation(req.lang, group?.completedsteps > 1 || group?.completedsteps == 0 ? `Steps Completed` : `Step Completed`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
                         leftText = Math.abs(group?.completedsteps || 0).toLocaleString() + ` ${translate}`;
                         completedsteps += Math.abs(group?.completedsteps || 0);
                         group['leftText']= leftText;
                     }
                     if (group?.today?.completedsteps || group?.today?.completedsteps == 0) {
-                        let translate = await this.translatorService.frontendReadTranslation(req.lang,group?.today?.completedsteps > 1 ? `Steps Completed` : `Step Completed`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
+                        let translate = await this.translatorService.frontendReadTranslation(req.lang,group?.today?.completedsteps > 1 || group?.today?.completedsteps == 0 ? `Steps Completed` : `Step Completed`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
                         leftText = Math.abs(group?.today?.completedsteps || 0).toLocaleString() + ` ${translate}`;
                         group['today']['leftText']= leftText;
                     }
                     if (group?.beyondtotal && group?.beyondtotal !== '' && group?.beyondtotal >= 0) {
-                        let translate = await this.translatorService.frontendReadTranslation(req.lang,group?.beyondtotal > 1 ? `Steps Beyond The Goal` : `Step Beyond The Goal`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
+                        let translate = await this.translatorService.frontendReadTranslation(req.lang,group?.beyondtotal > 1 || group?.beyondtotal == 0 ? `Steps Beyond The Goal` : `Step Beyond The Goal`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
                         rightText = Math.abs(group?.beyondtotal || 0).toLocaleString() + ` ${translate}`;
                         group['rightText']= rightText;
                     } else {
-                        let translate = await this.translatorService.frontendReadTranslation(req.lang,group?.remainsteps > 1 ? `More Steps To Goal` : `More Step To Goal`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
+                        let translate = await this.translatorService.frontendReadTranslation(req.lang,group?.remainsteps > 1 || group?.remainsteps == 0 ? `More Steps To Goal` : `More Step To Goal`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
                         rightText = Math.abs(group?.remainsteps || 0).toLocaleString() + ` ${translate}`;
                         remainSteps += Math.abs(group?.remainsteps || 0);
                         group['rightText']= rightText;
                     }
                     if (group?.today?.beyond && group?.today?.beyond !== '' && group?.today?.beyond <= 0) {
-                        let translate = await this.translatorService.frontendReadTranslation(req.lang, group?.today?.beyond > 1 ? `Steps Beyond The Goal` : `Step Beyond The Goal`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
+                        let translate = await this.translatorService.frontendReadTranslation(req.lang, group?.today?.beyond > 1 || group?.today?.beyond == 0 ? `Steps Beyond The Goal` : `Step Beyond The Goal`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
                         rightText = Math.abs(group?.today?.beyond || 0).toLocaleString() + ` ${translate}`;
                         group['today']['rightText']= rightText;
                     } else {
-                        let translate = await this.translatorService.frontendReadTranslation(req.lang, group?.today?.remainsteps > 1 ? `More Steps To Goal` : `More Step To Goal`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
+                        let translate = await this.translatorService.frontendReadTranslation(req.lang, group?.today?.remainsteps > 1 || group?.today?.remainsteps == 0 ? `More Steps To Goal` : `More Step To Goal`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
                         rightText = Math.abs(group?.today?.remainsteps || 0).toLocaleString() + ` ${translate}`;
                         remainSteps += Math.abs(group?.today?.remainsteps || 0);
                         group['today']['rightText']= rightText;
                     }
                     if (group?.averagestep  || group?.averagestep == 0) {
-                        let translate = await this.translatorService.frontendReadTranslation(req.lang,group?.averagestep > 1 ? `Avg. Daily Steps` : `Avg. Daily Step`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
+                        let translate = await this.translatorService.frontendReadTranslation(req.lang,group?.averagestep > 1 || group?.averagestep == 0 ? `Avg. Daily Steps` : `Avg. Daily Step`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
                         bottomLeftText = Math.abs(Math.round(group?.averagestep) || 0).toLocaleString() + ` ${translate}`;
                         group['bottomLeftText']= bottomLeftText;
                         result.today['bottomLeftText']= bottomLeftText;
                     }
                     if (group?.today?.averagesteps  || group?.today?.averagesteps == 0) {
-                        let translate = await this.translatorService.frontendReadTranslation(req.lang,group?.today?.averagesteps > 1 ? `Avg. Daily Steps` : `Avg. Daily Step`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
+                        let translate = await this.translatorService.frontendReadTranslation(req.lang,group?.today?.averagesteps > 1 || group?.today?.averagesteps == 0 ? `Avg. Daily Steps` : `Avg. Daily Step`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
                         bottomLeftText = Math.abs(group?.today?.averagesteps || 0).toLocaleString() + ` ${translate}`;
                         group['today']['bottomLeftText']= bottomLeftText;
                     }
                     let bottomRightText = '';
                     if (group?.dailysteps  || group?.dailysteps == 0) {
-                        let translate = await this.translatorService.frontendReadTranslation(req.lang, type.includes('Avg.') ? group?.dailysteps > 1 ? `Avg. Daily Steps Required` : `Avg. Daily Step Required` : group?.dailysteps > 1 ? `Daily Steps Required` : `Daily Step Required`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
+                        let translate = await this.translatorService.frontendReadTranslation(req.lang, type.includes('Avg.') ? group?.dailysteps > 1 || group?.dailysteps == 0 ? `Avg. Daily Steps Required` : `Avg. Daily Step Required` : group?.dailysteps > 1 || group?.dailysteps == 0 ? `Daily Steps Required` : `Daily Step Required`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
                         bottomRightText = Math.abs(group?.dailysteps || 0).toLocaleString() + ` ${translate}`;
                         group['bottomRightText']= bottomRightText;
                         group['today']['bottomRightText']= bottomRightText;
                     }
                     if (group?.totaldailysteps  || group?.totaldailysteps == 0) {
-                        let translate = await this.translatorService.frontendReadTranslation(req.lang,group?.totaldailysteps > 1 ? `Total Steps Required` : `Total Step Required`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
+                        let translate = await this.translatorService.frontendReadTranslation(req.lang,group?.totaldailysteps > 1 || group?.totaldailysteps == 0 ? `Total Steps Required` : `Total Step Required`, `/LC_MESSAGES/Dashboard/ChallengeProgress`, `static`);
                         group['totalStepsText'] = (group?.totaldailysteps).toLocaleString() + ` ${translate}`;
                     }
                     if(schedule.in_ranking == 0){

@@ -23,10 +23,10 @@
     "docs": "apidoc -i src -o public/apidoc"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.978.0",
-    "@aws-sdk/client-sts": "^3.978.0",
-    "@aws-sdk/client-translate": "^3.978.0",
-    "@aws-sdk/s3-request-presigner": "^3.978.0",
+    "@aws-sdk/client-s3": "^3.981.0",
+    "@aws-sdk/client-sts": "^3.981.0",
+    "@aws-sdk/client-translate": "^3.981.0",
+    "@aws-sdk/s3-request-presigner": "^3.981.0",
     "@cucumber/cucumber": "12.5.0",
     "@eslint/config-array": "0.23.0",
     "@nestjs/common": "11.1.12",
@@ -76,7 +76,7 @@
     "parse5": "8.0.0",
     "path-to-regexp": "8.3.0",
     "pidusage": "^4.0.1",
-    "rate-limiter-flexible": "^9.0.1",
+    "rate-limiter-flexible": "^9.1.0",
     "request-ip": "3.3.0",
     "rimraf": "6.1.2",
     "rxjs": "7.8.2",

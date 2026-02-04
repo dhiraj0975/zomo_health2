@@ -1,4 +1,4 @@
-import { CommonDateService, CommonService, tableConstant } from '@common-constants';
+import { CommonArrayService, CommonDateService, CommonService, tableConstant } from '@common-constants';
 import { Inject, Injectable } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
 import { Request } from "express";
@@ -31,6 +31,7 @@ export class TrekStepChallengeService {
         private readonly activityLogService: ActivityLogService,
         private readonly scheduleChallengeJoinUsersService: ScheduleChallengeJoinUsersService,
         private readonly commitmentLevelsService: CommitmentLevelsService,
+        private readonly commonArrayService: CommonArrayService,
         
         @Inject('COMMON_SERVICE')
             private commonMicroservice: ClientProxy,
@@ -90,7 +91,7 @@ export class TrekStepChallengeService {
                 result = {
                     dailysteps: dailySteps,
                     totalsteps: totalSteps,
-                    totalsteps_str: totalSteps.toLocaleString('en-US'),
+                    totalsteps_str: this.commonArrayService.formatUSStyle(totalSteps),
                 };
                 let where = `food.collectionDate BETWEEN '${schedule.sc.start_date}' AND '${this.commonDateService.DateTimeFormat(schedule.sc.end_date,'YYYY-MM-DD')} 23:59:59' ${logType} AND food.status = 1`;
                 if(is_set_weekend == 1){
@@ -423,10 +424,10 @@ export class TrekStepChallengeService {
                                             if (userId === teamuserid) {
                                                 result['today'] = getMember['today'];
                                                 result['completedsteps'] =  parseFloat(stepsWalks.toFixed(2));
-                                                result['completedsteps_str'] =  parseFloat(stepsWalks.toFixed(2)).toLocaleString('en-US');
+                                                result['completedsteps_str'] =  this.commonArrayService.formatUSStyle(parseFloat(stepsWalks.toFixed(2)));
                                                 result['progress'] = percentage;
                                                 result['averagesteps'] = averageSteps;
-                                                result['averagesteps_str'] = averageSteps.toLocaleString('en-US');
+                                                result['averagesteps_str'] = this.commonArrayService.formatUSStyle(averageSteps);
                                             }
                                         }
                                     }
@@ -463,10 +464,10 @@ export class TrekStepChallengeService {
                                             if (userId === teamuserid) {
                                                 result['today'] = getMember['today'];
                                                 result['completedsteps'] =  parseFloat(stepsWalks.toFixed(2));
-                                                result['completedsteps_str'] =  parseFloat(stepsWalks.toFixed(2)).toLocaleString('en-US');
+                                                result['completedsteps_str'] =  this.commonArrayService.formatUSStyle(parseFloat(stepsWalks.toFixed(2)));
                                                 result['progress'] = percentage;
                                                 result['averagesteps'] = averageSteps;
-                                                result['averagesteps_str'] = averageSteps.toLocaleString('en-US');
+                                                result['averagesteps_str'] = this.commonArrayService.formatUSStyle(averageSteps);
                                             }
                                         }
                                     }
@@ -1116,10 +1117,10 @@ export class TrekStepChallengeService {
                                             if (userId === this_user_id) {
                                                 result['today'] = getUser['today'];
                                                 result['completedsteps'] =  parseFloat(parseFloat(stepsWalks).toFixed(2));
-                                                result['completedsteps_str'] =  parseFloat(stepsWalks.toFixed(2)).toLocaleString('en-US');
+                                                result['completedsteps_str'] =  this.commonArrayService.formatUSStyle(parseFloat(stepsWalks.toFixed(2)));
                                                 result['progress'] = percentage;
                                                 result['averagesteps'] = averageSteps;
-                                                result['averagesteps_str'] = averageSteps.toLocaleString('en-US');
+                                                result['averagesteps_str'] = this.commonArrayService.formatUSStyle(averageSteps);
                                                 result['remainsteps'] = averageSteps;
                                             }
                                         }
@@ -1158,10 +1159,10 @@ export class TrekStepChallengeService {
                                             if (userId === this_user_id) {
                                                 result['today'] = getUser['today'];
                                                 result['completedsteps'] =  parseFloat(parseFloat(stepsWalks).toFixed(2));
-                                                result['completedsteps_str'] =  parseFloat(stepsWalks.toFixed(2)).toLocaleString('en-US');
+                                                result['completedsteps_str'] =  this.commonArrayService.formatUSStyle(parseFloat(stepsWalks.toFixed(2)));
                                                 result['progress'] = percentage;
                                                 result['averagesteps'] = averageSteps;
-                                                result['averagesteps_str'] = averageSteps.toLocaleString('en-US');
+                                                result['averagesteps_str'] = this.commonArrayService.formatUSStyle(averageSteps);
                                             }
                                         }
                                     }
@@ -1185,7 +1186,7 @@ export class TrekStepChallengeService {
                                 result['companyDetails'] = Object.create(null);
                             }
                             result['companyDetails']['completedsteps'] = completedSteps;
-                            result['companyDetails']['completedsteps_str'] = completedSteps.toLocaleString('en-US');
+                            result['companyDetails']['completedsteps_str'] = this.commonArrayService.formatUSStyle(completedSteps);
                             result['companyDetails']['realsteps'] = realCompletedSteps;
                             if (completedSteps < beyondTotal) {
                                 completedSteps = completedSteps - beyondTotal;
@@ -1236,8 +1237,8 @@ export class TrekStepChallengeService {
                             if (matchStartDate <= ucurrentdate) {
                                 result['companyDetails']['today']['completedsteps'] = todayTotal;
                                 result['companyDetails']['today']['totalsteps'] = CompanyDailySteps;
-                                result['companyDetails']['today']['totalsteps_str'] = CompanyDailySteps.toLocaleString('en-US');
-                                result['companyDetails']['today']['completedsteps_str'] = todayTotal.toLocaleString('en-US');
+                                result['companyDetails']['today']['totalsteps_str'] = this.commonArrayService.formatUSStyle(CompanyDailySteps);
+                                result['companyDetails']['today']['completedsteps_str'] = this.commonArrayService.formatUSStyle(todayTotal);
                                 if (todayBeyondTotal != 0) {
                                     result['companyDetails']['today']['beyond'] = todayBeyondTotal;
                                 } else {

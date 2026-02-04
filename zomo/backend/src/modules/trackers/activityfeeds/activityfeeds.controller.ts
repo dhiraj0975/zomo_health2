@@ -188,6 +188,10 @@ export class ActivityFeedsController {
             ) {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_REQUIRED_PARAM_MISSING"));
             }
+            let message = 'SUCCESS_ACTIVITY_LOG';
+            if(postData?.distance && Number.isFinite(postData?.distance) && !Number.isInteger(postData?.distance)){
+                message = 'SUCCESS_ACTIVITY_FLOAT_LOG';
+            }
             const activityType = this.commonService.getActivityData(postData?.activityName, postData?.unit, postData?.distance);
             postData['activityType'] = activityType['type'];
             postData['activityTypeId'] = activityType['typeId'];
@@ -199,7 +203,7 @@ export class ActivityFeedsController {
                 success: 1,
                 error: 0,
                 data: null,
-                message: await this.translatorService.frontendReadTranslation(req.lang, "SUCCESS_ACTIVITY_LOG"),
+                message: await this.translatorService.frontendReadTranslation(req.lang, message),
             });
         } catch (error) {
             this.activityLogService.error_log(req.tokenUser?.id,req?.originalUrl, error?.message, error, req);

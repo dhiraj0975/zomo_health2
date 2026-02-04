@@ -57,10 +57,13 @@ export class WeeksUsersService {
                 return ele;
             }) : weekUser;
     }
-    async list(condition: any) {
+    async list(condition: any, orderBy: any = null) {
+        if (!orderBy) {
+            orderBy = { id: 'ASC' };
+        }
         let weekUser = await this.readReplicaWeeksUsersRepository.createQueryBuilder('cwu')
             .where(condition)
-            .orderBy('cwu.id', 'ASC')
+            .orderBy(`cwu.${Object.keys(orderBy)[0]}`, orderBy[Object.keys(orderBy)[0]])
             .getMany();
             return weekUser;
     }

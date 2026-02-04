@@ -468,11 +468,11 @@ export class StepsChallengeReportService {
                             row.push(user?.team?.tname)
                             row.push(user?.captain)
 
-                            row.push(user.realcompletedsteps)
-                            row.push(user.completedsteps)
+                            row.push(this.commonArrayService.formatUSStyle(user.realcompletedsteps))
+                            row.push(this.commonArrayService.formatUSStyle(user.completedsteps))
                             row.push(user.percentage+ '%')
-                            row.push(user.averagestep)
-                            row.push(user.remainsteps)
+                            row.push(this.commonArrayService.formatUSStyle(user.averagestep))
+                            row.push(this.commonArrayService.formatUSStyle(user.remainsteps))
                             
                             return row;
                         }),
@@ -567,7 +567,6 @@ export class StepsChallengeReportService {
                 let allStepsData;
                 let todayStepsData;
                 let findAll = `(${[actTrackId, stepId, wakingId, runningId, cyclingId, swimmingId].map(id => `'${id}'`).join(',')})`;
-                console.log('schedule?.[ch]?.bio_challenge_type?.trim()', schedule?.['ch']?.bio_challenge_type?.trim());
                 
                 if (schedule?.['ch']?.bio_challenge_type?.trim() === 'Mile_layout') {
                     findAll = '(17)';
@@ -894,17 +893,17 @@ export class StepsChallengeReportService {
                                 row.push(user.rank)
                                 row.push(...Object.values(tempDataInfo));
 
-                                row.push(user.realtotalstepscompleted)
-                                row.push(user.totalstepscompleted)
+                                row.push(this.commonArrayService.formatUSStyle(user.realtotalstepscompleted))
+                                row.push(this.commonArrayService.formatUSStyle(user.totalstepscompleted))
                                 row.push(user.percentage+ '%')
-                                row.push(user.averagesteps)
-                                row.push(user.remainsteps)
+                                row.push(this.commonArrayService.formatUSStyle(user.averagesteps))
+                                row.push(this.commonArrayService.formatUSStyle(user.remainsteps))
                                 if(schedule['ft_average_per_week']==2){
-                                    row.push(Math.round(user.realtotalstepscompleted/2112));
+                                    row.push(this.commonArrayService.formatUSStyle(Math.round(user.realtotalstepscompleted/2112)));
                                 }
                                 if(user['checkpoint']?.length){
                                     for(let checkPoint of user['checkpoint']){
-                                        row.push(checkPoint);
+                                        row.push(this.commonArrayService.formatUSStyle(checkPoint));
                                     }
                                 }
                                 return row;
