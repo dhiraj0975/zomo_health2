@@ -1,4 +1,4 @@
-import { CommonDateService, CommonService } from '@common-constants';
+import { CommonArrayService, CommonDateService, CommonService } from '@common-constants';
 import { Inject, Injectable } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
 import { Request } from "express";
@@ -31,6 +31,7 @@ export class MileLayoutChallengeService {
         @Inject('COMMON_SERVICE')
             private commonMicroservice: ClientProxy,
         private readonly activityLogService: ActivityLogService,
+        private readonly commonArrayService: CommonArrayService,
     ) {}
 
     /* Mile Layout Challenge Code */
@@ -561,7 +562,7 @@ export class MileLayoutChallengeService {
                             result['myTeamDetails']['dailysteps'] = DailyStepsForAll;
                             result['myTeamDetails']['bottomRightText'] = bottomRightText;
                             result['myTeamDetails']['totaldailysteps'] = DailyStepsForTeam * totaldays;
-                            result['myTeamDetails']['totalStepsText'] = (DailyStepsForTeam * totaldays).toLocaleString('en-US') + ` ` + (DailyStepsForTeam * totaldays > 1 ? translateTMsR : translateTMR);
+                            result['myTeamDetails']['totalStepsText'] = this.commonArrayService.formatUSStyle(DailyStepsForTeam * totaldays) + ` ` + (DailyStepsForTeam * totaldays > 1 ? translateTMsR : translateTMR);
 
                             result['myTeamDetails']['today']['completedsteps'] = parseFloat(todayTotal.toFixed(2));
                             result['myTeamDetails']['today']['leftText'] = result['myTeamDetails']['today']['completedsteps']+ ' ' + (result['myTeamDetails']['today']['completedsteps'] > 1 ? translateMsC : translateMC);
