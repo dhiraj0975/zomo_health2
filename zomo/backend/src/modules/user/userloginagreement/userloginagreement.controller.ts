@@ -19,6 +19,7 @@ import { Request, Response } from "express";
 import { diskStorage } from 'multer';
 import { lastValueFrom } from 'rxjs';
 import { ActivityLogService } from 'src/modules/master/activitylog/activitylog.service';
+import { Not } from 'typeorm';
 import { AccessGuard, RoleGuard, TokenGuard } from '../../../guard';
 import { CreateUserLoginAgreementInput, PaginateWithCompanyInput } from '../../../input';
 import { fileName, imgFilter } from '../../../utils/image-upload.utils';
@@ -91,6 +92,7 @@ export class UserLoginAgreementController {
             if(postData?.org_id){
                 where['org_id'] = postData?.org_id;
             }
+            where['status'] = Not(2);
             let recordDetails = await this.userLoginAgreementService.findOne(where);
             if (!recordDetails) {
                 let errorMessage = await this.translatorService.frontendReadTranslation(req.lang, "ERR_RECORD_NOT_FOUND");

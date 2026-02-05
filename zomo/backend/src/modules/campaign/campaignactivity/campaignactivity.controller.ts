@@ -825,19 +825,19 @@ export class CampaignActivityController {
                     let activitysDataAll = await this.campaignActivityService.campaignActivityList({id: In(newUpdatedActivityIds), status: 1}, ['campaignactivity', 'activity']);
                     let challengesDataAll = await this.campaignChallengeService.listRecord({id: In(newUpdatedChallengesIds), status: 1}, '', ['campaignchallenge', 'sc', 'ch'],'yes');
                     let categorysDataAll = await this.campaignCategoryService.listRecord({id: In(newUpdatedCategoryIds), status: 1}, '', ['campaigncategory', 'category'], 'yes');
-                    let dynamicDatas = Object.create(null);
+                    let dynamicData = Object.create(null);
                     if(activitysDataAll && activitysDataAll.length > 0){
                         for (const key in activitysDataAll) {
                             let actId = activitysDataAll[key]?.id;
                             let tilteA = `activity_name_${postData?.campaign_id}_${postData?.reward_id}_${actId}`;
-                            dynamicDatas[`${tilteA}`] = activitysDataAll[key]?.cust_name ? activitysDataAll[key]?.cust_name : "";
-                            if(dynamicDatas[`${tilteA}`] == ''){
-                                dynamicDatas[`${tilteA}`]= activitysDataAll[key]?.['activity']?.activity_name;
+                            dynamicData[`${tilteA}`] = activitysDataAll[key]?.cust_name ? activitysDataAll[key]?.cust_name : "";
+                            if(dynamicData[`${tilteA}`] == ''){
+                                dynamicData[`${tilteA}`]= activitysDataAll[key]?.['activity']?.activity_name;
                             }  
                             let discriptionA = `activity_desc_${postData?.campaign_id}_${postData?.reward_id}_${actId}`;
-                            dynamicDatas[`${discriptionA}`] = activitysDataAll[key]?.cust_description ? activitysDataAll[key]?.cust_description : "";
-                            if(dynamicDatas[`${discriptionA}`] == ''){
-                                dynamicDatas[`${discriptionA}`] = activitysDataAll[key]?.['activity']?.description;
+                            dynamicData[`${discriptionA}`] = activitysDataAll[key]?.cust_description ? activitysDataAll[key]?.cust_description : "";
+                            if(dynamicData[`${discriptionA}`] == ''){
+                                dynamicData[`${discriptionA}`] = activitysDataAll[key]?.['activity']?.description;
                             }
                         }
                     }
@@ -845,14 +845,14 @@ export class CampaignActivityController {
                         for (const key in categorysDataAll) {
                             let CTId = categorysDataAll[key]?.id;
                             let tilteC = `category_name_${postData?.campaign_id}_${postData?.reward_id}_${CTId}`;
-                            dynamicDatas[`${tilteC}`] = categorysDataAll[key]?.cust_name ? categorysDataAll[key]?.cust_name : "";
-                            if(dynamicDatas[`${tilteC}`] == ''){
-                                dynamicDatas[`${tilteC}`]= categorysDataAll[key]?.['category']?.category_name;
+                            dynamicData[`${tilteC}`] = categorysDataAll[key]?.cust_name ? categorysDataAll[key]?.cust_name : "";
+                            if(dynamicData[`${tilteC}`] == ''){
+                                dynamicData[`${tilteC}`]= categorysDataAll[key]?.['category']?.category_name;
                             }  
                             let discriptionC = `category_desc_${postData?.campaign_id}_${postData?.reward_id}_${CTId}`;
-                            dynamicDatas[`${discriptionC}`] = categorysDataAll[key]?.cust_description ? categorysDataAll[key]?.cust_description : "";
-                            if(dynamicDatas[`${discriptionC}`] == ''){
-                                dynamicDatas[`${discriptionC}`] = categorysDataAll[key]?.['category']?.description;
+                            dynamicData[`${discriptionC}`] = categorysDataAll[key]?.cust_description ? categorysDataAll[key]?.cust_description : "";
+                            if(dynamicData[`${discriptionC}`] == ''){
+                                dynamicData[`${discriptionC}`] = categorysDataAll[key]?.['category']?.description;
                             }
                         }
                     }
@@ -860,19 +860,19 @@ export class CampaignActivityController {
                         for (const key in challengesDataAll) {
                             let CHId = challengesDataAll[key]?.id;
                             let tilteCH = `challenge_name_${postData?.campaign_id}_${postData?.reward_id}_${CHId}`;
-                            dynamicDatas[`${tilteCH}`] = challengesDataAll[key]?.['sc']?.custom_cname ? challengesDataAll[key]?.['sc']?.custom_cname : "";
-                            if(dynamicDatas[`${tilteCH}`] == ''){
-                                dynamicDatas[`${tilteCH}`]= challengesDataAll[key]?.['ch']?.challenge_name;
+                            dynamicData[`${tilteCH}`] = challengesDataAll[key]?.['sc']?.custom_cname ? challengesDataAll[key]?.['sc']?.custom_cname : "";
+                            if(dynamicData[`${tilteCH}`] == ''){
+                                dynamicData[`${tilteCH}`]= challengesDataAll[key]?.['ch']?.challenge_name;
                             }  
                             let discriptionCH = `challenge_desc_${postData?.campaign_id}_${postData?.reward_id}_${CHId}`;
-                            dynamicDatas[`${discriptionCH}`] = challengesDataAll[key]?.['sc']?.custom_desc ? challengesDataAll[key]?.['sc']?.custom_desc : "";
-                            if(dynamicDatas[`${discriptionCH}`] == ''){
-                                dynamicDatas[`${discriptionCH}`] = challengesDataAll[key]?.['ch']?.challenge_desc;
+                            dynamicData[`${discriptionCH}`] = challengesDataAll[key]?.['sc']?.custom_desc ? challengesDataAll[key]?.['sc']?.custom_desc : "";
+                            if(dynamicData[`${discriptionCH}`] == ''){
+                                dynamicData[`${discriptionCH}`] = challengesDataAll[key]?.['ch']?.challenge_desc;
                             }
                         }
                     }
-                    if(dynamicDatas && Object.keys(dynamicDatas)?.length > 0){
-                        await this.translatorService.DynamicEngJsonData('Campaign',postData?.organization_id,dynamicDatas,'Edit','Campaigns',postData?.campaign_id);
+                    if(dynamicData && Object.keys(dynamicData)?.length > 0){
+                        await this.translatorService.DynamicEngJsonData('Campaign',postData?.organization_id,dynamicData,'Edit','Campaigns',postData?.campaign_id);
                     }
                 /* Activity Data update in english file */
             }else{

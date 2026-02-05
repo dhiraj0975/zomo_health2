@@ -68,24 +68,24 @@ export class WeeksController {
                 await lastValueFrom(this.commonMicroservice.send({cmd: 'upload_file'}, {path: path.resolve(file.path),  filename: filename}));
                 await this.weeksService.update({ id: weekResult['id']},{logofile: filename});
             }
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.manual_activity && postData?.manual_activity != ' '){
-                let tilte = `week_activity_name_${weekResult['challenge_id']}_${weekResult['id']}`;
-                dynamicDatas[`${tilte}`]= postData?.manual_activity;
+                let title = `week_activity_name_${weekResult['challenge_id']}_${weekResult['id']}`;
+                dynamicData[`${title}`]= postData?.manual_activity;
             }
             if(postData?.site_activity_desc){
-                let tilte = `week_activity_description_${weekResult['challenge_id']}_${weekResult['id']}`;
-                dynamicDatas[`${tilte}`]= postData?.site_activity_desc;
+                let title = `week_activity_description_${weekResult['challenge_id']}_${weekResult['id']}`;
+                dynamicData[`${title}`]= postData?.site_activity_desc;
             }
             if(postData?.manual_desc){
-                let tilte = `week_description_${weekResult['challenge_id']}_${weekResult['id']}`;
-                dynamicDatas[`${tilte}`]= postData?.manual_desc;
+                let title = `week_description_${weekResult['challenge_id']}_${weekResult['id']}`;
+                dynamicData[`${title}`]= postData?.manual_desc;
             }
             if(postData?.tabmanual){
-                let tilte = `week_tabmanual_${weekResult['challenge_id']}_${weekResult['id']}`;
-                dynamicDatas[`${tilte}`]= postData?.tabmanual;
+                let title = `week_tabmanual_${weekResult['challenge_id']}_${weekResult['id']}`;
+                dynamicData[`${title}`]= postData?.tabmanual;
             }
-            await this.translatorService.DynamicEngJsonData('Challenge','0',dynamicDatas,'Edit','MyChallenges',weekResult['id']); 
+            await this.translatorService.DynamicEngJsonData('Challenge','0',dynamicData,'Edit','MyChallenges',weekResult['id']); 
             return res.status(HttpStatus.OK).json({
                 statusCode: 201,
                 success: 1,
@@ -142,24 +142,24 @@ export class WeeksController {
             }
             await this.weeksService.update({ id: postData?.id, challenge_id: postData?.challenge_id},{...postData});
             this.activityLogService.create(recordDetails, postData, tableConstant.CHALLENGE.TBL_CH_WEEKS, req.tokenUser?.id);
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.manual_activity && postData?.manual_activity != ' '){
-                let tilte = `week_activity_name_${recordDetails['challenge_id']}_${recordDetails['id']}`;
-                dynamicDatas[`${tilte}`]= postData?.manual_activity;
+                let title = `week_activity_name_${recordDetails['challenge_id']}_${recordDetails['id']}`;
+                dynamicData[`${title}`]= postData?.manual_activity;
             }
             if(postData?.site_activity_desc){
-                let tilte = `week_activity_description_${recordDetails['challenge_id']}_${recordDetails['id']}`;
-                dynamicDatas[`${tilte}`]= postData?.site_activity_desc;
+                let title = `week_activity_description_${recordDetails['challenge_id']}_${recordDetails['id']}`;
+                dynamicData[`${title}`]= postData?.site_activity_desc;
             }
             if(postData?.manual_desc){
-                let tilte = `week_description_${recordDetails['challenge_id']}_${recordDetails['id']}`;
-                dynamicDatas[`${tilte}`]= postData?.manual_desc;
+                let title = `week_description_${recordDetails['challenge_id']}_${recordDetails['id']}`;
+                dynamicData[`${title}`]= postData?.manual_desc;
             }
             if(postData?.tabmanual){
-                let tilte = `week_tabmanual_${recordDetails['challenge_id']}_${recordDetails['id']}`;
-                dynamicDatas[`${tilte}`]= postData?.tabmanual;
+                let title = `week_tabmanual_${recordDetails['challenge_id']}_${recordDetails['id']}`;
+                dynamicData[`${title}`]= postData?.tabmanual;
             }
-            await this.translatorService.DynamicEngJsonData('Challenge','0',dynamicDatas,'Edit','MyChallenges',recordDetails['id']); 
+            await this.translatorService.DynamicEngJsonData('Challenge','0',dynamicData,'Edit','MyChallenges',recordDetails['id']); 
             return res.status(HttpStatus.OK).json({
                 statusCode: 201,
                 success: 1,

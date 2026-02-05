@@ -31,6 +31,7 @@ import { FrontService } from "../front/front.service";
 import { PaginateWithCampaignInput } from '../input';
 import { CustomPointService } from "./custompoint.service";
 import { CreateCustomPointInput, MappingCustomPointInput, UploadCustomPointInput } from './input';
+import { BrokerService } from "@/modules/broker/broker.service";
 @Controller('campaign/custom-point')
 @UseGuards(TokenGuard, RoleGuard)
 export class CustomPointController {
@@ -44,6 +45,7 @@ export class CustomPointController {
         private readonly activityLogService: ActivityLogService,
         private readonly frontService: FrontService,
         private readonly campaignService: CampaignService,
+        private readonly brokerService: BrokerService,
         @Inject('COMMON_SERVICE')
         private commonMicroservice: ClientProxy,
         @Inject('CRON_SERVICE')
@@ -59,20 +61,33 @@ export class CustomPointController {
             if(postData?.org_id){
                 org_id = postData?.org_id;
             }
+            let roleId = user?.role_id;
+            let userId = user?.id;
             let where = ` custompoint.status = 1`;
-            if(user.role_id == appConstant.ROLE.BROKERADMIN || user.role_id == appConstant.ROLE.BROKER || user.role_id == appConstant.ROLE.REGIONALADMIN){
-                let checkBrokerAdmin = [];
-                if(user.role_id == appConstant.ROLE.BROKERADMIN){
-                    checkBrokerAdmin = await this.customPointService.checkBrokerUser(`broker.org_id = ${org_id} AND broker.user_id = ${user.id} AND broker.is_global = 1`);
-                }else if(user.role_id == appConstant.ROLE.REGIONALADMIN){
-                    checkBrokerAdmin = await this.customPointService.checkBrokerUser(`broker.org_id = ${org_id} AND broker.user_id = ${user.id} AND broker.is_global = 2`);
-                }else if(user.role_id == appConstant.ROLE.BROKER){
-                    checkBrokerAdmin = await this.customPointService.checkBrokerUser(`broker.org_id = ${org_id} AND broker.broker_admin_id = ${user.id}`);
-                }
-                if(checkBrokerAdmin.length == 0){
+            // check for broker admin, broker, regional admin role that org_id exits or not.
+            if ([appConstant.ROLE.BROKERADMIN, appConstant.ROLE.BROKER, appConstant.ROLE.REGIONALADMIN].includes(user?.role_id)) {
+                const checkRoleBBR = await this.brokerService.checkOrgAuthorization(
+                    roleId,
+                    userId,
+                    org_id,
+                );
+                if (!checkRoleBBR) {
                     throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_FORBIDDEN_ACCESS"));
                 }
             }
+            // if(user.role_id == appConstant.ROLE.BROKERADMIN || user.role_id == appConstant.ROLE.BROKER || user.role_id == appConstant.ROLE.REGIONALADMIN){
+            //     let checkBrokerAdmin = [];
+            //     if(user.role_id == appConstant.ROLE.BROKERADMIN){
+            //         checkBrokerAdmin = await this.customPointService.checkBrokerUser(`broker.org_id = ${org_id} AND broker.user_id = ${user.id} AND broker.is_global = 1`);
+            //     }else if(user.role_id == appConstant.ROLE.REGIONALADMIN){
+            //         checkBrokerAdmin = await this.customPointService.checkBrokerUser(`broker.org_id = ${org_id} AND broker.user_id = ${user.id} AND broker.is_global = 2`);
+            //     }else if(user.role_id == appConstant.ROLE.BROKER){
+            //         checkBrokerAdmin = await this.customPointService.checkBrokerUser(`broker.org_id = ${org_id} AND broker.broker_admin_id = ${user.id}`);
+            //     }
+            //     if(checkBrokerAdmin.length == 0){
+            //         throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_FORBIDDEN_ACCESS"));
+            //     }
+            // }
             if(user.role_id == appConstant.ROLE.COACH){
                 where += ` AND custompoint.added_by IN (${user?.id})`;
             }else{

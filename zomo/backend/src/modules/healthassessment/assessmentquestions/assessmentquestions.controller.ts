@@ -1,5 +1,5 @@
 import {
-    AssessmentHaOptionsEntity, AssessmentOptionsEntity,
+    AssessmentOptionsEntity,
     AssessmentQuestionsDetailsDto,
     AssessmentQuestionsDto,
     CommonArrayService,
@@ -150,10 +150,10 @@ export class AssessmentQuestionsController {
                 return true;
             }
             if (questionTitle) {
-                let dynamicDatas = Object.create(null);
+                let dynamicData = Object.create(null);
                 let title = `assessment_question_title_${postData?.tab_id}_${lastId['id']}`
-                dynamicDatas[`${title}`] = postData?.question_title;
-                await this.translatorService.DynamicEngJsonData('MyHealth','eha',dynamicDatas,'Edit','Assessment',req.tokenUser?.org_id);
+                dynamicData[`${title}`] = postData?.question_title;
+                await this.translatorService.DynamicEngJsonData('MyHealth','eha',dynamicData,'Edit','Assessment',req.tokenUser?.org_id);
                 delete postData?.question_title;
             }
             await this.assessmentQuestionsDetailsService.save({question_id: lastId['id'],question_title: questionTitle, main_question_id: mainQuestionId, language_id: languageId});
@@ -263,10 +263,10 @@ export class AssessmentQuestionsController {
                 let questionDetailData = await this.assessmentQuestionsDetailsService.findOne({question_id: postData?.id});
                 await this.assessmentQuestionsDetailsService.update({question_id: postData?.id}, {question_title: postData?.question_title});
                 await this.activityLogService.create(questionDetailData, postData, tableConstant.HEALTH_ASSESSMENT.TBL_HA_ASSESSMENT_QUESTIONS_DETAILS, req.tokenUser?.id);
-                let dynamicDatas = Object.create(null);
+                let dynamicData = Object.create(null);
                 let title = `assessment_question_title_${postData?.tab_id}_${postData?.id}`
-                dynamicDatas[`${title}`] = postData?.question_title;
-                await this.translatorService.DynamicEngJsonData('MyHealth','eha',dynamicDatas,'Edit','Assessment',req.tokenUser?.org_id);
+                dynamicData[`${title}`] = postData?.question_title;
+                await this.translatorService.DynamicEngJsonData('MyHealth','eha',dynamicData,'Edit','Assessment',req.tokenUser?.org_id);
                 delete postData?.question_title;
             }
             await this.assessmentQuestionsService.update(where, {...postData, updated_by : req.tokenUser?.id});

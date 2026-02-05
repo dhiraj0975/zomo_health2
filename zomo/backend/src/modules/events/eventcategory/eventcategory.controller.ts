@@ -87,12 +87,12 @@ export class EventCategoryController {
                 created_by: postData?.created_by ?? req.tokenUser?.id,
                 updated_by: postData?.updated_by ?? req.tokenUser?.id,
             });
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.category_name){
-                let tilte = `category_name_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.category_name;
+                let title = `category_name_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.category_name;
             }                       
-            await this.translatorService.DynamicEngJsonData('Events',postData?.c_companies_id,dynamicDatas,'Edit','Category',recordDetails['id']);
+            await this.translatorService.DynamicEngJsonData('Events',postData?.c_companies_id,dynamicData,'Edit','Category',recordDetails['id']);
             return res.status(HttpStatus.OK).json({
                 statusCode: 201,
                 success: 1,
@@ -130,12 +130,12 @@ export class EventCategoryController {
             }
             await this.eventCategoryService.update({ id: postData?.id},{...postData,updated_by: postData?.updated_by ?? req.tokenUser?.id});
             this.activityLogService.create(recordDetails, {...postData,updated_by: postData?.updated_by ?? req.tokenUser?.id}, tableConstant.EVENTS.TBL_EV_EVENT_CATEGORY, req.tokenUser?.id);
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.category_name){
-                let tilte = `category_name_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.category_name;
+                let title = `category_name_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.category_name;
             }                       
-            await this.translatorService.DynamicEngJsonData('Events',postData?.c_companies_id,dynamicDatas,'Edit','Category',recordDetails['id']);
+            await this.translatorService.DynamicEngJsonData('Events',postData?.c_companies_id,dynamicData,'Edit','Category',recordDetails['id']);
             return res.status(HttpStatus.OK).json({
                 statusCode: 201,
                 success: 1,

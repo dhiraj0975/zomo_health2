@@ -45,4 +45,13 @@ export class CacheService {
     this.cache.removeKey(key);
     this.cache.save();
   }
+
+  removeKeysByPrefix(prefix: string): void {
+    try {
+      const all = typeof this.cache.all === 'function' ? this.cache.all() : {};
+      if (!all || typeof all !== 'object') return;
+      Object.keys(all).filter((k) => k.startsWith(prefix)).forEach((k) => this.cache.removeKey(k));
+      this.cache.save();
+    } catch (_) {}
+  }
 }

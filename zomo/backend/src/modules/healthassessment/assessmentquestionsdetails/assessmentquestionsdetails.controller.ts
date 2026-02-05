@@ -135,12 +135,12 @@ export class AssessmentQuestionsDetailsController {
             }
             let questionData = await this.assessmentQuestionsService.findOne(`aq.id = '${postData?.question_id}' AND aq.status = 1`,null, ['aq','at'],[tableConstant.HEALTH_ASSESSMENT.TBL_HA_ASSESSMENT_TABS]);
             let resultData = await this.assessmentQuestionsDetailsService.save(postData);
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.question_title){
-                let tilte = `assessment_question_title_${questionData['tab_id']}_${resultData['question_id']}`
-                dynamicDatas[`${tilte}`] = postData?.question_title;
+                let title = `assessment_question_title_${questionData['tab_id']}_${resultData['question_id']}`
+                dynamicData[`${title}`] = postData?.question_title;
             }                        
-            await this.translatorService.DynamicEngJsonData('MyHealth','eha',dynamicDatas,'Edit','Assessment',questionData['at']?.organization_id ?? req.tokenUser?.org_id);
+            await this.translatorService.DynamicEngJsonData('MyHealth','eha',dynamicData,'Edit','Assessment',questionData['at']?.organization_id ?? req.tokenUser?.org_id);
             return res.status(HttpStatus.CREATED).json({
                 statusCode: 201,
                 success: 1,
@@ -222,12 +222,12 @@ export class AssessmentQuestionsDetailsController {
             await this.assessmentQuestionsDetailsService.update(where, {...postData, updated_by : req.tokenUser?.id});
             this.activityLogService.create(recordDetails, {...postData, updated_by : req.tokenUser?.id}, tableConstant.HEALTH_ASSESSMENT.TBL_HA_ASSESSMENT_QUESTIONS_DETAILS, req.tokenUser?.id);
             let questionData = await this.assessmentQuestionsService.findOne(`aq.id = '${recordDetails.question_id}' AND aq.status = 1`,null, ['aq','at'],[tableConstant.HEALTH_ASSESSMENT.TBL_HA_ASSESSMENT_TABS]);
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.question_title){
-                let tilte = `assessment_question_title_${questionData['tab_id']}_${recordDetails['question_id']}`
-                dynamicDatas[`${tilte}`]= postData?.question_title;
+                let title = `assessment_question_title_${questionData['tab_id']}_${recordDetails['question_id']}`
+                dynamicData[`${title}`]= postData?.question_title;
             }                        
-            await this.translatorService.DynamicEngJsonData('MyHealth','eha',dynamicDatas,'Edit','Assessment',questionData['at']?.organization_id ?? req.tokenUser?.org_id);
+            await this.translatorService.DynamicEngJsonData('MyHealth','eha',dynamicData,'Edit','Assessment',questionData['at']?.organization_id ?? req.tokenUser?.org_id);
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
                 success: 1,

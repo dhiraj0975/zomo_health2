@@ -324,36 +324,36 @@ export class MetaController {
                 saveData = await this.companyMetaService.save({...postData,
                 created_by: req.tokenUser?.id});
             }
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(saveData && postData['a_popup_title']){
-                let tilte = `agreement_title_content_${saveData['org_id']}`;
-                dynamicDatas[`${tilte}`]= postData?.a_popup_title;
+                let title = `agreement_title_content_${saveData['org_id']}`;
+                dynamicData[`${title}`]= postData?.a_popup_title;
             }
             if(saveData && postData['a_popup_text']){
-                let tilte = `agreement_text_content_${saveData['org_id']}`;
-                dynamicDatas[`${tilte}`]= postData?.a_popup_text;
+                let title = `agreement_text_content_${saveData['org_id']}`;
+                dynamicData[`${title}`]= postData?.a_popup_text;
             }
-            await this.translatorService.DynamicEngJsonData('Common',postData?.org_id,dynamicDatas,'Edit','Agreement') 
+            await this.translatorService.DynamicEngJsonData('Common',postData?.org_id,dynamicData,'Edit','Agreement') 
             if(saveData && postData['user_popup_title']){
-                let tilte = `user_popup_title_${saveData['org_id']}`;
-                let dynamicDatas= { [`${tilte}`]: postData?.user_popup_title};
-                await this.translatorService.DynamicEngJsonData('Common',postData?.org_id,dynamicDatas,'Edit','LoginPopup') 
+                let title = `user_popup_title_${saveData['org_id']}`;
+                let dynamicData= { [`${title}`]: postData?.user_popup_title};
+                await this.translatorService.DynamicEngJsonData('Common',postData?.org_id,dynamicData,'Edit','LoginPopup') 
             }
             if(saveData && postData['agreement_text']){
-                let tilte = `agreement_text_${saveData['org_id']}`;
-                let dynamicDatas= { [`${tilte}`]: postData?.agreement_text};
-                await this.translatorService.DynamicEngJsonData('Common',postData?.org_id,dynamicDatas,'Edit','SpouseAuthorizedPopup') 
+                let title = `agreement_text_${saveData['org_id']}`;
+                let dynamicData= { [`${title}`]: postData?.agreement_text};
+                await this.translatorService.DynamicEngJsonData('Common',postData?.org_id,dynamicData,'Edit','SpouseAuthorizedPopup') 
             }
-            dynamicDatas = Object.create(null);
+            dynamicData = Object.create(null);
             if(saveData && postData['title']){
-                let tilte = `inpo_pop_title_${saveData['org_id']}`;
-                dynamicDatas[`${tilte}`]= postData?.title;
+                let title = `inpo_pop_title_${saveData['org_id']}`;
+                dynamicData[`${title}`]= postData?.title;
             }
             if(saveData && postData['setting_dic']){
-                let tilte = `inpo_setting_dic_${saveData['org_id']}`;
-                dynamicDatas[`${tilte}`]= postData?.setting_dic;
+                let title = `inpo_setting_dic_${saveData['org_id']}`;
+                dynamicData[`${title}`]= postData?.setting_dic;
             }
-            await this.translatorService.DynamicEngJsonData('Common',postData?.org_id,dynamicDatas,'Edit','InformationPopup') 
+            await this.translatorService.DynamicEngJsonData('Common',postData?.org_id,dynamicData,'Edit','InformationPopup') 
             return res.status(HttpStatus.CREATED).json({
                 statusCode: 201,
                 success: 1,
@@ -548,39 +548,39 @@ export class MetaController {
             await this.companyMetaService.update(where, {...postData, updated_by: req.tokenUser?.id});
             await this.activityLogService.create(recordDetails, postData, tableConstant.COMPANIES.TBL_COMPANY_META, req.tokenUser?.id);
             if (recordDetails && postData?.plan_label) {
-                let dynamicDatas= { [`completion_${postData['org_id']}`]: postData?.completion, [`required_${postData['org_id']}`]: postData?.required, [`optional_${postData['org_id']}`]: postData?.optional, [`incomplete_${postData['org_id']}`]: postData?.incomplete, [`plantext_${postData['org_id']}`]: postData?.plantext};
-                await this.translatorService.DynamicEngJsonData('MyPlan',postData?.org_id,dynamicDatas,'Edit','PlanLabel')
+                let dynamicData= { [`completion_${postData['org_id']}`]: postData?.completion, [`required_${postData['org_id']}`]: postData?.required, [`optional_${postData['org_id']}`]: postData?.optional, [`incomplete_${postData['org_id']}`]: postData?.incomplete, [`plantext_${postData['org_id']}`]: postData?.plantext};
+                await this.translatorService.DynamicEngJsonData('MyPlan',postData?.org_id,dynamicData,'Edit','PlanLabel')
             }
             if(recordDetails && postData['a_popup_title']){
-                let tilte = `agreement_title_content_${postData['org_id']}`;
-                let dynamicDatas= { [`${tilte}`]: postData?.a_popup_title};
-                await this.translatorService.DynamicEngJsonData('Common',postData?.org_id,dynamicDatas,'Edit','Agreement') 
+                let title = `agreement_title_content_${postData['org_id']}`;
+                let dynamicData= { [`${title}`]: postData?.a_popup_title};
+                await this.translatorService.DynamicEngJsonData('Common',postData?.org_id,dynamicData,'Edit','Agreement') 
             }
             if(recordDetails && postData['a_popup_text']){
-                let tilte = `agreement_text_content_${postData['org_id']}`;
-                let dynamicDatas= { [`${tilte}`]: postData?.a_popup_text};
-                await this.translatorService.DynamicEngJsonData('Common',postData?.org_id,dynamicDatas,'Edit','Agreement') 
+                let title = `agreement_text_content_${postData['org_id']}`;
+                let dynamicData= { [`${title}`]: postData?.a_popup_text};
+                await this.translatorService.DynamicEngJsonData('Common',postData?.org_id,dynamicData,'Edit','Agreement') 
             }
             if(recordDetails && postData['user_popup_title']){
-                let tilte = `user_popup_title_${recordDetails['org_id']}`;
-                let dynamicDatas= { [`${tilte}`]: postData?.user_popup_title};
-                await this.translatorService.DynamicEngJsonData('Common',postData?.org_id,dynamicDatas,'Edit','LoginPopup') 
+                let title = `user_popup_title_${recordDetails['org_id']}`;
+                let dynamicData= { [`${title}`]: postData?.user_popup_title};
+                await this.translatorService.DynamicEngJsonData('Common',postData?.org_id,dynamicData,'Edit','LoginPopup') 
             }
             if(recordDetails && postData['agreement_text']){
-                let tilte = `agreement_text_${recordDetails['org_id']}`;
-                let dynamicDatas= { [`${tilte}`]: postData?.agreement_text};
-                await this.translatorService.DynamicEngJsonData('Common',postData?.org_id,dynamicDatas,'Edit','SpouseAuthorizedPopup') 
+                let title = `agreement_text_${recordDetails['org_id']}`;
+                let dynamicData= { [`${title}`]: postData?.agreement_text};
+                await this.translatorService.DynamicEngJsonData('Common',postData?.org_id,dynamicData,'Edit','SpouseAuthorizedPopup') 
             }
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(recordDetails && postData['title']){
-                let tilte = `inpo_pop_title_${recordDetails['org_id']}`;
-                dynamicDatas[`${tilte}`]= postData?.title;
+                let title = `inpo_pop_title_${recordDetails['org_id']}`;
+                dynamicData[`${title}`]= postData?.title;
             }
             if(recordDetails && postData['setting_dic']){
-                let tilte = `inpo_setting_dic_${recordDetails['org_id']}`;
-                dynamicDatas[`${tilte}`]= postData?.setting_dic;
+                let title = `inpo_setting_dic_${recordDetails['org_id']}`;
+                dynamicData[`${title}`]= postData?.setting_dic;
             }
-            await this.translatorService.DynamicEngJsonData('Common',postData?.org_id,dynamicDatas,'Edit','InformationPopup') 
+            await this.translatorService.DynamicEngJsonData('Common',postData?.org_id,dynamicData,'Edit','InformationPopup') 
             if(types === 'widget'){
                 return res.status(HttpStatus.OK).json({
                     statusCode: 200,

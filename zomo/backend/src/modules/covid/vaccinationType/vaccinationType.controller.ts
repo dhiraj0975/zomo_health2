@@ -202,8 +202,8 @@ export class VaccinationTypeController {
                     for (let org_id of postData?.org_id.split(',')) {
                         postData.org_id = org_id;
                         const savedVaccinationType = await this.vaccinationTypeService.save({ ...postData, created_by: req.tokenUser?.id, updated_by: req.tokenUser?.id });
-                        let dynamicDatas= { [`vaccination_type_${savedVaccinationType.raw.insertId}`]: postData?.title };
-                        await this.translatorService.DynamicEngJsonData('Common',postData?.org_id,dynamicDatas,'Add','CovidPopup')
+                        let dynamicData= { [`vaccination_type_${savedVaccinationType.raw.insertId}`]: postData?.title };
+                        await this.translatorService.DynamicEngJsonData('Common',postData?.org_id,dynamicData,'Add','CovidPopup')
                     }
                 }
                 return res.status(HttpStatus.CREATED).json({
@@ -308,8 +308,8 @@ export class VaccinationTypeController {
                     ...postData,
                     updated_by: req.tokenUser?.id
                 });
-                let dynamicDatas= { [`vaccination_type_${postData['id']}`]: postData?.title };
-                await this.translatorService.DynamicEngJsonData('Common',postData?.org_id,dynamicDatas,'Edit','CovidPopup')
+                let dynamicData= { [`vaccination_type_${postData['id']}`]: postData?.title };
+                await this.translatorService.DynamicEngJsonData('Common',postData?.org_id,dynamicData,'Edit','CovidPopup')
                 this.activityLogService.create(recordDetails, { ...postData, updated_by: req.tokenUser?.id }, tableConstant.COVID.COVID_VACCINATION_TYPE, req.tokenUser?.id);
                 return res.status(HttpStatus.OK).json({
                     statusCode: 200,

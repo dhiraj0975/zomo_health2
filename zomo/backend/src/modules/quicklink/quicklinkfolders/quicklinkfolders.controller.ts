@@ -162,12 +162,12 @@ export class QuickLinkFoldersController {
                 postData.global_folder = 1;
             }
             const folderData =await this.quickLinkFoldersService.save({...postData});
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.folder_name){
-                let tilte = `folder_name_${folderData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.folder_name;
+                let title = `folder_name_${folderData['id']}`
+                dynamicData[`${title}`]= postData?.folder_name;
             }            
-            await this.translatorService.DynamicEngJsonData('QuickLink',postData?.c_companies_id,dynamicDatas,'Edit','QuickLink');
+            await this.translatorService.DynamicEngJsonData('QuickLink',postData?.c_companies_id,dynamicData,'Edit','QuickLink');
             if(company_ids.length > 1){
                 for(let company of company_ids){
                     await this.quickLinkFolderOrgListsService.save({c_companies_id: company, folder_id: folderData['id'], created_by: req.tokenUser?.id, updated_by: req.tokenUser?.id});
@@ -224,24 +224,24 @@ export class QuickLinkFoldersController {
             if(addedElements.length >= 1){
                 addedElements.map(async(ele)=> {
                     await this.quickLinkFolderOrgListsService.save({folder_id: recordDetails['id'], c_companies_id: parseInt(ele), status: 1, created_by: req.tokenUser?.id, updated_by: req.tokenUser?.id});
-                    let dynamicDatas = Object.create(null);
+                    let dynamicData = Object.create(null);
                     if(postData?.folder_name){
-                        let tilte = `folder_name_${recordDetails['id']}`
-                        dynamicDatas[`${tilte}`]= postData?.folder_name;
+                        let title = `folder_name_${recordDetails['id']}`
+                        dynamicData[`${title}`]= postData?.folder_name;
                     }            
-                    await this.translatorService.DynamicEngJsonData('QuickLink', ele ?? recordDetails.c_companies_id,dynamicDatas,'Edit','QuickLink');
+                    await this.translatorService.DynamicEngJsonData('QuickLink', ele ?? recordDetails.c_companies_id,dynamicData,'Edit','QuickLink');
                 });
             }
             if(company_ids.length && recordDetails.c_companies_id.toString() != postData?.c_companies_id){
                 postData.c_companies_id= '0';
             }
             if(recordDetails.c_companies_id.toString() == postData?.c_companies_id){
-                let dynamicDatas = Object.create(null);
+                let dynamicData = Object.create(null);
                 if(postData?.folder_name){
-                    let tilte = `folder_name_${recordDetails['id']}`
-                    dynamicDatas[`${tilte}`]= postData?.folder_name;
+                    let title = `folder_name_${recordDetails['id']}`
+                    dynamicData[`${title}`]= postData?.folder_name;
                 }            
-                await this.translatorService.DynamicEngJsonData('QuickLink', postData?.c_companies_id ?? recordDetails.c_companies_id,dynamicDatas,'Edit','QuickLink'); 
+                await this.translatorService.DynamicEngJsonData('QuickLink', postData?.c_companies_id ?? recordDetails.c_companies_id,dynamicData,'Edit','QuickLink'); 
             }
             await this.quickLinkFoldersService.update({ id: postData?.id },{...postData});
             this.activityLogService.create(recordDetails, postData, tableConstant.QUICK_LINK.TBL_QUICK_LINK_FOLDERS, req.tokenUser?.id);

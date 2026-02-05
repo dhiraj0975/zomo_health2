@@ -85,7 +85,9 @@ export class QuizQuizzesService extends BaseService<QuizQuizzesEntity> {
                     org_id = reportRequest?.org_id;
                     user_id = reportRequest?.user_id;
                     membershipcode = reportRequest?.membership_code;
-                    quizId =  this.commonArrayService.transformToArray(reportRequest?.camp_id, ',')?.[0];
+                    quizId = String(
+                        this.commonArrayService.transformToArray(reportRequest?.camp_id, ',')?.[0]
+                    );
                     companyid = reportRequest?.['org_id'];
                     zipPassword =
                         await this.companyService.getCompanyZipPassword(
@@ -694,7 +696,7 @@ export class QuizQuizzesService extends BaseService<QuizQuizzesEntity> {
                                     tempdatainfo[correctKey] = ' - ';
                                 }
                             }
-                            else{
+                            else {
                                 tempdatainfo[questionKey] = ' - ';
                                 tempdatainfo[correctKey] = ' - ';
                             }

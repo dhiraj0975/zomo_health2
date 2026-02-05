@@ -224,12 +224,12 @@ export class WellBeingCategoryController {
                 created_by: req.tokenUser?.id,
                 updated_by : req.tokenUser?.id
             }, postData?.parent_id)
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.title){
-                let tilte = `category_title_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.title;
+                let title = `category_title_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.title;
             }           
-            await this.translatorService.DynamicEngJsonData('Emotionalwellbeing',recordDetails['org_id'],dynamicDatas,'Edit','Emotionalwellbeing',recordDetails['id']);
+            await this.translatorService.DynamicEngJsonData('Emotionalwellbeing',recordDetails['org_id'],dynamicData,'Edit','Emotionalwellbeing',recordDetails['id']);
             if (file && file.fieldname === 'img' && file.filename) {
                 file.originalname = this.commonFileService.formatFileName(file.originalname);
                 let filename = `emocat/${postData?.org_id}/emocat_${this.commonService.generateMD5(recordDetails['id'].toString())}.${file.originalname.split('.')[file.originalname.split('.').length - 1]}`;
@@ -406,12 +406,12 @@ export class WellBeingCategoryController {
             else{
                 await this.wellbeingCategoryService.update(where, {...postData, updated_by : req.tokenUser?.id });
             }
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.title){
-                let tilte = `category_title_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.title;
+                let title = `category_title_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.title;
             }           
-            await this.translatorService.DynamicEngJsonData('Emotionalwellbeing',recordDetails['org_id'],dynamicDatas,'Edit','Emotionalwellbeing',recordDetails['id']);
+            await this.translatorService.DynamicEngJsonData('Emotionalwellbeing',recordDetails['org_id'],dynamicData,'Edit','Emotionalwellbeing',recordDetails['id']);
             this.activityLogService.create(recordDetails, postData, tableConstant.EMOTIONAL_WELLBEING.TBL_EM_CATEGORY, req.tokenUser?.id);
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,

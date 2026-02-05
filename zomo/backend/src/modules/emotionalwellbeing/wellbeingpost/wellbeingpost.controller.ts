@@ -394,24 +394,24 @@ export class WellBeingPostController {
                 created_by: req.tokenUser?.id,
                 updated_by : req.tokenUser?.id
             });
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.title){
-                let tilte = `post_title_${resultedData['cat_id']}_${resultedData['id']}_${resultedData['org_id']}`
-                dynamicDatas[`${tilte}`]= postData?.title;
+                let title = `post_title_${resultedData['cat_id']}_${resultedData['id']}_${resultedData['org_id']}`
+                dynamicData[`${title}`]= postData?.title;
             }
             if(postData?.link_title){
                 let link_title = `post_linktitle_${resultedData['cat_id']}_${resultedData['id']}_${resultedData['org_id']}`
-                dynamicDatas[`${link_title}`]= postData?.link_title;
+                dynamicData[`${link_title}`]= postData?.link_title;
             }
             if(postData?.short_desc){
-                let tilte = `post_shortdesc_${resultedData['cat_id']}_${resultedData['id']}_${resultedData['org_id']}`
-                dynamicDatas[`${tilte}`]= postData?.short_desc;
+                let title = `post_shortdesc_${resultedData['cat_id']}_${resultedData['id']}_${resultedData['org_id']}`
+                dynamicData[`${title}`]= postData?.short_desc;
             }            
             if(postData?.more_desc){
-                let tilte = `post_moredesc_${resultedData['cat_id']}_${resultedData['id']}_${resultedData['org_id']}`
-                dynamicDatas[`${tilte}`]= postData?.more_desc;
+                let title = `post_moredesc_${resultedData['cat_id']}_${resultedData['id']}_${resultedData['org_id']}`
+                dynamicData[`${title}`]= postData?.more_desc;
             }            
-            await this.translatorService.DynamicEngJsonData('Emotionalwellbeing',resultedData['org_id'],dynamicDatas,'Edit','Emotionalwellbeing',resultedData['cat_id']);
+            await this.translatorService.DynamicEngJsonData('Emotionalwellbeing',resultedData['org_id'],dynamicData,'Edit','Emotionalwellbeing',resultedData['cat_id']);
             if (files && files.post_img &&  files?.post_img[0]?.fieldname === 'post_img' && files?.post_img[0]?.filename) {
                 files.post_img[0].originalname = this.commonFileService.formatFileName(files?.post_img[0]?.originalname);
                 let image_thumb = Object.create(files.post_img[0]);
@@ -580,24 +580,24 @@ export class WellBeingPostController {
                 postData['display_area'] = filename;
             }
             await this.wellbeingPostService.update(where, {...postData, updated_by : req.tokenUser?.id });
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.title){
-                let tilte = `post_title_${recordDetails['cat_id']}_${recordDetails['id']}_${recordDetails['org_id']}`
-                dynamicDatas[`${tilte}`]= postData?.title;
+                let title = `post_title_${recordDetails['cat_id']}_${recordDetails['id']}_${recordDetails['org_id']}`
+                dynamicData[`${title}`]= postData?.title;
             }
             if(postData?.link_title){
                 let link_title = `post_linktitle_${recordDetails['cat_id']}_${recordDetails['id']}_${recordDetails['org_id']}`
-                dynamicDatas[`${link_title}`]= postData?.link_title;
+                dynamicData[`${link_title}`]= postData?.link_title;
             }
             if(postData?.short_desc){
-                let tilte = `post_shortdesc_${recordDetails['cat_id']}_${recordDetails['id']}_${recordDetails['org_id']}`
-                dynamicDatas[`${tilte}`]= postData?.short_desc;
+                let title = `post_shortdesc_${recordDetails['cat_id']}_${recordDetails['id']}_${recordDetails['org_id']}`
+                dynamicData[`${title}`]= postData?.short_desc;
             }            
             if(postData?.more_desc){
-                let tilte = `post_moredesc_${recordDetails['cat_id']}_${recordDetails['id']}_${recordDetails['org_id']}`
-                dynamicDatas[`${tilte}`]= postData?.more_desc;
+                let title = `post_moredesc_${recordDetails['cat_id']}_${recordDetails['id']}_${recordDetails['org_id']}`
+                dynamicData[`${title}`]= postData?.more_desc;
             }            
-            await this.translatorService.DynamicEngJsonData('Emotionalwellbeing',recordDetails['org_id'],dynamicDatas,'Edit','Emotionalwellbeing',recordDetails['cat_id']);
+            await this.translatorService.DynamicEngJsonData('Emotionalwellbeing',recordDetails['org_id'],dynamicData,'Edit','Emotionalwellbeing',recordDetails['cat_id']);
             this.activityLogService.create(recordDetails, postData, tableConstant.EMOTIONAL_WELLBEING.TBL_EM_POST, req.tokenUser?.id);
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,

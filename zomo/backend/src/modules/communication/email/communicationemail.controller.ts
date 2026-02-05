@@ -745,10 +745,14 @@ export class CommunicationEmailController {
             id: In(emailIds)
         }, { id: true, status: true, from_user_id: true, is_important: true });
         const relatedEmails = await this.communicationEmailService.listRecord(
-            {
-                id: In(emailIds),
-                parent_id: In(emailIds)
-            },
+            [
+                {
+                    id: In(emailIds)
+                },
+                {
+                    parent_id: In(emailIds)
+                }
+            ],
             {
                 id: true,
                 parent_id: true,
@@ -900,9 +904,14 @@ export class CommunicationEmailController {
                 const threadIds = await getFullThreadIds();
                 const inboxRecords = threadIds.length > 0
                     ? await this.communicationEmailToService.listRecord(
-                        { mail_id: { $in: threadIds }, user_id: userId },
+                        { 
+                            mail_id: In(threadIds) , 
+                            user_id: userId 
+                        },
                         null,
-                        { id: true }
+                        { 
+                            id: true 
+                        }
                     )
                     : [];
                 switch (action) {
@@ -1043,7 +1052,6 @@ export class CommunicationEmailController {
                     !postData?.subject ||
                     !postData?.description ||
                     !postData?.email_to ||
-                    postData?.email_to.length == 0 ||
                     postData?.id === undefined ||
                     postData?.id === null ||
                     postData?.id == 0
@@ -1056,7 +1064,12 @@ export class CommunicationEmailController {
             let subject = postData?.subject || '';
             let description = postData?.description || '';
             let mailId = postData?.id || 0;
-            let emailTo = postData?.email_to || [];
+            let emailTo = postData?.email_to || '';
+            emailTo = this.commonArrayService.transformToArray(
+                emailTo,
+                ',',
+                'number'
+            ) || [];
             let selectedRoleId = postData?.selected_role_id || 0;
             let draftEmailData: any = {
                 from_user_id: userId,

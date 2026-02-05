@@ -92,16 +92,16 @@ export class ChallengeActivityController {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_REQUIRED_PARAM_MISSING"));
             }
             let savedData = await this.challengeActivityService.save({...postData});
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.activity_name){
-                let tilte = `activity_name_${savedData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.activity_name;
+                let title = `activity_name_${savedData['id']}`
+                dynamicData[`${title}`]= postData?.activity_name;
             }            
             if(postData?.activity_desc){
-                let tilte = `activity_desc_${savedData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.activity_desc;
+                let title = `activity_desc_${savedData['id']}`
+                dynamicData[`${title}`]= postData?.activity_desc;
             }            
-            await this.translatorService.DynamicEngJsonData('Challenge',savedData['id'],dynamicDatas,'Edit','Activity');
+            await this.translatorService.DynamicEngJsonData('Challenge',savedData['id'],dynamicData,'Edit','Activity');
             return res.status(HttpStatus.OK).json({
                 statusCode: 201,
                 success: 1,
@@ -136,16 +136,16 @@ export class ChallengeActivityController {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, 'ERR_RECORD_NOT_FOUND'));
             }
             await this.challengeActivityService.update({ id: postData?.id},{...postData});
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.activity_name){
-                let tilte = `activity_name_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.activity_name;
+                let title = `activity_name_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.activity_name;
             }            
             if(postData?.activity_desc){
-                let tilte = `activity_desc_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.activity_desc;
+                let title = `activity_desc_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.activity_desc;
             }            
-            await this.translatorService.DynamicEngJsonData('Challenge',recordDetails['id'],dynamicDatas,'Edit','Activity');
+            await this.translatorService.DynamicEngJsonData('Challenge',recordDetails['id'],dynamicData,'Edit','Activity');
             this.activityLogService.create(recordDetails, postData, tableConstant.CHALLENGE.TBL_CH_CHALLENGE_ACTIVITY, req.tokenUser?.id);
             return res.status(HttpStatus.OK).json({
                 statusCode: 201,

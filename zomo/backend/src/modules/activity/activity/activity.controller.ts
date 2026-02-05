@@ -207,13 +207,13 @@ export class ActivityController {
             delete postData?.role_id;
             delete postData?.org_id;
             let recordDetails = await this.activityService.save({ ...postData });
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.activity_name){
-                let tilte = `activity_name_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.activity_name;
+                let title = `activity_name_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.activity_name;
             }                        
             let activity_type = postData?.enable_reimbursement  ? 'Reimbursements': 'ActivityForms';
-            await this.translatorService.DynamicEngJsonData(activity_type,recordDetails['accebility'],dynamicDatas,'Edit','Activities',recordDetails['id']); 
+            await this.translatorService.DynamicEngJsonData(activity_type,recordDetails['accebility'],dynamicData,'Edit','Activities',recordDetails['id']); 
             return res.status(HttpStatus.OK).json({
                 statusCode: 201,
                 success: 1,
@@ -267,13 +267,17 @@ export class ActivityController {
             if (activityCheck) {
                 throw new Error((await this.translatorService.frontendReadTranslation(req.lang, 'ERR_FILES_ALREADY_EXIST')).replace('%s', 'Activity'));
             }
-            let dynamicDatas = Object.create(null);
+            const recordDetails = await this.activityService.findOne({ id: postData?.id });
+            if(postData?.org_id && postData?.org_id != 0 && postData?.org_id?.toString() != recordDetails?.accebility){
+                postData.accebility = postData?.org_id;
+            }
+            let dynamicData = Object.create(null);
             if(postData?.activity_name){
-                let tilte = `activity_name_${postData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.activity_name;
+                let title = `activity_name_${postData['id']}`
+                dynamicData[`${title}`]= postData?.activity_name;
             }    
             let activity_type = (postData?.enable_reimbursement || activityCheck?.enable_reimbursement) ? 'Reimbursements': 'ActivityForms';
-            await this.translatorService.DynamicEngJsonData(activity_type,postData['accebility'],dynamicDatas,'Edit','Activities',postData['id']);                 
+            await this.translatorService.DynamicEngJsonData(activity_type,postData['accebility'],dynamicData,'Edit','Activities',postData['id']);                 
             await this.activityService.update({ id: postData?.id }, { ...postData });
             this.activityLogService.create(activityCheck, postData, tableConstant.ACTIVITIES.TBL_ACTIVITIES, req.tokenUser?.id);
             let message = 'Activity has been updated successfully.'

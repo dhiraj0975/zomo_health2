@@ -367,10 +367,10 @@ export class UserFormsController {
             }
             await this.userFormsService.update({ id: postData?.id },data);
             if (postData?.note) {
-                let dynamicDatas = Object.create(null);
-                let tilte = `decline_reason_${recordDetails?.id}`;
-                dynamicDatas[`${tilte}`] = postData?.note;
-                await this.translatorService.DynamicEngJsonData('HealthForms', recordDetails?.org_id, dynamicDatas, 'Add', 'SubmittedForms', recordDetails['form_id'],recordDetails['user_id']);
+                let dynamicData = Object.create(null);
+                let title = `decline_reason_${recordDetails?.id}`;
+                dynamicData[`${title}`] = postData?.note;
+                await this.translatorService.DynamicEngJsonData('HealthForms', recordDetails?.org_id, dynamicData, 'Add', 'SubmittedForms', recordDetails['form_id'],recordDetails['user_id']);
             }
             this.activityLogService.create(recordDetails, data, tableConstant.HEALTH_CHECKUP.TBL_HC_USER_FORMS, req.tokenUser?.id);
             // add company setting health_form_mail checking functionality

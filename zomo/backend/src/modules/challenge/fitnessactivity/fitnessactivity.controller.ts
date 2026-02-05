@@ -37,20 +37,20 @@ export class FitnessActivityController {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_REQUIRED_PARAM_MISSING"));
             }
             let challengeData = await this.fitnessActivityService.save({...postData});
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.alphabet){
-                let tilte = `fitness_activity_alphabet_${challengeData['challenge_id']}_${challengeData['id']}`;
-                dynamicDatas[`${tilte}`]= postData?.alphabet;
+                let title = `fitness_activity_alphabet_${challengeData['challenge_id']}_${challengeData['id']}`;
+                dynamicData[`${title}`]= postData?.alphabet;
             }
             if(postData?.activity_name){
-                let tilte = `fitness_activity_name_${challengeData['challenge_id']}_${challengeData['id']}`;
-                dynamicDatas[`${tilte}`]= postData?.activity_name;
+                let title = `fitness_activity_name_${challengeData['challenge_id']}_${challengeData['id']}`;
+                dynamicData[`${title}`]= postData?.activity_name;
             }
             if(postData?.suggestion){
-                let tilte = `fitness_activity_suggestion_${challengeData['challenge_id']}_${challengeData['id']}`;
-                dynamicDatas[`${tilte}`]= postData?.suggestion;
+                let title = `fitness_activity_suggestion_${challengeData['challenge_id']}_${challengeData['id']}`;
+                dynamicData[`${title}`]= postData?.suggestion;
             }
-            await this.translatorService.DynamicEngJsonData('Challenge','0',dynamicDatas,'Edit','MyChallenges',challengeData['id']); 
+            await this.translatorService.DynamicEngJsonData('Challenge','0',dynamicData,'Edit','MyChallenges',challengeData['id']); 
             return res.status(HttpStatus.OK).json({
                 statusCode: 201,
                 success: 1,
@@ -86,20 +86,20 @@ export class FitnessActivityController {
             }
             await this.fitnessActivityService.update({ id: postData?.id, challenge_id: postData?.challenge_id},{...postData});
             this.activityLogService.create(recordDetails, postData, tableConstant.CHALLENGE.TBL_CH_FITNESS_ACTIVITY, req.tokenUser?.id);
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.alphabet){
-                let tilte = `fitness_activity_alphabet_${recordDetails['challenge_id']}_${recordDetails['id']}`;
-                dynamicDatas[`${tilte}`]= postData?.alphabet;
+                let title = `fitness_activity_alphabet_${recordDetails['challenge_id']}_${recordDetails['id']}`;
+                dynamicData[`${title}`]= postData?.alphabet;
             }
             if(postData?.activity_name){
-                let tilte = `fitness_activity_name_${recordDetails['challenge_id']}_${recordDetails['id']}`;
-                dynamicDatas[`${tilte}`]= postData?.activity_name;
+                let title = `fitness_activity_name_${recordDetails['challenge_id']}_${recordDetails['id']}`;
+                dynamicData[`${title}`]= postData?.activity_name;
             }
             if(postData?.suggestion){
-                let tilte = `fitness_activity_suggestion_${recordDetails['challenge_id']}_${recordDetails['id']}`;
-                dynamicDatas[`${tilte}`]= postData?.suggestion;
+                let title = `fitness_activity_suggestion_${recordDetails['challenge_id']}_${recordDetails['id']}`;
+                dynamicData[`${title}`]= postData?.suggestion;
             }
-            await this.translatorService.DynamicEngJsonData('Challenge','0',dynamicDatas,'Edit','MyChallenges',recordDetails['id']); 
+            await this.translatorService.DynamicEngJsonData('Challenge','0',dynamicData,'Edit','MyChallenges',recordDetails['id']); 
             return res.status(HttpStatus.OK).json({
                 statusCode: 201,
                 success: 1,

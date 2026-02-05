@@ -88,9 +88,9 @@ export class SurveyAnswersController {
                 if(!recordExist || postData?.correct_ans == 0){
                     let insertData = await this.surveyAnswersService.save({...postData, created_by: req.tokenUser?.id, updated_by: req.tokenUser?.id});
                     if(postData?.title){
-                        let tilte = `surveyoptions_${postData?.q_id}_${insertData['id']}`
-                        let dynamicDatas= { [`${tilte}`]: postData?.title};
-                        await this.translatorService.DynamicEngJsonData('Common',recordDetails?.['question']?.org_id,dynamicDatas,'Edit','SurveyPopup',recordDetails?.['question']?.['popup_id']) 
+                        let title = `surveyoptions_${postData?.q_id}_${insertData['id']}`
+                        let dynamicData= { [`${title}`]: postData?.title};
+                        await this.translatorService.DynamicEngJsonData('Common',recordDetails?.['question']?.org_id,dynamicData,'Edit','SurveyPopup',recordDetails?.['question']?.['popup_id']) 
                     }
                 }
                 else{
@@ -101,9 +101,9 @@ export class SurveyAnswersController {
                 let insertData = await this.surveyAnswersService.save({...postData, created_by: req.tokenUser?.id, updated_by: req.tokenUser?.id});
                 recordDetails = await this.surveyAnswersService.findOne({id: insertData?.['id']});
                 if(postData?.title){
-                    let tilte = `surveyoptions_${postData?.q_id}_${insertData['id']}`
-                    let dynamicDatas= { [`${tilte}`]: postData?.title};
-                    await this.translatorService.DynamicEngJsonData('Common',recordDetails?.['question']?.org_id,dynamicDatas,'Edit','SurveyPopup',recordDetails?.['question']?.['popup_id']) 
+                    let title = `surveyoptions_${postData?.q_id}_${insertData['id']}`
+                    let dynamicData= { [`${title}`]: postData?.title};
+                    await this.translatorService.DynamicEngJsonData('Common',recordDetails?.['question']?.org_id,dynamicData,'Edit','SurveyPopup',recordDetails?.['question']?.['popup_id']) 
                 }
             }
             return res.status(HttpStatus.OK).json({
@@ -156,9 +156,9 @@ export class SurveyAnswersController {
             await this.surveyAnswersService.update({ id: postData?.id },{...postData, updated_by: req.tokenUser?.id });
             this.activityLogService.create(recordDetails, {...postData, updated_by: req.tokenUser?.id }, tableConstant.SURVEY.TBL_C_SURVEY_ANSWERS, req.tokenUser?.id);
             if(postData?.title){
-                let tilte = `surveyoptions_${recordDetails['q_id']}_${recordDetails['id']}`
-                let dynamicDatas= { [`${tilte}`]: postData?.title};
-                await this.translatorService.DynamicEngJsonData('Common',recordDetails['question'].org_id,dynamicDatas,'Edit','SurveyPopup',recordDetails['question']['popup_id']) 
+                let title = `surveyoptions_${recordDetails['q_id']}_${recordDetails['id']}`
+                let dynamicData= { [`${title}`]: postData?.title};
+                await this.translatorService.DynamicEngJsonData('Common',recordDetails['question'].org_id,dynamicData,'Edit','SurveyPopup',recordDetails['question']['popup_id']) 
             }
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,

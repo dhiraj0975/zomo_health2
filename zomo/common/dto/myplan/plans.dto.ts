@@ -20,7 +20,7 @@ export class MyPlanPlansDto {
     name: string;
     @Expose()
     @Type(() => String)
-    @Transform(({ value }) => (value && value.includes('plans') ? S3_URL + value : value), {
+    @Transform(({ value }) => (value && value.includes('plans') ? S3_URL + value + '?' + Date.now() : value), {
         toClassOnly: true,
     })
     icon: string;

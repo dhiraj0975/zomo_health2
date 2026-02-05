@@ -469,17 +469,17 @@ export class CampaignRewardController {
             if(postData?.ins_reward != 1 && postData?.cash_reward != 1 && postData?.other_reward != 1){
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, 'ERR_REWARD_TYPE_REQUIRED'));
             }else{
-                let dynamicDatas = Object.create(null);
+                let dynamicData = Object.create(null);
                 const insertedRecord = await this.campaignRewardService.save(postData);
                 if(Object.keys(insertedRecord)?.length > 0){
                     reward_id = insertedRecord['id'];
                     if(postData?.reward_name){
-                        let tilte = `reward_name_${postData?.campaign_id}_${reward_id}`
-                        dynamicDatas[`${tilte}`]= postData?.reward_name;
+                        let title = `reward_name_${postData?.campaign_id}_${reward_id}`
+                        dynamicData[`${title}`]= postData?.reward_name;
                     }  
                     if(postData?.reward_desc){
-                        let tilte = `reward_desc_${postData?.campaign_id}_${reward_id}`
-                        dynamicDatas[`${tilte}`]= postData?.reward_desc;
+                        let title = `reward_desc_${postData?.campaign_id}_${reward_id}`
+                        dynamicData[`${title}`]= postData?.reward_desc;
                     }  
                     let updateRewardData:any = Object.create(null);
                     let insIds = [];
@@ -529,8 +529,8 @@ export class CampaignRewardController {
                             if(Object.keys(insertCashId)?.length > 0){
                                 cashIds.push(insertCashId.identifiers[0].id);
                                 if(cashData[i]?.cust_name){
-                                    let tilte = `cash_reward_name_${reward_id}_${insertCashId.identifiers[0].id}`
-                                    dynamicDatas[`${tilte}`]= cashData[i]?.cust_name;
+                                    let title = `cash_reward_name_${reward_id}_${insertCashId.identifiers[0].id}`
+                                    dynamicData[`${title}`]= cashData[i]?.cust_name;
                                 }
                             }
                         }
@@ -552,8 +552,8 @@ export class CampaignRewardController {
                             if(Object.keys(insertOtherId)?.length > 0){
                                 otherIds.push(insertOtherId.identifiers[0].id);
                                 if(otherData[i]?.cust_name){
-                                    let tilte = `other_reward_name_${reward_id}_${insertOtherId.identifiers[0].id}`
-                                    dynamicDatas[`${tilte}`]= otherData[i]?.cust_name;
+                                    let title = `other_reward_name_${reward_id}_${insertOtherId.identifiers[0].id}`
+                                    dynamicData[`${title}`]= otherData[i]?.cust_name;
                                 }
                             }
                         }
@@ -588,14 +588,14 @@ export class CampaignRewardController {
                         for (const key in insuranceRewardAll) {
                             let INId = insuranceRewardAll[key]?.id;
                             let tilteC = `ins_reward_name_${reward_id}_${INId}`;
-                            dynamicDatas[`${tilteC}`] = insuranceRewardAll[key]?.cust_name ? insuranceRewardAll[key]?.cust_name : "";
-                            if(dynamicDatas[`${tilteC}`] == ''){
-                                dynamicDatas[`${tilteC}`]= insuranceRewardAll[key]?.['insurancePlan']?.plan_name;
+                            dynamicData[`${tilteC}`] = insuranceRewardAll[key]?.cust_name ? insuranceRewardAll[key]?.cust_name : "";
+                            if(dynamicData[`${tilteC}`] == ''){
+                                dynamicData[`${tilteC}`]= insuranceRewardAll[key]?.['insurancePlan']?.plan_name;
                             }  
                         }
                     }
-                    if(dynamicDatas && Object.keys(dynamicDatas)?.length > 0){
-                        await this.translatorService.DynamicEngJsonData('Campaign',postData?.organization_id,dynamicDatas,'Edit','Campaigns',postData?.campaign_id);
+                    if(dynamicData && Object.keys(dynamicData)?.length > 0){
+                        await this.translatorService.DynamicEngJsonData('Campaign',postData?.organization_id,dynamicData,'Edit','Campaigns',postData?.campaign_id);
                     }
                     /* Reward Data update in english file */
                 }else{
@@ -675,14 +675,14 @@ export class CampaignRewardController {
                     },
                 );
                 if(updateRewardData?.affected > 0){
-                    let dynamicDatas = Object.create(null);
+                    let dynamicData = Object.create(null);
                     if(postData?.reward_name){
-                        let tilte = `reward_name_${postData?.campaign_id}_${reward_id}`
-                        dynamicDatas[`${tilte}`]= postData?.reward_name;
+                        let title = `reward_name_${postData?.campaign_id}_${reward_id}`
+                        dynamicData[`${title}`]= postData?.reward_name;
                     }  
                     if(postData?.reward_desc){
-                        let tilte = `reward_desc_${postData?.campaign_id}_${reward_id}`
-                        dynamicDatas[`${tilte}`]= postData?.reward_desc;
+                        let title = `reward_desc_${postData?.campaign_id}_${reward_id}`
+                        dynamicData[`${title}`]= postData?.reward_desc;
                     }  
                     const where = { id: postData?.id, campaign_id: postData?.campaign_id, status: Not(2)};
                     let getRewardDetails = await this.campaignRewardService.getOne(where,['campaignreward','insurance','cash','other'],'full');
@@ -760,8 +760,8 @@ export class CampaignRewardController {
                                     consider_require: cashData[i]?.consider_require,
                                 }
                                 if(cashData[i]?.cust_name){
-                                    let tilte = `cash_reward_name_${reward_id}_${cashData[i].id}`
-                                    dynamicDatas[`${tilte}`]= cashData[i]?.cust_name;
+                                    let title = `cash_reward_name_${reward_id}_${cashData[i].id}`
+                                    dynamicData[`${title}`]= cashData[i]?.cust_name;
                                 }
                                 await this.cashRewardService.update(
                                     { id: cashData[i]?.id },
@@ -786,8 +786,8 @@ export class CampaignRewardController {
                                 if(Object.keys(insertCashId)?.length > 0){
                                     cashIds.push(insertCashId.identifiers[0].id);
                                     if(cashData[i]?.cust_name){
-                                        let tilte = `cash_reward_name_${reward_id}_${insertCashId.identifiers[0].id}`
-                                        dynamicDatas[`${tilte}`]= cashData[i]?.cust_name;
+                                        let title = `cash_reward_name_${reward_id}_${insertCashId.identifiers[0].id}`
+                                        dynamicData[`${title}`]= cashData[i]?.cust_name;
                                     }
                                 }
                             }
@@ -808,8 +808,8 @@ export class CampaignRewardController {
                                     consider_require: otherData[i]?.consider_require,
                                 }
                                 if(otherData[i]?.cust_name){
-                                    let tilte = `other_reward_name_${reward_id}_${otherData[i]?.id}`
-                                    dynamicDatas[`${tilte}`]= otherData[i]?.cust_name;
+                                    let title = `other_reward_name_${reward_id}_${otherData[i]?.id}`
+                                    dynamicData[`${title}`]= otherData[i]?.cust_name;
                                 }
                                 await this.otherRewardService.update(
                                     { id: otherData[i]?.id },
@@ -831,8 +831,8 @@ export class CampaignRewardController {
                                 if(Object.keys(insertOtherId)?.length > 0){
                                     otherIds.push(insertOtherId.identifiers[0].id);
                                     if(otherData[i]?.cust_name){
-                                        let tilte = `other_reward_name_${reward_id}_${insertOtherId.identifiers[0].id}`
-                                        dynamicDatas[`${tilte}`]= otherData[i]?.cust_name;
+                                        let title = `other_reward_name_${reward_id}_${insertOtherId.identifiers[0].id}`
+                                        dynamicData[`${title}`]= otherData[i]?.cust_name;
                                     }
                                 }
                             }
@@ -907,14 +907,14 @@ export class CampaignRewardController {
                         for (const key in insuranceRewardAll) {
                             let INId = insuranceRewardAll[key]?.id;
                             let tilteC = `ins_reward_name_${reward_id}_${INId}`;
-                            dynamicDatas[`${tilteC}`] = insuranceRewardAll[key]?.cust_name ? insuranceRewardAll[key]?.cust_name : "";
-                            if(dynamicDatas[`${tilteC}`] == ''){
-                                dynamicDatas[`${tilteC}`]= insuranceRewardAll[key]?.['insurancePlan']?.plan_name;
+                            dynamicData[`${tilteC}`] = insuranceRewardAll[key]?.cust_name ? insuranceRewardAll[key]?.cust_name : "";
+                            if(dynamicData[`${tilteC}`] == ''){
+                                dynamicData[`${tilteC}`]= insuranceRewardAll[key]?.['insurancePlan']?.plan_name;
                             }  
                         }
                     }
-                    if(dynamicDatas && Object.keys(dynamicDatas)?.length > 0){
-                        await this.translatorService.DynamicEngJsonData('Campaign',postData?.organization_id,dynamicDatas,'Edit','Campaigns',postData?.campaign_id);
+                    if(dynamicData && Object.keys(dynamicData)?.length > 0){
+                        await this.translatorService.DynamicEngJsonData('Campaign',postData?.organization_id,dynamicData,'Edit','Campaigns',postData?.campaign_id);
                     }
                     /* Reward Data update in english file */
                 }else{

@@ -150,12 +150,12 @@ export class AssessmentTabsController {
             let resultData = await this.assessmentTabsService.findOne({organization_id: postData?.organization_id, status: Not('2')},{sort_order:"DESC"},["id","sort_order"]);
             postData['sort_order'] = resultData && resultData['sort_order'] ? resultData['sort_order'] + 1 : 1;
             let recordDetails = await this.assessmentTabsService.save({...postData, created_by: req.tokenUser?.id, updated_by: req.tokenUser?.id});
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.title){
                 let title = `assessment_tabs_title_${recordDetails['organization_id']}_${recordDetails['id']}`
-                dynamicDatas[`${title}`]= postData?.title;
+                dynamicData[`${title}`]= postData?.title;
             }                        
-            await this.translatorService.DynamicEngJsonData('MyHealth','eha',dynamicDatas,'Edit','Assessment',postData?.organization_id);
+            await this.translatorService.DynamicEngJsonData('MyHealth','eha',dynamicData,'Edit','Assessment',postData?.organization_id);
             return res.status(HttpStatus.CREATED).json({
                 statusCode: 201,
                 success: 1,
@@ -241,12 +241,12 @@ export class AssessmentTabsController {
                 message = await this.translatorService.frontendReadTranslation(req.lang, statusMessage[postData?.status]);
             }
             await this.activityLogService.create(recordDetails, {...postData, updated_by : req.tokenUser?.id}, tableConstant.HEALTH_ASSESSMENT.TBL_HA_ASSESSMENT_TABS, req.tokenUser?.id);
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.title){
-                let tilte = `assessment_tabs_title_${recordDetails['organization_id']}_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.title;
+                let title = `assessment_tabs_title_${recordDetails['organization_id']}_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.title;
             }                        
-            await this.translatorService.DynamicEngJsonData('MyHealth','eha',dynamicDatas,'Edit','Assessment',postData?.organization_id);
+            await this.translatorService.DynamicEngJsonData('MyHealth','eha',dynamicData,'Edit','Assessment',postData?.organization_id);
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
                 success: 1,

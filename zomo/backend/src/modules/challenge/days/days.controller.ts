@@ -70,20 +70,20 @@ export class DaysController {
                 await lastValueFrom(this.commonMicroservice.send({cmd: 'upload_file'}, {path: path.resolve(file.path),  filename: filename}));
                 await this.daysService.update({ id: dayData['id']},{logofile: filename});
             }
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.manual_activity && postData?.manual_activity != ' '){
-                let tilte = `week_days_activity_name_${dayData['challenge_id']}_${dayData['week_id']}_${dayData['id']}`;
-                dynamicDatas[`${tilte}`]= postData?.manual_activity;
+                let title = `week_days_activity_name_${dayData['challenge_id']}_${dayData['week_id']}_${dayData['id']}`;
+                dynamicData[`${title}`]= postData?.manual_activity;
             }
             if(postData?.site_activity_desc){
-                let tilte = `week_days_activity_description_${dayData['challenge_id']}_${dayData['week_id']}_${dayData['id']}`;
-                dynamicDatas[`${tilte}`]= postData?.site_activity_desc;
+                let title = `week_days_activity_description_${dayData['challenge_id']}_${dayData['week_id']}_${dayData['id']}`;
+                dynamicData[`${title}`]= postData?.site_activity_desc;
             }
             if(postData?.manual_desc){
-                let tilte = `week_days_description_${dayData['challenge_id']}_${dayData['week_id']}_${dayData['id']}`;
-                dynamicDatas[`${tilte}`]= postData?.manual_desc;
+                let title = `week_days_description_${dayData['challenge_id']}_${dayData['week_id']}_${dayData['id']}`;
+                dynamicData[`${title}`]= postData?.manual_desc;
             }
-            await this.translatorService.DynamicEngJsonData('Challenge','0',dynamicDatas,'Edit','MyChallenges',dayData['id']); 
+            await this.translatorService.DynamicEngJsonData('Challenge','0',dynamicData,'Edit','MyChallenges',dayData['id']); 
             return res.status(HttpStatus.OK).json({
                 statusCode: 201,
                 success: 1,
@@ -142,20 +142,20 @@ export class DaysController {
             }
             await this.daysService.update({ id: postData?.id, challenge_id: postData?.challenge_id},{...postData});
             this.activityLogService.create(recordDetails, postData, tableConstant.CHALLENGE.TBL_CH_DAYS, req.tokenUser?.id);
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.manual_activity && postData?.manual_activity != ' '){
-                let tilte = `week_days_activity_name_${recordDetails['challenge_id']}_${recordDetails['week_id']}_${recordDetails['id']}`;
-                dynamicDatas[`${tilte}`]= postData?.manual_activity;
+                let title = `week_days_activity_name_${recordDetails['challenge_id']}_${recordDetails['week_id']}_${recordDetails['id']}`;
+                dynamicData[`${title}`]= postData?.manual_activity;
             }
             if(postData?.site_activity_desc){
-                let tilte = `week_days_activity_description_${recordDetails['challenge_id']}_${recordDetails['week_id']}_${recordDetails['id']}`;
-                dynamicDatas[`${tilte}`]= postData?.site_activity_desc;
+                let title = `week_days_activity_description_${recordDetails['challenge_id']}_${recordDetails['week_id']}_${recordDetails['id']}`;
+                dynamicData[`${title}`]= postData?.site_activity_desc;
             }
             if(postData?.manual_desc){
-                let tilte = `week_days_description_${recordDetails['challenge_id']}_${recordDetails['week_id']}_${recordDetails['id']}`;
-                dynamicDatas[`${tilte}`]= postData?.manual_desc;
+                let title = `week_days_description_${recordDetails['challenge_id']}_${recordDetails['week_id']}_${recordDetails['id']}`;
+                dynamicData[`${title}`]= postData?.manual_desc;
             }
-            await this.translatorService.DynamicEngJsonData('Challenge','0',dynamicDatas,'Edit','MyChallenges',recordDetails['id']); 
+            await this.translatorService.DynamicEngJsonData('Challenge','0',dynamicData,'Edit','MyChallenges',recordDetails['id']); 
             return res.status(HttpStatus.OK).json({
                 statusCode: 201,
                 success: 1,

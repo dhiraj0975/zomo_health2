@@ -148,12 +148,12 @@ export class FitnessDifficultyController {
             let resultedData = await this.fitnessDifficultyService.save({...postData,
                 created_by: req.tokenUser?.id
             });
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.name){
-                let tilte = `fitness_difficulty_${resultedData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.name;
+                let title = `fitness_difficulty_${resultedData['id']}`
+                dynamicData[`${title}`]= postData?.name;
             }                      
-            await this.translatorService.DynamicEngJsonData('Media',postData?.org_id,dynamicDatas,'Edit','Fitnessvideos','difficulty');
+            await this.translatorService.DynamicEngJsonData('Media',postData?.org_id,dynamicData,'Edit','Fitnessvideos','difficulty');
             return res.status(HttpStatus.CREATED).json({
                 statusCode: 201,
                 success: 1,
@@ -244,12 +244,12 @@ export class FitnessDifficultyController {
                 });
             }
             await this.fitnessDifficultyService.update(where, postData);
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.name){
-                let tilte = `fitness_difficulty_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.name;
+                let title = `fitness_difficulty_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.name;
             }                      
-            await this.translatorService.DynamicEngJsonData('Media',postData?.org_id,dynamicDatas,'Edit','Fitnessvideos','difficulty');
+            await this.translatorService.DynamicEngJsonData('Media',postData?.org_id,dynamicData,'Edit','Fitnessvideos','difficulty');
             this.activityLogService.create(recordDetails, postData, tableConstant.MEDIA_FITNESS.TBL_ME_FOD_DIFFICULTY, req.tokenUser?.id);
             let videoData = await this.fitnessVideosService.listRecord({difficulty_id: postData?.id});
             await this.fitnessVideosService.update({difficulty_id: postData?.id},{status:postData?.status});

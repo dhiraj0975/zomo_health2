@@ -211,12 +211,12 @@ export class MediaCategoryController {
                 created_by: req.tokenUser?.id,
                 updated_by : req.tokenUser?.id
             }, postData?.parent_id);
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.title){
-                let tilte = `category_title_${resultedData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.title;
+                let title = `category_title_${resultedData['id']}`
+                dynamicData[`${title}`]= postData?.title;
             }           
-            await this.translatorService.DynamicEngJsonData('Media',postData?.org_id,dynamicDatas,'Edit','Media',resultedData['id']);
+            await this.translatorService.DynamicEngJsonData('Media',postData?.org_id,dynamicData,'Edit','Media',resultedData['id']);
             if (file && file.fieldname === 'img' && file.filename) {
                 file.originalname = this.commonFileService.formatFileName(file.originalname);
                 let filename = `media/cat/${postData?.org_id}/mecat_${this.commonService.generateMD5(resultedData['id'].toString())}.${file.originalname.split('.')[file.originalname.split('.').length - 1]}`;
@@ -234,13 +234,13 @@ export class MediaCategoryController {
                     if (key == 'Media' && sideMenuSettingsData.showmenulist[key]?.['Mainmenucustomname'] == '') {
                         let checkExist = await this.frontService.mediaCategoryClicksExists({org_id: postData?.org_id, status: '1'});
                         if (!checkExist) {
-                            const dynamicDatas = {};
-                            dynamicDatas[`${key}_${postData?.org_id}`] = await this.translatorService.frontendReadTranslation(req.lang,'Fitness Videos', `/LC_MESSAGES/Media/Media`,`static`);
-                            await this.translatorService.DynamicEngJsonData('Common', postData?.org_id, dynamicDatas,'Edit','Menu');
+                            const dynamicData = {};
+                            dynamicData[`${key}_${postData?.org_id}`] = await this.translatorService.frontendReadTranslation(req.lang,'Fitness Videos', `/LC_MESSAGES/Media/Media`,`static`);
+                            await this.translatorService.DynamicEngJsonData('Common', postData?.org_id, dynamicData,'Edit','Menu');
                         } else {
-                            const dynamicDatas = {};
-                            dynamicDatas[`${key}_${postData?.org_id}`] = await this.translatorService.frontendReadTranslation(req.lang,'Media', `/LC_MESSAGES/Media/Media`,`static`);
-                            await this.translatorService.DynamicEngJsonData('Common', postData?.org_id, dynamicDatas,'Edit','Menu');
+                            const dynamicData = {};
+                            dynamicData[`${key}_${postData?.org_id}`] = await this.translatorService.frontendReadTranslation(req.lang,'Media', `/LC_MESSAGES/Media/Media`,`static`);
+                            await this.translatorService.DynamicEngJsonData('Common', postData?.org_id, dynamicData,'Edit','Menu');
                         }
                     }
                 }
@@ -322,13 +322,13 @@ export class MediaCategoryController {
                     if (key == 'Media' && sideMenuSettingsData.showmenulist[key]?.['Mainmenucustomname'] == '') {
                         let checkExist = await this.frontService.mediaCategoryClicksExists({org_id: postData?.org_id, status: '1'});
                         if (!checkExist) {
-                            const dynamicDatas = {};
-                            dynamicDatas[`${key}_${postData?.org_id}`] = await this.translatorService.frontendReadTranslation(req.lang,'Fitness Videos', `/LC_MESSAGES/Media/Media`,`static`);
-                            await this.translatorService.DynamicEngJsonData('Common', postData?.org_id, dynamicDatas,'Edit','Menu');
+                            const dynamicData = {};
+                            dynamicData[`${key}_${postData?.org_id}`] = await this.translatorService.frontendReadTranslation(req.lang,'Fitness Videos', `/LC_MESSAGES/Media/Media`,`static`);
+                            await this.translatorService.DynamicEngJsonData('Common', postData?.org_id, dynamicData,'Edit','Menu');
                         } else {
-                            const dynamicDatas = {};
-                            dynamicDatas[`${key}_${postData?.org_id}`] = await this.translatorService.frontendReadTranslation(req.lang,'Media', `/LC_MESSAGES/Media/Media`,`static`);
-                            await this.translatorService.DynamicEngJsonData('Common', postData?.org_id, dynamicDatas,'Edit','Menu');
+                            const dynamicData = {};
+                            dynamicData[`${key}_${postData?.org_id}`] = await this.translatorService.frontendReadTranslation(req.lang,'Media', `/LC_MESSAGES/Media/Media`,`static`);
+                            await this.translatorService.DynamicEngJsonData('Common', postData?.org_id, dynamicData,'Edit','Menu');
                         }
                     }
                 }
@@ -416,12 +416,12 @@ export class MediaCategoryController {
             else {
                 await this.mediaCategoryService.update(where, {...postData,updated_by: req.tokenUser?.id});
             }
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.title){
-                let tilte = `category_title_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.title;
+                let title = `category_title_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.title;
             }           
-            await this.translatorService.DynamicEngJsonData('Media',recordDetails.org_id,dynamicDatas,'Edit','Media',recordDetails['id']);
+            await this.translatorService.DynamicEngJsonData('Media',recordDetails.org_id,dynamicData,'Edit','Media',recordDetails['id']);
             this.activityLogService.create(recordDetails, {...postData,updated_by: req.tokenUser?.id}, tableConstant.MEDIA_FITNESS.TBL_ME_CATEGORY, req.tokenUser?.id);
             if((postData?.status != undefined || postData?.status != null) && postData?.status != recordDetails.status){
                 await this.mediaCategoryService.update({id: postData.id, status: Not(2)},{status: postData.status, updated_by: req.tokenUser?.id});
@@ -452,13 +452,13 @@ export class MediaCategoryController {
                     if (key == 'Media' && sideMenuSettingsData.showmenulist[key]?.['Mainmenucustomname'] == '') {
                         let checkExist = await this.frontService.mediaCategoryClicksExists({org_id: postData?.org_id, status: '1'});
                         if (!checkExist) {
-                            const dynamicDatas = {};
-                            dynamicDatas[`${key}_${postData?.org_id}`] = await this.translatorService.frontendReadTranslation(req.lang,'Fitness Videos', `/LC_MESSAGES/Media/Media`,`static`);
-                            await this.translatorService.DynamicEngJsonData('Common', postData?.org_id, dynamicDatas,'Edit','Menu');
+                            const dynamicData = {};
+                            dynamicData[`${key}_${postData?.org_id}`] = await this.translatorService.frontendReadTranslation(req.lang,'Fitness Videos', `/LC_MESSAGES/Media/Media`,`static`);
+                            await this.translatorService.DynamicEngJsonData('Common', postData?.org_id, dynamicData,'Edit','Menu');
                         } else {
-                            const dynamicDatas = {};
-                            dynamicDatas[`${key}_${postData?.org_id}`] = await this.translatorService.frontendReadTranslation(req.lang,'Media', `/LC_MESSAGES/Media/Media`,`static`);
-                            await this.translatorService.DynamicEngJsonData('Common', postData?.org_id, dynamicDatas,'Edit','Menu');
+                            const dynamicData = {};
+                            dynamicData[`${key}_${postData?.org_id}`] = await this.translatorService.frontendReadTranslation(req.lang,'Media', `/LC_MESSAGES/Media/Media`,`static`);
+                            await this.translatorService.DynamicEngJsonData('Common', postData?.org_id, dynamicData,'Edit','Menu');
                         }
                     }
                 }

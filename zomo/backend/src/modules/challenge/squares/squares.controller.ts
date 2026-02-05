@@ -134,16 +134,16 @@ export class SquaresController {
                 postData['status'] = postData['status'] ?? 1; 
             }
             const squareData = await this.squaresService.save({...postData});
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.name){
-                let tilte = `square_name_${postData?.schedule_id}_${squareData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.name;
+                let title = `square_name_${postData?.schedule_id}_${squareData['id']}`
+                dynamicData[`${title}`]= postData?.name;
             }            
             if(postData?.description){
-                let tilte = `square_description_${postData?.schedule_id}_${squareData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.description;
+                let title = `square_description_${postData?.schedule_id}_${squareData['id']}`
+                dynamicData[`${title}`]= postData?.description;
             }            
-            await this.translatorService.DynamicEngJsonData('Challenge',postData?.org_id,dynamicDatas,'Edit','MyChallenges',postData['schedule_id']);
+            await this.translatorService.DynamicEngJsonData('Challenge',postData?.org_id,dynamicData,'Edit','MyChallenges',postData['schedule_id']);
             if(squareData){
                 if (file && file.fieldname === 'logo' && file.filename) {
                     file.originalname = this.commonFileService.formatFileName(file.originalname);
@@ -211,16 +211,16 @@ export class SquaresController {
                 await lastValueFrom(this.commonMicroservice.send({cmd: 'upload_file'}, {path: path.resolve(file.path),  filename: file.filename}));
                 postData['logo'] = file.filename;
             }
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.name){
-                let tilte = `square_name_${postData?.schedule_id}_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.name;
+                let title = `square_name_${postData?.schedule_id}_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.name;
             }            
             if(postData?.description){
-                let tilte = `square_description_${postData?.schedule_id}_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.description;
+                let title = `square_description_${postData?.schedule_id}_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.description;
             }            
-            await this.translatorService.DynamicEngJsonData('Challenge',postData?.org_id,dynamicDatas,'Edit','MyChallenges',postData['schedule_id']);
+            await this.translatorService.DynamicEngJsonData('Challenge',postData?.org_id,dynamicData,'Edit','MyChallenges',postData['schedule_id']);
             await this.squaresService.update({ id: postData?.id, schedule_id: postData?.schedule_id},{...postData});
             this.activityLogService.create(recordDetails, postData, tableConstant.CHALLENGE.TBL_CH_SQUARES, req.tokenUser?.id);
             let message;

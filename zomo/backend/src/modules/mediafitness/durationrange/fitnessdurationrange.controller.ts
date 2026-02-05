@@ -148,12 +148,12 @@ export class FitnessDurationRangeController {
             let resultedData = await this.fitnessDurationRangeService.save({...postData,
                 created_by: req.tokenUser?.id
             });
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.name){
-                let tilte = `fitness_durationrange_${resultedData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.name;
+                let title = `fitness_durationrange_${resultedData['id']}`
+                dynamicData[`${title}`]= postData?.name;
             }                      
-            await this.translatorService.DynamicEngJsonData('Media',postData?.org_id,dynamicDatas,'Edit','Fitnessvideos','durationrange');
+            await this.translatorService.DynamicEngJsonData('Media',postData?.org_id,dynamicData,'Edit','Fitnessvideos','durationrange');
             return res.status(HttpStatus.CREATED).json({
                 statusCode: 201,
                 success: 1,
@@ -244,12 +244,12 @@ export class FitnessDurationRangeController {
                 });
             }
             await this.fitnessDurationRangeService.update(where, postData);
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.name){
-                let tilte = `fitness_durationrange_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.name;
+                let title = `fitness_durationrange_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.name;
             }                      
-            await this.translatorService.DynamicEngJsonData('Media',postData?.org_id,dynamicDatas,'Edit','Fitnessvideos','durationrange');
+            await this.translatorService.DynamicEngJsonData('Media',postData?.org_id,dynamicData,'Edit','Fitnessvideos','durationrange');
             this.activityLogService.create(recordDetails, postData, tableConstant.MEDIA_FITNESS.TBL_ME_FOD_DURATION_RANGE, req.tokenUser?.id);
             let videoData = await this.fitnessVideosService.listRecord({duration_id: postData?.id});
             await this.fitnessVideosService.update({duration_id: postData?.id},{status:postData?.status});

@@ -323,46 +323,46 @@ export class ScheduleChallengeController {
             }
             postData.created_by = req.tokenUser?.id;
             const challengeData = await this.scheduleChallengeService.save({...postData});
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.custom_cname){
-                let tilte = `custom_cname_${challengeData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.custom_cname;
+                let title = `custom_cname_${challengeData['id']}`
+                dynamicData[`${title}`]= postData?.custom_cname;
             }
             if(postData?.custom_desc){
-                let tilte = `custom_desc_${challengeData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.custom_desc;
+                let title = `custom_desc_${challengeData['id']}`
+                dynamicData[`${title}`]= postData?.custom_desc;
             }
             if(challenge?.bio_challenge_type == 'Move_more') {
                 if (postData?.info_button) {
-                    let tilte = `custom_info_button_${challengeData['id']}`
-                    dynamicDatas[`${tilte}`] = postData?.info_button;
+                    let title = `custom_info_button_${challengeData['id']}`
+                    dynamicData[`${title}`] = postData?.info_button;
                 } else {
-                    let tilte = `custom_info_button_${challengeData['id']}`
-                    dynamicDatas[`${tilte}`] = 'Info';
+                    let title = `custom_info_button_${challengeData['id']}`
+                    dynamicData[`${title}`] = 'Info';
                 }
                 if (postData?.website_button) {
-                    let tilte = `custom_website_button_${challengeData['id']}`
-                    dynamicDatas[`${tilte}`] = postData?.website_button;
+                    let title = `custom_website_button_${challengeData['id']}`
+                    dynamicData[`${title}`] = postData?.website_button;
                 } else {
-                    let tilte = `custom_website_button_${challengeData['id']}`
-                    dynamicDatas[`${tilte}`] = 'Website';
+                    let title = `custom_website_button_${challengeData['id']}`
+                    dynamicData[`${title}`] = 'Website';
                 }
                 if (postData?.map_button) {
-                    let tilte = `custom_map_button_${challengeData['id']}`
-                    dynamicDatas[`${tilte}`] = postData?.map_button;
+                    let title = `custom_map_button_${challengeData['id']}`
+                    dynamicData[`${title}`] = postData?.map_button;
                 } else {
-                    let tilte = `custom_map_button_${challengeData['id']}`
-                    dynamicDatas[`${tilte}`] = 'Map';
+                    let title = `custom_map_button_${challengeData['id']}`
+                    dynamicData[`${title}`] = 'Map';
                 }
                 if (postData?.image_button) {
-                    let tilte = `custom_image_button_${challengeData['id']}`
-                    dynamicDatas[`${tilte}`] = postData?.image_button;
+                    let title = `custom_image_button_${challengeData['id']}`
+                    dynamicData[`${title}`] = postData?.image_button;
                 } else {
-                    let tilte = `custom_image_button_${challengeData['id']}`
-                    dynamicDatas[`${tilte}`] = 'Image';
+                    let title = `custom_image_button_${challengeData['id']}`
+                    dynamicData[`${title}`] = 'Image';
                 }
             }
-            await this.translatorService.DynamicEngJsonData('Challenge',postData?.org_id,dynamicDatas,'Add','MyChallenges',challengeData['id']); 
+            await this.translatorService.DynamicEngJsonData('Challenge',postData?.org_id,dynamicData,'Add','MyChallenges',challengeData['id']); 
             if (file && file.fieldname === 'custom_logo' && file.filename) {
                 file.originalname = this.commonFileService.formatFileName(file.originalname);
                 let filename = `challenge/schedulech/${challengeData['id']}/logo/scchal_${this.commonService.generateMD5(challengeData['id'].toString())}.${file.originalname.split('.')[file.originalname.split('.')?.length - 1]}`;
@@ -680,46 +680,46 @@ export class ScheduleChallengeController {
                 }
             }
             await this.scheduleChallengeService.update({ id: postData?.id, challenge_id: postData?.challenge_id},{...postData});
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.custom_cname){
-                let tilte = `custom_cname_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.custom_cname;
+                let title = `custom_cname_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.custom_cname;
             }
             if(postData?.custom_desc){
-                let tilte = `custom_desc_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.custom_desc;
+                let title = `custom_desc_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.custom_desc;
             }
             if (recordDetails['challenge'].bio_challenge_type === 'Move_more') {
                 if (postData?.info_button) {
-                    let tilte = `custom_info_button_${recordDetails['id']}`
-                    dynamicDatas[`${tilte}`] = postData?.info_button;
+                    let title = `custom_info_button_${recordDetails['id']}`
+                    dynamicData[`${title}`] = postData?.info_button;
                 } else {
-                    let tilte = `custom_info_button_${recordDetails['id']}`
-                    dynamicDatas[`${tilte}`] = 'Info';
+                    let title = `custom_info_button_${recordDetails['id']}`
+                    dynamicData[`${title}`] = 'Info';
                 }
                 if (postData?.website_button) {
-                    let tilte = `custom_website_button_${recordDetails['id']}`
-                    dynamicDatas[`${tilte}`] = postData?.website_button;
+                    let title = `custom_website_button_${recordDetails['id']}`
+                    dynamicData[`${title}`] = postData?.website_button;
                 } else {
-                    let tilte = `custom_website_button_${recordDetails['id']}`
-                    dynamicDatas[`${tilte}`] = 'Website';
+                    let title = `custom_website_button_${recordDetails['id']}`
+                    dynamicData[`${title}`] = 'Website';
                 }
                 if (postData?.map_button) {
-                    let tilte = `custom_map_button_${recordDetails['id']}`
-                    dynamicDatas[`${tilte}`] = postData?.map_button;
+                    let title = `custom_map_button_${recordDetails['id']}`
+                    dynamicData[`${title}`] = postData?.map_button;
                 } else {
-                    let tilte = `custom_map_button_${recordDetails['id']}`
-                    dynamicDatas[`${tilte}`] = 'Map';
+                    let title = `custom_map_button_${recordDetails['id']}`
+                    dynamicData[`${title}`] = 'Map';
                 }
                 if (postData?.image_button) {
-                    let tilte = `custom_image_button_${recordDetails['id']}`
-                    dynamicDatas[`${tilte}`] = postData?.image_button;
+                    let title = `custom_image_button_${recordDetails['id']}`
+                    dynamicData[`${title}`] = postData?.image_button;
                 } else {
-                    let tilte = `custom_image_button_${recordDetails['id']}`
-                    dynamicDatas[`${tilte}`] = 'Image';
+                    let title = `custom_image_button_${recordDetails['id']}`
+                    dynamicData[`${title}`] = 'Image';
                 }
             }
-            await this.translatorService.DynamicEngJsonData('Challenge',postData?.org_id ?? recordDetails['org_id'],dynamicDatas,'Edit','MyChallenges',recordDetails['id']);
+            await this.translatorService.DynamicEngJsonData('Challenge',postData?.org_id ?? recordDetails['org_id'],dynamicData,'Edit','MyChallenges',recordDetails['id']);
             this.activityLogService.create(recordDetails, postData, tableConstant.CHALLENGE.TBL_CH_SCHEDULE_CHALLENGE, req.tokenUser?.id);
             if(postData?.start_date || postData?.end_date || postData?.reg_start_date || postData?.reg_end_date){
                 let notificationData = {
@@ -1453,12 +1453,12 @@ export class ScheduleChallengeController {
                     delete team.created_date;
                     delete team.id;
                     const teamData = await this.teamsService.save({...team});
-                    let dynamicDatas = Object.create(null);
+                    let dynamicData = Object.create(null);
                     if(teamData['tname']){
-                        let tilte = `team_name_${teamData['schedule_id']}_${teamData['id']}`
-                        dynamicDatas[`${tilte}`]= teamData['tname'];
+                        let title = `team_name_${teamData['schedule_id']}_${teamData['id']}`
+                        dynamicData[`${title}`]= teamData['tname'];
                     }
-                    await this.translatorService.DynamicEngJsonData('Challenge',teamData['org_id'],dynamicDatas,'Edit','MyChallenges',teamData['schedule_id']);
+                    await this.translatorService.DynamicEngJsonData('Challenge',teamData['org_id'],dynamicData,'Edit','MyChallenges',teamData['schedule_id']);
                     this.activityLogService.create(teamRecord, teamData, tableConstant.CHALLENGE.TBL_CH_TEAMS, req.tokenUser?.id, 'copy');
                     if(teamData){
                         await this.teamScheduleService.save({team_id: teamData['id'], schedule_id: scheduleID});
@@ -1550,12 +1550,12 @@ export class ScheduleChallengeController {
                         team.group_id = groupData['id'];
                         delete team.created_date;
                         const teamData = await this.teamsService.save({...team});
-                        let dynamicDatas = Object.create(null);
+                        let dynamicData = Object.create(null);
                         if(teamData['tname']){
-                            let tilte = `team_name_${teamData['schedule_id']}_${teamData['id']}`
-                            dynamicDatas[`${tilte}`]= teamData['tname'];
+                            let title = `team_name_${teamData['schedule_id']}_${teamData['id']}`
+                            dynamicData[`${title}`]= teamData['tname'];
                         }
-                        await this.translatorService.DynamicEngJsonData('Challenge',teamData['org_id'],dynamicDatas,'Edit','MyChallenges',teamData['schedule_id']);
+                        await this.translatorService.DynamicEngJsonData('Challenge',teamData['org_id'],dynamicData,'Edit','MyChallenges',teamData['schedule_id']);
                     this.activityLogService.create(teamRecord, teamData, tableConstant.CHALLENGE.TBL_CH_TEAMS, req.tokenUser?.id, 'copy');
                     }
                 }

@@ -88,9 +88,9 @@ export class SurveyQuestionsController {
             }
             let questionSaveData = await this.surveyService.save({ ...postData, created_by: req.tokenUser?.id, updated_by: req.tokenUser?.id });
             if (postData?.title) {
-                let tilte = `question_title_${questionSaveData['org_id']}_${questionSaveData['popup_id']}_${questionSaveData['id']}`
-                let dynamicDatas = { [`${tilte}`]: postData?.title };
-                await this.translatorService.DynamicEngJsonData('Common', postData?.org_id, dynamicDatas, 'Edit', 'SurveyPopup', questionSaveData['popup_id'])
+                let title = `question_title_${questionSaveData['org_id']}_${questionSaveData['popup_id']}_${questionSaveData['id']}`
+                let dynamicData = { [`${title}`]: postData?.title };
+                await this.translatorService.DynamicEngJsonData('Common', postData?.org_id, dynamicData, 'Edit', 'SurveyPopup', questionSaveData['popup_id'])
             }
             return res.status(HttpStatus.OK).json({
                 statusCode: 201,
@@ -133,9 +133,9 @@ export class SurveyQuestionsController {
             const resultedData = await this.surveyService.update({ id: postData?.id }, { ...postData, updated_by: req.tokenUser?.id });
             this.activityLogService.create(surveyCheck, postData, tableConstant.SURVEY.TBL_C_SURVEY_QUESTIONS, req.tokenUser?.id);
             if (postData?.title) {
-                let tilte = `question_title_${postData?.org_id}_${postData?.popup_id}_${postData?.id}`
-                let dynamicDatas = { [`${tilte}`]: postData?.title };
-                await this.translatorService.DynamicEngJsonData('Common', postData?.org_id, dynamicDatas, 'Edit', 'SurveyPopup', postData?.popup_id)
+                let title = `question_title_${postData?.org_id}_${postData?.popup_id}_${postData?.id}`
+                let dynamicData = { [`${title}`]: postData?.title };
+                await this.translatorService.DynamicEngJsonData('Common', postData?.org_id, dynamicData, 'Edit', 'SurveyPopup', postData?.popup_id)
             }
             return res.status(HttpStatus.OK).json({
                 statusCode: 201,

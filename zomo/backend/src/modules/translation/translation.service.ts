@@ -173,7 +173,7 @@ export class TranslationService {
         const resultData = await this.translator.readFile(data);
         return resultData;
     }
-    async DynamicEngJsonData(parentModule = null, orgId = null, dynamicDatas, method, subModule = null, itemId = null, item1Id = null, item2Id = null) {
+    async DynamicEngJsonData(parentModule = null, orgId = null, dynamicData, method, subModule = null, itemId = null, item1Id = null, item2Id = null) {
         try {
             const localePath = 'Locale';
             const selectText = 'dynamic';
@@ -238,15 +238,15 @@ export class TranslationService {
                     if(dataFileRead){
                         dataFileRead = Buffer.from(dataFileRead.Body, 'base64').toString('utf-8');
                         dataFileRead = JSON.parse(dataFileRead);
-                        dataFileRead = {...dataFileRead, ...dynamicDatas};
+                        dataFileRead = {...dataFileRead, ...dynamicData};
                     }
                 } else{
-                    dataFileRead = dynamicDatas
+                    dataFileRead = dynamicData
                 }
                 await lastValueFrom(this.commonMicroservice.send({cmd: 'upload_file'}, {path: Buffer.from(JSON.stringify(dataFileRead)).toString('base64'),  filename: dynamicDefaultJsonFile, userBucket: dynamicDefaultJsonFile.includes('dynamic') ? 'private' : 'public'}));
                 this.cacheService.setCache(`${dynamicDefaultJsonFile}`, JSON.stringify(JSON.parse(JSON.stringify(dataFileRead))), 60000);
             } else if (method === 'Delete') {
-                if (subModule === 'CovidPopup' || dynamicDatas && Object.keys(dynamicDatas).length != 0) {
+                if (subModule === 'CovidPopup' || dynamicData && Object.keys(dynamicData).length != 0) {
                     let dataFileRead = await lastValueFrom(this.commonMicroservice.send({
                         cmd: 'get_file'
                     }, {
@@ -257,7 +257,7 @@ export class TranslationService {
                     if (dataFileRead) {
                         dataFileRead = Buffer.from(dataFileRead.Body, 'base64').toString('utf-8');
                         dataFileRead = JSON.parse(dataFileRead);
-                        const dynamicKeys = Object.keys(dynamicDatas);
+                        const dynamicKeys = Object.keys(dynamicData);
                         let modified = false;
                         for (const fileKey in dataFileRead) {
                             if (dataFileRead.hasOwnProperty(fileKey)) {
@@ -291,8 +291,8 @@ export class TranslationService {
                     this.cacheService.removeCache(`${dynamicDefaultJsonFile}`);
                 }
             } else {
-                await lastValueFrom(this.commonMicroservice.send({cmd: 'upload_file'}, {path: Buffer.from(JSON.stringify(dynamicDatas)).toString('base64'),  filename: dynamicDefaultJsonFile, userBucket: dynamicDefaultJsonFile.includes('dynamic') ? 'private' : 'public'}));
-                this.cacheService.setCache(`${dynamicDefaultJsonFile}`, JSON.stringify(JSON.parse(dynamicDatas)), 60000);
+                await lastValueFrom(this.commonMicroservice.send({cmd: 'upload_file'}, {path: Buffer.from(JSON.stringify(dynamicData)).toString('base64'),  filename: dynamicDefaultJsonFile, userBucket: dynamicDefaultJsonFile.includes('dynamic') ? 'private' : 'public'}));
+                this.cacheService.setCache(`${dynamicDefaultJsonFile}`, JSON.stringify(JSON.parse(dynamicData)), 60000);
             }
             // This function should implement the changeAllTranslationStatus method
             this.changeAllTranslationStatus(langTranslation);

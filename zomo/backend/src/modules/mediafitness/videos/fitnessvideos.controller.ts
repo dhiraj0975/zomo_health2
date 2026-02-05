@@ -406,20 +406,20 @@ export class FitnessVideosController {
                 ...postData,
                 created_by: req.tokenUser?.id,
             });
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.name){
-                let tilte = `fitness_video_name_${resultedData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.name;
+                let title = `fitness_video_name_${resultedData['id']}`
+                dynamicData[`${title}`]= postData?.name;
             }           
             if(postData?.description && postData?.description != ' '){
-                let tilte = `fitness_video_description_${resultedData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.description;
+                let title = `fitness_video_description_${resultedData['id']}`
+                dynamicData[`${title}`]= postData?.description;
             }           
             if(postData?.provider_name && postData?.provider_name != ' '){
-                let tilte = `fitness_video_providername_${resultedData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.provider_name;
+                let title = `fitness_video_providername_${resultedData['id']}`
+                dynamicData[`${title}`]= postData?.provider_name;
             }           
-            await this.translatorService.DynamicEngJsonData('Media',postData?.org_id,dynamicDatas,'Edit','Fitnessvideos','Video',resultedData['id']);
+            await this.translatorService.DynamicEngJsonData('Media',postData?.org_id,dynamicData,'Edit','Fitnessvideos','Video',resultedData['id']);
             const splitAndDelete = (property: string, obj: any): string[] => {
                 const ids = (obj?.[property]?.split(',') || []).filter(Boolean);
                 delete obj?.[property];
@@ -844,20 +844,20 @@ export class FitnessVideosController {
                 delete postData?.status;
             }
             await this.fitnessVideosService.update(where, postData);
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.name){
-                let tilte = `fitness_video_name_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.name;
+                let title = `fitness_video_name_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.name;
             }           
             if(postData?.description && postData?.description != ' '){
-                let tilte = `fitness_video_description_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.description;
+                let title = `fitness_video_description_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.description;
             }           
             if(postData?.provider_name && postData?.provider_name != ' '){
-                let tilte = `fitness_video_providername_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.provider_name;
+                let title = `fitness_video_providername_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.provider_name;
             }           
-            await this.translatorService.DynamicEngJsonData('Media',recordDetails.org_id,dynamicDatas,'Edit','Fitnessvideos','Video',recordDetails['id']);
+            await this.translatorService.DynamicEngJsonData('Media',recordDetails.org_id,dynamicData,'Edit','Fitnessvideos','Video',recordDetails['id']);
             this.activityLogService.create(recordDetails, postData, tableConstant.MEDIA_FITNESS.TBL_ME_FOD_VIDEOS, req.tokenUser?.id);
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,

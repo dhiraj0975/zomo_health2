@@ -201,29 +201,29 @@ export class SupportController {
                 }
             }
             let recordDetails = await this.supportService.save(postData);
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.title){
-                let tilte = `title_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.title;
+                let title = `title_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.title;
             }            
             if(postData?.cname){
-                let tilte = `cname_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.cname;
+                let title = `cname_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.cname;
             }            
             if(postData?.ph_number){
-                let tilte = `ph_number_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.ph_number;
+                let title = `ph_number_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.ph_number;
             }            
             if(postData?.operation){
-                let tilte = `operation_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.operation;
+                let title = `operation_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.operation;
             }
             if(postData?.message){
-                let tilte = `message_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.message;
+                let title = `message_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.message;
             }
 
-            await this.translatorService.DynamicEngJsonData('Support',recordDetails['org_id'],dynamicDatas,'Edit','Support');
+            await this.translatorService.DynamicEngJsonData('Support',recordDetails['org_id'],dynamicData,'Edit','Support');
             return res.status(HttpStatus.CREATED).json({
                 statusCode: 201,
                 success: 1,
@@ -366,28 +366,28 @@ export class SupportController {
             }
             await this.supportService.update(where, postData);
             this.activityLogService.create(recordDetails, postData, tableConstant.COMPANIES.TBL_COMPANY_SUPPORTS, req.tokenUser?.id);
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.title){
-                let tilte = `title_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.title;
+                let title = `title_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.title;
             }            
             if(postData?.cname){
-                let tilte = `cname_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.cname;
+                let title = `cname_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.cname;
             }            
             if(postData?.ph_number){
-                let tilte = `ph_number_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.ph_number;
+                let title = `ph_number_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.ph_number;
             }            
             if(postData?.operation){
-                let tilte = `operation_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.operation;
+                let title = `operation_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.operation;
             }
             if(postData?.message){
-                let tilte = `message_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.message;
+                let title = `message_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.message;
             }
-            await this.translatorService.DynamicEngJsonData('Support',recordDetails['org_id'],dynamicDatas,'Edit','Support');
+            await this.translatorService.DynamicEngJsonData('Support',recordDetails['org_id'],dynamicData,'Edit','Support');
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
                 success: 1,

@@ -229,24 +229,24 @@ export class AssessmentSettingsController {
                 await this.assessmentSettingsService.update({id: resultedData['id']}, {...postData, updated_by : req.tokenUser?.id});
                 this.activityLogService.create(resultedData, postData, tableConstant.HEALTH_ASSESSMENT.TBL_HA_ASSESSMENT_SETTINGS, req.tokenUser?.id);
             }
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.banner_title){
-                let tilte = `assessment_banner_title_${postData?.organization_id}_${resultedData['id']}`
-                dynamicDatas[`${tilte}`] = postData?.banner_title;
+                let title = `assessment_banner_title_${postData?.organization_id}_${resultedData['id']}`
+                dynamicData[`${title}`] = postData?.banner_title;
             }
             if(postData?.banner_description){
-                let tilte = `assessment_banner_description_${postData?.organization_id}_${resultedData['id']}`
-                dynamicDatas[`${tilte}`] = postData?.banner_description;
+                let title = `assessment_banner_description_${postData?.organization_id}_${resultedData['id']}`
+                dynamicData[`${title}`] = postData?.banner_description;
             }
             if(postData?.result_top_decscription){
-                let tilte = `assessment_result_top_decscription_${postData?.organization_id}_${resultedData['id']}`
-                dynamicDatas[`${tilte}`] = postData?.result_top_decscription;
+                let title = `assessment_result_top_decscription_${postData?.organization_id}_${resultedData['id']}`
+                dynamicData[`${title}`] = postData?.result_top_decscription;
             }
             if(postData?.result_bottom_decscription){
-                let tilte = `assessment_result_bottom_decscription_${postData?.organization_id}_${resultedData['id']}`
-                dynamicDatas[`${tilte}`] = postData?.result_bottom_decscription;
+                let title = `assessment_result_bottom_decscription_${postData?.organization_id}_${resultedData['id']}`
+                dynamicData[`${title}`] = postData?.result_bottom_decscription;
             }
-            await this.translatorService.DynamicEngJsonData('MyHealth','eha',dynamicDatas,'Edit','Assessment',postData?.organization_id);
+            await this.translatorService.DynamicEngJsonData('MyHealth','eha',dynamicData,'Edit','Assessment',postData?.organization_id);
             return res.status(HttpStatus.CREATED).json({
                 statusCode: 201,
                 success: 1,
@@ -349,24 +349,24 @@ export class AssessmentSettingsController {
             }
             await this.assessmentSettingsService.update({id: postData?.id}, {...postData, updated_by : req.tokenUser?.id});
             this.activityLogService.create(recordDetails, postData, tableConstant.HEALTH_ASSESSMENT.TBL_HA_ASSESSMENT_SETTINGS, req.tokenUser?.id);
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.banner_title){
-                let tilte = `assessment_banner_title_${postData?.organization_id}_${postData['id']}`
-                dynamicDatas[`${tilte}`] = postData?.banner_title;
+                let title = `assessment_banner_title_${postData?.organization_id}_${postData['id']}`
+                dynamicData[`${title}`] = postData?.banner_title;
             }
             if(postData?.banner_description){
-                let tilte = `assessment_banner_description_${postData?.organization_id}_${postData['id']}`
-                dynamicDatas[`${tilte}`] = postData?.banner_description;
+                let title = `assessment_banner_description_${postData?.organization_id}_${postData['id']}`
+                dynamicData[`${title}`] = postData?.banner_description;
             }
             if(postData?.result_top_decscription){
-                let tilte = `assessment_result_top_decscription_${postData?.organization_id}_${postData['id']}`
-                dynamicDatas[`${tilte}`] = postData?.result_top_decscription;
+                let title = `assessment_result_top_decscription_${postData?.organization_id}_${postData['id']}`
+                dynamicData[`${title}`] = postData?.result_top_decscription;
             }
             if(postData?.result_bottom_decscription){
-                let tilte = `assessment_result_bottom_decscription_${postData?.organization_id}_${postData['id']}`
-                dynamicDatas[`${tilte}`] = postData?.result_bottom_decscription;
+                let title = `assessment_result_bottom_decscription_${postData?.organization_id}_${postData['id']}`
+                dynamicData[`${title}`] = postData?.result_bottom_decscription;
             }
-            await this.translatorService.DynamicEngJsonData('MyHealth','eha',dynamicDatas,'Edit','Assessment',postData?.organization_id);
+            await this.translatorService.DynamicEngJsonData('MyHealth','eha',dynamicData,'Edit','Assessment',postData?.organization_id);
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
                 success: 1,
@@ -475,7 +475,7 @@ export class AssessmentSettingsController {
             if (!checkExist) {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_COPY"));
             }
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             let getToOrgSetting = await this.frontService.assessmentSettingsFindOne( ['id'],{ organization_id: postData?.to_org, status: Not('2') });
             let assessmentSettingsId = getToOrgSetting?.id;
             /* get fromOrg setting to copy in toOrg */
@@ -493,20 +493,20 @@ export class AssessmentSettingsController {
                 assessmentSettingsId = saveSetting['id']
             }
             if(fromOrgToToOrgData?.banner_title){
-                let tilte = `assessment_banner_title_${fromOrgToToOrgData?.organization_id}_${assessmentSettingsId}`
-                dynamicDatas[`${tilte}`] = fromOrgToToOrgData?.banner_title;
+                let title = `assessment_banner_title_${fromOrgToToOrgData?.organization_id}_${assessmentSettingsId}`
+                dynamicData[`${title}`] = fromOrgToToOrgData?.banner_title;
             }
             if(fromOrgToToOrgData?.banner_description){
-                let tilte = `assessment_banner_description_${fromOrgToToOrgData?.organization_id}_${assessmentSettingsId}`
-                dynamicDatas[`${tilte}`] = fromOrgToToOrgData?.banner_description;
+                let title = `assessment_banner_description_${fromOrgToToOrgData?.organization_id}_${assessmentSettingsId}`
+                dynamicData[`${title}`] = fromOrgToToOrgData?.banner_description;
             }
             if(fromOrgToToOrgData?.result_top_decscription){
-                let tilte = `assessment_result_top_decscription_${fromOrgToToOrgData?.organization_id}_${assessmentSettingsId}`
-                dynamicDatas[`${tilte}`] = fromOrgToToOrgData?.result_top_decscription;
+                let title = `assessment_result_top_decscription_${fromOrgToToOrgData?.organization_id}_${assessmentSettingsId}`
+                dynamicData[`${title}`] = fromOrgToToOrgData?.result_top_decscription;
             }
             if(fromOrgToToOrgData?.result_bottom_decscription){
-                let tilte = `assessment_result_bottom_decscription_${fromOrgToToOrgData?.organization_id}_${assessmentSettingsId}`
-                dynamicDatas[`${tilte}`] = fromOrgToToOrgData?.result_bottom_decscription;
+                let title = `assessment_result_bottom_decscription_${fromOrgToToOrgData?.organization_id}_${assessmentSettingsId}`
+                dynamicData[`${title}`] = fromOrgToToOrgData?.result_bottom_decscription;
             }
             await this.companySettingsService.update({org_id: postData?.to_org},{is_emo_health_asssessments: 1});
             let resultSaveArray = [];
@@ -526,28 +526,28 @@ export class AssessmentSettingsController {
                 let saveResultData = saveResult[i]
                 resultIdsObj2[i] = saveResult[i].id;
                 if(saveResultData?.title){
-                    let tilte = `assessment_title_${saveResultData?.organization_id}_${saveResultData['id']}`
-                    dynamicDatas[`${tilte}`]= saveResultData?.title;
+                    let title = `assessment_title_${saveResultData?.organization_id}_${saveResultData['id']}`
+                    dynamicData[`${title}`]= saveResultData?.title;
                 }
                 if(saveResultData['marker-low']){
-                    let tilte = `assessment_markerlow_${saveResultData?.organization_id}_${saveResultData['id']}`
-                    dynamicDatas[`${tilte}`]= saveResultData['marker-low'];
+                    let title = `assessment_markerlow_${saveResultData?.organization_id}_${saveResultData['id']}`
+                    dynamicData[`${title}`]= saveResultData['marker-low'];
                 }
                 if(saveResultData['marker-mod']){
-                    let tilte = `assessment_markermod_${saveResultData?.organization_id}_${saveResultData['id']}`
-                    dynamicDatas[`${tilte}`]= saveResultData['marker-mod'];
+                    let title = `assessment_markermod_${saveResultData?.organization_id}_${saveResultData['id']}`
+                    dynamicData[`${title}`]= saveResultData['marker-mod'];
                 }
                 if(saveResultData['marker-high']){
-                    let tilte = `assessment_markerhigh_${saveResultData?.organization_id}_${saveResultData['id']}`
-                    dynamicDatas[`${tilte}`]= saveResultData['marker-high'];
+                    let title = `assessment_markerhigh_${saveResultData?.organization_id}_${saveResultData['id']}`
+                    dynamicData[`${title}`]= saveResultData['marker-high'];
                 }
                 if(saveResultData['marker-common']){
-                    let tilte = `assessment_markercommon_${saveResultData?.organization_id}_${saveResultData['id']}`
-                    dynamicDatas[`${tilte}`]= saveResultData['marker-common'];
+                    let title = `assessment_markercommon_${saveResultData?.organization_id}_${saveResultData['id']}`
+                    dynamicData[`${title}`]= saveResultData['marker-common'];
                 }
                 if(saveResultData['marker-common_last']){
-                    let tilte = `assessment_markercommonlast_${saveResultData?.organization_id}_${saveResultData['id']}`
-                    dynamicDatas[`${tilte}`]= saveResultData['marker-common_last'];
+                    let title = `assessment_markercommonlast_${saveResultData?.organization_id}_${saveResultData['id']}`
+                    dynamicData[`${title}`]= saveResultData['marker-common_last'];
                 }
             }
             const resultIds = {};
@@ -562,8 +562,8 @@ export class AssessmentSettingsController {
                 let saveTab = await this.assessmentTabsService.save({ ...copyTab });
                 let tabId = saveTab['id'];
                 if(data['title']){
-                    let tilte = `assessment_tabs_title_${saveTab['organization_id']}_${saveTab['id']}`
-                    dynamicDatas[`${tilte}`]= data['title'];
+                    let title = `assessment_tabs_title_${saveTab['organization_id']}_${saveTab['id']}`
+                    dynamicData[`${title}`]= data['title'];
                 }
                 if (data['aq'].length) {
                     let questionData = JSON.parse(JSON.stringify(data['aq']));
@@ -596,8 +596,8 @@ export class AssessmentSettingsController {
                                 }
                                 let questionDetails = await this.assessmentQuestionsDetailsService.save({...saveQuestionDetailObj});
                                 if(questionDetail['question_title']){
-                                    let tilte = `assessment_question_title_${tabId}_${questionsId}`
-                                    dynamicDatas[`${tilte}`] = questionDetail['question_title'];
+                                    let title = `assessment_question_title_${tabId}_${questionsId}`
+                                    dynamicData[`${title}`] = questionDetail['question_title'];
                                 }
                                 questionDetailArray[tmpQdID] = questionDetails['id']
                             }
@@ -623,8 +623,8 @@ export class AssessmentSettingsController {
                                         }
                                         let saveOptionDetail = await this.assessmentOptionsDetailsService.save({...saveOptionDetailObj});
                                         if(optionDetail['option_title']){
-                                            let tilte = `assessment_option_title_${questionsId}_${optionId}`
-                                            dynamicDatas[`${tilte}`] = optionDetail['option_title'];
+                                            let title = `assessment_option_title_${questionsId}_${optionId}`
+                                            dynamicData[`${title}`] = optionDetail['option_title'];
                                         }
                                         optionDetailArray[tmpOdID] = saveOptionDetail['id']
                                     }
@@ -634,7 +634,7 @@ export class AssessmentSettingsController {
                     }
                 }
             }
-            await this.translatorService.DynamicEngJsonData('MyHealth','eha',dynamicDatas,'Edit','Assessment',postData?.to_org);
+            await this.translatorService.DynamicEngJsonData('MyHealth','eha',dynamicData,'Edit','Assessment',postData?.to_org);
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
                 success: 1,

@@ -1,4 +1,4 @@
-import {appConstant, AssessmentTextsDto, CommonArrayService, CommonService, tableConstant} from '@common-constants';
+import { appConstant, AssessmentTextsDto, CommonArrayService, CommonService, tableConstant } from '@common-constants';
 import {
     Body,
     Controller,
@@ -149,34 +149,34 @@ export class AssessmentTextsController {
             const filteredData = postData["text"];
             if (filteredData?.length) {
                 let path: string = '';
-                let dynamicDatas = Object.create(null);
+                let dynamicData = Object.create(null);
                 for (let i: number = 0; i < filteredData.length; i++) {
                     let data = filteredData[i]
                     let index: number = data['ass_sec_id'] - 1;
                     path = appConstant.HRA_ASSESSMENT_BIOMETRIC_TEXT[index].path
                     if(data?.low_risk){
-                        let tilte: string = `${appConstant.HRA_ASSESSMENT_BIOMETRIC_TEXT[index].low_risk}${data?.ass_sec_id}`
-                        dynamicDatas[`${tilte}`] = data?.low_risk;
+                        let title: string = `${appConstant.HRA_ASSESSMENT_BIOMETRIC_TEXT[index].low_risk}${data?.ass_sec_id}`
+                        dynamicData[`${title}`] = data?.low_risk;
                     }
                     if(data?.mod_risk){
-                        let tilte: string = `${appConstant.HRA_ASSESSMENT_BIOMETRIC_TEXT[index].mod_risk}${data?.ass_sec_id}`
-                        dynamicDatas[`${tilte}`] = data?.mod_risk;
+                        let title: string = `${appConstant.HRA_ASSESSMENT_BIOMETRIC_TEXT[index].mod_risk}${data?.ass_sec_id}`
+                        dynamicData[`${title}`] = data?.mod_risk;
                     }
                     if(data?.high_risk){
-                        let tilte: string = `${appConstant.HRA_ASSESSMENT_BIOMETRIC_TEXT[index].high_risk}${data?.ass_sec_id}`
-                        dynamicDatas[`${tilte}`] = data?.high_risk;
+                        let title: string = `${appConstant.HRA_ASSESSMENT_BIOMETRIC_TEXT[index].high_risk}${data?.ass_sec_id}`
+                        dynamicData[`${title}`] = data?.high_risk;
                     }
                     if(data?.very_high_risk){
-                        let tilte: string = `${appConstant.HRA_ASSESSMENT_BIOMETRIC_TEXT[index].very_high_risk}${data?.ass_sec_id}`
-                        dynamicDatas[`${tilte}`] = data?.very_high_risk;
+                        let title: string = `${appConstant.HRA_ASSESSMENT_BIOMETRIC_TEXT[index].very_high_risk}${data?.ass_sec_id}`
+                        dynamicData[`${title}`] = data?.very_high_risk;
                     }
                     if(data?.learn_more){
-                        let tilte: string = `${appConstant.HRA_ASSESSMENT_BIOMETRIC_TEXT[index].learn_more}${data?.ass_sec_id}`
-                        dynamicDatas[`${tilte}`] = data?.learn_more;
+                        let title: string = `${appConstant.HRA_ASSESSMENT_BIOMETRIC_TEXT[index].learn_more}${data?.ass_sec_id}`
+                        dynamicData[`${title}`] = data?.learn_more;
                     }
                     await this.assessmentTextsService.update({ass_sec_id: data.ass_sec_id},data);
                 }
-                await this.translatorService.DynamicEngJsonData('MyHealth',null,dynamicDatas,'Add','Assessment/hra',`${path}`);
+                await this.translatorService.DynamicEngJsonData('MyHealth',null,dynamicData,'Add','Assessment/hra',`${path}`);
             }
             return res.status(HttpStatus.CREATED).json({
                 statusCode: 201,

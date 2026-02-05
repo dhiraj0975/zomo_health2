@@ -27,7 +27,7 @@ export class ReimbursementCreateFormsEntity extends BaseEntity {
     attachment_req: number;
     @Column({ type: 'int' })
     multiple_selection: number;
-    @Column({ type: 'varchar', length: 255 })
+    @Column({ type: 'text' })
     description: string;
     @Column({ type: 'int', default: 0 })
     act_reim_amount: number;

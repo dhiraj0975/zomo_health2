@@ -542,36 +542,36 @@ export class FormInstructionsController {
                     }
                     await this.translatorService.DynamicEngJsonData('HealthForms',postData?.company_id,newCustLbl,'Add','SubmitForm')
                 }
-                let dynamicDatas = Object.create(null);
+                let dynamicData = Object.create(null);
                 if(postData?.tobacco_cessation_text){
-                    let tilte = `tobacco_cessation_text_${postData?.company_id}`
-                    dynamicDatas[`${tilte}`]= postData?.tobacco_cessation_text;
+                    let title = `tobacco_cessation_text_${postData?.company_id}`
+                    dynamicData[`${title}`]= postData?.tobacco_cessation_text;
                 }
                 if(postData?.tobacco_para1){
-                    let tilte = `tobacco_para1_${postData?.company_id}`
-                    dynamicDatas[`${tilte}`]= postData?.tobacco_para1;
+                    let title = `tobacco_para1_${postData?.company_id}`
+                    dynamicData[`${title}`]= postData?.tobacco_para1;
                 }
                 if(postData?.dentists_text){
-                    let tilte = `dentists_text_${postData?.company_id}`
-                    dynamicDatas[`${tilte}`]= postData?.dentists_text;
+                    let title = `dentists_text_${postData?.company_id}`
+                    dynamicData[`${title}`]= postData?.dentists_text;
                 }
                 if(postData?.optometrists_text){
-                    let tilte = `optometrists_text_${postData?.company_id}`
-                    dynamicDatas[`${tilte}`]= postData?.optometrists_text;
+                    let title = `optometrists_text_${postData?.company_id}`
+                    dynamicData[`${title}`]= postData?.optometrists_text;
                 }
                 if(postData?.physician_text){
-                    let tilte = `physician_text_${postData?.company_id}`
-                    dynamicDatas[`${tilte}`]= postData?.physician_text;
+                    let title = `physician_text_${postData?.company_id}`
+                    dynamicData[`${title}`]= postData?.physician_text;
                 }
                 if(postData?.age_gender_title){
-                    let tilte = `age_gender_title_${postData?.company_id}`
-                    dynamicDatas[`${tilte}`]= postData?.age_gender_title;
+                    let title = `age_gender_title_${postData?.company_id}`
+                    dynamicData[`${title}`]= postData?.age_gender_title;
                 }
                 if(postData?.age_gender_text){
-                    let tilte = `age_gender_text_${postData?.company_id}`
-                    dynamicDatas[`${tilte}`]= postData?.age_gender_text;
+                    let title = `age_gender_text_${postData?.company_id}`
+                    dynamicData[`${title}`]= postData?.age_gender_text;
                 }
-                await this.translatorService.DynamicEngJsonData('Activities',postData?.company_id,dynamicDatas,'Edit','Activities');
+                await this.translatorService.DynamicEngJsonData('Activities',postData?.company_id,dynamicData,'Edit','Activities');
                 let message = await this.translatorService.frontendReadTranslation(req.lang, "SUCCESS_FORM_INSTRUCTION");
                 if(postData?.form_type){
                     message = await this.translatorService.frontendReadTranslation(req.lang, "SUCCESS_FORM_CUSTOMIZE");
@@ -777,36 +777,36 @@ export class FormInstructionsController {
                     await this.translatorService.DynamicEngJsonData('HealthForms',postData?.company_id,newCustLbl,'Add','SubmitForm')
                 }
                 this.activityLogService.create(recordDetails, postData, tableConstant.HEALTH_CHECKUP.TBL_HC_FORM_INSTRUCTIONS, req.tokenUser?.id);
-                let dynamicDatas = Object.create(null);
+                let dynamicData = Object.create(null);
                 if(postData?.tobacco_cessation_text){
-                    let tilte = `tobacco_cessation_text_${postData?.company_id}`
-                    dynamicDatas[`${tilte}`]= postData?.tobacco_cessation_text;
+                    let title = `tobacco_cessation_text_${postData?.company_id}`
+                    dynamicData[`${title}`]= postData?.tobacco_cessation_text;
                 }
                 if(postData?.tobacco_para1){
-                    let tilte = `tobacco_para1_${postData?.company_id}`
-                    dynamicDatas[`${tilte}`]= postData?.tobacco_para1;
+                    let title = `tobacco_para1_${postData?.company_id}`
+                    dynamicData[`${title}`]= postData?.tobacco_para1;
                 }
                 if(postData?.dentists_text){
-                    let tilte = `dentists_text_${postData?.company_id}`
-                    dynamicDatas[`${tilte}`]= postData?.dentists_text;
+                    let title = `dentists_text_${postData?.company_id}`
+                    dynamicData[`${title}`]= postData?.dentists_text;
                 }
                 if(postData?.optometrists_text){
-                    let tilte = `optometrists_text_${postData?.company_id}`
-                    dynamicDatas[`${tilte}`]= postData?.optometrists_text;
+                    let title = `optometrists_text_${postData?.company_id}`
+                    dynamicData[`${title}`]= postData?.optometrists_text;
                 }
                 if(postData?.physician_text){
-                    let tilte = `physician_text_${postData?.company_id}`
-                    dynamicDatas[`${tilte}`]= postData?.physician_text;
+                    let title = `physician_text_${postData?.company_id}`
+                    dynamicData[`${title}`]= postData?.physician_text;
                 }
                 if(postData?.age_gender_title){
-                    let tilte = `age_gender_title_${postData?.company_id}`
-                    dynamicDatas[`${tilte}`]= postData?.age_gender_title;
+                    let title = `age_gender_title_${postData?.company_id}`
+                    dynamicData[`${title}`]= postData?.age_gender_title;
                 }
                 if(postData?.age_gender_text){
-                    let tilte = `age_gender_text_${postData?.company_id}`
-                    dynamicDatas[`${tilte}`]= postData?.age_gender_text;
+                    let title = `age_gender_text_${postData?.company_id}`
+                    dynamicData[`${title}`]= postData?.age_gender_text;
                 }
-                await this.translatorService.DynamicEngJsonData('Activities',postData?.company_id,dynamicDatas,'Edit','Activities');
+                await this.translatorService.DynamicEngJsonData('Activities',postData?.company_id,dynamicData,'Edit','Activities');
                 let message = await this.translatorService.frontendReadTranslation(req.lang, "UPDATE_FORM_INSTRUCTION");
                 if(postData?.form_type){
                     message = await this.translatorService.frontendReadTranslation(req.lang, "SUCCESS_FORM_CUSTOMIZE");

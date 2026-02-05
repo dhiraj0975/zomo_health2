@@ -174,7 +174,6 @@ export class EmailCampaignRequestsController {
     @Post('get-one')
     async getOne(@Req() req: Request, @Res() res: Response, @Body() postData: any) {
         try {
-            console.log('[EDIT get-one] API hit - postData:', JSON.stringify(postData));
             if (!postData?.id) {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_REQUIRED_PARAM_MISSING"));
             }
@@ -286,7 +285,6 @@ export class EmailCampaignRequestsController {
             } else {
                 campaignRequests['organization'] = null;
             }
-            // console.log('[EDIT get-one] id:', postData?.id, '| for_org_id:', campaignOrgID, '| organization:', JSON.stringify(campaignRequests['organization']), '| campaign_title:', campaignRequests['campaign_title']);
             let responseData = {};
             if(campaignRequests.with_option == '2' && campaignRequests.group_id && campaignRequests.group_id !== null && campaignRequests.group_id !== undefined){
                 if(nextCampaignId !== null && prevCampaignId !== null){
@@ -341,7 +339,6 @@ export class EmailCampaignRequestsController {
                     postData.for_org_id = org.id || org.for_org_id;
                 }
             }
-            console.log('[CREATE] with_option:', postData?.with_option, 'for_org_id:', postData?.for_org_id, 'organization:', postData?.organization, 'campaign_title:', postData?.campaign_title);
             if (!postData?.with_option || !postData?.campaign_title) {
                 if (
                     postData?.with_option === '0' &&
@@ -448,14 +445,31 @@ export class EmailCampaignRequestsController {
                         terminated : (req.body.terminated && req.body.terminated !== null && req.body.terminated !== undefined) ? req.body.terminated : "0",
                         eligibility : (req.body.eligibility && req.body.eligibility !== null && req.body.eligibility !== undefined) ? req.body.eligibility : "7",
                     };
+
+
+                    // First, try to find a user strictly matching all filters
                     let getTestUser = await this.userFileterData('testUser', postData?.for_org_id, orgFilertDatas);
-                    // console.log('getTestUser', getTestUser);
-                    // console.log('orgFilertDatas', orgFilertDatas);
-                    // console.log('postData', postData);
-                    // return;
+
+                    // If no user is found, relax filters and try again so that creation doesn't always fail
+                    if(!getTestUser || getTestUser === null || getTestUser === undefined || (Array.isArray(getTestUser) && getTestUser.length === 0) || (typeof getTestUser === 'object' && Object.keys(getTestUser).length === 0)){
+                        const relaxedFilter = {
+                            department : "",
+                            location : "",
+                            on_health_plan : "2",
+                            health_plan_name : "",
+                            gender : "all",
+                            terminated : (req.body.terminated && req.body.terminated !== null && req.body.terminated !== undefined) ? req.body.terminated : "0",
+                            // eligibility ko empty rakhne se userFileterData me default role_id IN (2,16) use hoga
+                            eligibility : "",
+                        };
+                        getTestUser = await this.userFileterData('testUser', postData?.for_org_id, relaxedFilter);
+                    }
+
+                    // Agar relaxed filter ke baad bhi user nahi mila to hi error throw kare
                     if(!getTestUser || getTestUser === null || getTestUser === undefined || (Array.isArray(getTestUser) && getTestUser.length === 0) || (typeof getTestUser === 'object' && Object.keys(getTestUser).length === 0)){
                         throw new Error('Your filter according user not found.');
                     }
+
                     getTestUser = await this.convertToIndexedObject(getTestUser);
                     if(!getTestUser || !getTestUser[0] || !getTestUser[9]){
                         throw new Error('Your filter according user not found.');
@@ -523,7 +537,6 @@ export class EmailCampaignRequestsController {
             }
             postData.created_by = req.tokenUser?.id;
             postData.role_id = req.tokenUser?.role_id;
-            console.log('[CREATE] saving - for_org_id:', postData?.for_org_id, 'with_option:', postData?.with_option);
             const campaignDatas = await lastValueFrom(this.client.send({ cmd: 'create_campaign_requests' }, postData));
             if(campaignDatas && campaignDatas !== null && campaignDatas !== undefined && campaignDatas['identifiers'] && campaignDatas['identifiers'].length > 0){
                 lastInsertId = campaignDatas['identifiers'][0]['id'];
@@ -1131,7 +1144,7 @@ export class EmailCampaignRequestsController {
                     template: setEmailTemplete,
                     attachment: attachmentFiles,
                 }
-                await lastValueFrom(this.commonMicroservice.send({ cmd: 'send_email' }, emaildata));
+                const emailResponse = await lastValueFrom(this.commonMicroservice.send({ cmd: 'send_email' }, emaildata));
                 /*if(response && response.success){*/
                     let RequestData: any = {};
 
@@ -1191,10 +1204,7 @@ export class EmailCampaignRequestsController {
                         data: null,
                         message: 'Test email sent successfully.',
                     });
-                /*}else{
-                    console.log('response',response);
-                    throw new Error('Failed to send test email.');
-                }*/
+
             }catch(emailError){
                 if (files && files.length > 0) {
                     for (const file of files) {
@@ -1318,7 +1328,6 @@ export class EmailCampaignRequestsController {
                         if(searchEmail && searchEmail != ''){
                             orgFilterData['SearchEmail'] = searchEmail;
                         }
-                        console.log('orgFilterData',orgFilterData);
                         EmailScheduleCount = await this.userFileterData('count', camOrgId, orgFilterData);
                         schedulelist = await this.userFileterData('multiple', camOrgId, orgFilterData, 1, 25);
                     }
@@ -1522,7 +1531,7 @@ export class EmailCampaignRequestsController {
     @Post('details-campaign')
     async detailsCampaign(@Req() req: Request, @Res() res: Response, @Body() postData: any) {
         try {
-            console.log('postData',postData);
+          
             if (!postData?.id || !postData?.hash || !postData?.sid) {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_REQUIRED_PARAM_MISSING"));
             }
@@ -2088,7 +2097,7 @@ export class EmailCampaignRequestsController {
                     postData.for_org_id = org.id || org.for_org_id;
                 }
             }
-            console.log('[UPDATE] id:', postData?.id, 'hash:', postData?.hash, 'with_option:', postData?.with_option, 'for_org_id:', postData?.for_org_id, 'organization:', postData?.organization);
+           
             if (!postData?.hash && !postData?.id) {
                 if (
                     postData?.with_option === '0' &&
@@ -2238,7 +2247,7 @@ export class EmailCampaignRequestsController {
                                     postData.file = `${postData?.hash}${fileExt}`;
                                 }
                             /* WITH OPTION 0 */
-                            console.log('[UPDATE] saving - for_org_id:', postData?.for_org_id, 'with_option:', postData?.with_option);
+                           
                             const campaignDatas = await lastValueFrom(this.client.send({ cmd: 'update_campaign_requests' }, postData));
                             if(campaignDatas && campaignDatas !== null && campaignDatas !== undefined){
                                 /* WITH OPTION 2 */
@@ -2976,7 +2985,7 @@ export class EmailCampaignRequestsController {
                 }else{
                     whereCon += ` AND user.role_id IN (2,16) `;
                 }
-                // console.log('whereCon',whereCon);
+            
                 return await this.userService.userFilerForCampaign(type, whereCon, pageid, limit);
             }else if(type == 'GroupTestUser'){
                 let OrgIdArr = con_id.map(item => `'${item}'`);

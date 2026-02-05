@@ -135,16 +135,16 @@ export class ManualUpComingsController {
                 }
             }
             let recordDetails = await this.manualUpcomingsService.save({...postData});
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.title){
-                let tilte = `title_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.title;
+                let title = `title_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.title;
             }            
             if(postData?.description){
-                let tilte = `description_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.description;
+                let title = `description_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.description;
             }            
-            await this.translatorService.DynamicEngJsonData('Dashboard',postData?.org_id,dynamicDatas,'Edit','UpcomingActivities',recordDetails['id']);
+            await this.translatorService.DynamicEngJsonData('Dashboard',postData?.org_id,dynamicData,'Edit','UpcomingActivities',recordDetails['id']);
             this.addNotification({
                 id: recordDetails?.['id'], 
                 org_id: recordDetails?.['org_id'], 
@@ -200,16 +200,16 @@ export class ManualUpComingsController {
             }
             await this.manualUpcomingsService.update({ id: postData?.id,org_id: postData?.org_id},{...postData});
             this.activityLogService.create(recordDetails, postData, tableConstant.UPCOMING_ACTIVITIES.TBL_UCA_MANUAL_UP_COMINGS, req.tokenUser?.id);
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.title){
-                let tilte = `title_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.title;
+                let title = `title_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.title;
             }            
             if(postData?.description){
-                let tilte = `description_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.description;
+                let title = `description_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.description;
             }            
-            await this.translatorService.DynamicEngJsonData('Dashboard',recordDetails.org_id,dynamicDatas,'Edit','UpcomingActivities',recordDetails['id']);
+            await this.translatorService.DynamicEngJsonData('Dashboard',recordDetails.org_id,dynamicData,'Edit','UpcomingActivities',recordDetails['id']);
             if(postData?.start_date || postData?.end_date){
                 let notificationData = {
                     custom_cname: recordDetails?.['title'],  

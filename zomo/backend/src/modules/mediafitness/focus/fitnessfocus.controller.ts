@@ -148,12 +148,12 @@ export class FitnessFocusController {
             let resultedData = await this.fitnessFocusService.save({...postData,
                 created_by: req.tokenUser?.id
             });
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.name){
-                let tilte = `fitness_focus_${resultedData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.name;
+                let title = `fitness_focus_${resultedData['id']}`
+                dynamicData[`${title}`]= postData?.name;
             }                      
-            await this.translatorService.DynamicEngJsonData('Media',postData?.org_id,dynamicDatas,'Edit','Fitnessvideos','focus');
+            await this.translatorService.DynamicEngJsonData('Media',postData?.org_id,dynamicData,'Edit','Fitnessvideos','focus');
             return res.status(HttpStatus.CREATED).json({
                 statusCode: 201,
                 success: 1,
@@ -244,12 +244,12 @@ export class FitnessFocusController {
                 });
             }
             await this.fitnessFocusService.update(where, postData);
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.name){
-                let tilte = `fitness_focus_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.name;
+                let title = `fitness_focus_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.name;
             }                      
-            await this.translatorService.DynamicEngJsonData('Media',postData?.org_id,dynamicDatas,'Edit','Fitnessvideos','focus');
+            await this.translatorService.DynamicEngJsonData('Media',postData?.org_id,dynamicData,'Edit','Fitnessvideos','focus');
             this.activityLogService.create(recordDetails, postData, tableConstant.MEDIA_FITNESS.TBL_ME_FOD_FOCUS, req.tokenUser?.id);
             let videoFocusData = await this.fitnessVideoFocusService.listRecord({f_id: postData?.id});
             await this.fitnessVideoFocusService.update({f_id: postData?.id},{status:postData?.status});

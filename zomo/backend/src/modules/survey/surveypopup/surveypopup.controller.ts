@@ -160,36 +160,36 @@ export class SurveyPopupController {
             }
             let recordDetails = await this.surveyPopupService.save({...postData, created_by: req.tokenUser?.id, updated_by: req.tokenUser?.id});
             if(recordDetails){
-                let dynamicDatas = Object.create(null);
+                let dynamicData = Object.create(null);
                 if(recordDetails['title']){
-                    let tilte = `survey_popup_title_${recordDetails['org_id']}_${recordDetails['id']}`
-                    dynamicDatas[`${tilte}`]= recordDetails['title'];
+                    let title = `survey_popup_title_${recordDetails['org_id']}_${recordDetails['id']}`
+                    dynamicData[`${title}`]= recordDetails['title'];
                 }
                 if(recordDetails['description']){
-                    let tilte = `survey_popup_description_${recordDetails['org_id']}_${recordDetails['id']}`
-                    dynamicDatas[`${tilte}`]= recordDetails['description'];
+                    let title = `survey_popup_description_${recordDetails['org_id']}_${recordDetails['id']}`
+                    dynamicData[`${title}`]= recordDetails['description'];
                 }
                 if(recordDetails['additional_note']){
-                    let tilte = `survey_popup_note_${recordDetails['org_id']}_${recordDetails['id']}`
-                    dynamicDatas[`${tilte}`]= recordDetails['additional_note'];
+                    let title = `survey_popup_note_${recordDetails['org_id']}_${recordDetails['id']}`
+                    dynamicData[`${title}`]= recordDetails['additional_note'];
                 }
                 if(recordDetails['pass_need_text']){
-                    let tilte = `pass_need_text_${recordDetails['org_id']}_${recordDetails['id']}`
-                    dynamicDatas[`${tilte}`]= recordDetails['pass_need_text'];
+                    let title = `pass_need_text_${recordDetails['org_id']}_${recordDetails['id']}`
+                    dynamicData[`${title}`]= recordDetails['pass_need_text'];
                 }
                 if(recordDetails['pass_need_desc']){
-                    let tilte = `pass_need_desc_${recordDetails['org_id']}_${recordDetails['id']}`
-                    dynamicDatas[`${tilte}`]= recordDetails['pass_need_desc'];
+                    let title = `pass_need_desc_${recordDetails['org_id']}_${recordDetails['id']}`
+                    dynamicData[`${title}`]= recordDetails['pass_need_desc'];
                 }
                 if(recordDetails['fail_need_text']){
-                    let tilte = `fail_need_text_${recordDetails['org_id']}_${recordDetails['id']}`
-                    dynamicDatas[`${tilte}`]= recordDetails['fail_need_text'];
+                    let title = `fail_need_text_${recordDetails['org_id']}_${recordDetails['id']}`
+                    dynamicData[`${title}`]= recordDetails['fail_need_text'];
                 }
                 if(recordDetails['fail_need_desc']){
-                    let tilte = `fail_need_desc_${recordDetails['org_id']}_${recordDetails['id']}`
-                    dynamicDatas[`${tilte}`]= recordDetails['fail_need_desc'];
+                    let title = `fail_need_desc_${recordDetails['org_id']}_${recordDetails['id']}`
+                    dynamicData[`${title}`]= recordDetails['fail_need_desc'];
                 }
-                await this.translatorService.DynamicEngJsonData('Common',postData?.org_id,dynamicDatas,'Edit','SurveyPopup',recordDetails['id']?.toString()) 
+                await this.translatorService.DynamicEngJsonData('Common',postData?.org_id,dynamicData,'Edit','SurveyPopup',recordDetails['id']?.toString()) 
             }
             return res.status(HttpStatus.OK).json({
                 statusCode: 201,
@@ -276,36 +276,36 @@ export class SurveyPopupController {
             await this.surveyPopupService.update({ id: postData?.id },{...postData, updated_by: req.tokenUser?.id});
             this.activityLogService.create(surveyCheck, {...postData, updated_by: req.tokenUser?.id}, tableConstant.SURVEY.TBL_C_SURVEY_POPUP, req.tokenUser?.id);
             if(surveyCheck && postData){
-                let dynamicDatas = Object.create(null);
+                let dynamicData = Object.create(null);
                 if(postData['title'] && surveyCheck['title'] != postData['title']){
-                    let tilte = `survey_popup_title_${surveyCheck['org_id']}_${surveyCheck['id']}`
-                    dynamicDatas[`${tilte}`]= postData['title'];
+                    let title = `survey_popup_title_${surveyCheck['org_id']}_${surveyCheck['id']}`
+                    dynamicData[`${title}`]= postData['title'];
                 }
                 if(postData['description'] && surveyCheck['description'] != postData['description']){
-                    let tilte = `survey_popup_description_${surveyCheck['org_id']}_${surveyCheck['id']}`
-                    dynamicDatas[`${tilte}`]= postData['description'];
+                    let title = `survey_popup_description_${surveyCheck['org_id']}_${surveyCheck['id']}`
+                    dynamicData[`${title}`]= postData['description'];
                 }
                 if(postData['additional_note'] && surveyCheck['additional_note'] != postData['additional_note']){
-                    let tilte = `survey_popup_note_${surveyCheck['org_id']}_${surveyCheck['id']}`
-                    dynamicDatas[`${tilte}`]= postData['additional_note'];
+                    let title = `survey_popup_note_${surveyCheck['org_id']}_${surveyCheck['id']}`
+                    dynamicData[`${title}`]= postData['additional_note'];
                 }
                 if(postData['pass_need_text'] && surveyCheck['pass_need_text'] != postData['pass_need_text']){
-                    let tilte = `pass_need_text_${surveyCheck['org_id']}_${surveyCheck['id']}`
-                    dynamicDatas[`${tilte}`]= postData['pass_need_text'];
+                    let title = `pass_need_text_${surveyCheck['org_id']}_${surveyCheck['id']}`
+                    dynamicData[`${title}`]= postData['pass_need_text'];
                 }
                 if(postData['pass_need_desc'] && surveyCheck['pass_need_desc'] != postData['pass_need_desc']){
-                    let tilte = `pass_need_desc_${surveyCheck['org_id']}_${surveyCheck['id']}`
-                    dynamicDatas[`${tilte}`]= postData['pass_need_desc'];
+                    let title = `pass_need_desc_${surveyCheck['org_id']}_${surveyCheck['id']}`
+                    dynamicData[`${title}`]= postData['pass_need_desc'];
                 }
                 if(postData['fail_need_text'] && surveyCheck['fail_need_text'] != postData['fail_need_text']){
-                    let tilte = `fail_need_text_${surveyCheck['org_id']}_${surveyCheck['id']}`
-                    dynamicDatas[`${tilte}`]= postData['fail_need_text'];
+                    let title = `fail_need_text_${surveyCheck['org_id']}_${surveyCheck['id']}`
+                    dynamicData[`${title}`]= postData['fail_need_text'];
                 }
                 if(postData['fail_need_desc'] && surveyCheck['fail_need_desc'] != postData['fail_need_desc']){
-                    let tilte = `fail_need_desc_${surveyCheck['org_id']}_${surveyCheck['id']}`
-                    dynamicDatas[`${tilte}`]= postData['fail_need_desc'];
+                    let title = `fail_need_desc_${surveyCheck['org_id']}_${surveyCheck['id']}`
+                    dynamicData[`${title}`]= postData['fail_need_desc'];
                 }
-                await this.translatorService.DynamicEngJsonData('Common',surveyCheck?.org_id,dynamicDatas,'Edit','SurveyPopup',surveyCheck['id'])
+                await this.translatorService.DynamicEngJsonData('Common',surveyCheck?.org_id,dynamicData,'Edit','SurveyPopup',surveyCheck['id'])
             }
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,

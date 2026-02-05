@@ -37,12 +37,12 @@ export class QuizMultipleQuestionController {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_REQUIRED_PARAM_MISSING"));
             }
             let saveData = await this.quizMultipleQuestionService.save({...postData});
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.question){
-                let tilte = `multiple_question_${postData?.question_id}_${saveData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.question;
+                let title = `multiple_question_${postData?.question_id}_${saveData['id']}`
+                dynamicData[`${title}`]= postData?.question;
             }                                    
-            await this.translatorService.DynamicEngJsonData('Quizzes','0',dynamicDatas,'Edit','Quizzes',saveData['question_id']);
+            await this.translatorService.DynamicEngJsonData('Quizzes','0',dynamicData,'Edit','Quizzes',saveData['question_id']);
             return res.status(HttpStatus.OK).json({
                 statusCode: 201,
                 success: 1,
@@ -73,12 +73,12 @@ export class QuizMultipleQuestionController {
             const recordDetails = await this.quizMultipleQuestionService.findOne({ id: postData?.id,question_id: postData?.question_id });
             await this.quizMultipleQuestionService.update({ id: postData?.id,question_id: postData?.question_id },{...postData});
             this.activityLogService.create(recordDetails, postData, tableConstant.QUIZ.TBL_QZ_MULTIPLE_QUESTIONS, req.tokenUser?.id);
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.question){
-                let tilte = `multiple_question_${postData?.question_id}_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.question;
+                let title = `multiple_question_${postData?.question_id}_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.question;
             }                                    
-            await this.translatorService.DynamicEngJsonData('Quizzes','0',dynamicDatas,'Edit','Quizzes',recordDetails['question_id']);
+            await this.translatorService.DynamicEngJsonData('Quizzes','0',dynamicData,'Edit','Quizzes',recordDetails['question_id']);
             return res.status(HttpStatus.OK).json({
                 statusCode: 201,
                 success: 1,

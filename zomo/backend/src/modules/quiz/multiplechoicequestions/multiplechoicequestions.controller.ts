@@ -37,32 +37,32 @@ export class QuizMultipleChoiceQuestionController {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_REQUIRED_PARAM_MISSING"));
             }
             let saveData = await this.quizMultipleChoiceQuestionService.save({...postData});
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.opt_1){
-                let tilte = `multiplechoice_option_${postData?.question_id}_opt1_${saveData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.opt_1;
+                let title = `multiplechoice_option_${postData?.question_id}_opt1_${saveData['id']}`
+                dynamicData[`${title}`]= postData?.opt_1;
             }            
             if(postData?.opt_2){
-                let tilte = `multiplechoice_option_${postData?.question_id}_opt2_${saveData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.opt_2;
+                let title = `multiplechoice_option_${postData?.question_id}_opt2_${saveData['id']}`
+                dynamicData[`${title}`]= postData?.opt_2;
             }            
             if(postData?.opt_3){
-                let tilte = `multiplechoice_option_${postData?.question_id}_opt3_${saveData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.opt_3;
+                let title = `multiplechoice_option_${postData?.question_id}_opt3_${saveData['id']}`
+                dynamicData[`${title}`]= postData?.opt_3;
             }            
             if(postData?.opt_4){
-                let tilte = `multiplechoice_option_${postData?.question_id}_opt4_${saveData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.opt_4;
+                let title = `multiplechoice_option_${postData?.question_id}_opt4_${saveData['id']}`
+                dynamicData[`${title}`]= postData?.opt_4;
             }            
             if(postData?.opt_5){
-                let tilte = `multiplechoice_option_${postData?.question_id}_opt5_${saveData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.opt_5;
+                let title = `multiplechoice_option_${postData?.question_id}_opt5_${saveData['id']}`
+                dynamicData[`${title}`]= postData?.opt_5;
             }            
             if(postData?.opt_6){
-                let tilte = `multiplechoice_option_${postData?.question_id}_opt6_${saveData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.opt_6;
+                let title = `multiplechoice_option_${postData?.question_id}_opt6_${saveData['id']}`
+                dynamicData[`${title}`]= postData?.opt_6;
             }            
-            await this.translatorService.DynamicEngJsonData('Quizzes','0',dynamicDatas,'Edit','Quizzes',saveData['question_id']);
+            await this.translatorService.DynamicEngJsonData('Quizzes','0',dynamicData,'Edit','Quizzes',saveData['question_id']);
             return res.status(HttpStatus.OK).json({
                 statusCode: 201,
                 success: 1,
@@ -93,32 +93,32 @@ export class QuizMultipleChoiceQuestionController {
             const recordDetails = await this.quizMultipleChoiceQuestionService.findOne({ id: postData?.id,question_id: postData?.question_id });
             await this.quizMultipleChoiceQuestionService.update({ id: postData?.id,question_id: postData?.question_id },{...postData});
             this.activityLogService.create(recordDetails, postData, tableConstant.QUIZ.TBL_QZ_MULTIPLE_CHOICE_QUESTIONS, req.tokenUser?.id);
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.opt_1){
-                let tilte = `multiplechoice_option_${postData?.question_id}_opt1_${postData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.opt_1;
+                let title = `multiplechoice_option_${postData?.question_id}_opt1_${postData['id']}`
+                dynamicData[`${title}`]= postData?.opt_1;
             }            
             if(postData?.opt_2){
-                let tilte = `multiplechoice_option_${postData?.question_id}_opt2_${postData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.opt_2;
+                let title = `multiplechoice_option_${postData?.question_id}_opt2_${postData['id']}`
+                dynamicData[`${title}`]= postData?.opt_2;
             }            
             if(postData?.opt_3){
-                let tilte = `multiplechoice_option_${postData?.question_id}_opt3_${postData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.opt_3;
+                let title = `multiplechoice_option_${postData?.question_id}_opt3_${postData['id']}`
+                dynamicData[`${title}`]= postData?.opt_3;
             }            
             if(postData?.opt_4){
-                let tilte = `multiplechoice_option_${postData?.question_id}_opt4_${postData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.opt_4;
+                let title = `multiplechoice_option_${postData?.question_id}_opt4_${postData['id']}`
+                dynamicData[`${title}`]= postData?.opt_4;
             }            
             if(postData?.opt_5){
-                let tilte = `multiplechoice_option_${postData?.question_id}_opt5_${postData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.opt_5;
+                let title = `multiplechoice_option_${postData?.question_id}_opt5_${postData['id']}`
+                dynamicData[`${title}`]= postData?.opt_5;
             }            
             if(postData?.opt_6){
-                let tilte = `multiplechoice_option_${postData?.question_id}_opt6_${postData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.opt_6;
+                let title = `multiplechoice_option_${postData?.question_id}_opt6_${postData['id']}`
+                dynamicData[`${title}`]= postData?.opt_6;
             }            
-            await this.translatorService.DynamicEngJsonData('Quizzes','0',dynamicDatas,'Edit','Quizzes',recordDetails['question_id']);
+            await this.translatorService.DynamicEngJsonData('Quizzes','0',dynamicData,'Edit','Quizzes',recordDetails['question_id']);
             return res.status(HttpStatus.OK).json({
                 statusCode: 201,
                 success: 1,

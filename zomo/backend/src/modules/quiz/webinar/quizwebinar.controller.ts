@@ -208,16 +208,16 @@ export class QuizWebinarController {
                 created_by: req.tokenUser?.id,
             }
             let saveData = await this.quizWebinarService.save(data);
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if (postData?.title) {
-                let tilte = `quiz_webinar_title_${saveData['id']}`
-                dynamicDatas[`${tilte}`] = postData?.title;
+                let title = `quiz_webinar_title_${saveData['id']}`
+                dynamicData[`${title}`] = postData?.title;
             }
             if (postData?.description) {
-                let tilte = `quiz_webinar_description_${saveData['id']}`
-                dynamicDatas[`${tilte}`] = postData?.description;
+                let title = `quiz_webinar_description_${saveData['id']}`
+                dynamicData[`${title}`] = postData?.description;
             }
-            await this.translatorService.DynamicEngJsonData('Quizzes', '0', dynamicDatas, 'Add', 'QuizWebinar', saveData?.id);
+            await this.translatorService.DynamicEngJsonData('Quizzes', '0', dynamicData, 'Add', 'QuizWebinar', saveData?.id);
             return res.status(HttpStatus.CREATED).json({
                 statusCode: 201,
                 success: 1,
@@ -281,16 +281,16 @@ export class QuizWebinarController {
                     updated_by: req.tokenUser?.id
                 }
             );
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if (postData?.title) {
-                let tilte = `quiz_webinar_title_${postData['id']}`
-                dynamicDatas[`${tilte}`] = postData?.title;
+                let title = `quiz_webinar_title_${postData['id']}`
+                dynamicData[`${title}`] = postData?.title;
             }
             if (postData?.description) {
-                let tilte = `quiz_webinar_description_${postData['id']}`
-                dynamicDatas[`${tilte}`] = postData?.description;
+                let title = `quiz_webinar_description_${postData['id']}`
+                dynamicData[`${title}`] = postData?.description;
             }
-            await this.translatorService.DynamicEngJsonData('Quizzes', '0', dynamicDatas, 'Add', 'QuizWebinar', postData?.id);
+            await this.translatorService.DynamicEngJsonData('Quizzes', '0', dynamicData, 'Add', 'QuizWebinar', postData?.id);
             this.activityLogService.create(recordDetails, postData, tableConstant.QUIZ.TBL_QZ_WEBINAR, req.tokenUser?.id);
             return res.status(HttpStatus.OK).json({
                 statusCode: 201,
@@ -548,17 +548,17 @@ export class QuizWebinarController {
                         skipCount++;
                         return;
                     }
-                    const dynamicDatas = Object.create(null);
+                    const dynamicData = Object.create(null);
                     if (webinar.title) {
-                        dynamicDatas[`quiz_webinar_title_${webinar.id}`] = webinar.title;
+                        dynamicData[`quiz_webinar_title_${webinar.id}`] = webinar.title;
                     }
                     if (webinar.description) {
-                        dynamicDatas[`quiz_webinar_description_${webinar.id}`] = webinar.description;
+                        dynamicData[`quiz_webinar_description_${webinar.id}`] = webinar.description;
                     }
-                    if (Object.keys(dynamicDatas).length > 0) {
+                    if (Object.keys(dynamicData).length > 0) {
                         processedCount++;
                         await this.translatorService.DynamicEngJsonData(
-                            'Quizzes', '0', dynamicDatas,
+                            'Quizzes', '0', dynamicData,
                             'Add', 'QuizWebinar', webinar.id
                         );
                     }
@@ -601,16 +601,16 @@ export class QuizWebinarController {
                         created_by: req.tokenUser?.id,
                     }
                     let saveData = await this.quizWebinarService.save(data);
-                    let dynamicDatas = Object.create(null);
+                    let dynamicData = Object.create(null);
                     if (webinar?.title) {
                         let title = `quiz_webinar_title_${saveData['id']}`
-                        dynamicDatas[`${title}`] = webinar?.title;
+                        dynamicData[`${title}`] = webinar?.title;
                     }
                     if (webinar?.description) {
                         let title = `quiz_webinar_description_${saveData['id']}`
-                        dynamicDatas[`${title}`] = webinar?.description;
+                        dynamicData[`${title}`] = webinar?.description;
                     }
-                    await this.translatorService.DynamicEngJsonData('Quizzes', '0', dynamicDatas, 'Add', 'QuizWebinar', saveData?.id);
+                    await this.translatorService.DynamicEngJsonData('Quizzes', '0', dynamicData, 'Add', 'QuizWebinar', saveData?.id);
                 }
             }
             else {

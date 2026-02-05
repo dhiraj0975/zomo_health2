@@ -112,16 +112,16 @@ export class CardsController {
                 postData['status'] = postData['status'] ?? 1; 
             }
             const recordDetails = await this.cardsService.save({...postData});
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.name){
-                let tilte = `card_name_${postData?.schedule_id}_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.name;
+                let title = `card_name_${postData?.schedule_id}_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.name;
             }            
             if(postData?.description){
-                let tilte = `card_description_${postData?.schedule_id}_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.description;
+                let title = `card_description_${postData?.schedule_id}_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.description;
             }            
-            await this.translatorService.DynamicEngJsonData('Challenge',postData?.org_id,dynamicDatas,'Edit','MyChallenges',postData['schedule_id']);
+            await this.translatorService.DynamicEngJsonData('Challenge',postData?.org_id,dynamicData,'Edit','MyChallenges',postData['schedule_id']);
             return res.status(HttpStatus.OK).json({
                 statusCode: 201,
                 success: 1,
@@ -155,7 +155,7 @@ export class CardsController {
             if (!recordDetails) {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, 'ERR_RECORD_NOT_FOUND'));
             }
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.name){
                 const alreadyExist = await this.cardsService.findOne({
                     name: postData?.name, schedule_id: recordDetails.schedule_id, org_id: recordDetails.org_id, status: 1
@@ -163,14 +163,14 @@ export class CardsController {
                 if (alreadyExist) {
                     throw new Error((await this.translatorService.frontendReadTranslation(req.lang, 'Card name already exists')));
                 }
-                let tilte = `card_name_${recordDetails.schedule_id}_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.name;
+                let title = `card_name_${recordDetails.schedule_id}_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.name;
             }            
             if(postData?.description){
-                let tilte = `card_description_${recordDetails.schedule_id}_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.description;
+                let title = `card_description_${recordDetails.schedule_id}_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.description;
             }            
-            await this.translatorService.DynamicEngJsonData('Challenge',recordDetails.org_id,dynamicDatas,'Edit','MyChallenges',recordDetails['schedule_id']);
+            await this.translatorService.DynamicEngJsonData('Challenge',recordDetails.org_id,dynamicData,'Edit','MyChallenges',recordDetails['schedule_id']);
             await this.cardsService.update({ id: postData?.id, schedule_id: postData?.schedule_id},{...postData});
             this.activityLogService.create(recordDetails, postData, tableConstant.CHALLENGE.TBL_CH_CARDS, req.tokenUser?.id);
             let message;
@@ -410,6 +410,12 @@ export class CardsController {
                     card.status = 1;
                     cardData = await this.cardsService.save({...card});
                     this.activityLogService.create(cardRecord, JSON.parse(JSON.stringify(cardData)), tableConstant.CHALLENGE.TBL_CH_CARDS, req.tokenUser?.id,'copy');
+                }
+                else if(resultedData){
+                    await this.cardsService.update({id: resultedData?.id},{status: 1});
+                    this.activityLogService.create(resultedData, {status: 1}, tableConstant.CHALLENGE.TBL_CH_CARDS, req.tokenUser?.id,'copy');
+                    cardData = resultedData;
+                    cardRecord = JSON.parse(JSON.stringify(card));
                 }
                 if(cardData){
                     for(let square of cardRecord['square']){

@@ -42,12 +42,12 @@ export class BingoWeekLabelsController {
             if(postData?.weeks){
                 for(let week of postData?.weeks){
                     let recordDetails = await this.bingoWeekLabelsService.save({...week, created_by: req.tokenUser?.id});
-                    let dynamicDatas = Object.create(null);
+                    let dynamicData = Object.create(null);
                     if(week.week_custom_name){
-                        let tilte = `bingoweek_labels_${challengeDetails.id}_${recordDetails['id']}`
-                        dynamicDatas[`${tilte}`]= week.week_custom_name;
+                        let title = `bingoweek_labels_${challengeDetails.id}_${recordDetails['id']}`
+                        dynamicData[`${title}`]= week.week_custom_name;
                     }            
-                    await this.translatorService.DynamicEngJsonData('Challenge',challengeDetails.org_id,dynamicDatas,'Edit','MyChallenges',recordDetails['schedule_id']);
+                    await this.translatorService.DynamicEngJsonData('Challenge',challengeDetails.org_id,dynamicData,'Edit','MyChallenges',recordDetails['schedule_id']);
                 }
             }
             else{
@@ -84,12 +84,12 @@ export class BingoWeekLabelsController {
                             id: week.id,
                           });
                         await this.bingoWeekLabelsService.update({id: week.id},{ ...week, updated_by: req.tokenUser?.id });
-                        let dynamicDatas = Object.create(null);
+                        let dynamicData = Object.create(null);
                         if(week.week_custom_name){
-                            let tilte = `bingoweek_labels_${recordDetails['scheduleChallenge'].id}_${recordDetails['id']}`
-                            dynamicDatas[`${tilte}`]= week.week_custom_name;
+                            let title = `bingoweek_labels_${recordDetails['scheduleChallenge'].id}_${recordDetails['id']}`
+                            dynamicData[`${title}`]= week.week_custom_name;
                         }            
-                        await this.translatorService.DynamicEngJsonData('Challenge',recordDetails['scheduleChallenge'].org_id,dynamicDatas,'Edit','MyChallenges',recordDetails['schedule_id']);
+                        await this.translatorService.DynamicEngJsonData('Challenge',recordDetails['scheduleChallenge'].org_id,dynamicData,'Edit','MyChallenges',recordDetails['schedule_id']);
                         this.activityLogService.create(
                             recordDetails,
                             week,

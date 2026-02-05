@@ -179,32 +179,32 @@ export class AssessmentResultsController {
             let resultData = await this.assessmentResultsService.findOne({organization_id: postData?.organization_id, status: Not(2)},["order_id"],{"order_id":"DESC"});
             postData['order_id'] = resultData && resultData['order_id'] ? resultData['order_id'] + 1 : 1;
             let recordDetails = await this.assessmentResultsService.save({...postData, created_by: req.tokenUser?.id, updated_by: req.tokenUser?.id});
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.title){
-                let tilte = `assessment_title_${postData?.organization_id}_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.title;
+                let title = `assessment_title_${postData?.organization_id}_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.title;
             }            
             if(postData['marker-low']){
-                let tilte = `assessment_markerlow_${postData?.organization_id}_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData['marker-low'];
+                let title = `assessment_markerlow_${postData?.organization_id}_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData['marker-low'];
             }            
             if(postData['marker-mod']){
-                let tilte = `assessment_markermod_${postData?.organization_id}_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData['marker-mod'];
+                let title = `assessment_markermod_${postData?.organization_id}_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData['marker-mod'];
             }            
             if(postData['marker-high']){
-                let tilte = `assessment_markerhigh_${postData?.organization_id}_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData['marker-high'];
+                let title = `assessment_markerhigh_${postData?.organization_id}_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData['marker-high'];
             }            
             if(postData['marker-common']){
-                let tilte = `assessment_markercommon_${postData?.organization_id}_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData['marker-common'];
+                let title = `assessment_markercommon_${postData?.organization_id}_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData['marker-common'];
             }            
             if(postData['marker-common_last']){
-                let tilte = `assessment_markercommonlast_${postData?.organization_id}_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData['marker-common_last'];
+                let title = `assessment_markercommonlast_${postData?.organization_id}_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData['marker-common_last'];
             }            
-            await this.translatorService.DynamicEngJsonData('MyHealth','eha',dynamicDatas,'Edit','Assessment',postData?.organization_id);
+            await this.translatorService.DynamicEngJsonData('MyHealth','eha',dynamicData,'Edit','Assessment',postData?.organization_id);
             return res.status(HttpStatus.CREATED).json({
                 statusCode: 201,
                 success: 1,
@@ -295,32 +295,32 @@ export class AssessmentResultsController {
                 message = await this.translatorService.frontendReadTranslation(req.lang, statusMessage[postData?.status]);
             }
             await this.activityLogService.create(recordDetails, postData, tableConstant.HEALTH_ASSESSMENT.TBL_HA_ASSESSMENT_RESULTS, req.tokenUser?.id);
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.title){
-                let tilte = `assessment_title_${recordDetails.organization_id}_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.title;
+                let title = `assessment_title_${recordDetails.organization_id}_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.title;
             }            
             if(postData['marker-low']){
-                let tilte = `assessment_markerlow_${recordDetails.organization_id}_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData['marker-low'];
+                let title = `assessment_markerlow_${recordDetails.organization_id}_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData['marker-low'];
             }            
             if(postData['marker-mod']){
-                let tilte = `assessment_markermod_${recordDetails.organization_id}_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData['marker-mod'];
+                let title = `assessment_markermod_${recordDetails.organization_id}_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData['marker-mod'];
             }            
             if(postData['marker-high']){
-                let tilte = `assessment_markerhigh_${recordDetails.organization_id}_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData['marker-high'];
+                let title = `assessment_markerhigh_${recordDetails.organization_id}_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData['marker-high'];
             }            
             if(postData['marker-common']){
-                let tilte = `assessment_markercommon_${recordDetails.organization_id}_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData['marker-common'];
+                let title = `assessment_markercommon_${recordDetails.organization_id}_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData['marker-common'];
             }            
             if(postData['marker-common_last']){
-                let tilte = `assessment_markercommonlast_${recordDetails.organization_id}_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData['marker-common_last'];
+                let title = `assessment_markercommonlast_${recordDetails.organization_id}_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData['marker-common_last'];
             }            
-            await this.translatorService.DynamicEngJsonData('MyHealth','eha',dynamicDatas,'Edit','Assessment',recordDetails.organization_id);
+            await this.translatorService.DynamicEngJsonData('MyHealth','eha',dynamicData,'Edit','Assessment',recordDetails.organization_id);
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
                 success: 1,

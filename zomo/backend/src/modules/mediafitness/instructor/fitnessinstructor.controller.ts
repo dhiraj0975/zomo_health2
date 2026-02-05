@@ -170,16 +170,16 @@ export class FitnessInstructorController {
             let resultedData = await this.fitnessInstructorService.save({...postData,
                 created_by: req.tokenUser?.id
             });
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.first_name){
-                let tilte = `fitness_instruction_firstname_${resultedData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.first_name;
+                let title = `fitness_instruction_firstname_${resultedData['id']}`
+                dynamicData[`${title}`]= postData?.first_name;
             }                      
             if(postData?.last_name){
-                let tilte = `fitness_instruction_lastname_${resultedData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.last_name;
+                let title = `fitness_instruction_lastname_${resultedData['id']}`
+                dynamicData[`${title}`]= postData?.last_name;
             }                      
-            await this.translatorService.DynamicEngJsonData('Media',postData?.org_id,dynamicDatas,'Edit','Fitnessvideos','instruction');
+            await this.translatorService.DynamicEngJsonData('Media',postData?.org_id,dynamicData,'Edit','Fitnessvideos','instruction');
             return res.status(HttpStatus.CREATED).json({
                 statusCode: 201,
                 success: 1,
@@ -282,16 +282,16 @@ export class FitnessInstructorController {
             }
             delete postData?.org_id;
             await this.fitnessInstructorService.update(where, postData);
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.first_name){
-                let tilte = `fitness_instruction_firstname_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.first_name;
+                let title = `fitness_instruction_firstname_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.first_name;
             }                      
             if(postData?.last_name){
-                let tilte = `fitness_instruction_lastname_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.last_name;
+                let title = `fitness_instruction_lastname_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.last_name;
             }                      
-            await this.translatorService.DynamicEngJsonData('Media',postData?.org_id,dynamicDatas,'Edit','Fitnessvideos','instruction');
+            await this.translatorService.DynamicEngJsonData('Media',postData?.org_id,dynamicData,'Edit','Fitnessvideos','instruction');
             this.activityLogService.create(recordDetails, postData, tableConstant.MEDIA_FITNESS.TBL_ME_FOD_INSTRUCTOR, req.tokenUser?.id);
             let videoInstructorsData = await this.fitnessVideoInstructorsService.listRecord({i_id: postData?.id});
             await this.fitnessVideoInstructorsService.update({i_id: postData?.id},{status:postData?.status});

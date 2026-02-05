@@ -1202,7 +1202,7 @@ export class FootballStepChallengeService {
                         allTeams['Teams'][teamId]['touchdown'] = Math.floor((totalweightloss / 100));
                         allTeams['Teams'][teamId]['score'] = allTeams['Teams'][teamId]['teamMember']?.reduce((sum, item) => {
                             return sum + (item?.score ?? 0);
-                        }, 0);
+                        }, 0) / 100;
                         if (allUsersIdArray.includes(userId)) {
                             result['myTeamDetails']['teamMember'] = allTeams['Teams'][teamId]['teamMember'];
                         }

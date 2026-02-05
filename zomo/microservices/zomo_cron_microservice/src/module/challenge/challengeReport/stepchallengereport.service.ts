@@ -103,6 +103,8 @@ export class StepsChallengeReportService {
             let nDcStart = this.commonDateService.DateTimeFormat(schedule?.['start_date']);
             let nDcEnd = this.commonDateService.DateTimeFormat(schedule?.['end_date']);
             if (is_set_weekend === 1) {
+                totalDays = 0;
+                uptoDays = 0;
                 while (nDcStart <= nDcEnd) {
                     const startDay = this.commonDateService.DateTimeFormat(nDcStart);
                     let dayOfWeek = startDay.isoWeekday();
@@ -110,7 +112,7 @@ export class StepsChallengeReportService {
                     if(dayOfWeek != 0 && dayOfWeek < 6 && moment.utc(nDcStart, 'YYYY-MM-DD').unix() <= moment.utc().unix()){
                         uptoDays++;
                     }
-                    nDcStart = startDay.add(1, 'days').format('YYYY-MM-DD');
+                    nDcStart = startDay.add(1, 'days');
                 }
             }
             let totalSteps = dailySteps * totalDays;
@@ -567,16 +569,21 @@ export class StepsChallengeReportService {
                 let allStepsData;
                 let todayStepsData;
                 let findAll = `(${[actTrackId, stepId, wakingId, runningId, cyclingId, swimmingId].map(id => `'${id}'`).join(',')})`;
-                
+                let dynamicSum = 'SUM(steps)';
                 if (schedule?.['ch']?.bio_challenge_type?.trim() === 'Mile_layout') {
+                    dynamicSum = 'SUM(distance)';
                     findAll = '(17)';
                 }
-                let where = `food.collectionDate BETWEEN '${this.commonDateService.DateTimeFormat(schedule.start_date,'YYYY-MM-DD')} 00:00:00' AND '${this.commonDateService.DateTimeFormat(schedule.end_date,'YYYY-MM-DD')} 23:59:59'  ${logType} AND food.status != 2`;
+                // if (schedule?.['ch']?.bio_challenge_type?.trim() === 'Mile_layout') {
+                //     findAll = '(17)';
+                // }
+                // let where = `food.collectionDate BETWEEN '${this.commonDateService.DateTimeFormat(schedule.start_date,'YYYY-MM-DD')} 00:00:00' AND '${this.commonDateService.DateTimeFormat(schedule.end_date,'YYYY-MM-DD')} 23:59:59'  ${logType} AND food.status != 2`;
+                let where = `food.collectionDate BETWEEN '${this.commonDateService.DateTimeFormat(schedule.start_date,'YYYY-MM-DD')}' AND '${this.commonDateService.DateTimeFormat(schedule.end_date,'YYYY-MM-DD')}'  ${logType} AND food.status != 2`;
                 if(allUsersId.length){
                     allStepsData = await this.activityFeedsService.listRecord(
                         `food.user_id IN (${allUsersId.join(',')}) AND (food.activityTypeId IN ${findAll}  OR appName='AppleHealthKit' OR appName='GoogleFit') AND ${where}`,
                         { 'food.collectionDate': 'DESC' },
-                        ['SUM(steps) as steps', 'user_id', 'collectionDate'],
+                        [`${dynamicSum} as steps`, 'user_id', 'collectionDate'],
                         'food.user_id, food.collectionDate',
                     );
                     let temp = allStepsData.reduce((acc, item) => {
@@ -597,7 +604,7 @@ export class StepsChallengeReportService {
                     todayStepsData = await this.activityFeedsService.listRecord(
                         `food.user_id IN (${allUsersId}) AND (food.activityTypeId IN ${findAll} OR appName='AppleHealthKit' OR appName='GoogleFit') AND ${whereToday}`,
                         { 'food.collectionDate': 'DESC' },
-                        ['SUM(steps) as steps', 'user_id', 'collectionDate'],
+                        [`${dynamicSum} as steps`, 'user_id', 'collectionDate'],
                         'food.user_id, food.collectionDate',
                     );
                     temp = todayStepsData.reduce((acc, item) => {
@@ -633,7 +640,7 @@ export class StepsChallengeReportService {
                     let allCheckPointData = await this.activityFeedsService.listRecord(
                         `food.user_id IN (${allUsersId.join(',')}) AND (food.activityTypeId IN ${findAll}  OR appName='AppleHealthKit' OR appName='GoogleFit') AND ${where}`,
                         { 'food.collectionDate': 'DESC' },
-                        ['SUM(steps) as steps', 'user_id', 'collectionDate'],
+                        [`${dynamicSum} as steps`, 'user_id', 'collectionDate'],
                         'food.user_id, food.collectionDate',
                     );
                     let tempDate = startDate.format('YYYY-MM-DD');
@@ -790,7 +797,7 @@ export class StepsChallengeReportService {
                         }
                         let percentage = 0;
                         if (totalSteps !== 0) {
-                            percentage = Math.round((stepsWalks * 100 / totalSteps) * 100) / 100;
+                            percentage = Math.round(stepsWalks * 100 / totalSteps ) || 0;
                         }
                         if (percentage > 100) {
                             percentage = 100;
@@ -804,6 +811,10 @@ export class StepsChallengeReportService {
                         }
                         if (!members[userid]) members[userid] = getData;
 
+                        if (schedule['ch'].bio_challenge_type === "Mile_layout") {
+                            realStepsWalks = Number(realStepsWalks.toFixed(2));
+                            stepsWalks = Number(stepsWalks.toFixed(2));
+                        }
                         // members[userid] = getData;
                         members[userid]['averagesteps'] = averageSteps;
                         members[userid]['percentage'] = percentage;

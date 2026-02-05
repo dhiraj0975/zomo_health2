@@ -152,12 +152,12 @@ export class FitnessCategoryController {
             let resultedData = await this.fitnessCategoryService.save({...postData,
                 created_by: req.tokenUser?.id
             });
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.name){
-                let tilte = `fitness_category_${resultedData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.name;
+                let title = `fitness_category_${resultedData['id']}`
+                dynamicData[`${title}`]= postData?.name;
             }                      
-            await this.translatorService.DynamicEngJsonData('Media',postData?.org_id,dynamicDatas,'Edit','Fitnessvideos','category');
+            await this.translatorService.DynamicEngJsonData('Media',postData?.org_id,dynamicData,'Edit','Fitnessvideos','category');
             return res.status(HttpStatus.CREATED).json({
                 statusCode: 201,
                 success: 1,
@@ -248,12 +248,12 @@ export class FitnessCategoryController {
                 });
             }
             await this.fitnessCategoryService.update(where, postData);
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.name){
-                let tilte = `fitness_category_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.name;
+                let title = `fitness_category_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.name;
             }                      
-            await this.translatorService.DynamicEngJsonData('Media',recordDetails.org_id,dynamicDatas,'Edit','Fitnessvideos','category');
+            await this.translatorService.DynamicEngJsonData('Media',recordDetails.org_id,dynamicData,'Edit','Fitnessvideos','category');
             this.activityLogService.create(recordDetails, postData, tableConstant.MEDIA_FITNESS.TBL_ME_FOD_CATEGORY, req.tokenUser?.id);
             let videoCategoryData = await this.fitnessVideoCategoryService.listRecord({c_id: postData?.id});
             await this.fitnessVideoCategoryService.update({c_id: postData?.id}, {status:postData?.status});

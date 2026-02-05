@@ -361,16 +361,16 @@ export class CampaignController {
             }else{
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, 'ERR_SOMETHING_WENT_WRONG'));
             }
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.campaign_name){
-                let tilte = `campaign_name_${insertRecord['id']}`
-                dynamicDatas[`${tilte}`]= postData?.campaign_name;
+                let title = `campaign_name_${insertRecord['id']}`
+                dynamicData[`${title}`]= postData?.campaign_name;
             }            
             if(postData?.tab_titled){
-                let tilte = `campaign_tab_titled_${insertRecord['id']}`
-                dynamicDatas[`${tilte}`]= postData?.tab_titled;
+                let title = `campaign_tab_titled_${insertRecord['id']}`
+                dynamicData[`${title}`]= postData?.tab_titled;
             }            
-            await this.translatorService.DynamicEngJsonData('Campaign',postData?.organization_id,dynamicDatas,'Edit','Campaigns',insertRecord['id']);
+            await this.translatorService.DynamicEngJsonData('Campaign',postData?.organization_id,dynamicData,'Edit','Campaigns',insertRecord['id']);
             this.addNotification({
                 id: insertRecord?.['id'], 
                 org_id: insertRecord?.['organization_id'], 
@@ -455,16 +455,16 @@ export class CampaignController {
               },
             );
             this.activityLogService.create(recordDetails, postData, tableConstant.CAMPAIGN.TBL_CAMPAIGN, req.tokenUser?.id);
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.campaign_name){
-                let tilte = `campaign_name_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.campaign_name;
+                let title = `campaign_name_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.campaign_name;
             }            
             if(postData?.tab_titled){
-                let tilte = `campaign_tab_titled_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.tab_titled;
+                let title = `campaign_tab_titled_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.tab_titled;
             }            
-            await this.translatorService.DynamicEngJsonData('Campaign',recordDetails.organization_id,dynamicDatas,'Edit','Campaigns',recordDetails['id']);
+            await this.translatorService.DynamicEngJsonData('Campaign',recordDetails.organization_id,dynamicData,'Edit','Campaigns',recordDetails['id']);
             if(postData?.start_date || postData?.end_date){
                 let notificationData = {
                     custom_cname: recordDetails?.['campaign_name'],  

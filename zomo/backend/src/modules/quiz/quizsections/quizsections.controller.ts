@@ -78,16 +78,16 @@ export class QuizSectionController {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_REQUIRED_PARAM_MISSING"));
             }
             let saveData = await this.quizSectionService.save({...postData});
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.name){
-                let tilte = `section_name_${saveData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.name;
+                let title = `section_name_${saveData['id']}`
+                dynamicData[`${title}`]= postData?.name;
             }
             if(postData?.description){
-                let tilte = `section_description_${saveData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.description;
+                let title = `section_description_${saveData['id']}`
+                dynamicData[`${title}`]= postData?.description;
             }
-            await this.translatorService.DynamicEngJsonData('Quizzes','0',dynamicDatas,'Add','Quizzes',postData?.quiz_id);
+            await this.translatorService.DynamicEngJsonData('Quizzes','0',dynamicData,'Add','Quizzes',postData?.quiz_id);
             return res.status(HttpStatus.OK).json({
                 statusCode: 201,
                 success: 1,
@@ -120,16 +120,16 @@ export class QuizSectionController {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, 'ERR_RECORD_NOT_FOUND'));
             }
             await this.quizSectionService.update({ id: postData?.id,quiz_id: postData?.quiz_id },{...postData});
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.name){
-                let tilte = `section_name_${postData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.name;
+                let title = `section_name_${postData['id']}`
+                dynamicData[`${title}`]= postData?.name;
             }
             if(postData?.description){
-                let tilte = `section_description_${postData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.description;
+                let title = `section_description_${postData['id']}`
+                dynamicData[`${title}`]= postData?.description;
             }
-            await this.translatorService.DynamicEngJsonData('Quizzes','0',dynamicDatas,'Add','Quizzes',postData?.quiz_id);
+            await this.translatorService.DynamicEngJsonData('Quizzes','0',dynamicData,'Add','Quizzes',postData?.quiz_id);
             this.activityLogService.create(recordDetails, postData, tableConstant.QUIZ.TBL_QZ_QUIZ_SECTIONS, req.tokenUser?.id);
             return res.status(HttpStatus.OK).json({
                 statusCode: 201,

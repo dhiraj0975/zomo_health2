@@ -249,24 +249,24 @@ export class MediaPostController {
                 created_by: req.tokenUser?.id,
                 updated_by: req.tokenUser?.id
             });
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.title){
-                let tilte = `post_title_${resultedData['cat_id']}_${resultedData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.title;
+                let title = `post_title_${resultedData['cat_id']}_${resultedData['id']}`
+                dynamicData[`${title}`]= postData?.title;
             }
             if(postData?.link_title){
                 let link_title = `post_linktitle_${resultedData['cat_id']}_${resultedData['id']}`
-                dynamicDatas[`${link_title}`]= postData?.link_title;
+                dynamicData[`${link_title}`]= postData?.link_title;
             }
             if(postData?.short_desc && postData?.short_desc != ' '){
-                let tilte = `post_shortdesc_${resultedData['cat_id']}_${resultedData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.short_desc;
+                let title = `post_shortdesc_${resultedData['cat_id']}_${resultedData['id']}`
+                dynamicData[`${title}`]= postData?.short_desc;
             }           
             if(postData?.more_desc && postData?.more_desc != ' '){
-                let tilte = `post_moredesc_${resultedData['cat_id']}_${resultedData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.more_desc;
+                let title = `post_moredesc_${resultedData['cat_id']}_${resultedData['id']}`
+                dynamicData[`${title}`]= postData?.more_desc;
             }           
-            await this.translatorService.DynamicEngJsonData('Media',postData?.org_id,dynamicDatas,'Edit','Media',resultedData['cat_id']);
+            await this.translatorService.DynamicEngJsonData('Media',postData?.org_id,dynamicData,'Edit','Media',resultedData['cat_id']);
             if (files && files.post_img &&  files?.post_img[0]?.fieldname === 'post_img' && files?.post_img[0]?.filename) {
                 files.post_img[0].originalname = this.commonFileService.formatFileName(files.post_img[0].originalname);
                 let filename = `media/post/${postData?.org_id}/mepost_` + this.commonService.generateMD5(resultedData['id'].toString()) + '_' + files.post_img[0].originalname;
@@ -419,24 +419,24 @@ export class MediaPostController {
             }
             delete postData?.time;
             await this.mediaPostService.update(where, {...postData, updated_by: req.tokenUser?.id});
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.title){
-                let tilte = `post_title_${postData?.cat_id ?? recordDetails['cat_id']}_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.title;
+                let title = `post_title_${postData?.cat_id ?? recordDetails['cat_id']}_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.title;
             }
             if(postData?.link_title){
                 let link_title = `post_linktitle_${postData?.cat_id ?? recordDetails['cat_id']}_${recordDetails['id']}`
-                dynamicDatas[`${link_title}`]= postData?.link_title;
+                dynamicData[`${link_title}`]= postData?.link_title;
             }
             if(postData?.short_desc && postData?.short_desc != ' '){
-                let tilte = `post_shortdesc_${postData?.cat_id ?? recordDetails['cat_id']}_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.short_desc;
+                let title = `post_shortdesc_${postData?.cat_id ?? recordDetails['cat_id']}_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.short_desc;
             }           
             if(postData?.more_desc && postData?.more_desc != ' '){
-                let tilte = `post_moredesc_${postData?.cat_id ?? recordDetails['cat_id']}_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.more_desc;
+                let title = `post_moredesc_${postData?.cat_id ?? recordDetails['cat_id']}_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.more_desc;
             }
-            await this.translatorService.DynamicEngJsonData('Media',postData?.org_id,dynamicDatas,'Edit','Media',postData?.cat_id || recordDetails['cat_id']);
+            await this.translatorService.DynamicEngJsonData('Media',postData?.org_id,dynamicData,'Edit','Media',postData?.cat_id || recordDetails['cat_id']);
             this.activityLogService.create(recordDetails, {...postData, updated_by: req.tokenUser?.id}, tableConstant.MEDIA_FITNESS.TBL_ME_POST, req.tokenUser?.id);
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,

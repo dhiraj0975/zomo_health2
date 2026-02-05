@@ -250,7 +250,7 @@ export class BiometricsService extends BaseService<BiometricsEntity> {
             
             if (Object.keys(resultDetails).length > 0) {
                 const screeningHeaders = Object.values(assDataFormOptionsTable);
-                const updatedClmNameArr = [...clmNameArr, 'Date of Submission', 'Screening Completed', ...screeningHeaders];
+                const updatedClmNameArr = [...clmNameArr, 'Date of Submission', 'Screenings Completed', ...screeningHeaders];
 
                 for (const [index, healthData] of resultDetails.entries()) {
                     let screeningCompleted = [];
@@ -260,7 +260,7 @@ export class BiometricsService extends BaseService<BiometricsEntity> {
                     }
                     let tempdatainfo = await this.commonHealthService.CommonFieldDataCallingCovid(healthData?.User, clmNameArr);
                     tempdatainfo['Date of Submission'] = healthData?.inserted ? this.commonDateService.DateTimeFormat(healthData?.['inserted'], "MM-DD-YYYY", "YYYY-MM-DD") : '';
-                    tempdatainfo['Screening Completed'] = screeningCompleted?.length || 0;
+                    tempdatainfo['Screenings Completed'] = screeningCompleted?.length || 0;
                     Object.keys(assDataFormOptionsTable).forEach(key => {
                         if(tempdatainfo[assDataFormOptionsTable[key]] === undefined ){
                             tempdatainfo[assDataFormOptionsTable[key]] = screeningCompleted.includes(key) ? 'Yes' : 'N/A';

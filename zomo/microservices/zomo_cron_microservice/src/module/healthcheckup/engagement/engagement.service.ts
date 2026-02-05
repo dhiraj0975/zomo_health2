@@ -161,7 +161,7 @@ export class EngagementService {
                 }
             }
             if (postData?.state?.length) {
-                let stateArray = this.commonArrayService.transformToArray(postData?.state, ',');
+                let stateArray = this.commonArrayService.transformToArray(postData?.state, ',', 'string') as string[] || [];
                 let stateData = await this.cronCommonService.stateList('', '', stateArray);
                 if (stateData) {
                     let stateCodes = stateData.map(item => item.statecode);

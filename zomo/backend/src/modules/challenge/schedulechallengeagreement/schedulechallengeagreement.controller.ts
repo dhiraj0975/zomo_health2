@@ -39,13 +39,13 @@ export class ScheduleChallengeAgreementController {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_REQUIRED_PARAM_MISSING"));
             }
             let recordDetails = await this.scheduleChallengeAgreementService.save({...postData});
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             let scheduleChallenge = await this.scheduleChallengeService.challengeFindOne(['sc'],{id: postData?.schedule_id });
             if(postData?.agreement_text){
-                let tilte = `agreement_name_${postData['schedule_id']}`
-                dynamicDatas[`${tilte}`]= postData?.agreement_text;
+                let title = `agreement_name_${postData['schedule_id']}`
+                dynamicData[`${title}`]= postData?.agreement_text;
             }            
-            await this.translatorService.DynamicEngJsonData('Challenge',scheduleChallenge?.org_id,dynamicDatas,'Edit','MyChallenges',postData['schedule_id']);
+            await this.translatorService.DynamicEngJsonData('Challenge',scheduleChallenge?.org_id,dynamicData,'Edit','MyChallenges',postData['schedule_id']);
             return res.status(HttpStatus.OK).json({
                 statusCode: 201,
                 success: 1,
@@ -80,12 +80,12 @@ export class ScheduleChallengeAgreementController {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, 'ERR_RECORD_NOT_FOUND'));
             }
             await this.scheduleChallengeAgreementService.update({ id: postData?.id, schedule_id: postData?.schedule_id},{...postData});
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.agreement_text){
-                let tilte = `agreement_name_${postData['schedule_id']}`
-                dynamicDatas[`${tilte}`]= postData?.agreement_text;
+                let title = `agreement_name_${postData['schedule_id']}`
+                dynamicData[`${title}`]= postData?.agreement_text;
             }            
-            await this.translatorService.DynamicEngJsonData('Challenge',recordDetails['scheduleChallenge'].org_id,dynamicDatas,'Edit','MyChallenges',postData['schedule_id']);
+            await this.translatorService.DynamicEngJsonData('Challenge',recordDetails['scheduleChallenge'].org_id,dynamicData,'Edit','MyChallenges',postData['schedule_id']);
             this.activityLogService.create(recordDetails, postData, tableConstant.CHALLENGE.TBL_CH_SCHEDULE_CHALLENGE_AGREEMENT, req.tokenUser?.id);
             return res.status(HttpStatus.OK).json({
                 statusCode: 201,

@@ -209,7 +209,7 @@ export class AppService {
                 }
             }
             stepData = stepData['activities-steps'];
-            if(stepData.length === 0) {
+            if(stepData.length === 0 || stepData?.filter(item => Number(item.value) > 0)?.length === 0) {
                 return "FITBIT_STEP_DATA_NOT_FOUND";
             }
             for (const step of stepData) {

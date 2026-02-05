@@ -199,11 +199,11 @@ export class UserPopupController {
                     'created_by':req.tokenUser?.id,
                     'updated_by':req.tokenUser?.id
                 }
-                await this.surveyUserAnswersService.save(data);
+                let answerData = await this.surveyUserAnswersService.save(data);
                 let recordDetails = await this.userService.findOne(`user.id = ${req.tokenUser?.id}`,['user', 'role.id', 'role.title', 'company.id', 'company.company_name', 'company.code', 'company.company_logo', 'company.status', 'meta','companysetting']);
                 let result = Object.create(null)
                 if(postData?.popup_name && postData?.popup_name != '' && postData?.popup_name == 'UserServeyPopupShow'){
-                    let data =await this.surveyAnswerCheck({...recordDetails, org_id: orgId},req);
+                    let data =await this.surveyAnswerCheck({...recordDetails, org_id: orgId, answerData},req);
                     result['survey-details']=data
                 }
                 if(result.length != 0){
@@ -1994,12 +1994,18 @@ export class UserPopupController {
             let user = recordDetails;
             let data = Object.create(null)
             let ServeyPopup = await this.surveyPopupService.surveyPopupStatus([
-                'Surveypopup.status','Surveypopup.show_required','Surveypopup.id','Surveypopup.email_added','Surveypopup.email_setting','Surveypopup.is_eligibility','Surveypopup.department_string','Surveypopup.location_string','Surveypopup.selectedweekday','Surveypopup.selected_frequency_time','Surveypopup.show_login_time','Surveypopup.selected_frequency','Surveypopup.org_id','Surveypopup.pass_need_check','Surveypopup.pass_need_text','Surveypopup.pass_need_desc','Surveypopup.fail_need_check','Surveypopup.fail_need_text','Surveypopup.fail_need_desc','Surveyanswer.org_id','Surveyanswer.user_id','Surveyanswer.question_answers','Surveyanswer.status','Surveyanswer.created','SurveyAnswers.id','SurveyAnswers.correct_ans','Surveyquestions.id','Surveyquestions.ans_option_type','Surveyquestions.title',
+                'Surveypopup.status','Surveypopup.show_required','Surveypopup.id','Surveypopup.email_added','Surveypopup.email_setting','Surveypopup.is_eligibility','Surveypopup.department_string','Surveypopup.location_string','Surveypopup.selectedweekday','Surveypopup.selected_frequency_time','Surveypopup.show_login_time','Surveypopup.selected_frequency','Surveypopup.org_id','Surveypopup.pass_need_check','Surveypopup.pass_need_text','Surveypopup.pass_need_desc','Surveypopup.fail_need_check','Surveypopup.fail_need_text','Surveypopup.fail_need_desc','Surveyanswer.id','Surveyanswer.org_id','Surveyanswer.user_id','Surveyanswer.question_answers','Surveyanswer.status','Surveyanswer.created','SurveyAnswers.id','SurveyAnswers.correct_ans','Surveyquestions.id','Surveyquestions.ans_option_type','Surveyquestions.title',
             ],
                 `Surveypopup.org_id = ${user.org_id} AND Surveypopup.status = 1`,
                 user.org_id,
                 user.id
             )
+            if(ServeyPopup && ServeyPopup['Surveyanswer']?.length && user?.answerData){
+                let checkData = ServeyPopup['Surveyanswer']?.find(item => item.id == user?.answerData?.id);
+                if(!checkData){
+                   ServeyPopup['Surveyanswer'] = [user?.answerData,...ServeyPopup['Surveyanswer']]; 
+                }
+            }
             let SurveyRequired = 0
             let UserServeyPopupShow = 0
             let surveyQueAns = [];

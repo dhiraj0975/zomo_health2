@@ -314,16 +314,16 @@ export class QuickLinkController {
                 }
             }
             const quicklinkData = await this.quickLinkService.save({...postData});
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.title){
-                let tilte = `title_${quicklinkData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.title;
+                let title = `title_${quicklinkData['id']}`
+                dynamicData[`${title}`]= postData?.title;
             }            
             if(postData?.description){
-                let tilte = `description_${quicklinkData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.description;
+                let title = `description_${quicklinkData['id']}`
+                dynamicData[`${title}`]= postData?.description;
             }            
-            await this.translatorService.DynamicEngJsonData('QuickLink',postData?.c_companies_id,dynamicDatas,'Edit','QuickLink');
+            await this.translatorService.DynamicEngJsonData('QuickLink',postData?.c_companies_id,dynamicData,'Edit','QuickLink');
             let qAcId:any = 0;
             let activityclick = await this.activityService.activityFindOne({category_id: 43, activity_name: postData?.title, accebility: postData?.c_companies_id});
             if(activityclick){
@@ -416,16 +416,16 @@ export class QuickLinkController {
                 }
             }
             await this.quickLinkService.update({ id: postData?.id },{...postData});
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.title){
-                let tilte = `title_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.title;
+                let title = `title_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.title;
             }            
             if(postData?.description){
-                let tilte = `description_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.description;
+                let title = `description_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.description;
             }            
-            await this.translatorService.DynamicEngJsonData('QuickLink',postData?.c_companies_id,dynamicDatas,'Edit','QuickLink');
+            await this.translatorService.DynamicEngJsonData('QuickLink',postData?.c_companies_id,dynamicData,'Edit','QuickLink');
             this.activityLogService.create(recordDetails, postData, tableConstant.QUICK_LINK.TBL_QUICK_LINK, req.tokenUser?.id);
             let activityclick = await this.activityService.activityFindOne({category_id: 43, activity_name: postData?.title, accebility: postData?.c_companies_id});    
             if(activityclick){

@@ -553,36 +553,36 @@ export class LocationController {
             }
             const saveResult = await this.locationService.save(postData);
             const locationID = saveResult.identifiers[0].id;
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.location_name){
-                let tilte = `location_name_${locationID}`
-                dynamicDatas[`${tilte}`]= postData?.location_name;
+                let title = `location_name_${locationID}`
+                dynamicData[`${title}`]= postData?.location_name;
             } 
             if(postData?.address1){
-                let tilte = `location_address1_${locationID}`
-                dynamicDatas[`${tilte}`]= postData?.address1;
+                let title = `location_address1_${locationID}`
+                dynamicData[`${title}`]= postData?.address1;
             }
             if(postData?.address2){
-                let tilte = `location_address2_${locationID}`
-                dynamicDatas[`${tilte}`]= postData?.address2;
+                let title = `location_address2_${locationID}`
+                dynamicData[`${title}`]= postData?.address2;
             }
             if(postData?.lname){
-                let tilte = `location_lname_${locationID}`
-                dynamicDatas[`${tilte}`]= postData?.lname;
+                let title = `location_lname_${locationID}`
+                dynamicData[`${title}`]= postData?.lname;
             }
             if(postData?.city){
-                let tilte = `location_city_${locationID}`
-                dynamicDatas[`${tilte}`]= postData?.city;
+                let title = `location_city_${locationID}`
+                dynamicData[`${title}`]= postData?.city;
             }
             if(postData?.state){
-                let tilte = `location_state_${locationID}`
-                dynamicDatas[`${tilte}`]= postData?.state;
+                let title = `location_state_${locationID}`
+                dynamicData[`${title}`]= postData?.state;
             }
             if(postData?.country){
-                let tilte = `location_country_${locationID}`
-                dynamicDatas[`${tilte}`]= postData?.country;
+                let title = `location_country_${locationID}`
+                dynamicData[`${title}`]= postData?.country;
             }
-            await this.translatorService.DynamicEngJsonData('OrgAdmin',postData?.company_id,dynamicDatas,'Edit','Location',locationID);
+            await this.translatorService.DynamicEngJsonData('OrgAdmin',postData?.company_id,dynamicData,'Edit','Location',locationID);
             let locationCode = this.commonService.generateCode('L', locationID);
             let codeCheck = await this.locationService.findOne({
                 code: locationCode,
@@ -700,36 +700,36 @@ export class LocationController {
                 },
             );
             let locationID = recordDetails?.id;
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.location_name){
-                let tilte = `location_name_${locationID}`
-                dynamicDatas[`${tilte}`]= postData?.location_name;
+                let title = `location_name_${locationID}`
+                dynamicData[`${title}`]= postData?.location_name;
             } 
             if(postData?.address1){
-                let tilte = `location_address1_${locationID}`
-                dynamicDatas[`${tilte}`]= postData?.address1;
+                let title = `location_address1_${locationID}`
+                dynamicData[`${title}`]= postData?.address1;
             }
             if(postData?.address2){
-                let tilte = `location_address2_${locationID}`
-                dynamicDatas[`${tilte}`]= postData?.address2;
+                let title = `location_address2_${locationID}`
+                dynamicData[`${title}`]= postData?.address2;
             }
             if(postData?.lname){
-                let tilte = `location_lname_${locationID}`
-                dynamicDatas[`${tilte}`]= postData?.lname;
+                let title = `location_lname_${locationID}`
+                dynamicData[`${title}`]= postData?.lname;
             }
             if(postData?.city){
-                let tilte = `location_city_${locationID}`
-                dynamicDatas[`${tilte}`]= postData?.city;
+                let title = `location_city_${locationID}`
+                dynamicData[`${title}`]= postData?.city;
             }
             if(postData?.state){
-                let tilte = `location_state_${locationID}`
-                dynamicDatas[`${tilte}`]= postData?.state;
+                let title = `location_state_${locationID}`
+                dynamicData[`${title}`]= postData?.state;
             }
             if(postData?.country){
-                let tilte = `location_country_${locationID}`
-                dynamicDatas[`${tilte}`]= postData?.country;
+                let title = `location_country_${locationID}`
+                dynamicData[`${title}`]= postData?.country;
             }
-            await this.translatorService.DynamicEngJsonData('OrgAdmin',postData?.company_id,dynamicDatas,'Edit','Location',locationID);
+            await this.translatorService.DynamicEngJsonData('OrgAdmin',postData?.company_id,dynamicData,'Edit','Location',locationID);
             this.activityLogService.create(recordDetails, postData, tableConstant.COMPANIES.TBL_LOCATION, req.tokenUser?.id);
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,

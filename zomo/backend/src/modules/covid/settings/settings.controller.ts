@@ -254,51 +254,51 @@ export class SettingsController {
                     for (const questionData of defaultQuestions) {
                         const savedQuestion = await this.questionsService.save(questionData);
                         if(postData?.title){
-                            let tilte = `covidquestion_title_${savedQuestion['id']}`
-                            let dynamicDatas= { [`${tilte}`]: postData?.title};
-                            await this.translatorService.DynamicEngJsonData('Common',postData?.org_id,dynamicDatas,'Edit','CovidPopup') 
+                            let title = `covidquestion_title_${savedQuestion['id']}`
+                            let dynamicData= { [`${title}`]: postData?.title};
+                            await this.translatorService.DynamicEngJsonData('Common',postData?.org_id,dynamicData,'Edit','CovidPopup') 
                         }
                         for (const optionData of defaultOptions) {
                             let savedAnswer = await this.answersService.save({ ...optionData, q_id: savedQuestion['id'] });
                             if(postData?.title){
-                                let tilte = `covidanswer_${savedQuestion['id']}_${savedAnswer['id']}`;
-                                let dynamicDatas= { [`${tilte}`]: postData?.title};
-                                await this.translatorService.DynamicEngJsonData('Common',postData?.org_id,dynamicDatas,'Edit','CovidPopup') 
+                                let title = `covidanswer_${savedQuestion['id']}_${savedAnswer['id']}`;
+                                let dynamicData= { [`${title}`]: postData?.title};
+                                await this.translatorService.DynamicEngJsonData('Common',postData?.org_id,dynamicData,'Edit','CovidPopup') 
                             }
                         }
                     }
                 }
                 if(recordDetails){
-                    let dynamicDatas = Object.create(null);
+                    let dynamicData = Object.create(null);
                     if(recordDetails.title){
-                        let tilte = `covidsetting_popup_title_${recordDetails['org_id']}_${recordDetails['id']}`
-                        dynamicDatas[`${tilte}`]= recordDetails.title;
+                        let title = `covidsetting_popup_title_${recordDetails['org_id']}_${recordDetails['id']}`
+                        dynamicData[`${title}`]= recordDetails.title;
                     }
                     if(recordDetails.description){
-                        let tilte = `covidsetting_popup_description_${recordDetails['org_id']}_${recordDetails['id']}`
-                        dynamicDatas[`${tilte}`]= recordDetails.description;
+                        let title = `covidsetting_popup_description_${recordDetails['org_id']}_${recordDetails['id']}`
+                        dynamicData[`${title}`]= recordDetails.description;
                     }
                     if(recordDetails.additional_note){
-                        let tilte = `covidsetting_popup_note_${recordDetails['org_id']}_${recordDetails['id']}`
-                        dynamicDatas[`${tilte}`]= recordDetails.additional_note;
+                        let title = `covidsetting_popup_note_${recordDetails['org_id']}_${recordDetails['id']}`
+                        dynamicData[`${title}`]= recordDetails.additional_note;
                     }
                     if(recordDetails.no_need_checkup_text){
-                        let tilte = `no_need_checkup_text_${recordDetails['org_id']}_${recordDetails['id']}`
-                        dynamicDatas[`${tilte}`]= recordDetails.no_need_checkup_text;
+                        let title = `no_need_checkup_text_${recordDetails['org_id']}_${recordDetails['id']}`
+                        dynamicData[`${title}`]= recordDetails.no_need_checkup_text;
                     }
                     if(recordDetails.no_need_checkup_desc){
-                        let tilte = `no_need_checkup_desc_${recordDetails['org_id']}_${recordDetails['id']}`
-                        dynamicDatas[`${tilte}`]= recordDetails.no_need_checkup_desc;
+                        let title = `no_need_checkup_desc_${recordDetails['org_id']}_${recordDetails['id']}`
+                        dynamicData[`${title}`]= recordDetails.no_need_checkup_desc;
                     }
                     if(recordDetails.need_checkup_text){
-                        let tilte = `need_checkup_text_${recordDetails['org_id']}_${recordDetails['id']}`
-                        dynamicDatas[`${tilte}`]= recordDetails.need_checkup_text;
+                        let title = `need_checkup_text_${recordDetails['org_id']}_${recordDetails['id']}`
+                        dynamicData[`${title}`]= recordDetails.need_checkup_text;
                     }
                     if(recordDetails.need_checkup_desc){
-                        let tilte = `need_checkup_desc_${recordDetails['org_id']}_${recordDetails['id']}`
-                        dynamicDatas[`${tilte}`]= recordDetails.need_checkup_desc;
+                        let title = `need_checkup_desc_${recordDetails['org_id']}_${recordDetails['id']}`
+                        dynamicData[`${title}`]= recordDetails.need_checkup_desc;
                     }
-                    await this.translatorService.DynamicEngJsonData('Common',postData?.org_id,dynamicDatas,'Edit','CovidPopup') 
+                    await this.translatorService.DynamicEngJsonData('Common',postData?.org_id,dynamicData,'Edit','CovidPopup') 
                 }
                 /* Default Question Answer */
                 return res.status(HttpStatus.CREATED).json({
@@ -427,16 +427,16 @@ export class SettingsController {
                     for (const questionData of defaultQuestions) {
                         const savedQuestion = await this.questionsService.save(questionData);
                         if(postData?.title){
-                            let tilte = `covidquestion_title_${savedQuestion['id']}`
-                            let dynamicDatas= { [`${tilte}`]: postData?.title};
-                            await this.translatorService.DynamicEngJsonData('Common',postData?.org_id,dynamicDatas,'Edit','CovidPopup') 
+                            let title = `covidquestion_title_${savedQuestion['id']}`
+                            let dynamicData= { [`${title}`]: postData?.title};
+                            await this.translatorService.DynamicEngJsonData('Common',postData?.org_id,dynamicData,'Edit','CovidPopup') 
                         }
                         for (const optionData of defaultOptions) {
                             const savedAnswer = await this.answersService.save({ ...optionData, q_id: savedQuestion['id'] });
                             if(postData?.title){
-                                let tilte = `covidanswer_${savedQuestion['id']}_${savedAnswer['id']}`;
-                                let dynamicDatas= { [`${tilte}`]: postData?.title};
-                                await this.translatorService.DynamicEngJsonData('Common',postData?.org_id,dynamicDatas,'Edit','CovidPopup') 
+                                let title = `covidanswer_${savedQuestion['id']}_${savedAnswer['id']}`;
+                                let dynamicData= { [`${title}`]: postData?.title};
+                                await this.translatorService.DynamicEngJsonData('Common',postData?.org_id,dynamicData,'Edit','CovidPopup') 
                             }
                         }
                     }
@@ -444,36 +444,36 @@ export class SettingsController {
                 /* Default Question Answer */
                 this.activityLogService.create(recordDetails, postData, tableConstant.COVID.COVID_SETTINGS, req.tokenUser?.id);
                 if(recordDetails){
-                    let dynamicDatas = Object.create(null);
+                    let dynamicData = Object.create(null);
                     if(recordDetails.title){
-                        let tilte = `covidsetting_popup_title_${recordDetails['org_id']}_${recordDetails['id']}`
-                        dynamicDatas[`${tilte}`]= recordDetails.title;
+                        let title = `covidsetting_popup_title_${recordDetails['org_id']}_${recordDetails['id']}`
+                        dynamicData[`${title}`]= recordDetails.title;
                     }
                     if(recordDetails.description){
-                        let tilte = `covidsetting_popup_description_${recordDetails['org_id']}_${recordDetails['id']}`
-                        dynamicDatas[`${tilte}`]= recordDetails.description;
+                        let title = `covidsetting_popup_description_${recordDetails['org_id']}_${recordDetails['id']}`
+                        dynamicData[`${title}`]= recordDetails.description;
                     }
                     if(recordDetails.additional_note){
-                        let tilte = `covidsetting_popup_note_${recordDetails['org_id']}_${recordDetails['id']}`
-                        dynamicDatas[`${tilte}`]= recordDetails.additional_note;
+                        let title = `covidsetting_popup_note_${recordDetails['org_id']}_${recordDetails['id']}`
+                        dynamicData[`${title}`]= recordDetails.additional_note;
                     }
                     if(recordDetails.no_need_checkup_text){
-                        let tilte = `no_need_checkup_text_${recordDetails['org_id']}_${recordDetails['id']}`
-                        dynamicDatas[`${tilte}`]= recordDetails.no_need_checkup_text;
+                        let title = `no_need_checkup_text_${recordDetails['org_id']}_${recordDetails['id']}`
+                        dynamicData[`${title}`]= recordDetails.no_need_checkup_text;
                     }
                     if(recordDetails.no_need_checkup_desc){
-                        let tilte = `no_need_checkup_desc_${recordDetails['org_id']}_${recordDetails['id']}`
-                        dynamicDatas[`${tilte}`]= recordDetails.no_need_checkup_desc;
+                        let title = `no_need_checkup_desc_${recordDetails['org_id']}_${recordDetails['id']}`
+                        dynamicData[`${title}`]= recordDetails.no_need_checkup_desc;
                     }
                     if(recordDetails.need_checkup_text){
-                        let tilte = `need_checkup_text_${recordDetails['org_id']}_${recordDetails['id']}`
-                        dynamicDatas[`${tilte}`]= recordDetails.need_checkup_text;
+                        let title = `need_checkup_text_${recordDetails['org_id']}_${recordDetails['id']}`
+                        dynamicData[`${title}`]= recordDetails.need_checkup_text;
                     }
                     if(recordDetails.need_checkup_desc){
-                        let tilte = `need_checkup_desc_${recordDetails['org_id']}_${recordDetails['id']}`
-                        dynamicDatas[`${tilte}`]= recordDetails.need_checkup_desc;
+                        let title = `need_checkup_desc_${recordDetails['org_id']}_${recordDetails['id']}`
+                        dynamicData[`${title}`]= recordDetails.need_checkup_desc;
                     }
-                    await this.translatorService.DynamicEngJsonData('Common',postData?.org_id,dynamicDatas,'Edit','CovidPopup') 
+                    await this.translatorService.DynamicEngJsonData('Common',postData?.org_id,dynamicData,'Edit','CovidPopup') 
                 }
                 return res.status(HttpStatus.OK).json({
                     statusCode: 200,

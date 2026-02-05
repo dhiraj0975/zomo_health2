@@ -153,14 +153,14 @@ export class ChallengeController {
             delete postData?.company_id;
             postData.uid = postData?.uid ?? req.tokenUser?.id;
             const challengeData = await this.challengeService.save({...postData});
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.challenge_name){
-                let tilte = `challenge_name_${challengeData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.challenge_name;
+                let title = `challenge_name_${challengeData['id']}`
+                dynamicData[`${title}`]= postData?.challenge_name;
             }
             if(postData?.challenge_desc){
-                let tilte = `challenge_desc_${challengeData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.challenge_desc;
+                let title = `challenge_desc_${challengeData['id']}`
+                dynamicData[`${title}`]= postData?.challenge_desc;
             }
             
             if(company_id && company_id != '' && challengeData){
@@ -188,18 +188,18 @@ export class ChallengeController {
                         fitnes['activity_name'] = fitnes?.activity_name ?? ' ';
                         fitnes['suggestion'] = fitnes?.suggestion ?? ' ';
                         let recordDetails = await this.fitnessActivityService.save({...fitnes});
-                        let dynamicDatas = Object.create(null);
+                        let dynamicData = Object.create(null);
                         if(fitnes.alphabet && fitnes.alphabet != ' '){
-                            let tilte = `fitness_activity_alphabet_${recordDetails['challenge_id']}_${recordDetails['id']}`;
-                            dynamicDatas[`${tilte}`]= fitnes.alphabet;
+                            let title = `fitness_activity_alphabet_${recordDetails['challenge_id']}_${recordDetails['id']}`;
+                            dynamicData[`${title}`]= fitnes.alphabet;
                         }
                         if(fitnes.activity_name){
-                            let tilte = `fitness_activity_name_${recordDetails['challenge_id']}_${recordDetails['id']}`;
-                            dynamicDatas[`${tilte}`]= fitnes.activity_name;
+                            let title = `fitness_activity_name_${recordDetails['challenge_id']}_${recordDetails['id']}`;
+                            dynamicData[`${title}`]= fitnes.activity_name;
                         }
                         if(fitnes.suggestion){
-                            let tilte = `fitness_activity_suggestion_${recordDetails['challenge_id']}_${recordDetails['id']}`;
-                            dynamicDatas[`${tilte}`]= fitnes.suggestion;
+                            let title = `fitness_activity_suggestion_${recordDetails['challenge_id']}_${recordDetails['id']}`;
+                            dynamicData[`${title}`]= fitnes.suggestion;
                         }
                     }
                 }
@@ -238,40 +238,40 @@ export class ChallengeController {
                     let getDayDatas = await this.daysService.listRecord({challenge_id: challengeData['id'], week_id: In(allWeekIds), status: Not(2)});
                     for(let weekData of getWeekDatas){
                         if(weekData?.manual_activity){
-                            let tilte = `week_activity_name_${challengeData['id']}_${weekData['id']}`
-                            dynamicDatas[`${tilte}`]= weekData?.manual_activity;
+                            let title = `week_activity_name_${challengeData['id']}_${weekData['id']}`
+                            dynamicData[`${title}`]= weekData?.manual_activity;
                         }
                         if(weekData?.site_activity_desc){
-                            let tilte = `week_activity_description_${challengeData['id']}_${weekData['id']}`
-                            dynamicDatas[`${tilte}`]= weekData?.site_activity_desc;
+                            let title = `week_activity_description_${challengeData['id']}_${weekData['id']}`
+                            dynamicData[`${title}`]= weekData?.site_activity_desc;
                         }
                         if(weekData?.manual_desc){
-                            let tilte = `week_description_${challengeData['id']}_${weekData['id']}`
-                            dynamicDatas[`${tilte}`]= weekData?.manual_desc;
+                            let title = `week_description_${challengeData['id']}_${weekData['id']}`
+                            dynamicData[`${title}`]= weekData?.manual_desc;
                         }
                         if(weekData?.tabmanual){
-                            let tilte = `week_tabmanual_${challengeData['id']}_${weekData['id']}`
-                            dynamicDatas[`${tilte}`]= weekData?.tabmanual;
+                            let title = `week_tabmanual_${challengeData['id']}_${weekData['id']}`
+                            dynamicData[`${title}`]= weekData?.tabmanual;
                         }
                     }
                     for(let dayData of getDayDatas){
                         if(dayData?.manual_activity){
-                            let tilte = `week_days_activity_name_${challengeData['id']}_${dayData['id']}`
-                            dynamicDatas[`${tilte}`]= dayData?.manual_activity;
+                            let title = `week_days_activity_name_${challengeData['id']}_${dayData['id']}`
+                            dynamicData[`${title}`]= dayData?.manual_activity;
                         }
                         if(dayData?.site_activity_desc){
-                            let tilte = `week_days_activity_description_${challengeData['id']}_${dayData['id']}`
-                            dynamicDatas[`${tilte}`]= dayData?.site_activity_desc;
+                            let title = `week_days_activity_description_${challengeData['id']}_${dayData['id']}`
+                            dynamicData[`${title}`]= dayData?.site_activity_desc;
                         }
                         if(dayData?.manual_desc){
-                            let tilte = `week_days_description_${challengeData['id']}_${dayData['id']}`
-                            dynamicDatas[`${tilte}`]= dayData?.manual_desc;
+                            let title = `week_days_description_${challengeData['id']}_${dayData['id']}`
+                            dynamicData[`${title}`]= dayData?.manual_desc;
                         }
                     }
                 }
             }
-            if(dynamicDatas && Object.keys(dynamicDatas).length > 0){
-                await this.translatorService.DynamicEngJsonData('Challenge','0',dynamicDatas,'Add','MyChallenges',challengeData['id']);
+            if(dynamicData && Object.keys(dynamicData).length > 0){
+                await this.translatorService.DynamicEngJsonData('Challenge','0',dynamicData,'Add','MyChallenges',challengeData['id']);
             }
             return res.status(HttpStatus.OK).json({
                 statusCode: 201,
@@ -346,14 +346,14 @@ export class ChallengeController {
             }
             await this.challengeService.update({ id: recordDetails.id },{...postData});
             this.activityLogService.create(recordDetails, postData, tableConstant.CHALLENGE.TBL_CH_CHALLENGE, req.tokenUser?.id);
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.challenge_name){
-                let tilte = `challenge_name_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.challenge_name;
+                let title = `challenge_name_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.challenge_name;
             }
             if(postData?.challenge_desc){
-                let tilte = `challenge_desc_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.challenge_desc;
+                let title = `challenge_desc_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.challenge_desc;
             }
             if(fitness){
                 for(let element of fitness){
@@ -371,16 +371,16 @@ export class ChallengeController {
                 }
                 for(let element of fitness){
                     if(element.alphabet && element.alphabet != ' '){
-                        let tilte = `fitness_activity_alphabet_${recordDetails['id']}_${element['id']}`;
-                        dynamicDatas[`${tilte}`] = element.alphabet;
+                        let title = `fitness_activity_alphabet_${recordDetails['id']}_${element['id']}`;
+                        dynamicData[`${title}`] = element.alphabet;
                     }
                     if(element.activity_name){
-                        let tilte = `fitness_activity_name_${recordDetails['id']}_${element['id']}`;
-                        dynamicDatas[`${tilte}`] = element.activity_name;
+                        let title = `fitness_activity_name_${recordDetails['id']}_${element['id']}`;
+                        dynamicData[`${title}`] = element.activity_name;
                     }
                     if(element.suggestion){
-                        let tilte = `fitness_activity_suggestion_${recordDetails['id']}_${element['id']}`;
-                        dynamicDatas[`${tilte}`] = element.suggestion;
+                        let title = `fitness_activity_suggestion_${recordDetails['id']}_${element['id']}`;
+                        dynamicData[`${title}`] = element.suggestion;
                     }
                 }
             }
@@ -473,39 +473,39 @@ export class ChallengeController {
                 let getDayDatas = await this.daysService.listRecord({challenge_id: recordDetails.id, week_id: In(allWeekIds), status: Not(2)});
                 for(let weekData of getWeekDatas){
                     if(weekData?.manual_activity){
-                        let tilte = `week_activity_name_${recordDetails['id']}_${weekData['id']}`
-                        dynamicDatas[`${tilte}`]= weekData?.manual_activity;
+                        let title = `week_activity_name_${recordDetails['id']}_${weekData['id']}`
+                        dynamicData[`${title}`]= weekData?.manual_activity;
                     }
                     if(weekData?.site_activity_desc){
-                        let tilte = `week_activity_description_${recordDetails['id']}_${weekData['id']}`
-                        dynamicDatas[`${tilte}`]= weekData?.site_activity_desc;
+                        let title = `week_activity_description_${recordDetails['id']}_${weekData['id']}`
+                        dynamicData[`${title}`]= weekData?.site_activity_desc;
                     }
                     if(weekData?.manual_desc){
-                        let tilte = `week_description_${recordDetails['id']}_${weekData['id']}`
-                        dynamicDatas[`${tilte}`]= weekData?.manual_desc;
+                        let title = `week_description_${recordDetails['id']}_${weekData['id']}`
+                        dynamicData[`${title}`]= weekData?.manual_desc;
                     }
                     if(weekData?.tabmanual){
-                        let tilte = `week_tabmanual_${recordDetails['id']}_${weekData['id']}`
-                        dynamicDatas[`${tilte}`]= weekData?.tabmanual;
+                        let title = `week_tabmanual_${recordDetails['id']}_${weekData['id']}`
+                        dynamicData[`${title}`]= weekData?.tabmanual;
                     }
                 }
                 for(let dayData of getDayDatas){
                     if(dayData?.manual_activity){
-                        let tilte = `week_days_activity_name_${recordDetails['id']}_${dayData['id']}`
-                        dynamicDatas[`${tilte}`]= dayData?.manual_activity;
+                        let title = `week_days_activity_name_${recordDetails['id']}_${dayData['id']}`
+                        dynamicData[`${title}`]= dayData?.manual_activity;
                     }
                     if(dayData?.site_activity_desc){
-                        let tilte = `week_days_activity_description_${recordDetails['id']}_${dayData['id']}`
-                        dynamicDatas[`${tilte}`]= dayData?.site_activity_desc;
+                        let title = `week_days_activity_description_${recordDetails['id']}_${dayData['id']}`
+                        dynamicData[`${title}`]= dayData?.site_activity_desc;
                     }
                     if(dayData?.manual_desc){
-                        let tilte = `week_days_description_${recordDetails['id']}_${dayData['id']}`
-                        dynamicDatas[`${tilte}`]= dayData?.manual_desc;
+                        let title = `week_days_description_${recordDetails['id']}_${dayData['id']}`
+                        dynamicData[`${title}`]= dayData?.manual_desc;
                     }
                 }
             }
-            if(dynamicDatas && Object.keys(dynamicDatas).length > 0){
-                await this.translatorService.DynamicEngJsonData('Challenge','0',dynamicDatas,'Edit','MyChallenges',recordDetails['id']);
+            if(dynamicData && Object.keys(dynamicData).length > 0){
+                await this.translatorService.DynamicEngJsonData('Challenge','0',dynamicData,'Edit','MyChallenges',recordDetails['id']);
             }
 
             return res.status(HttpStatus.OK).json({

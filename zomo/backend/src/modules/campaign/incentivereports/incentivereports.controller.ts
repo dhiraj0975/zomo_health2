@@ -587,24 +587,25 @@ export class IncentiveReportsController {
         );
 
         let filterCampaignIds = (RequestDatas?.camp_id != '') ? RequestDatas?.camp_id : 0;
-        let campaginDatas = [];
+        let campaignDatas = [];//zomo-4557 for multiple campaigns
 
         if(filterCampaignIds != 0){
-            campaginDatas = await this.frontService.getCampaignList(`campaign.organization_id = ${org_id} AND  campaign.id IN (${filterCampaignIds}) AND campaign.status = 1`, { end_date: 'ASC' }, ['campaign']);
+            campaignDatas = await this.frontService.getCampaignList(`campaign.organization_id = ${org_id} AND  campaign.id IN (${filterCampaignIds}) AND campaign.status = 1`, { end_date: 'ASC' }, ['campaign']);
         }else{
-            campaginDatas = await this.frontService.getCampaignList(`campaign.organization_id = ${org_id} AND campaign.status = 1`, { end_date: 'ASC' }, ['campaign']);
+            campaignDatas = await this.frontService.getCampaignList(`campaign.organization_id = ${org_id} AND campaign.status = 1`, { end_date: 'ASC' }, ['campaign']);
         }
 
         const sliderSetting = await this.sliderSettingsService.findOne({ org_id: org_id });
 
-        if(campaginDatas.length == 0){
+        if(campaignDatas.length == 0){
             throw new Error(await this.translatorService.frontendReadTranslation(req.lang,'ERR_CAMPAIGN_RECORD_NOT_FOUND'));
         }
 
         let campaignData = {};
         let campaignUsers = userDatas;
+        let campaignCount = campaignDatas.length;
 
-        for (let campaignRaw of campaginDatas) {
+        for (let campaignRaw of campaignDatas) {
             let campaignId = campaignRaw.id;
             let campaignIdStr = 'C'+campaignRaw.id;
 
@@ -708,7 +709,8 @@ export class IncentiveReportsController {
             }
 
             tempRow.push(fullName);
-            let qualify = false;
+            let qualify = true;
+            let qualifyOnce = false;
             let Aqualify = false;
             let nonPart = false;
             let actRoleId = camUser?.role_id;
@@ -750,10 +752,16 @@ export class IncentiveReportsController {
                                 if ((campaignRaw?.['totalActivity'] == 0 || reward['consider_require'] == 0) && totalP >= reward['point']) {
                                     met = "Yes";
                                     reward['complete']++;
+                                    if(campaignCount > 1){
+                                        qualifyOnce = true;
+                                    }
                                 } else {
                                     if ((campaignRaw?.['totalActivity'] <= uTotalAct || reward['consider_require'] == 0) && totalP >= reward['point']) {
                                         met = "Yes";
                                         reward['complete']++;
+                                        if(campaignCount > 1){
+                                            qualifyOnce = true;
+                                        }
                                     } else {
                                         met = "No";
                                         qualify = false;
@@ -768,10 +776,16 @@ export class IncentiveReportsController {
                                 if ((campaignRaw?.['totalActivity'] == 0 || reward['consider_require'] == 0) && totalP >= reward['pointS']) {
                                     met = "Yes";
                                     reward['complete']++;
+                                    if(campaignCount > 1){
+                                        qualifyOnce = true;
+                                    }
                                 } else {
                                     if ((campaignRaw?.['totalActivity'] <= uTotalAct || reward['consider_require'] == 0) && totalP >= reward['pointS']) {
                                         met = "Yes";
                                         reward['complete']++;
+                                        if(campaignCount > 1){
+                                            qualifyOnce = true;
+                                        }
                                     } else {
                                         met = "No";
                                         qualify = false;
@@ -805,8 +819,9 @@ export class IncentiveReportsController {
             }
 
             if (reportType == 'QR') {
-                if (qualify) {
-                    rows[i] = tempRow;
+                if (qualify || qualifyOnce) {
+                    // rows[i] = tempRow;
+                    rows.push(tempRow);
                     i += 1;
                 }
             } else if (reportType == 'OR') {

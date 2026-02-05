@@ -147,9 +147,9 @@ export class PassportSettingsController {
                     recordDetails = await this.passportSettingsService.save(postData);
                 }
                 if(postData?.description){
-                    let tilte = `settings_description_${postData?.org_id}`
-                    let dynamicDatas= { [`${tilte}`]: postData?.description};
-                    await this.translatorService.DynamicEngJsonData('Trackers',postData?.org_id,dynamicDatas,'Edit','CovidPassport') 
+                    let title = `settings_description_${postData?.org_id}`
+                    let dynamicData= { [`${title}`]: postData?.description};
+                    await this.translatorService.DynamicEngJsonData('Trackers',postData?.org_id,dynamicData,'Edit','CovidPassport') 
                 }
                 return res.status(HttpStatus.CREATED).json({
                     statusCode: 201,
@@ -233,9 +233,9 @@ export class PassportSettingsController {
                 await this.passportSettingsService.update(where, postData);
                 this.activityLogService.create(recordDetails, postData, tableConstant.COVID.COVID_PASSPORT_SETTINGS, req.tokenUser?.id);
                 if(postData?.description){
-                    let tilte = `settings_description_${postData?.org_id}`
-                    let dynamicDatas= { [`${tilte}`]: postData?.description};
-                    await this.translatorService.DynamicEngJsonData('Trackers',postData?.org_id,dynamicDatas,'Edit','CovidPassport') 
+                    let title = `settings_description_${postData?.org_id}`
+                    let dynamicData= { [`${title}`]: postData?.description};
+                    await this.translatorService.DynamicEngJsonData('Trackers',postData?.org_id,dynamicData,'Edit','CovidPassport') 
                 }
                 return res.status(HttpStatus.OK).json({
                     statusCode: 200,

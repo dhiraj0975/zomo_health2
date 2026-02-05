@@ -259,10 +259,10 @@ export class SubmitFormsController {
             postData['deleted'] = 0;
             let resultedData = await this.submitFormsService.save({ ...postData });
             if (postData?.notes) {
-                let dynamicDatas = Object.create(null);
-                let tilte = `notes_${resultedData['id']}`;
-                dynamicDatas[`${tilte}`] = postData?.notes;
-                await this.translatorService.DynamicEngJsonData('ActivityForms', resultedData['org_id'], dynamicDatas, 'Add', 'SubmittedForms', resultedData['form_id'],resultedData['user_id']);
+                let dynamicData = Object.create(null);
+                let title = `notes_${resultedData['id']}`;
+                dynamicData[`${title}`] = postData?.notes;
+                await this.translatorService.DynamicEngJsonData('ActivityForms', resultedData['org_id'], dynamicData, 'Add', 'SubmittedForms', resultedData['form_id'],resultedData['user_id']);
             }
             if (file && file.fieldname === 'attachments' && file.filename) {
                 file.originalname = this.commonFileService.formatFileName(file.originalname);
@@ -404,10 +404,10 @@ export class SubmitFormsController {
             }
             await this.submitFormsService.update({ id: updatedPostData.id }, updatedPostData);
             if (postData?.decline_reason) {
-                let dynamicDatas = Object.create(null);
-                let tilte = `decline_reason_${recordDetails?.id}`;
-                dynamicDatas[`${tilte}`] = postData?.decline_reason;
-                await this.translatorService.DynamicEngJsonData('ActivityForms', recordDetails?.org_id, dynamicDatas, 'Add', 'SubmittedForms', recordDetails['form_id'],recordDetails['user_id']);
+                let dynamicData = Object.create(null);
+                let title = `decline_reason_${recordDetails?.id}`;
+                dynamicData[`${title}`] = postData?.decline_reason;
+                await this.translatorService.DynamicEngJsonData('ActivityForms', recordDetails?.org_id, dynamicData, 'Add', 'SubmittedForms', recordDetails['form_id'],recordDetails['user_id']);
             }
             this.activityLogService.create(recordDetails, updatedPostData, tableConstant.ACTIVITY_TRACKER.TBL_SUBMITTED_FORMS, req.tokenUser?.id);
             let message = 'MSG_FORM_SUBMITTED_SUCCESSFULLY';
@@ -614,10 +614,10 @@ export class SubmitFormsController {
                 const recordDetails = await this.submitFormsService.findOne({ id: record });
                 await this.submitFormsService.update({ id: record }, { ...saveData });
                 if (postData?.decline_reason) {
-                    let dynamicDatas = Object.create(null);
-                    let tilte = `decline_reason_${recordDetails?.id}`;
-                    dynamicDatas[`${tilte}`] = postData?.decline_reason;
-                    await this.translatorService.DynamicEngJsonData('ActivityForms', recordDetails?.org_id, dynamicDatas, 'Add', 'SubmittedForms', recordDetails['form_id'],recordDetails['user_id']);
+                    let dynamicData = Object.create(null);
+                    let title = `decline_reason_${recordDetails?.id}`;
+                    dynamicData[`${title}`] = postData?.decline_reason;
+                    await this.translatorService.DynamicEngJsonData('ActivityForms', recordDetails?.org_id, dynamicData, 'Add', 'SubmittedForms', recordDetails['form_id'],recordDetails['user_id']);
                 }
                 this.activityLogService.create(recordDetails, saveData, tableConstant.ACTIVITY_TRACKER.TBL_SUBMITTED_FORMS, req.tokenUser?.id);
                 const companyData = await this.companySettingsService.findOne({ org_id: recordDetails?.['org_id'] });

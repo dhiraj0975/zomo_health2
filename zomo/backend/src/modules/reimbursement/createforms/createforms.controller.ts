@@ -149,14 +149,14 @@ export class CreateFormsController {
                 created_by = req.tokenUser?.id
             }
             let recordDetails = await this.createFormsService.save({ ...postData, created_by: created_by });
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.title){
-                let tilte = `title_${recordDetails['id']}`;
-                dynamicDatas[`${tilte}`] = postData?.title;                           
+                let title = `title_${recordDetails['id']}`;
+                dynamicData[`${title}`] = postData?.title;                           
                 let description = `description_${recordDetails['id']}`; 
-                dynamicDatas[`${description}`] = postData?.description;           
+                dynamicData[`${description}`] = postData?.description;           
             }
-            await this.translatorService.DynamicEngJsonData('Reimbursements',postData?.org_id,dynamicDatas,'Add','SubmitForm',recordDetails['id'].toString());
+            await this.translatorService.DynamicEngJsonData('Reimbursements',postData?.org_id,dynamicData,'Add','SubmitForm',recordDetails['id'].toString());
             return res.status(HttpStatus.OK).json({
                 statusCode: 201,
                 success: 1,
@@ -210,16 +210,16 @@ export class CreateFormsController {
                 }
             }
             await this.createFormsService.update({ id: postData?.id, org_id: postData?.org_id }, postData);
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.title){
-                let tilte = `title_${recordDetails['id']}`;
-                dynamicDatas[`${tilte}`] = postData?.title; 
+                let title = `title_${recordDetails['id']}`;
+                dynamicData[`${title}`] = postData?.title; 
             }                          
             if(postData?.description){
                 let description = `description_${recordDetails['id']}`; 
-                dynamicDatas[`${description}`] = postData?.description;           
+                dynamicData[`${description}`] = postData?.description;           
             }
-            await this.translatorService.DynamicEngJsonData('Reimbursements',postData?.org_id,dynamicDatas,'Edit','SubmitForm',recordDetails['id'].toString());
+            await this.translatorService.DynamicEngJsonData('Reimbursements',postData?.org_id,dynamicData,'Edit','SubmitForm',recordDetails['id'].toString());
             this.activityLogService.create(recordDetails, postData, tableConstant.REIMBURSEMENT.TBL_RE_CREATE_FORMS, req.tokenUser?.id);
             return res.status(HttpStatus.OK).json({
                 statusCode: 201,

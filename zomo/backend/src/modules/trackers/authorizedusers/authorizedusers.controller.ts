@@ -201,7 +201,7 @@ export class FtAuthorizedUsersController {
                     success: 1,
                     error: 0,
                     data: authUserDetails,
-                    message: 'success',
+                    message: await this.translatorService.frontendReadTranslation(req.lang, "FITBIT_SYNC"),
                 });
             }
             await this.activityLogService.error_log(req.tokenUser?.id, req?.originalUrl, userFitbitAuthStatus, userFitbitAuthStatus, req);
@@ -250,6 +250,13 @@ export class FtAuthorizedUsersController {
             /* zomo-923 changes added for 1 month */
             const syncStatus = await lastValueFrom(this.fitbitClient.send({ cmd: 'sync_fitbit_steps' }, { authUser: authUserDetails, date: date, duration: '1m' }));
             let errorMessage = await this.translatorService.frontendReadTranslation(req.lang, "FITBIT_COMMON_ERROR", '/LC_MESSAGES/Api');
+            let errorResponse = {
+                statusCode: 200,
+                success: 1,
+                error: 0,
+                data: null,
+                message: errorMessage,
+            }
             if(syncStatus === "SUCCESS") {
                 return res.status(HttpStatus.CREATED).json({
                     statusCode: 200,
@@ -272,13 +279,11 @@ export class FtAuthorizedUsersController {
                 errorMessage = await this.translatorService.frontendReadTranslation(req.lang, "FITBIT_STEP_API_ERROR", '/LC_MESSAGES/Api');
             }
             await this.activityLogService.error_log(req.tokenUser?.id, req?.originalUrl, syncStatus, syncStatus, req);
-            return res.status(HttpStatus.OK).json({
-                statusCode: 200,
-                success: 1,
-                error: 0,
-                data: null,
-                message: errorMessage,
-            });
+            if(syncStatus === "FITBIT_STEP_DATA_NOT_FOUND") {
+                errorResponse['noData'] = 1;
+            }
+            errorResponse['message'] = errorMessage;
+            return res.status(HttpStatus.OK).json(errorResponse);
         } catch (error) {
             await this.activityLogService.error_log(req.tokenUser?.id,req?.originalUrl, error?.message, error, req);
             throw new HttpException(
@@ -319,7 +324,7 @@ export class FtAuthorizedUsersController {
                 success: 1,
                 error: 0,
                 data: null,
-                message: 'success',
+                message: await this.translatorService.frontendReadTranslation(req.lang, "FITBIT_UNSYNC"),
             });
         } catch (error) {
             await this.activityLogService.error_log(req.tokenUser?.id,req?.originalUrl, error?.message, error, req);

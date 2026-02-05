@@ -214,12 +214,12 @@ export class UserScheduleChallengeService {
             teamData['team_size'] = scheduleData?.teamsize;
             teamData['created_by'] = req.tokenUser?.id;
             const insertedTeam = await this.teamsService.save({ ...teamData });
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(teamData['tname']){
-                let tilte = `team_name_${insertedTeam['schedule_id']}_${insertedTeam['id']}`
-                dynamicDatas[`${tilte}`]= insertedTeam['tname'];
+                let title = `team_name_${insertedTeam['schedule_id']}_${insertedTeam['id']}`
+                dynamicData[`${title}`]= insertedTeam['tname'];
             }
-            await this.translatorService.DynamicEngJsonData('Challenge',insertedTeam['org_id'],dynamicDatas,'Edit','MyChallenges',insertedTeam['schedule_id']);
+            await this.translatorService.DynamicEngJsonData('Challenge',insertedTeam['org_id'],dynamicData,'Edit','MyChallenges',insertedTeam['schedule_id']);
             let lastInstertedTeamId = '';
             if (insertedTeam && Object.values(insertedTeam).length > 0) {
                 lastInstertedTeamId = insertedTeam['id'];

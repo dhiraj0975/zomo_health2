@@ -210,12 +210,12 @@ export class TeamsController {
             postData['team_size'] = postData?.team_size > 0 ?  postData?.team_size : 1 ;
             postData['created_by'] = postData?.created_by ?? req.tokenUser?.id;
             const team = await this.teamsService.save({...postData});
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(team['tname']){
-                let tilte = `team_name_${team['schedule_id']}_${team['id']}`
-                dynamicDatas[`${tilte}`]= team['tname'];
+                let title = `team_name_${team['schedule_id']}_${team['id']}`
+                dynamicData[`${title}`]= team['tname'];
             }            
-            await this.translatorService.DynamicEngJsonData('Challenge',team['org_id'],dynamicDatas,'Edit','MyChallenges',team['schedule_id']);
+            await this.translatorService.DynamicEngJsonData('Challenge',team['org_id'],dynamicData,'Edit','MyChallenges',team['schedule_id']);
             if (file && file.fieldname === 'logo' && file.filename) {
                 file.originalname = this.commonFileService.formatFileName(file.originalname);
                 let filename = `challenge/schedulech/${team['schedule_id']}/team/scchateaml_${this.commonService.generateMD5(team['id'].toString())}.${file.originalname.split('.')[file.originalname.split('.').length - 1]}`;
@@ -288,12 +288,12 @@ export class TeamsController {
                     throw new Error((await this.translatorService.frontendReadTranslation(req.lang, 'Team name already exist.')));
                 }
             }
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData['tname']){
-                let tilte = `team_name_${recordDetails['schedule_id']}_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData['tname'];
+                let title = `team_name_${recordDetails['schedule_id']}_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData['tname'];
             }            
-            await this.translatorService.DynamicEngJsonData('Challenge',recordDetails['org_id'],dynamicDatas,'Edit','MyChallenges',recordDetails['schedule_id']);
+            await this.translatorService.DynamicEngJsonData('Challenge',recordDetails['org_id'],dynamicData,'Edit','MyChallenges',recordDetails['schedule_id']);
             if (file && file.fieldname === 'logo' && file.filename) {
                 file.originalname = this.commonFileService.formatFileName(file.originalname);
                 let filename = `challenge/schedulech/${postData['schedule_id']}/team/scchateaml_${this.commonService.generateMD5(postData['id'].toString())}.${file.originalname.split('.')[file.originalname.split('.').length - 1]}`;

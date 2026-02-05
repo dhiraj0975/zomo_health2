@@ -163,9 +163,9 @@ export class AnswersController {
                 let questionData = await this.questionsService.findOne({id: postData?.q_id});
                 let answerSaveData = await this.answersService.save(postData);
                 if(postData?.title){
-                    let tilte = `covidanswer_${questionData['id']}_${answerSaveData['id']}`;
-                    let dynamicDatas= { [`${tilte}`]: postData?.title};
-                    await this.translatorService.DynamicEngJsonData('Common',questionData.org_id,dynamicDatas,'Edit','CovidPopup') 
+                    let title = `covidanswer_${questionData['id']}_${answerSaveData['id']}`;
+                    let dynamicData= { [`${title}`]: postData?.title};
+                    await this.translatorService.DynamicEngJsonData('Common',questionData.org_id,dynamicData,'Edit','CovidPopup') 
                 }
                 return res.status(HttpStatus.CREATED).json({
                     statusCode: 201,
@@ -253,9 +253,9 @@ export class AnswersController {
                 await this.answersService.update(where, postData);
                 this.activityLogService.create(recordDetails, postData, tableConstant.COVID.COVID_ANSWERS, req.tokenUser?.id);
                 if(postData?.title){
-                    let tilte = `covidanswer_${recordDetails['question']['id']}_${recordDetails['id']}`;
-                    let dynamicDatas= { [`${tilte}`]: postData?.title};
-                    await this.translatorService.DynamicEngJsonData('Common',recordDetails['question']['org_id'],dynamicDatas,'Edit','CovidPopup') 
+                    let title = `covidanswer_${recordDetails['question']['id']}_${recordDetails['id']}`;
+                    let dynamicData= { [`${title}`]: postData?.title};
+                    await this.translatorService.DynamicEngJsonData('Common',recordDetails['question']['org_id'],dynamicData,'Edit','CovidPopup') 
                 }
                 return res.status(HttpStatus.OK).json({
                     statusCode: 200,

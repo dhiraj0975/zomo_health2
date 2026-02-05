@@ -1579,11 +1579,11 @@ export class UserDashboardController {
                             Is_Completed--; 
                         }
                         if(Date1Comp != '' && (Is_Required == 0 || Date1CompTo >= Is_Required)){
-                            widgetbioheader[1]['Status'] = 'Completed On Test 1 ' + this.commonDateService.getTodayDate(Date1Comp).format('MM/DD/YYYY'); 
+                            widgetbioheader[1]['Status'] = 'Completed On ' + this.commonDateService.getTodayDate(Date1Comp).format('MM/DD/YYYY'); 
                             widgetbioheader[1]['Color'] = regionColor['Low risk'];
                         }          
                         if(Is_Completed !=0 && (Is_Required == 0 || Is_Completed >= Is_Required)){
-                            widgetbioheader[2]['Status'] = 'Completed On Test 2 ' + this.commonDateService.getTodayDate(Date2Comp).format('MM/DD/YYYY');
+                            widgetbioheader[2]['Status'] = 'Completed On ' + this.commonDateService.getTodayDate(Date2Comp).format('MM/DD/YYYY');
                             widgetbioheader[2]['Color'] = regionColor['Low risk'];
                         }
                         if((widgetbioheader[1]['Color'] && widgetbioheader[1]['Color']==regionColor['Low risk'] && widgetbioheader[2]['Color'] && widgetbioheader[2]['Color']==regionColor['Low risk']) || ((biometricSetting['is_based']==1 || biometricSetting['qualifie_type']==4) && (biometricSetting['qualifie_type']==0 || biometricSetting['qualifie_type']==2 || biometricSetting['qualifie_type']==4) && widgetbioheader[2]['Color'] && widgetbioheader[2]['Color']==regionColor['Low risk'])){ 

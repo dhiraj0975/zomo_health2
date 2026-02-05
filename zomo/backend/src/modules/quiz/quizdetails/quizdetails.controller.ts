@@ -602,7 +602,7 @@ export class QuizDetailsController {
             }
             let tableData: string[] = [],userDetailId;
             let quizRecord = await this.quizDetailsService.listRecord(
-                ['qd.quiz_type AS quiz_type','qd.id AS id'],
+                ['qd.quiz_type AS quiz_type','qd.id AS id','qd.ques_section AS ques_section'],
                 {quiz_id: postData?.quiz_id,status: '1'},
                 {quest_order: 'ASC'}
             );
@@ -618,10 +618,14 @@ export class QuizDetailsController {
             }
             let quizTypeArray = {'TrueFalse': tableConstant.QUIZ.TBL_QZ_TF_QUESTIONS, 'MultipleChoice': tableConstant.QUIZ.TBL_QZ_MULTIPLE_CHOICE_QUESTIONS, 'MultipleResponse': tableConstant.QUIZ.TBL_QZ_MULTIPLE_RESPONSE_QUESTIONS, 'MatchingDropDown': tableConstant.QUIZ.TBL_QZ_MATCHING_DROPDOWN_QUESTIONS,'Hotspot': tableConstant.QUIZ.TBL_QZ_HOTSPOT_QUESTIONS,'FillInTheBlanks': tableConstant.QUIZ.TBL_QZ_FILLUP_QUESTIONS,'MatchingDragDrop': tableConstant.QUIZ.TBL_QZ_MATCHING_DRAGDROP_QUESTIONS,'MultipleQuestion': tableConstant.QUIZ.TBL_QZ_MULTIPLE_QUESTIONS};
             let superAdminAnswer = [];
+            let sectionarraytemp = [];
             for (let i = 0; i < quizRecord.length; i++) {
                 let tableName = quizTypeArray[quizRecord[i]['quiz_type']]
                 if (!tableData.includes(tableName)) {
                     tableData.push(tableName);
+                }
+                if (quizRecord[i]?.['ques_section']) {
+                    sectionarraytemp.push(quizRecord[i]['ques_section']);
                 }
                 if (appConstant.ROLE.ADMIN == req.tokenUser?.role_id || appConstant.ROLE.GLOBALCLIENTENGAGEMENTMANAGER == req.tokenUser?.role_id) {
                 let questionId = quizRecord[i]['id'];
@@ -633,11 +637,13 @@ export class QuizDetailsController {
             if (appConstant.ROLE.REGISTERED == req.tokenUser?.role_id) {
                 tableData = [...tableData,...[tableConstant.QUIZ.TBL_QZ_QUIZ_USER_DETAILS]]
             }
-            let quizSection: QuizSectionEntity[] = await this.quizSectionService.getAll({quiz_id: postData?.quiz_id,status: Not(Enum.Two)},['id']);
-            const quizSectionIdArray = quizSection.map(item => item?.id);
             let quizDetailsWhere = `qd.quiz_id = ${postData?.quiz_id} AND qd.status = '1'`;
-            if (quizSectionIdArray?.length) {
-                quizDetailsWhere += `AND qd.ques_section IN(${quizSectionIdArray.join(',')})`
+            if (sectionarraytemp.length) {
+                let quizSection: QuizSectionEntity[] = await this.quizSectionService.getAll({quiz_id: postData?.quiz_id,status: Not(Enum.Two)},['id']);
+                const quizSectionIdArray = quizSection.map(item => item?.id);
+                if (quizSectionIdArray?.length) {
+                    quizDetailsWhere += `AND qd.ques_section IN(${quizSectionIdArray.join(',')})`
+                }
             }
             let quizListRecord = await this.quizDetailsService.listRecord(
                 [],
@@ -1117,16 +1123,16 @@ export class QuizDetailsController {
             delete postData?.MultipleQuestion;
             postData.quest_order = recordDetails['quest_order'] + 1;
             let saveData = await this.quizDetailsService.save({...postData});
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.quiz_question){
-                let tilte = `question_name_${saveData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.quiz_question;
+                let title = `question_name_${saveData['id']}`
+                dynamicData[`${title}`]= postData?.quiz_question;
             }            
             if(postData?.answer_desc){
-                let tilte = `question_answer_${saveData['id']}`
-                dynamicDatas[`${tilte}`]= postData?.answer_desc;
+                let title = `question_answer_${saveData['id']}`
+                dynamicData[`${title}`]= postData?.answer_desc;
             }            
-            await this.translatorService.DynamicEngJsonData('Quizzes','0',dynamicDatas,'Add','Quizzes',saveData['id']);
+            await this.translatorService.DynamicEngJsonData('Quizzes','0',dynamicData,'Add','Quizzes',saveData['id']);
             if (saveData && saveData['id']) {
                 switch (postData?.quiz_type) {
                     case 'TrueFalse':
@@ -1137,42 +1143,42 @@ export class QuizDetailsController {
                     case 'MultipleChoice':
                         if (MultipleChoice.length > 0) {
                             let choiceData = await this.quizMultipleChoiceQuestionService.save({question_id: saveData['id'], ...MultipleChoice[0]});
-                            let dynamicDatas = Object.create(null);    
+                            let dynamicData = Object.create(null);    
                             for (let i = 1; i <= 6; i++) {
                                 if(MultipleChoice[0][`opt_${i}`]){
                                     let optVal = `multiplechoice_option_${MultipleChoice[0].question_id}opt${i}_${choiceData['id']}`
-                                    dynamicDatas[`${optVal}`]= MultipleChoice[0][`opt_${i}`];
+                                    dynamicData[`${optVal}`]= MultipleChoice[0][`opt_${i}`];
                                 }
                             }       
-                            await this.translatorService.DynamicEngJsonData('Quizzes','0',dynamicDatas,'Edit','Quizzes',recordDetails['quiz_id']);
+                            await this.translatorService.DynamicEngJsonData('Quizzes','0',dynamicData,'Edit','Quizzes',recordDetails['quiz_id']);
                         }
                         break;
                     case 'MultipleResponse':
                         if (MultipleResponse.length > 0) {
-                            let dynamicDatas = Object.create(null);
+                            let dynamicData = Object.create(null);
                             let multipleResponseData = await this.quizMultipleResponseQuestionService.save({question_id: saveData['id'], ...MultipleResponse[0]});
                             for (let i = 1; i <= 6; i++) {
                                 if(multipleResponseData[`choice_${i}`]){
                                     let optVal = `multiplechoice_option_${recordDetails['id']}_choice${i}_${multipleResponseData['id']}`
-                                    dynamicDatas[`${optVal}`]= multipleResponseData[`choice_${i}`];
+                                    dynamicData[`${optVal}`]= multipleResponseData[`choice_${i}`];
                                 }
                                 if(multipleResponseData[`choice_${i}`]){
                                     let optVal = `multipleresponse_option_${recordDetails['id']}_choice${i}_${multipleResponseData['id']}`
-                                    dynamicDatas[`${optVal}`]= multipleResponseData[`choice_${i}`];
+                                    dynamicData[`${optVal}`]= multipleResponseData[`choice_${i}`];
                                 }
                             }
-                            await this.translatorService.DynamicEngJsonData('Quizzes','0',dynamicDatas,'Add','Quizzes',postData?.quiz_id);
+                            await this.translatorService.DynamicEngJsonData('Quizzes','0',dynamicData,'Add','Quizzes',postData?.quiz_id);
                         }
                         break;
                     case 'MatchingDropDown':
                         if (MatchingDropDown.length > 0) {
-                            let dynamicDatas = Object.create(null);
+                            let dynamicData = Object.create(null);
                             for (var i = 0; i < MatchingDropDown.length; i++) {
                                 let questionId = await this.quizMatchingDropDownQuestionService.save({question_id: saveData['id'], ...MatchingDropDown[i]});
                                 let optVal = `matchingdropdown_option_${recordDetails['id']}_${questionId['id']}`
-                                dynamicDatas[`${optVal}`]= MatchingDropDown[i]['drop_options'];
+                                dynamicData[`${optVal}`]= MatchingDropDown[i]['drop_options'];
                             }
-                            await this.translatorService.DynamicEngJsonData('Quizzes','0',dynamicDatas,'Add','Quizzes',recordDetails.quiz_id);
+                            await this.translatorService.DynamicEngJsonData('Quizzes','0',dynamicData,'Add','Quizzes',recordDetails.quiz_id);
                         }
                         break;
                     case 'Hotspot':
@@ -1189,34 +1195,34 @@ export class QuizDetailsController {
                         break;
                     case 'FillInTheBlanks':
                         if (FillInTheBlanks.length > 0) {
-                            let dynamicDatas = Object.create(null);
+                            let dynamicData = Object.create(null);
                             for (var i = 0; i < FillInTheBlanks.length; i++) {
                                 let questionId = await this.quizFillUpQuestionService.save({question_id: saveData['id'], ...FillInTheBlanks[i]});
-                                dynamicDatas[`fillup_option_${recordDetails['id']}_${questionId['id']}`]= FillInTheBlanks[i]['blank_options'];
+                                dynamicData[`fillup_option_${recordDetails['id']}_${questionId['id']}`]= FillInTheBlanks[i]['blank_options'];
                             }
-                            await this.translatorService.DynamicEngJsonData('Quizzes','0',dynamicDatas,'Add','Quizzes',recordDetails.quiz_id);
+                            await this.translatorService.DynamicEngJsonData('Quizzes','0',dynamicData,'Add','Quizzes',recordDetails.quiz_id);
                         }
                         break;
                     case 'MatchingDragDrop':
                         if (MatchingDragDrop.length > 0) {
-                            let dynamicDatas = Object.create(null);
+                            let dynamicData = Object.create(null);
                             for (var i = 0; i < MatchingDragDrop.length; i++) {
                                 let questionId = await this.quizMatchingDragDropQuestionService.save({question_id: saveData['id'], ...MatchingDragDrop[i]});
-                                dynamicDatas[`dragdrop_question_${recordDetails['id']}_${questionId['id']}`]= MatchingDragDrop[i]['question'];
-                                dynamicDatas[`dragdrop_answer_${recordDetails['id']}_${questionId['id']}`]= MatchingDragDrop[i]['answer'][i];
+                                dynamicData[`dragdrop_question_${recordDetails['id']}_${questionId['id']}`]= MatchingDragDrop[i]['question'];
+                                dynamicData[`dragdrop_answer_${recordDetails['id']}_${questionId['id']}`]= MatchingDragDrop[i]['answer'][i];
                             }
-                            await this.translatorService.DynamicEngJsonData('Quizzes','0',dynamicDatas,'Add','Quizzes',postData?.quiz_id);
+                            await this.translatorService.DynamicEngJsonData('Quizzes','0',dynamicData,'Add','Quizzes',postData?.quiz_id);
                         }
                         break;
                     case 'MultipleQuestion':
                         if (MultipleQuestion.length > 0) {
-                            let dynamicDatas = Object.create(null);
+                            let dynamicData = Object.create(null);
                             for (var i = 0; i < MultipleQuestion.length; i++) {
                                 let questionId = await this.quizMultipleQuestionService.save({question_id: saveData['id'], ...MultipleQuestion[i]});
                                 let optVal = `multiple_question_${recordDetails['id']}_${questionId['id']}`
-                                dynamicDatas[`${optVal}`]= MultipleQuestion[i]['question'];
+                                dynamicData[`${optVal}`]= MultipleQuestion[i]['question'];
                             }
-                            await this.translatorService.DynamicEngJsonData('Quizzes','0',dynamicDatas,'Add','Quizzes',recordDetails.quiz_id);
+                            await this.translatorService.DynamicEngJsonData('Quizzes','0',dynamicData,'Add','Quizzes',recordDetails.quiz_id);
                         }
                         break;
                 }

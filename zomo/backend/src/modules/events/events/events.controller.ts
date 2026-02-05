@@ -398,39 +398,39 @@ export class EventController {
                         postData.activity_id = activityData['id'];
                     }
                     resultData = await this.eventService.save({ ...postData });
-                    let dynamicDatas = Object.create(null);
+                    let dynamicData = Object.create(null);
                     if(postData?.event_name){
-                        let tilte = `event_name_${resultData['id']}`
-                        dynamicDatas[`${tilte}`]= postData?.event_name;
+                        let title = `event_name_${resultData['id']}`
+                        dynamicData[`${title}`]= postData?.event_name;
                     }            
                     if(postData?.event_description){
-                        let tilte = `event_description_${resultData['id']}`
-                        dynamicDatas[`${tilte}`]= postData?.event_description;
+                        let title = `event_description_${resultData['id']}`
+                        dynamicData[`${title}`]= postData?.event_description;
                     }            
                     if(postData?.event_address){
-                        let tilte = `event_address_${resultData['id']}`
-                        dynamicDatas[`${tilte}`]= postData?.event_address;
+                        let title = `event_address_${resultData['id']}`
+                        dynamicData[`${title}`]= postData?.event_address;
                     }            
                     if(postData?.event_city){
-                        let tilte = `event_city_${resultData['id']}`
-                        dynamicDatas[`${tilte}`]= postData?.event_city;
+                        let title = `event_city_${resultData['id']}`
+                        dynamicData[`${title}`]= postData?.event_city;
                     }            
                     if(postData?.event_state){
                         let stateData = await this.companyService.stateList(resultData?.event_state);
                         let state = stateData.find(ele => ele.statecode == resultData?.event_state || ele.state == resultData?.event_state);
                         postData['event_state'] = state?.['state'];
-                        let tilte = `event_state_${resultData['id']}`
-                        dynamicDatas[`${tilte}`]= postData?.event_state;
+                        let title = `event_state_${resultData['id']}`
+                        dynamicData[`${title}`]= postData?.event_state;
                     }            
                     if(postData?.user_id){
-                        let tilte = `selectedName_${resultData['id']}`
-                        dynamicDatas[`${tilte}`]= postData?.user_id;
+                        let title = `selectedName_${resultData['id']}`
+                        dynamicData[`${title}`]= postData?.user_id;
                     }            
                     if(postData?.event_location){
-                        let tilte = `event_location_${resultData['id']}`
-                        dynamicDatas[`${tilte}`]= postData?.event_location;
+                        let title = `event_location_${resultData['id']}`
+                        dynamicData[`${title}`]= postData?.event_location;
                     }            
-                    await this.translatorService.DynamicEngJsonData('Events',org_id,dynamicDatas,'Edit','Events',resultData['id']);
+                    await this.translatorService.DynamicEngJsonData('Events',org_id,dynamicData,'Edit','Events',resultData['id']);
                     if(postData?.start_date && postData?.end_date){
                         let notificationData = {
                             event_id: resultData?.id, 
@@ -670,39 +670,39 @@ export class EventController {
             if(recordDetails?.activity_id){
                 await this.activityService.update({id: recordDetails.activity_id}, {activity_name: postData?.event_name});
             }
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.event_name){
-                let tilte = `event_name_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.event_name;
+                let title = `event_name_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.event_name;
             }            
             if(postData?.event_description){
-                let tilte = `event_description_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.event_description;
+                let title = `event_description_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.event_description;
             }            
             if(postData?.event_address){
-                let tilte = `event_address_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.event_address;
+                let title = `event_address_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.event_address;
             }            
             if(postData?.event_city){
-                let tilte = `event_city_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.event_city;
+                let title = `event_city_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.event_city;
             }            
             if(postData?.event_state){
                 let stateData = await this.companyService.stateList(postData?.event_state);
                 let state = stateData.find(ele => ele.statecode == postData?.event_state || ele.state == postData?.event_state);
                 postData['event_state'] = state?.['state'];
-                let tilte = `event_state_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.event_state;
+                let title = `event_state_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.event_state;
             }            
             if(postData?.user_id){
-                let tilte = `selectedName_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.user_id;
+                let title = `selectedName_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.user_id;
             }            
             if(postData?.event_location){
-                let tilte = `event_location_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.event_location;
+                let title = `event_location_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.event_location;
             }            
-            await this.translatorService.DynamicEngJsonData('Events',postData?.organization_id || 0,dynamicDatas,'Edit','Events',recordDetails['id']);
+            await this.translatorService.DynamicEngJsonData('Events',postData?.organization_id || 0,dynamicData,'Edit','Events',recordDetails['id']);
             this.activityLogService.create(recordDetails, postData, tableConstant.EVENTS.TBL_EV_EVENTS, req.tokenUser?.id);     
             let message ;
             if([appConstant.ROLE.ADMIN,appConstant.ROLE.GLOBALCLIENTENGAGEMENTMANAGER].includes(role)){

@@ -135,12 +135,12 @@ export class AssessmentOptionsDetailsController {
             }
             let optionData = await this.assessmentOptionsService.findOne(`ao.id = '${postData?.option_id}' AND ao.status = 1`, ['ao']);
             let resultData = await this.assessmentOptionsDetailsService.save(postData);
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.option_title){
-                let tilte = `assessment_option_title_${optionData['question_id']}_${resultData['option_id']}`
-                dynamicDatas[`${tilte}`] = postData?.option_title;
+                let title = `assessment_option_title_${optionData['question_id']}_${resultData['option_id']}`
+                dynamicData[`${title}`] = postData?.option_title;
             }                        
-            await this.translatorService.DynamicEngJsonData('MyHealth','eha',dynamicDatas,'Edit','Assessment',req.tokenUser?.org_id);
+            await this.translatorService.DynamicEngJsonData('MyHealth','eha',dynamicData,'Edit','Assessment',req.tokenUser?.org_id);
             return res.status(HttpStatus.CREATED).json({
                 statusCode: 201,
                 success: 1,
@@ -219,12 +219,12 @@ export class AssessmentOptionsDetailsController {
             let optionData = await this.assessmentOptionsService.findOne(`ao.id = '${postData?.option_id}' AND ao.status = 1`, ['ao']);
             await this.assessmentOptionsDetailsService.update(where, postData);
             this.activityLogService.create(recordDetails, postData, tableConstant.HEALTH_ASSESSMENT.TBL_HA_ASSESSMENT_OPTIONS_DETAILS, req.tokenUser?.id);
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.option_title){
-                let tilte = `assessment_option_title_${optionData['question_id']}_${recordDetails['option_id']}`
-                dynamicDatas[`${tilte}`] = postData?.option_title;
+                let title = `assessment_option_title_${optionData['question_id']}_${recordDetails['option_id']}`
+                dynamicData[`${title}`] = postData?.option_title;
             }                        
-            await this.translatorService.DynamicEngJsonData('MyHealth','eha',dynamicDatas,'Edit','Assessment',req.tokenUser?.org_id);
+            await this.translatorService.DynamicEngJsonData('MyHealth','eha',dynamicData,'Edit','Assessment',req.tokenUser?.org_id);
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
                 success: 1,

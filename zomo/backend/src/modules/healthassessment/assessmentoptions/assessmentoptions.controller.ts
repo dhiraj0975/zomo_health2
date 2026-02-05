@@ -1,6 +1,5 @@
 import {
     appConstant,
-    AssessmentHaQuestionsEntity,
     AssessmentOptionsDetailsDto,
     AssessmentOptionsDto,
     CommonArrayService,
@@ -194,17 +193,17 @@ export class AssessmentOptionsController {
                 return true;
             }
             if (optionTitle) {
-                let dynamicDatas = Object.create(null);
+                let dynamicData = Object.create(null);
                 let title = `assessment_option_title_${postData?.question_id}_${lastId['id']}`
-                dynamicDatas[`${title}`] = optionTitle;
-                await this.translatorService.DynamicEngJsonData('MyHealth','eha',dynamicDatas,'Edit','Assessment',req.tokenUser?.org_id);
+                dynamicData[`${title}`] = optionTitle;
+                await this.translatorService.DynamicEngJsonData('MyHealth','eha',dynamicData,'Edit','Assessment',req.tokenUser?.org_id);
             }
             await this.assessmentOptionsDetailsService.save({option_id: lastId['id'],option_title: optionTitle, main_option_id: mainOptionId, language_id: languageId});
             if (postData?.message_add) {
-                let dynamicDatas = Object.create(null);
+                let dynamicData = Object.create(null);
                 let title = `assessment_message_${postData?.question_id}_${lastId['id']}`
-                dynamicDatas[`${title}`] = postData.message_add;
-                await this.translatorService.DynamicEngJsonData('MyHealth','eha',dynamicDatas,'Edit','Assessment',req.tokenUser?.org_id);
+                dynamicData[`${title}`] = postData.message_add;
+                await this.translatorService.DynamicEngJsonData('MyHealth','eha',dynamicData,'Edit','Assessment',req.tokenUser?.org_id);
             }
             return res.status(HttpStatus.CREATED).json({
                 statusCode: 201,
@@ -301,19 +300,19 @@ export class AssessmentOptionsController {
                 let languageId = postData?.language_id || 1;
                 await this.assessmentOptionsDetailsService.update({option_id: postData?.id}, {option_title: postData?.option_title,language_id: languageId, main_option_id: mainOptionId});
                 await this.activityLogService.create(optionDetailData, postData, tableConstant.HEALTH_ASSESSMENT.TBL_HA_ASSESSMENT_QUESTIONS_DETAILS, req.tokenUser?.id);
-                let dynamicDatas = Object.create(null);
+                let dynamicData = Object.create(null);
                 let title = `assessment_option_title_${postData?.question_id}_${postData?.id}`
-                dynamicDatas[`${title}`] = postData?.option_title;
-                await this.translatorService.DynamicEngJsonData('MyHealth','eha',dynamicDatas,'Edit','Assessment',req.tokenUser?.org_id);
+                dynamicData[`${title}`] = postData?.option_title;
+                await this.translatorService.DynamicEngJsonData('MyHealth','eha',dynamicData,'Edit','Assessment',req.tokenUser?.org_id);
                 delete postData?.option_title;
                 delete postData?.main_option_id;
                 delete postData?.language_id;
             }
             if (postData?.message_add) {
-                let dynamicDatas = Object.create(null);
+                let dynamicData = Object.create(null);
                 let title = `assessment_message_${postData?.question_id}_${postData?.id}`
-                dynamicDatas[`${title}`] = postData.message_add;
-                await this.translatorService.DynamicEngJsonData('MyHealth','eha',dynamicDatas,'Edit','Assessment',req.tokenUser?.org_id);
+                dynamicData[`${title}`] = postData.message_add;
+                await this.translatorService.DynamicEngJsonData('MyHealth','eha',dynamicData,'Edit','Assessment',req.tokenUser?.org_id);
             }
             await this.assessmentOptionsService.update(where, {...postData, updated_by : req.tokenUser?.id});
             message = await this.translatorService.frontendReadTranslation(req.lang, 'MSG_OPTION_UPDATED');

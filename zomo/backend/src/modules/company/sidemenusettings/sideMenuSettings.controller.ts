@@ -1,3 +1,5 @@
+import { CompanyService } from "@/modules/company/companies/company.service";
+import { MediaCategoryService } from "@/modules/mediafitness/mediacategory/mediacategory.service";
 import {
     appConstant, CacheService,
     CommonArrayService,
@@ -25,8 +27,6 @@ import { CreateCompanySideMenuSettingsInput, PaginateWithCompanyInput } from "..
 import { TranslationService } from "../../translation/translation.service";
 import { FrontService } from "../front/front.service";
 import { SideMenuSettingsService } from "./sideMenuSettings.service";
-import {MediaCategoryService} from "@/modules/mediafitness/mediacategory/mediacategory.service";
-import {CompanyService} from "@/modules/company/companies/company.service";
 const path = require('path');
 @Controller('company/side-menu-settings')
 @UseGuards(TokenGuard, RoleGuard, AccessGuard)
@@ -342,24 +342,24 @@ export class SideMenuSettingsController {
                 for (let i = 0; i < Object.keys(resultDetails.showmenulist).length; i++) {
                     let key = Object.keys(resultDetails.showmenulist)[i];
                     if (key == 'Plans' && resultDetails.showmenulist[key]?.['Mainmenucustomname'] == '') {
-                        const dynamicDatas = {};
-                        dynamicDatas[`Plans_${item.org_id}`] = 'My Plan';
-                        await this.translatorService.DynamicEngJsonData('Common', item.org_id, dynamicDatas,'Edit','Menu');
+                        const dynamicData = {};
+                        dynamicData[`Plans_${item.org_id}`] = 'My Plan';
+                        await this.translatorService.DynamicEngJsonData('Common', item.org_id, dynamicData,'Edit','Menu');
                     }
                     /*if (key == 'Devices_Sync' && resultDetails.showmenulist[key]?.['Mainmenucustomname'] == '') {
-                        const dynamicDatas = {};
-                        dynamicDatas[`Devices Sync_${item.org_id}`] = 'Fitbit Sync';
-                        await this.translatorService.DynamicEngJsonData('Common', item.org_id, dynamicDatas,'Edit','Menu');
+                        const dynamicData = {};
+                        dynamicData[`Devices Sync_${item.org_id}`] = 'Fitbit Sync';
+                        await this.translatorService.DynamicEngJsonData('Common', item.org_id, dynamicData,'Edit','Menu');
                     }
                     if (key == 'Media' && resultDetails.showmenulist[key]?.['Mainmenucustomname'] == '') {
                         let checkExist = await this.mediaCategoryService.checkExists({org_id: item?.org_id, status: 1});
-                        const dynamicDatas = {};
+                        const dynamicData = {};
                         if (!checkExist) {
-                            dynamicDatas[`${key}_${item.org_id}`] = await this.translatorService.frontendReadTranslation(req.lang,'Fitness Videos', `/LC_MESSAGES/Media/Media`,`static`);
+                            dynamicData[`${key}_${item.org_id}`] = await this.translatorService.frontendReadTranslation(req.lang,'Fitness Videos', `/LC_MESSAGES/Media/Media`,`static`);
                         } else {
-                            dynamicDatas[`${key}_${item.org_id}`] = await this.translatorService.frontendReadTranslation(req.lang,'Media', `/LC_MESSAGES/Media/Media`,`static`);
+                            dynamicData[`${key}_${item.org_id}`] = await this.translatorService.frontendReadTranslation(req.lang,'Media', `/LC_MESSAGES/Media/Media`,`static`);
                         }
-                        await this.translatorService.DynamicEngJsonData('Common', item.org_id, dynamicDatas,'Edit','Menu');
+                        await this.translatorService.DynamicEngJsonData('Common', item.org_id, dynamicData,'Edit','Menu');
                     }*/
                 }
                 let fileName = `side_menu_${item.org_id}.json`

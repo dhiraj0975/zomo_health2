@@ -173,16 +173,16 @@ export class CategoryController {
                 throw new Error((await this.translatorService.frontendReadTranslation(req.lang,'ERR_FILES_ALREADY_EXIST')).replace('%s', 'Category'));
             }
             let recordDetails = await this.categoryService.save({...postData});
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.category_name){
-                let tilte = `category_name_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.category_name;
+                let title = `category_name_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.category_name;
             }            
             if(postData?.description){
-                let tilte = `category_description_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.description;
+                let title = `category_description_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.description;
             }            
-            await this.translatorService.DynamicEngJsonData('Campaign','',dynamicDatas,'Edit','Category',recordDetails['id']);
+            await this.translatorService.DynamicEngJsonData('Campaign','',dynamicData,'Edit','Category',recordDetails['id']);
             return res.status(HttpStatus.OK).json({
                 statusCode: 201,
                 success: 1,
@@ -220,16 +220,16 @@ export class CategoryController {
                 }
             }
             const recordDetails = await this.categoryService.findOne({ id: postData?.id });
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.category_name){
-                let tilte = `category_name_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.category_name;
+                let title = `category_name_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.category_name;
             }            
             if(postData?.description){
-                let tilte = `category_description_${recordDetails['id']}`
-                dynamicDatas[`${tilte}`]= postData?.description;
+                let title = `category_description_${recordDetails['id']}`
+                dynamicData[`${title}`]= postData?.description;
             }            
-            await this.translatorService.DynamicEngJsonData('Campaign','',dynamicDatas,'Edit','Category',recordDetails['id']);
+            await this.translatorService.DynamicEngJsonData('Campaign','',dynamicData,'Edit','Category',recordDetails['id']);
             const resultedData = await this.categoryService.update({ id: postData?.id },{...postData});
             this.activityLogService.create(recordDetails, postData, tableConstant.TBL_USERS, req.tokenUser?.id);
             return res.status(HttpStatus.OK).json({

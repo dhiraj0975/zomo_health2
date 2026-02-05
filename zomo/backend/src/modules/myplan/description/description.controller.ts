@@ -113,8 +113,8 @@ export class MyPlanDescriptionController {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_DESCRIPTION_ALREADY_EXIST"));
             }
             await this.myPlanDescriptionService.save({...postData});
-            let dynamicDatas= { [`description_${postData['module_id']}`]: postData?.description };
-            await this.translatorService.DynamicEngJsonData('MyPlan',postData?.organization_id,dynamicDatas,'Add','PlanDescription')
+            let dynamicData= { [`description_${postData['module_id']}`]: postData?.description };
+            await this.translatorService.DynamicEngJsonData('MyPlan',postData?.organization_id,dynamicData,'Add','PlanDescription')
             return res.status(HttpStatus.OK).json({
                 statusCode: 201,
                 success: 1,
@@ -144,8 +144,8 @@ export class MyPlanDescriptionController {
             }
             const recordDetails = await this.myPlanDescriptionService.findOne({ id: postData?.id});
             await this.myPlanDescriptionService.update({ id: postData?.id},{...postData});
-            let dynamicDatas= { [`description_${recordDetails['module_id']}`]: recordDetails?.description };
-            await this.translatorService.DynamicEngJsonData('MyPlan',recordDetails?.organization_id,dynamicDatas,'Edit','PlanDescription')
+            let dynamicData= { [`description_${recordDetails['module_id']}`]: recordDetails?.description };
+            await this.translatorService.DynamicEngJsonData('MyPlan',recordDetails?.organization_id,dynamicData,'Edit','PlanDescription')
             this.activityLogService.create(recordDetails, postData, tableConstant.MY_PLAN.TBL_MP_DESCRIPTION, req.tokenUser?.id);
             return res.status(HttpStatus.OK).json({
                 statusCode: 201,

@@ -332,16 +332,16 @@ export class DepartmentController {
             }
             const saveResult = await this.departmentService.save(postData);
             const deptID = saveResult.identifiers[0].id;
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.dept_name){
-                let tilte = `department_name_${deptID}`
-                dynamicDatas[`${tilte}`]= postData?.dept_name;
+                let title = `department_name_${deptID}`
+                dynamicData[`${title}`]= postData?.dept_name;
             } 
             if(postData?.dept_desc){
-                let tilte = `department_desc_${deptID}`
-                dynamicDatas[`${tilte}`]= postData?.dept_desc;
+                let title = `department_desc_${deptID}`
+                dynamicData[`${title}`]= postData?.dept_desc;
             }
-            await this.translatorService.DynamicEngJsonData('OrgAdmin',postData?.company_id,dynamicDatas,'Edit','Department',deptID);
+            await this.translatorService.DynamicEngJsonData('OrgAdmin',postData?.company_id,dynamicData,'Edit','Department',deptID);
             let deptCode = this.commonService.generateCode('D', deptID);
             let codeCheck = await this.departmentService.findOne({
                 code: deptCode,
@@ -434,16 +434,16 @@ export class DepartmentController {
                 },
             );
             const deptID = recordDetails?.id;
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.dept_name){
-                let tilte = `department_name_${deptID}`
-                dynamicDatas[`${tilte}`]= postData?.dept_name;
+                let title = `department_name_${deptID}`
+                dynamicData[`${title}`]= postData?.dept_name;
             } 
             if(postData?.dept_desc){
-                let tilte = `department_desc_${deptID}`
-                dynamicDatas[`${tilte}`]= postData?.dept_desc;
+                let title = `department_desc_${deptID}`
+                dynamicData[`${title}`]= postData?.dept_desc;
             }
-            await this.translatorService.DynamicEngJsonData('OrgAdmin',postData?.company_id,dynamicDatas,'Edit','Department',deptID);
+            await this.translatorService.DynamicEngJsonData('OrgAdmin',postData?.company_id,dynamicData,'Edit','Department',deptID);
             this.activityLogService.create(recordDetails, postData, tableConstant.COMPANIES.TBL_DEPARTMENT, req.tokenUser?.id);
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,

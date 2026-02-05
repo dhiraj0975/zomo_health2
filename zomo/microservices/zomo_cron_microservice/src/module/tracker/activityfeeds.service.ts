@@ -277,7 +277,7 @@ export class ActivityFeedService extends BaseService<ActivityFeedsEntity> {
                     const userList = await this.userService.usersDataWellness(user, `User.role_id != 1 AND User.id != ${user.id} AND User.membership_code = '${membershipcode}' ${postData?.show_terminated_users?.toString() === '2' ? ' AND User.status = 1' : ''}`);
                     let filteredUserList = userList && userList.length != 0 ? userList : [];
                     if (postData?.users && postData?.users.length != 0) {
-                        let incomingUserList = this.commonArrayService.transformToArray(postData?.users, ',');
+                        let incomingUserList = this.commonArrayService.transformToArray(postData?.users, ',', 'string') as string[] || [];
                         if (userList && userList.length != 0) {
                             filteredUserList = userList?.filter((ele: any) => incomingUserList.includes(String(ele.id)));
                         }

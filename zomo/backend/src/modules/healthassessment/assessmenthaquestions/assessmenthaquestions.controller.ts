@@ -182,12 +182,12 @@ export class AssessmentHaQuestionsController {
             /*TODO: order to order_id db field change*/
             postData['order'] = assessmentQuestionsOrder && assessmentQuestionsOrder['order'] ? assessmentQuestionsOrder['order'] + 1 : 1;
             let questionData = await this.assessmentQuestionsService.save({...postData});
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.question_title){
-                let tilte = `question_title_${questionData.identifiers[0].id}`
-                dynamicDatas[`${tilte}`] = postData?.question_title;
+                let title = `question_title_${questionData.identifiers[0].id}`
+                dynamicData[`${title}`] = postData?.question_title;
             }                        
-            await this.translatorService.DynamicEngJsonData('MyHealth','hra',dynamicDatas,'Edit','Assessment',postData?.questioncat_id);
+            await this.translatorService.DynamicEngJsonData('MyHealth','hra',dynamicData,'Edit','Assessment',postData?.questioncat_id);
             return res.status(HttpStatus.CREATED).json({
                 statusCode: 201,
                 success: 1,
@@ -289,12 +289,12 @@ export class AssessmentHaQuestionsController {
             }
             await this.assessmentQuestionsService.update(where, {...postData});
             this.activityLogService.create(recordDetails, postData, tableConstant.HEALTH_ASSESSMENT.TBL_HA_QUESTIONS, req.tokenUser?.id);
-            let dynamicDatas = Object.create(null);
+            let dynamicData = Object.create(null);
             if(postData?.question_title){
-                let tilte = `question_title_${postData['id']}`
-                dynamicDatas[`${tilte}`] = postData?.question_title;
+                let title = `question_title_${postData['id']}`
+                dynamicData[`${title}`] = postData?.question_title;
             }                        
-            await this.translatorService.DynamicEngJsonData('MyHealth','hra',dynamicDatas,'Edit','Assessment',recordDetails?.questioncat_id);
+            await this.translatorService.DynamicEngJsonData('MyHealth','hra',dynamicData,'Edit','Assessment',recordDetails?.questioncat_id);
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
                 success: 1,

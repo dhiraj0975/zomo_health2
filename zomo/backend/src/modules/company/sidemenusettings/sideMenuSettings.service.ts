@@ -1,3 +1,5 @@
+import { MediaCategoryService } from "@/modules/mediafitness/mediacategory/mediacategory.service";
+import { TranslationService } from "@/modules/translation/translation.service";
 import {
     appConstant,
     BaseService,
@@ -9,8 +11,6 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { PaginateWithCompanyInput } from "../../../input";
-import {TranslationService} from "@/modules/translation/translation.service";
-import {MediaCategoryService} from "@/modules/mediafitness/mediacategory/mediacategory.service";
 @Injectable()
 export class SideMenuSettingsService extends BaseService<CompanySideMenuSettingsEntity>  {
     constructor(
@@ -79,9 +79,9 @@ export class SideMenuSettingsService extends BaseService<CompanySideMenuSettings
     async sideMenuSettingJson(sideMenuSettingObj: any,orgId: number) {
         const jsonMenu = '{"Dashboard":"Dashboard","Agreement":"Agreement","Activities":"Activities","Activity Forms":"Activity Forms","Submit Form":"Submit Form","Submitted Forms":"Submitted Forms","Reimbursements":"Reimbursements","reimbursements_submit_form":"Submit Form","reimbursements_submitted_forms":"Submitted Forms","Health Forms":"Health Forms","Submit Forms":"Submit Forms","health_forms_submitted_forms":"Submitted Forms","Devices Sync":"Devices Sync","My Health":"My Health","Assessment":"Assessment","Health Data":"Health Data","Results":"Results","Plans":"My Plan","Trackers":"Trackers","Nutrition":"Nutrition","Exercise":"Exercise","Measurements":"Measurements","Biometrics":"Biometrics","Fitbit Sync":"Fitbit Sync","Sleep":"Sleep","Covid Passport":"Covid Passport","Events":"Events","Challenges":"Challenges","Join Challenges":"Join Challenges","My Challenges":"My Challenges","Quizzes":"Quizzes","Support":"Support","Internalmail":"Internalmail","Email":"Email","Emotional Well-Being":"Emotional Well-Being","Media":"Media","Fitness Videos":"Fitness Videos","Media Dashboard":"Media Dashboard","Quicklink":"Quicklink","Weight Log":"Weight Log","Blood Pressure Log":"Blood Pressure Log","Cholesterol Log":"Cholesterol Log","Blood Glucose Log":"Blood Glucose Log"}';
         const jsonDecodeMenu = JSON.parse(jsonMenu);
-        const dynamicDatas = {};
+        const dynamicData = {};
         Object.keys(jsonDecodeMenu).forEach(jsmenukey => {
-            dynamicDatas[`${jsmenukey}_${orgId}`] = jsonDecodeMenu[jsmenukey];
+            dynamicData[`${jsmenukey}_${orgId}`] = jsonDecodeMenu[jsmenukey];
         });
         /* Side bar media name change check category not exist and name blank then Fitness Video default name show start
         const showMenuList = sideMenuSettingObj?.showmenulist;
@@ -91,9 +91,9 @@ export class SideMenuSettingsService extends BaseService<CompanySideMenuSettings
                 if (key == 'Media' && showMenuList[key]?.['Mainmenucustomname'] == '') {
                     let checkExist = await this.mediaCategoryService.checkExists({org_id: orgId, status: 1});
                     if (!checkExist) {
-                        dynamicDatas[`${key}_${orgId}`] = await this.translatorService.frontendReadTranslation('eng','Fitness Videos', `/LC_MESSAGES/Media/Media`,`static`);
+                        dynamicData[`${key}_${orgId}`] = await this.translatorService.frontendReadTranslation('eng','Fitness Videos', `/LC_MESSAGES/Media/Media`,`static`);
                     } else {
-                        dynamicDatas[`${key}_${orgId}`] = await this.translatorService.frontendReadTranslation('eng','Media', `/LC_MESSAGES/Media/Media`,`static`);
+                        dynamicData[`${key}_${orgId}`] = await this.translatorService.frontendReadTranslation('eng','Media', `/LC_MESSAGES/Media/Media`,`static`);
                     }
                 }
             }
@@ -104,87 +104,87 @@ export class SideMenuSettingsService extends BaseService<CompanySideMenuSettings
             Object.keys(sideMenuSetting).forEach(Mekey => {
                 const MeValue = sideMenuSetting[Mekey];
                 if (['Dashboard', 'Agreement', 'Activities', 'Plans', 'Trackers', 'Events', 'Challenges', 'Quizzes', 'Support', 'Internalmail', 'Media', 'Quicklink'].includes(Mekey) && MeValue !== '') {
-                    dynamicDatas[`${Mekey}_${orgId}`] = MeValue;
+                    dynamicData[`${Mekey}_${orgId}`] = MeValue;
                 }
                 if (Mekey === 'Activity_Forms' && MeValue !== '') {
-                    dynamicDatas[`Activity Forms_${orgId}`] = MeValue;
+                    dynamicData[`Activity Forms_${orgId}`] = MeValue;
                 }
                 if (Mekey === 'Activity_Forms_Submit_Form' && MeValue !== '') {
-                    dynamicDatas[`Submit Form_${orgId}`] = MeValue;
+                    dynamicData[`Submit Form_${orgId}`] = MeValue;
                 }
                 if (Mekey === 'Activity_Forms_Submitted_Forms' && MeValue !== '') {
-                    dynamicDatas[`Submitted Forms_${orgId}`] = MeValue;
+                    dynamicData[`Submitted Forms_${orgId}`] = MeValue;
                 }
                 if (Mekey === 'Reimbursements' && MeValue !== '') {
-                    dynamicDatas[`Reimbursements_${orgId}`] = MeValue;
+                    dynamicData[`Reimbursements_${orgId}`] = MeValue;
                 }
                 if (Mekey === 'Reimbursements_Submit_Form' && MeValue !== '') {
-                    dynamicDatas[`reimbursements_submit_form_${orgId}`] = MeValue;
+                    dynamicData[`reimbursements_submit_form_${orgId}`] = MeValue;
                 }
                 if (Mekey === 'Reimbursements_Submitted_Forms' && MeValue !== '') {
-                    dynamicDatas[`reimbursements_submitted_forms_${orgId}`] = MeValue;
+                    dynamicData[`reimbursements_submitted_forms_${orgId}`] = MeValue;
                 }
                 if (Mekey === 'Health_Forms' && MeValue !== '') {
-                    dynamicDatas[`Health Forms_${orgId}`] = MeValue;
+                    dynamicData[`Health Forms_${orgId}`] = MeValue;
                 }
                 if (Mekey === 'Health_Forms_Submit_Forms' && MeValue !== '') {
-                    dynamicDatas[`Submit Forms_${orgId}`] = MeValue;
+                    dynamicData[`Submit Forms_${orgId}`] = MeValue;
                 }
                 if (Mekey === 'Health_Forms_Submitted_Forms' && MeValue !== '') {
-                    dynamicDatas[`health_forms_submitted_forms_${orgId}`] = MeValue;
+                    dynamicData[`health_forms_submitted_forms_${orgId}`] = MeValue;
                 }
                 if (Mekey === 'Devices_Sync' && MeValue !== '') {
-                    dynamicDatas[`Devices Sync_${orgId}`] = MeValue;
+                    dynamicData[`Devices Sync_${orgId}`] = MeValue;
                 }
                 if (Mekey === 'My_Health' && MeValue !== '') {
-                    dynamicDatas[`My Health_${orgId}`] = MeValue;
+                    dynamicData[`My Health_${orgId}`] = MeValue;
                 }
                 if (Mekey === 'My_Health_Assessment' && MeValue !== '') {
-                    dynamicDatas[`Assessment_${orgId}`] = MeValue;
+                    dynamicData[`Assessment_${orgId}`] = MeValue;
                 }
                 if (Mekey === 'My_Health_Health_Data' && MeValue !== '') {
-                    dynamicDatas[`Health Data_${orgId}`] = MeValue;
+                    dynamicData[`Health Data_${orgId}`] = MeValue;
                 }
                 if (Mekey === 'My_Health_Results' && MeValue !== '') {
-                    dynamicDatas[`Results_${orgId}`] = MeValue;
+                    dynamicData[`Results_${orgId}`] = MeValue;
                 }
                 if (['Trackers_Nutrition', 'Trackers_Exercise', 'Trackers_Measurements', 'Trackers_Biometrics'].includes(Mekey) && MeValue !== '') {
                     const MekeyT = Mekey.replace('Trackers_', '');
-                    dynamicDatas[`${MekeyT}_${orgId}`] = MeValue;
+                    dynamicData[`${MekeyT}_${orgId}`] = MeValue;
                 }
                 if (['Trackers_Biometrics_Weight_Log', 'Trackers_Biometrics_Blood_Pressure_Log', 'Trackers_Biometrics_Cholesterol_Log', 'Trackers_Biometrics_Blood_Glucose_Log'].includes(Mekey) && MeValue !== '') {
                     const MekeyT = Mekey.replace('Trackers_Biometrics_', '').replace(/_/g, " ");
-                    dynamicDatas[`${MekeyT}_${orgId}`] = MeValue;
+                    dynamicData[`${MekeyT}_${orgId}`] = MeValue;
                 }
                 if (Mekey === 'Trackers_Fitbit_Sync' && MeValue !== '') {
-                    dynamicDatas[`Fitbit Sync_${orgId}`] = MeValue;
+                    dynamicData[`Fitbit Sync_${orgId}`] = MeValue;
                 }
                 if (Mekey === 'Trackers_Sleep' && MeValue !== '') {
-                    dynamicDatas[`Sleep_${orgId}`] = MeValue;
+                    dynamicData[`Sleep_${orgId}`] = MeValue;
                 }
                 if (Mekey === 'Trackers_Covid_Passport' && MeValue !== '') {
-                    dynamicDatas[`Covid Passport_${orgId}`] = MeValue;
+                    dynamicData[`Covid Passport_${orgId}`] = MeValue;
                 }
                 if (Mekey === 'Challenges_Join_Challenges' && MeValue !== '') {
-                    dynamicDatas[`Join Challenges_${orgId}`] = MeValue;
+                    dynamicData[`Join Challenges_${orgId}`] = MeValue;
                 }
                 if (Mekey === 'Challenges_My_Challenges' && MeValue !== '') {
-                    dynamicDatas[`My Challenges_${orgId}`] = MeValue;
+                    dynamicData[`My Challenges_${orgId}`] = MeValue;
                 }
                 if (Mekey === 'Internalmail_Email' && MeValue !== '') {
-                    dynamicDatas[`Email_${orgId}`] = MeValue;
+                    dynamicData[`Email_${orgId}`] = MeValue;
                 }
                 if (Mekey === 'Emotional_Well-Being' && MeValue !== '') {
-                    dynamicDatas[`Emotional Well-Being_${orgId}`] = MeValue;
+                    dynamicData[`Emotional Well-Being_${orgId}`] = MeValue;
                 }
                 if (Mekey === 'Media_Fitness_Videos' && MeValue !== '') {
-                    dynamicDatas[`Fitness Videos_${orgId}`] = MeValue;
+                    dynamicData[`Fitness Videos_${orgId}`] = MeValue;
                 }
                 if (Mekey === 'Media_Media_Dashboard' && MeValue !== '') {
-                    dynamicDatas[`Media Dashboard_${orgId}`] = MeValue;
+                    dynamicData[`Media Dashboard_${orgId}`] = MeValue;
                 }
             });
         }
-        await this.translatorService.DynamicEngJsonData('Common', orgId, dynamicDatas,'Edit','Menu');
+        await this.translatorService.DynamicEngJsonData('Common', orgId, dynamicData,'Edit','Menu');
     }
 }

@@ -487,7 +487,8 @@ export class CommonArrayService {
 
         obj[newKey] = value;
     };
-    transformToArray(input: any, delimiter: string = ','): string[] {
+    transformToArray(input: any, delimiter: string = ',', changedType: 'string' | 'number' = 'string')
+        : string[] | number[] {
         if (input == null) return [];
         let values: string[] = [];
         if (typeof input === 'string') {
@@ -507,7 +508,10 @@ export class CommonArrayService {
         }
         else {
             const str = input.toString().trim();
-            return str ? [str] : [];
+            values = str ? [str] : [];
+        }
+        if (changedType === 'number') {
+            return values.map(value => Number(value));
         }
         return values;
     }

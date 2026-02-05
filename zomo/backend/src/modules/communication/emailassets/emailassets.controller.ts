@@ -1,4 +1,4 @@
-import { appConstant, CacheService, CommonArrayService, CommonFileService } from '@common-constants';
+import { appConstant, CacheService, CommonArrayService, CommonDateService, CommonFileService } from '@common-constants';
 import {
     Body,
     Controller,
@@ -24,25 +24,73 @@ import { AccessGuard, RoleGuard, TokenGuard } from '../../../guard';
 import { fileName, imgFilter } from "../../../utils/image-upload.utils";
 import { ActivityLogService } from "../../master/activitylog/activitylog.service";
 const S3COMMUNICATION_URL = process.env.AWS_COMMUNICATION_BUCKET_URL;
+const EMAIL_ASSETS_CACHE_TTL = 60000;
+
 @Controller('communication/email-assets')
 @UseGuards(TokenGuard, RoleGuard)
 export class EmailAssetsController {
     constructor(
         private readonly commonFileService: CommonFileService,
         private readonly commonArrayService: CommonArrayService,
+        private readonly commonDateService: CommonDateService,
         private readonly cacheService: CacheService,
         private readonly translatorService: TranslationService,
         @Inject('COMMON_SERVICE')
         private commonMicroservice: ClientProxy,
         private readonly activityLogService: ActivityLogService,
     ) {}
+    private getListPrefixes(role_id: number, companyId: number, searchStr?: string): string[] {
+        if (Number(role_id) === 11) return ['zhOrgImg/11/' + companyId, 'zhGloImg'];
+        if (searchStr) return [`zhGloImg/38/0/${searchStr}`, `zhGloImg/39/0/${searchStr}`, `zhGloImg/40/0/${searchStr}`, `zhGloImg/41/0/${searchStr}`];
+        return ['zhGloImg'];
+    }
+    private async fetchAssetsFromS3(role_id: number, companyId: number, searchStr?: string): Promise<{ list: any[]; total: number }> {
+        const prefixs = this.getListPrefixes(role_id, companyId, searchStr);
+        let allDatas: any[] = [];
+        for (const prefix of prefixs) {
+            let continuationToken: string = null;
+            do {
+                const data = await lastValueFrom(
+                    this.commonMicroservice.send({ cmd: 'list_assests' }, { maxKeys: 1000, prefixes: [prefix], continuationToken }),
+                    { defaultValue: { datas: [], nextContinuationToken: null } }
+                );
+                const batch = (data?.datas || []).filter(item => item?.Key);
+                allDatas = allDatas.concat(batch);
+                continuationToken = data?.nextContinuationToken || null;
+            } while (continuationToken);
+        }
+        const sorted = allDatas.sort((a, b) => new Date(b.LastModified || 0).getTime() - new Date(a.LastModified || 0).getTime());
+        const list = sorted.map(item => ({
+            ...item,
+            url: `${S3COMMUNICATION_URL}${item.Key}`,
+            LastModifiedRaw: item.LastModified ?? null,
+            LastModified: item.LastModified ? this.commonDateService.DateTimeFormat(item.LastModified, 'MM-DD-YYYY hh:mm A') : '',
+        }));
+        return { list, total: list.length };
+    }
+    private async refreshEmailAssetsCacheForUser(role_id: number, companyId: number, logLabel: string): Promise<number | null> {
+        this.cacheService.removeKeysByPrefix('email-assets-list-');
+        const cacheKey = `email-assets-list-${role_id}-${companyId}-`;
+        try {
+            const { list, total } = await this.fetchAssetsFromS3(role_id, companyId);
+            this.cacheService.setCache(cacheKey, JSON.stringify({ list, total }), EMAIL_ASSETS_CACHE_TTL);
+            return total;
+        } catch {
+            return null;
+        }
+    }
+
     @UseGuards(AccessGuard)
     @Post('paginate')
     async paginate(@Req() req: Request, @Res() res: Response, @Body() postData: Record<string, any>) {
         try {
             const role_id = req.tokenUser?.role_id;
             const companyId = req.tokenUser?.org_id;
-            const searchStr = (postData?.searchstr && postData?.searchstr !== '') ? postData?.searchstr : '';
+            const searchStr = (postData?.search_str && postData?.search_str !== '') ? postData?.search_str : '';
+            const rawDateFilter = postData?.date ? String(postData.date).trim() : '';
+            const normalizedDateFilter = rawDateFilter
+                ? this.commonDateService.DateTimeFormat(rawDateFilter, 'YYYY-MM-DD')
+                : '';
             const cacheKey = `email-assets-list-${role_id}-${companyId ?? 0}-${searchStr}`;
             const paginateObj = this.commonArrayService.getPaginationVar(postData?.page || 1, postData?.limit || postData?.take);
 
@@ -50,54 +98,27 @@ export class EmailAssetsController {
             let from_cache: boolean;
 
             const cached = this.cacheService.getCache(cacheKey);
+            let baseList: any[] = [];
             if (cached && Array.isArray(cached?.list) && typeof cached?.total === 'number') {
-                console.log('[EmailAssets paginate] cache HIT', { cacheKey, total: cached.total, listLength: cached.list?.length });
-                paginationResponse = this.commonArrayService.paginationResponseChallengeReport(cached.list, cached.total, paginateObj);
+                baseList = cached.list;
                 from_cache = true;
             } else {
-                console.log('[EmailAssets paginate] cache MISS', { cacheKey });
-                let prefixs = [];
-                if (Number(role_id) === 11) {
-                    prefixs = ['zhOrgImg/11/' + (companyId ?? 0), 'zhGloImg'];
-                } else {
-                    prefixs = ['zhGloImg'];
-                    if (postData?.searchstr && postData?.searchstr !== '') {
-                        prefixs = [
-                            `zhGloImg/38/0/${postData?.searchstr}`,
-                            `zhGloImg/39/0/${postData?.searchstr}`,
-                            `zhGloImg/40/0/${postData?.searchstr}`,
-                            `zhGloImg/41/0/${postData?.searchstr}`,
-                        ];
-                    }
-                }
-                let allDatas: any[] = [];
-                for (const prefix of prefixs) {
-                    let continuationToken: string = null;
-                    do {
-                        const data = await lastValueFrom(this.commonMicroservice.send({cmd: 'list_assests'}, {maxKeys: 1000, prefixes: [prefix], continuationToken}), { defaultValue: { datas: [], nextContinuationToken: null } });
-                        const batch = (data?.datas || []).filter(item => item?.Key);
-                        allDatas = allDatas.concat(batch);
-                        continuationToken = data?.nextContinuationToken || null;
-                    } while (continuationToken);
-                }
-                const sortedAssets = allDatas.sort(
-                    (a, b) => new Date(b.LastModified || 0).getTime() - new Date(a.LastModified || 0).getTime()
-                );
-                const formattedAssets = sortedAssets.map(item => ({ ...item, url: `${S3COMMUNICATION_URL}${item.Key}` }));
-                const total = formattedAssets.length;
-
-                this.cacheService.setCache(cacheKey, JSON.stringify({ list: formattedAssets, total }), 60000);
-                console.log('[EmailAssets paginate] cache SET', { cacheKey, total, listLength: formattedAssets.length });
-                paginationResponse = this.commonArrayService.paginationResponseChallengeReport(formattedAssets, total, paginateObj);
+                const { list: formattedAssets, total } = await this.fetchAssetsFromS3(Number(role_id), companyId ?? 0, searchStr || undefined);
+                this.cacheService.setCache(cacheKey, JSON.stringify({ list: formattedAssets, total }), EMAIL_ASSETS_CACHE_TTL);
+                baseList = formattedAssets;
                 from_cache = false;
             }
 
-            return res.status(HttpStatus.CREATED).json({
-                statusCode: 201,
-                success: 1,
-                error: 0,
-                data: { ...paginationResponse, from_cache },
-                message: 'Assets successfully uploaded',
+            // Date filter similar style as emailcampaignrequests: single `date` for the day (00:00 to 23:59)
+            const filteredList = normalizedDateFilter
+                ? (baseList || []).filter((item) => {
+                    const raw = item?.LastModifiedRaw ?? item?.LastModified;
+                    const ts = raw ? new Date(raw).getTime() : NaN;
+                    return !Number.isNaN(ts) && new Date(raw).toISOString().slice(0, 10) === normalizedDateFilter;
+                })
+                : (baseList || []);
+            paginationResponse = this.commonArrayService.paginationResponseChallengeReport(filteredList,filteredList.length,paginateObj,);
+            return res.status(HttpStatus.CREATED).json({statusCode: 201,success: 1,error: 0,data: { ...paginationResponse, from_cache },message: 'Assets successfully uploaded',
             });
         } catch (error) {
             this.activityLogService.error_log(req.tokenUser?.id,req?.originalUrl, error?.message, error, req);
@@ -207,32 +228,15 @@ export class EmailAssetsController {
                 }
             }
 
-            let total: number | null = null;
-            const cacheKey = role_id === 11
-                ? `email-assets-list-${role_id}-${orgId}-`
-                : `email-assets-list-${role_id}-0-`;
-            const cached = this.cacheService.getCache(cacheKey);
-            if (cached && Array.isArray(cached?.list) && typeof cached?.total === 'number') {
-                const baseUrl = (S3COMMUNICATION_URL || '').replace(/\/$/, '');
-                const newItems = uploadedFiles.map(Key => ({
-                    Key,
-                    LastModified: new Date().toISOString(),
-                    url: `${baseUrl}/${Key}`,
-                })).reverse();
-                const list = [...newItems, ...cached.list];
-                total = list.length;
-                this.cacheService.setCache(cacheKey, JSON.stringify({ list, total }), 60000);
-                console.log('[EmailAssets create] cache UPDATED', { cacheKey, total, added: uploadedFiles.length });
-            } else {
-                console.log('[EmailAssets create] cache NOT UPDATED (no cache)', { cacheKey });
-            }
+            const companyId = req.tokenUser?.org_id ?? 0;
+            const total = await this.refreshEmailAssetsCacheForUser(Number(role_id), companyId, '[EmailAssets create] cache invalidated & creator cache REFRESHED from S3');
 
             return res.status(201).json({
                 statusCode: 201,
                 success: 1,
                 error: 0,
                 message: 'Assets successfully uploaded',
-                data: { list: uploadedFiles, total }
+                data: { list: uploadedFiles, total: total ?? uploadedFiles.length },
             });
 
         } catch (error) {
@@ -280,18 +284,8 @@ export class EmailAssetsController {
                             this.commonMicroservice.send({ cmd: 'remove_file_communication' }, { path: postData?.key })
                         );
 
-                        let total: number | null = null;
                         const companyId = req.tokenUser?.org_id ?? 0;
-                        const cacheKey = `email-assets-list-${role_id}-${companyId}-`;
-                        const cached = this.cacheService.getCache(cacheKey);
-                        if (cached && Array.isArray(cached?.list) && typeof cached?.total === 'number') {
-                            const list = (cached.list as any[]).filter(item => item?.Key !== postData?.key);
-                            total = list.length;
-                            this.cacheService.setCache(cacheKey, JSON.stringify({ list, total }), 60000);
-                            console.log('[EmailAssets delete] cache UPDATED', { cacheKey, total, removedKey: postData?.key });
-                        } else {
-                            console.log('[EmailAssets delete] cache NOT UPDATED (no cache)', { cacheKey });
-                        }
+                        const total = await this.refreshEmailAssetsCacheForUser(role_id, companyId, '[EmailAssets delete] cache invalidated & deleter cache REFRESHED from S3');
 
                         return res.status(200).json({
                             success: 1,
