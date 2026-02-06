@@ -14,8 +14,9 @@ const TRANSLATIONS_DIR = appConstant.TRANSLATIONS_DIR || './src/local';
 const readFileAsync = promisify(fs.readFile);
 const deviceDetector = new DeviceDetector();
 const S3_URL =  process.env.S3_URL_PROD
-const secretKey = process.env.SECRET_KEY_PROD.slice(0, 32);
-const iv = process.env.SECRET_KEY_PROD.slice(0, 16);
+const secretKeyBase = process.env.SECRET_KEY_PROD ?? '';
+const secretKey = secretKeyBase.slice(0, 32);
+const iv = secretKeyBase.slice(0, 16);
 const algorithm = 'aes-256-gcm';
 const key = crypto.scryptSync(secretKey!, 'salt', 32);
 @Injectable()

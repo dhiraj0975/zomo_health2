@@ -6,5 +6,5 @@ export class DraftEmailInput {
     @Allow() subject: string;
     @Allow() type: string;
     @Allow() description: string;
-    @Allow() email_to: number[] | string[];
+    @Allow() email_to: number[] | string[] | string;
 }

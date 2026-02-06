@@ -5,7 +5,7 @@ export class MyPlanBlocksDto {
     @Expose() name: string;
     @Expose()
     @Type(() => String)
-    @Transform(({ value }) => (value && value.includes('block') ? S3_URL + value : value), {
+    @Transform(({ value }) => (value && value.includes('block') ? S3_URL + value + '?' + Date.now() : value), {
         toClassOnly: true,
     })
     icon: string;

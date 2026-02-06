@@ -86,163 +86,175 @@ export class CommunicationEmailController {
                 if (emailToDetails && emailToDetails.length > 0) {
                     mailId = emailToDetails.map(item => item.mail_id);
                 }
-                if (mailId.length > 0) {
-                    let parentEmails = await this.communicationEmailService.listRecord({
-                        id: In(mailId),
-                        is_send: 1,
-                    });
-                    if (parentEmails && parentEmails.length > 0) {
-                        parentId = parentEmails
-                            .map(item => item.parent_id)
-                            .filter(val => val);
-                    }
-                    let emailToId = [...new Set([...mailId, ...parentId])];
-                    let sentWhere = [];
-                    if (postData?.type == 'inbox') {
-                        sentWhere.push({
+                if (mailId.length == 0) {
+                    mailId = null;
+                }
+                let parentEmails = await this.communicationEmailService.listRecord({
+                    id: In(mailId || []),
+                    is_send: 1,
+                });
+                if (parentEmails && parentEmails.length > 0) {
+                    parentId = parentEmails
+                        .map(item => item.parent_id)
+                        .filter(val => val);
+                }
+                let emailToId = null;
+                if ((mailId && mailId.length > 0) || (parentId && parentId.length > 0)) {
+                    emailToId = [
+                        ...new Set(
+                            [
+                                ...(mailId || []),
+                                ...(parentId || [])
+                            ]
+                        )
+                    ];
+                }
+                let sentWhere = [];
+                if (postData?.type == 'inbox') {
+                    sentWhere.push(
+                        {
                             from_user_id: userId,
                             is_send: 1,
                             is_spam: 0,
                             is_trash: 0,
                             parent_id: Not(0),
                         },
-                            {
-                                id: In(emailToId),
-                            });
-                    }
-                    if (postData?.type == 'inbox_send') {
-                        sentWhere.push(
-                            {
-                                from_user_id: userId,
-                                is_send: 1,
-                                is_spam: 0,
-                                is_trash: 0,
-                            },
-                            {
-                                id: In(emailToId),
-                                parent_id: Not(0),
-
-                            }
-                        )
-                    }
-                    if (postData?.type == 'inbox_trash') {
-                        sentWhere.push(
-                            {
-                                from_user_id: userId,
-                                is_send: 1,
-                                is_trash: 1,
-                            },
-                            {
-                                id: In(emailToId),
-                            }
-                        )
-                    }
-                    if (postData?.type == 'inbox_spam') {
-                        sentWhere.push(
-                            {
-                                from_user_id: userId,
-                                is_send: 1,
-                                is_spam: 1,
-                            },
-                            {
-                                id: In(emailToId),
-                            }
-                        )
-                    }
-                    let sent = await this.communicationEmailService.listRecord(sentWhere);
-                    let key = sent.map(item => item.id);
-                    let value = sent.map(item => item.parent_id);
-                    let sentFinal = [...new Set([...key, ...value])].filter(val => val);
-                    let condition = `communication.id IN (${sentFinal.length > 0 ? sentFinal.join(',') : null}) `;
-                    if (postData?.search_str) {
-                        condition += ` AND (communication.subject LIKE '%${postData?.search_str}%' OR user.first_name LIKE '%${postData?.search_str}%' OR user.last_name LIKE '%${postData?.search_str}%' )`;
-                    }
-                    let subCondition = ``;
-                    if (postData?.type == 'inbox') {
-                        subCondition = `user.id = communication.from_user_id`
-                    }
-                    if (postData?.type == 'inbox_send') {
-                        subCondition = `user.id = EmailTo.user_id`
-                    }
-                    if (postData?.type == 'inbox_trash') {
-                        subCondition = `user.id = communication.from_user_id`
-                    }
-                    if (postData?.type == 'inbox_spam') {
-                        subCondition = `user.id = communication.from_user_id`
-                    }
-                    let emailInbox = await this.communicationEmailService.paginateWithEmT(
-                        condition,
-                        null,
-                        [
-                            'communication.from_user_id',
-                            'EmailTo.user_id',
-                            'user.first_name',
-                            'user.last_name',
-                            'communication.id',
-                            'communication.subject',
-                            'communication.is_attachment',
-                            'communication.created_date',
-                            'communication.is_important',
-                        ],
-                        postData,
-                        subCondition,
-                    );
-                    let emailInboxIds = emailInbox['list'].map(item => item.id);
-                    let emailStatusMap = await this.getEmailStatusBulk(emailInboxIds, userId);
-                    let resultData = {};
-                    await Promise.all(
-                        emailInbox['list'].map(async item => {
-                            const statusInfo = emailStatusMap.get(item.id)
-                                || {
-                                read: 0,
-                                important: 0,
-                                count: 0
-                            };
-                            resultData[item.id] = {
-                                ...item,
-                                status: statusInfo.read,
-                                is_important: statusInfo.important,
-                                total_count: statusInfo.count,
-                            };
-                            item.status = statusInfo.read;
-                            item.is_readed = statusInfo.read;
-                            item.is_important = statusInfo.important;
-                            item.total_count = statusInfo.count;
-                            item.created_date_copy = item.created_date;
-                            const addedDate = this.commonDateService.DateTimeFormat(
-                                item.created_date,
-                                'utcTimeFormat',
-                                'YYYY-MM-DD HH:mm:ss'
-                            );
-                            let monthName = this.commonDateService.DateTimeFormat(addedDate, 'MMM')?.toString();
-                            monthName = await this.translatorService.frontendReadTranslation(req.lang, monthName, `/LC_MESSAGES/Common/Month`, 'static');
-                            const formattedDate =
-                                monthName + ' ' + this.commonDateService.DateTimeFormat(addedDate, 'D') + ', ' + this.commonDateService.DateTimeFormat(addedDate, 'YYYY');
-
-                            item.created_date = formattedDate + ' ' + this.commonDateService.getTodayDate(addedDate).format('HH:mm');
-                        })
-                    );
-                    let emailCount = await this.communicationHelperService.getEmailCounting(
                         {
-                            coach_id: userId
-                        },
-                        req
+                            id: In(emailToId || []),
+                        }
                     );
-                    emailInbox['emailCount'] = emailCount || {
-                        inbox: 0,
-                        sent: 0,
-                        draft: 0,
-                        trash: 0,
-                        spam: 0,
-                    };
-                    return res.status(HttpStatus.OK).json({
-                        statusCode: 200,
-                        success: 1,
-                        error: 0,
-                        data: emailInbox,
-                        message: 'success',
-                    });
                 }
+                if (postData?.type == 'inbox_send') {
+                    sentWhere.push(
+                        {
+                            from_user_id: userId,
+                            is_send: 1,
+                            is_spam: 0,
+                            is_trash: 0,
+                        },
+                        {
+                            id: In(emailToId || []),
+                            parent_id: Not(0),
+
+                        }
+                    )
+                }
+                if (postData?.type == 'inbox_trash') {
+                    sentWhere.push(
+                        {
+                            from_user_id: userId,
+                            is_send: 1,
+                            is_trash: 1,
+                        },
+                        {
+                            id: In(emailToId || []),
+                        }
+                    )
+                }
+                if (postData?.type == 'inbox_spam') {
+                    sentWhere.push(
+                        {
+                            from_user_id: userId,
+                            is_send: 1,
+                            is_spam: 1,
+                        },
+                        {
+                            id: In(emailToId || []),
+                        }
+                    )
+                }
+                let sent = await this.communicationEmailService.listRecord(sentWhere);
+                let key = sent.map(item => item.id);
+                let value = sent.map(item => item.parent_id);
+                let sentFinal = [...new Set([...key, ...value])].filter(val => val);
+                let condition = `communication.id IN (${sentFinal.length > 0 ? sentFinal.join(',') : null}) `;
+                if (postData?.search_str) {
+                    condition += ` AND (communication.subject LIKE '%${postData?.search_str}%' OR user.first_name LIKE '%${postData?.search_str}%' OR user.last_name LIKE '%${postData?.search_str}%' )`;
+                }
+                let subCondition = ``;
+                if (postData?.type == 'inbox') {
+                    subCondition = `user.id = communication.from_user_id`
+                }
+                if (postData?.type == 'inbox_send') {
+                    subCondition = `user.id = EmailTo.user_id`
+                }
+                if (postData?.type == 'inbox_trash') {
+                    subCondition = `user.id = communication.from_user_id`
+                }
+                if (postData?.type == 'inbox_spam') {
+                    subCondition = `user.id = communication.from_user_id`
+                }
+                let emailInbox = await this.communicationEmailService.paginateWithEmT(
+                    condition,
+                    null,
+                    [
+                        'communication.from_user_id',
+                        'EmailTo.user_id',
+                        'user.first_name',
+                        'user.last_name',
+                        'communication.id',
+                        'communication.subject',
+                        'communication.is_attachment',
+                        'communication.created_date',
+                        'communication.is_important',
+                    ],
+                    postData,
+                    subCondition,
+                );
+                let emailInboxIds = emailInbox['list'].map(item => item.id);
+                let emailStatusMap = await this.getEmailStatusBulk(emailInboxIds, userId);
+                let resultData = {};
+                await Promise.all(
+                    emailInbox['list'].map(async item => {
+                        const statusInfo = emailStatusMap.get(item.id)
+                            || {
+                            read: 0,
+                            important: 0,
+                            count: 0
+                        };
+                        resultData[item.id] = {
+                            ...item,
+                            status: statusInfo.read,
+                            is_important: statusInfo.important,
+                            total_count: statusInfo.count,
+                        };
+                        item.status = statusInfo.read;
+                        item.is_readed = statusInfo.read;
+                        item.is_important = statusInfo.important;
+                        item.total_count = statusInfo.count;
+                        item.created_date_copy = item.created_date;
+                        const addedDate = this.commonDateService.DateTimeFormat(
+                            item.created_date,
+                            'utcTimeFormat',
+                            'YYYY-MM-DD HH:mm:ss'
+                        );
+                        let monthName = this.commonDateService.DateTimeFormat(addedDate, 'MMM')?.toString();
+                        monthName = await this.translatorService.frontendReadTranslation(req.lang, monthName, `/LC_MESSAGES/Common/Month`, 'static');
+                        const formattedDate =
+                            monthName + ' ' + this.commonDateService.DateTimeFormat(addedDate, 'D') + ', ' + this.commonDateService.DateTimeFormat(addedDate, 'YYYY');
+                        item.created_date = formattedDate + ' ' + this.commonDateService.getTodayDate(addedDate).format('HH:mm');
+                    })
+                );
+                let emailCount = await this.communicationHelperService.getEmailCounting(
+                    {
+                        coach_id: userId
+                    },
+                    req
+                );
+                emailInbox['emailCount'] = emailCount || {
+                    inbox: 0,
+                    sent: 0,
+                    draft: 0,
+                    trash: 0,
+                    spam: 0,
+                };
+                return res.status(HttpStatus.OK).json({
+                    statusCode: 200,
+                    success: 1,
+                    error: 0,
+                    data: emailInbox,
+                    message: 'success',
+                });
             }
             if (
                 postData?.type
@@ -416,7 +428,7 @@ export class CommunicationEmailController {
                                 });
                                 let correctedData = Object.create(null);
                                 let rUserId = emailToItem?.['ruser']?.id;
-                                if (rUserId && rUserId == userId) {
+                                if ( rUserId ) {
                                     correctedData['R_id'] = emailToItem?.['ruser']?.id;
                                     correctedData['R_name'] = `${emailToItem?.['ruser']?.first_name || ''} ${emailToItem?.['ruser']?.last_name || ''}`.trim();
                                     correctedData['R_email'] = emailToItem?.['ruser']?.email;
@@ -1114,7 +1126,8 @@ export class CommunicationEmailController {
                     },
                     null,
                     {
-                        id: true
+                        id: true,
+                        user_id: true
                     }
                 );
                 let oldEmailTo = oldEmailToRecord.map(x => x.user_id);
@@ -1166,7 +1179,7 @@ export class CommunicationEmailController {
                         mail_id: mailId,
                     });
                     for (const oldAtt of oldAttachment) {
-                        await lastValueFrom(this.commonMicroservice.send({ cmd: 'delete_file' }, { prefix: `Email/${userId}/${oldAtt.name}` }));
+                        await lastValueFrom(this.commonMicroservice.send({ cmd: 'delete_file' }, { prefix: `Email/${oldAtt.name}` }));
                     }
                 }
                 for (let fileData of files.attachments) {

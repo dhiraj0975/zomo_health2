@@ -12,6 +12,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CommunicationEmailController } from './email/communicationemail.controller';
 import { CommunicationEmailService } from './email/communicationemail.service';
 import { EmailAssetsController } from './emailassets/emailassets.controller';
+import { EmailAssetsService } from './emailassets/emailassets.service';
 import { EmailAttachmentsController } from './emailattachments/emailattachments.controller';
 import { EmailAttachmentsService } from './emailattachments/emailattachments.service';
 import { EmailAttachmentTypesController } from './emailattachmenttypes/emailattachmenttypes.controller';
@@ -41,6 +42,7 @@ import { CompanyModule } from '../company/company.module';
         CommunicationEmailToService,
         CommunicationTemplateTextsService,
         CommunicationHelperService,
+        EmailAssetsService,
         {
             provide: 'COMMUNICATION_SERVICE',
             inject: [ConfigService],
@@ -89,6 +91,7 @@ import { CompanyModule } from '../company/company.module';
         CommunicationEmailToService,
         CommunicationTemplateTextsService,
         CommunicationHelperService,
+        EmailAssetsService,
     ],
 })
 export class CommunicationModule {}

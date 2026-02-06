@@ -179,7 +179,7 @@ export class AssessmentHraBiometricController {
                 success: 1,
                 error: 0,
                 data: null,
-                message: 'Success : Your Biometrics data was successfully saved ',
+                message: 'Your Biometrics data was successfully deleted',
             });
         } catch (error) {
             this.activityLogService.error_log(req.tokenUser?.id,req?.originalUrl, error?.message, error, req);

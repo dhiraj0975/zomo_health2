@@ -1161,12 +1161,23 @@ export class UserController {
                 if (postData?.role_id) {
                     where += ` AND user.role_id IN (${postData?.role_id})`;
                 } else {
-                    where += ` AND user.role_id NOT IN ("2","11","19","20")`;
+                    where += ` AND user.role_id IN ("2","11","19","20")`;
                 }
                 where += ` AND user.role_id != ${appConstant.ROLE.ADMIN} AND user.id != ${userId} AND ( user.role_id IN ("20", "19") OR user.membership_code IN ('${memberShipCode}') )`;
-                if (postData?.search_str) {
-                    where += this.commonService.generateDynamicSearchQuery(postData?.search_str, ['full_name', 'email', 'username', 'code']);
-                }
+                // if (postData?.search_str) {
+                //     where += this.commonService.generateDynamicSearchQuery(
+                //         postData?.search_str, 
+                //         ['full_name', 'username', 'code'], 
+                //         false
+                //     );
+                // }
+                if(postData?.search_str){
+                    postData.search_str = this.commonService.sanitizeInputfield(postData?.search_str || '');
+                    where += ` AND ( (user.first_name LIKE '%${postData?.search_str}%' OR`+ 
+                    ` user.last_name LIKE '%${postData?.search_str}%') OR ( CONCAT(user.first_name, " ", user.last_name) LIKE '%${postData?.search_str}%' ) OR`+ 
+                    ` user.email LIKE '%${postData?.search_str}%' OR user.code LIKE '%${postData?.search_str}%' OR`+
+                    ` user.username LIKE '%${postData?.search_str}%' )`;
+                } 
                 let resultedData: any = await this.userService.usersList(
                     where,
                     [

@@ -277,7 +277,7 @@ export class EhaDetailReportService {
                     `"${user?.first_name}"` || "",
                     `"${user?.middle_name}"` || "",
                     `"${user?.last_name}"` || "",
-                    `"${user?.userSetting?.jobtitle}"` || "",
+                    `"${user?.userSetting?.jobtitle || ""}"` || "",
                     user?.employeeid || "",
                     cronAppConstant.GENDER[userGender] || "",
                     await this.commonDateService.DateTimeFormat(user?.dob, 'MM-DD-YYYY') || "",

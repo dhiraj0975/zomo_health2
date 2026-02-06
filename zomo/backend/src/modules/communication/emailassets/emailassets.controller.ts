@@ -23,8 +23,7 @@ import { TranslationService } from 'src/modules/translation/translation.service'
 import { AccessGuard, RoleGuard, TokenGuard } from '../../../guard';
 import { fileName, imgFilter } from "../../../utils/image-upload.utils";
 import { ActivityLogService } from "../../master/activitylog/activitylog.service";
-const S3COMMUNICATION_URL = process.env.AWS_COMMUNICATION_BUCKET_URL;
-const EMAIL_ASSETS_CACHE_TTL = 60000;
+import { EmailAssetsService } from './emailassets.service';
 
 @Controller('communication/email-assets')
 @UseGuards(TokenGuard, RoleGuard)
@@ -38,47 +37,8 @@ export class EmailAssetsController {
         @Inject('COMMON_SERVICE')
         private commonMicroservice: ClientProxy,
         private readonly activityLogService: ActivityLogService,
+        private readonly emailAssetsService: EmailAssetsService,
     ) {}
-    private getListPrefixes(role_id: number, companyId: number, searchStr?: string): string[] {
-        if (Number(role_id) === 11) return ['zhOrgImg/11/' + companyId, 'zhGloImg'];
-        if (searchStr) return [`zhGloImg/38/0/${searchStr}`, `zhGloImg/39/0/${searchStr}`, `zhGloImg/40/0/${searchStr}`, `zhGloImg/41/0/${searchStr}`];
-        return ['zhGloImg'];
-    }
-    private async fetchAssetsFromS3(role_id: number, companyId: number, searchStr?: string): Promise<{ list: any[]; total: number }> {
-        const prefixs = this.getListPrefixes(role_id, companyId, searchStr);
-        let allDatas: any[] = [];
-        for (const prefix of prefixs) {
-            let continuationToken: string = null;
-            do {
-                const data = await lastValueFrom(
-                    this.commonMicroservice.send({ cmd: 'list_assests' }, { maxKeys: 1000, prefixes: [prefix], continuationToken }),
-                    { defaultValue: { datas: [], nextContinuationToken: null } }
-                );
-                const batch = (data?.datas || []).filter(item => item?.Key);
-                allDatas = allDatas.concat(batch);
-                continuationToken = data?.nextContinuationToken || null;
-            } while (continuationToken);
-        }
-        const sorted = allDatas.sort((a, b) => new Date(b.LastModified || 0).getTime() - new Date(a.LastModified || 0).getTime());
-        const list = sorted.map(item => ({
-            ...item,
-            url: `${S3COMMUNICATION_URL}${item.Key}`,
-            LastModifiedRaw: item.LastModified ?? null,
-            LastModified: item.LastModified ? this.commonDateService.DateTimeFormat(item.LastModified, 'MM-DD-YYYY hh:mm A') : '',
-        }));
-        return { list, total: list.length };
-    }
-    private async refreshEmailAssetsCacheForUser(role_id: number, companyId: number, logLabel: string): Promise<number | null> {
-        this.cacheService.removeKeysByPrefix('email-assets-list-');
-        const cacheKey = `email-assets-list-${role_id}-${companyId}-`;
-        try {
-            const { list, total } = await this.fetchAssetsFromS3(role_id, companyId);
-            this.cacheService.setCache(cacheKey, JSON.stringify({ list, total }), EMAIL_ASSETS_CACHE_TTL);
-            return total;
-        } catch {
-            return null;
-        }
-    }
 
     @UseGuards(AccessGuard)
     @Post('paginate')
@@ -86,30 +46,32 @@ export class EmailAssetsController {
         try {
             const role_id = req.tokenUser?.role_id;
             const companyId = req.tokenUser?.org_id;
+            // console.log('[EMAIL_ASSETS PAGINATE]', { role_id, companyId, page: postData?.page, limit: postData?.limit, search_str: postData?.search_str });
             const searchStr = (postData?.search_str && postData?.search_str !== '') ? postData?.search_str : '';
             const rawDateFilter = postData?.date ? String(postData.date).trim() : '';
             const normalizedDateFilter = rawDateFilter
                 ? this.commonDateService.DateTimeFormat(rawDateFilter, 'YYYY-MM-DD')
                 : '';
-            const cacheKey = `email-assets-list-${role_id}-${companyId ?? 0}-${searchStr}`;
+            const cacheKey = this.emailAssetsService.getEmailAssetsListCacheKey(Number(role_id), companyId ?? 0, searchStr);
             const paginateObj = this.commonArrayService.getPaginationVar(postData?.page || 1, postData?.limit || postData?.take);
+            // console.log('PAGINATE cacheKey:', cacheKey);
 
             let paginationResponse: any;
             let from_cache: boolean;
 
-            const cached = this.cacheService.getCache(cacheKey);
+            const cached = this.emailAssetsService.getCachedList(Number(role_id), companyId ?? 0, searchStr);
             let baseList: any[] = [];
-            if (cached && Array.isArray(cached?.list) && typeof cached?.total === 'number') {
+            if (cached) {
                 baseList = cached.list;
                 from_cache = true;
+                // console.log('from_cache', cached.total);
             } else {
-                const { list: formattedAssets, total } = await this.fetchAssetsFromS3(Number(role_id), companyId ?? 0, searchStr || undefined);
-                this.cacheService.setCache(cacheKey, JSON.stringify({ list: formattedAssets, total }), EMAIL_ASSETS_CACHE_TTL);
+                const { list: formattedAssets, total } = await this.emailAssetsService.fetchAssetsFromS3(Number(role_id), companyId ?? 0, searchStr || undefined);
+                this.emailAssetsService.setCachedList(Number(role_id), companyId ?? 0, searchStr, formattedAssets, total);
                 baseList = formattedAssets;
                 from_cache = false;
+                // console.log('[EMAIL_ASSETS PAGINATE] from_cache: false, total:', total);
             }
-
-            // Date filter similar style as emailcampaignrequests: single `date` for the day (00:00 to 23:59)
             const filteredList = normalizedDateFilter
                 ? (baseList || []).filter((item) => {
                     const raw = item?.LastModifiedRaw ?? item?.LastModified;
@@ -117,8 +79,18 @@ export class EmailAssetsController {
                     return !Number.isNaN(ts) && new Date(raw).toISOString().slice(0, 10) === normalizedDateFilter;
                 })
                 : (baseList || []);
-            paginationResponse = this.commonArrayService.paginationResponseChallengeReport(filteredList,filteredList.length,paginateObj,);
-            return res.status(HttpStatus.CREATED).json({statusCode: 201,success: 1,error: 0,data: { ...paginationResponse, from_cache },message: 'Assets successfully uploaded',
+            paginationResponse = this.commonArrayService.paginationResponseChallengeReport(
+                filteredList,
+                filteredList.length,
+                paginateObj,
+            );
+
+            return res.status(HttpStatus.OK).json({
+                statusCode: 200,
+                success: 1,
+                error: 0,
+                data: { ...paginationResponse, from_cache },
+                message: 'Assets list fetched successfully.',
             });
         } catch (error) {
             this.activityLogService.error_log(req.tokenUser?.id,req?.originalUrl, error?.message, error, req);
@@ -160,16 +132,28 @@ export class EmailAssetsController {
         @UploadedFiles() files: Record<string, any>
     ) {
         try {
-            let role_id = req.tokenUser?.role_id;
+            const userRoleId = req.tokenUser?.role_id;
+            let assetRoleForPath = userRoleId;  
             let folderPrefix = '';
             let orgId = 0;
 
             if(postData?.org_id && postData?.org_id !== ''){
                 orgId = parseInt(postData?.org_id);
-                role_id = 11;
+                assetRoleForPath = 11;
+            }
+            
+            if (Number(assetRoleForPath) === 11 && (!orgId || orgId === 0)) {
+                orgId = req.tokenUser?.org_id ?? 0;
             }
 
-            folderPrefix = role_id == 11 ? `zhOrgImg/${role_id}/${orgId}` : `zhGloImg/${role_id}/${orgId}`;
+            folderPrefix = assetRoleForPath == 11 ? `zhOrgImg/${assetRoleForPath}/${orgId}` : `zhGloImg/${assetRoleForPath}/${orgId}`;
+            // console.log('[EMAIL_ASSETS CREATE]', {
+            //     token_role_id: userRoleId,
+            //     assetRoleForPath,
+            //     orgId,
+            //     folderPrefix,
+            //     postData_org_id: postData?.org_id
+            // });
 
             if(folderPrefix === ''){
                 return res.status(400).json({
@@ -229,14 +213,16 @@ export class EmailAssetsController {
             }
 
             const companyId = req.tokenUser?.org_id ?? 0;
-            const total = await this.refreshEmailAssetsCacheForUser(Number(role_id), companyId, '[EmailAssets create] cache invalidated & creator cache REFRESHED from S3');
+           
+            this.emailAssetsService.updateCacheOnCreate(Number(userRoleId), companyId, uploadedFiles);
+            // console.log('create done:', { uploadedFiles, token_role_id: userRoleId, companyId });
 
             return res.status(201).json({
                 statusCode: 201,
                 success: 1,
                 error: 0,
                 message: 'Assets successfully uploaded',
-                data: { list: uploadedFiles, total: total ?? uploadedFiles.length },
+                data: { list: uploadedFiles },
             });
 
         } catch (error) {
@@ -254,7 +240,8 @@ export class EmailAssetsController {
     @Post('delete')
     async delete(@Req() req: Request, @Res() res: Response, @Body() postData: Record<string, any>) {
         try {
-            if (!postData?.key) {
+            const assetKey = (postData?.key ?? postData?.Key ?? '').trim();
+            if (!assetKey) {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_REQUIRED_PARAM_MISSING"));
             }
             try {
@@ -273,27 +260,30 @@ export class EmailAssetsController {
                     campRoleIdArr = [role_id,40,41,39,11];
                 }
 
-                const assetsRoleId = parseInt(postData?.key.split('/')[1]);
+                const assetsRoleId = parseInt(assetKey.split('/')[1]);
                 let accessStatus = 1;
                 if(campRoleIdArr.includes(assetsRoleId)){
                     accessStatus = 0;
                 }
                 if(accessStatus === 0){
                     try {
+                        console.log('[EMAIL_ASSETS DELETE] sending to microservice:', { path: assetKey });
                         await lastValueFrom(
-                            this.commonMicroservice.send({ cmd: 'remove_file_communication' }, { path: postData?.key })
+                            this.commonMicroservice.send({ cmd: 'remove_file_communication' }, { path: assetKey })
                         );
 
                         const companyId = req.tokenUser?.org_id ?? 0;
-                        const total = await this.refreshEmailAssetsCacheForUser(role_id, companyId, '[EmailAssets delete] cache invalidated & deleter cache REFRESHED from S3');
+                        // Update in-memory cache for base list (no search) if present
+                        this.emailAssetsService.updateCacheOnDelete(role_id, companyId, assetKey);
 
                         return res.status(200).json({
                             success: 1,
                             error: 0,
                             message: 'Asset successfully deleted',
-                            data: total !== null ? { total } : null,
+                            data:  null,
                         });
                     } catch (error) {
+                        // console.log('[EMAIL_ASSETS DELETE] microservice error:', error?.message || error);
                         let message = error?.message || 'Something went wrong';
                         let statusCode = 500;
 

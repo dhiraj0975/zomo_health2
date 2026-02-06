@@ -92,7 +92,7 @@ export class MyPlanActivityDto {
     @Expose()
     @Expose()
     @Type(() => String)
-    @Transform(({ value }) => (value ? S3_URL + value : value), {
+    @Transform(({ value }) => (value ? S3_URL + value + '?' + Date.now() : value), {
         toClassOnly: true,
     })
     icon: string;

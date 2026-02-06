@@ -11,7 +11,7 @@ export class CommunicationHelperService {
         private readonly translatorService: TranslationService,
         private readonly communicationEmailService: CommunicationEmailService,
     ) { }
-
+    // count of uread emails in inbox, sent, draft, trash and spam.
     async getEmailCounting(postData: any, req: any) {
         try {
             let coachId = postData?.coach_id;
@@ -34,7 +34,6 @@ export class CommunicationHelperService {
                     null,
                     { mail_id: true }
                 ).then(res => res.map(r => r.mail_id)),
-
                 this.communicationEmailToService.listRecord(
                     { ...baseWhere, is_spam: 0, is_trash: 1 },
                     null,
@@ -44,6 +43,12 @@ export class CommunicationHelperService {
             const allReceivedIds = [...new Set([
                 ...inboxMailIds
             ])];
+            const allSpamIds = [...new Set([
+                ...spamMailIds
+            ])];
+            const allTrashIds = [...new Set([
+                ...trashMailIds
+            ])];
             let inboxThreadRoots: number[] = [];
             if (allReceivedIds.length > 0) {
                 const parents = await this.communicationEmailService.listRecord(
@@ -51,7 +56,6 @@ export class CommunicationHelperService {
                     null,
                     { parent_id: true }
                 );
-
                 inboxThreadRoots = [...new Set([
                     ...allReceivedIds,
                     ...parents.map(p => p.parent_id).filter(Boolean),
@@ -70,13 +74,29 @@ export class CommunicationHelperService {
                     is_send: 0,
                     is_spam: 0,
                     is_trash: 0,
+                    status: 0,
                 }
             );
+            const trashCount = allTrashIds.length > 0
+                ? await this.communicationEmailService.count(
+                    {
+                        id: In(allTrashIds)
+                    }
+                )
+                : 0;
+            const spamCount = allSpamIds.length > 0
+                ? await this.communicationEmailService.count(
+                    {
+                        id: In(allSpamIds)
+                    }
+                )
+                : 0;
             const getThreadCount = async (extraWhere: any) => {
                 const sentItems = await this.communicationEmailService.listRecord(
                     {
                         from_user_id: coachId,
                         is_send: 1,
+                        status: 0,
                         ...extraWhere,
                     },
                     null,
@@ -93,10 +113,11 @@ export class CommunicationHelperService {
                     }
                 );
             };
-            const [sentCount, trashCount, spamCount] = await Promise.all([
+            // const [sentCount, trashCount, spamCount] = await Promise.all([
+            const [sentCount] = await Promise.all([
                 getThreadCount({ is_spam: 0, is_trash: 0 }),
-                getThreadCount({ is_spam: 0, is_trash: 1 }),
-                getThreadCount({ is_spam: 1, is_trash: 0 }),
+                // getThreadCount({ is_spam: 0, is_trash: 1 }),
+                // getThreadCount({ is_spam: 1, is_trash: 0 }),
             ]);
             const result = {
                 inbox: inboxCount,
