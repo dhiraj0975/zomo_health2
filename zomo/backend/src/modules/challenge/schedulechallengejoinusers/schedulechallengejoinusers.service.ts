@@ -49,7 +49,7 @@ export class ScheduleChallengeJoinUsersService  extends BaseService<ScheduleChal
             order: orderBy,
         });
     }
-    async myChallenge(condition: string, fields: any[] = ['ch.id', 'ch.challenge_type','ch.bio_challenge_type','ch.challenge_name','ch.challenge_desc','ch.icon','ch.logo','ch.numberofsteps','ch.oz_water_per_day','ch.requirementbased','ch.numberofweek','ch.numberofday', 'sc','scj.id','scj.trek_level_id','scj.relay_race_detail','scj.added_date','scj.in_ranking', 'scj.completed_lock_locations','scj.in_week_complete','scj.in_park_complete','ac.id','ac.activity_name']) {
+    async myChallenge(condition: string, fields: any[] = ['ch.id', 'ch.challenge_type','ch.bio_challenge_type','ch.challenge_name','ch.challenge_desc','ch.icon','ch.logo','ch.numberofsteps','ch.oz_water_per_day','ch.requirementbased','ch.numberofweek','ch.numberofday', 'sc','scj.id','scj.trek_level_id','scj.relay_race_detail','scj.added_date','scj.in_ranking', 'scj.completed_lock_locations','scj.in_week_complete','scj.in_park_complete','ac.id','ac.activity_name','tags.id','tags.title']) {
         return await this.readReplicaScheduleChallengeJoinUsersRepository.createQueryBuilder('scj')
         .leftJoinAndMapOne(
             'scj.sc',
@@ -74,6 +74,12 @@ export class ScheduleChallengeJoinUsersService  extends BaseService<ScheduleChal
             tableConstant.COMPANIES.TBL_COMPANY,
             'company',
             `company.id = sc.org_id AND company.status = 1`,
+        )
+        .leftJoinAndMapMany(
+            'sc.tags',
+            tableConstant.CHALLENGE.TBL_CH_TAGS,
+            'tags',
+            `FIND_IN_SET(tags.id, REPLACE(sc.tag_id, ' ', '')) > 0 AND tags.status = 1`,
         )
             .where(condition)
             .select(fields)

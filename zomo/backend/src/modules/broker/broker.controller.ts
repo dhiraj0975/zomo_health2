@@ -440,6 +440,9 @@ export class BrokerController {
                 );
             }
             let where: string = `broker.status = 1 AND broker.user_id = '${postData?.user_id}' `;
+            if(req.tokenUser?.role_id == appConstant.ROLE.BROKERADMIN){
+                where = `broker.status = 1 AND broker.broker_admin_id = '${postData?.user_id}' `;
+            }
             if ([appConstant.ROLE.ORGADMIN, appConstant.ROLE.BROKERADMIN, appConstant.ROLE.REGIONALADMIN].includes(req.tokenUser?.role_id)) {
                 if (postData?.search_str) {
                     where += this.commonService.generateDynamicSearchQuery(postData?.search_str ?? '', ['company.id', 'company.company_name']);

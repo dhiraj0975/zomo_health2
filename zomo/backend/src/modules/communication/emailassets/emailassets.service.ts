@@ -32,9 +32,12 @@ export class EmailAssetsService {
             let continuationToken: string = null;
             do {
                 const data = await lastValueFrom(
+                    
                     this.commonMicroservice.send({ cmd: 'list_assests' }, { maxKeys: 1000, prefixes: [prefix], continuationToken }),
                     { defaultValue: { datas: [], nextContinuationToken: null } }
+                    
                 );
+                // console.log("continuationToken",continuationToken)
                 const batch = (data?.datas || []).filter(item => item?.Key);
                 allDatas = allDatas.concat(batch);
                 continuationToken = data?.nextContinuationToken || null;
@@ -46,12 +49,19 @@ export class EmailAssetsService {
         }
         const sorted = allDatas.sort((a, b) => new Date(b.LastModified || 0).getTime() - new Date(a.LastModified || 0).getTime());
         // console.log('[EMAIL_ASSETS FETCH] S3 result:', { totalItems: sorted.length });
-        const list = sorted.map(item => ({
-            ...item,
-            url: `${S3COMMUNICATION_URL}${item.Key}`,
-            LastModifiedRaw: item.LastModified ?? null,
-            LastModified: item.LastModified ? this.commonDateService.DateTimeFormat(item.LastModified, 'MM-DD-YYYY hh:mm A') : '',
-        }));
+        const list = sorted.map(item => {
+            const key = item.Key || '';
+            const parts = key.split('/');
+            const fileName = parts[parts.length - 1] || '';
+
+            return {
+                ...item,
+                url: `${S3COMMUNICATION_URL}${key}`,
+                LastModifiedRaw: item.LastModified ?? null,
+                LastModified: item.LastModified ? this.commonDateService.DateTimeFormat(item.LastModified, 'MM-DD-YYYY hh:mm A') : '',
+                fileName,
+            };
+        });
         return { list, total: list.length };
     }
 
@@ -90,18 +100,25 @@ export class EmailAssetsService {
 
         const now = new Date();
         const nowFormatted = this.commonDateService.DateTimeFormat(now, 'MM-DD-YYYY hh:mm A');
-        const newItems = createdKeys.map(key => ({
-            Key: key,
-            url: `${S3COMMUNICATION_URL}${key}`,
-            LastModifiedRaw: now.toISOString(),
-            LastModified: nowFormatted,
-            
-        }));
+        const newItems = createdKeys.map(key => {
+            const safeKey = key || '';
+            const parts = safeKey.split('/');
+            const fileName = parts[parts.length - 1] || '';
+            console.log("fileName",fileName );
+
+            return {
+                Key: safeKey,
+                url: `${S3COMMUNICATION_URL}${safeKey}`,
+                LastModifiedRaw: now.toISOString(),
+                LastModified: nowFormatted,
+                fileName,
+            };
+        });
 
         const newList = [...newItems, ...(cache.list || [])];
         const newTotal = (cache.total || 0) + createdKeys.length;
         this.setCachedList(role_id, companyId, '', newList, newTotal);
-        console.log("newTotal",newTotal );
+       
     }
 
     updateCacheOnDelete(role_id: number, companyId: number, assetKey: string): void {

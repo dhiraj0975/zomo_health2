@@ -331,6 +331,8 @@ export class EmailCampaignRequestsController {
         AccessGuard
     )
     async create(@Req() req: Request, @Res() res: Response, @Body() postData: CreateCommunicationEmailCampaignRequestsInput, @UploadedFile() file: Express.Multer.File) {
+        let tempCsvPathForCleanup = null;
+        let jsonPathForCleanup = null;
         try {
             /* organization object se for_org_id extract - draft save ke time frontend organization bhej rha */
             if ((!postData.for_org_id || postData.for_org_id === 0) && postData?.organization) {
@@ -374,8 +376,8 @@ export class EmailCampaignRequestsController {
                             const jsonFileName = await this.commonFileService.createFileToJson(file.path, 'excel_to_json.py', req);
                             if (jsonFileName && jsonFileName['status'] === 1) {
                                 const jsonPath = file.path.replace(fileExt, '.json');
+                                jsonPathForCleanup = jsonPath;
                                 sheetData = await this.commonFileService.readFile(jsonPath);
-                                await this.commonFileService.removeFileFromLocal(jsonPath);
                             }
                         }
                       
@@ -399,10 +401,25 @@ export class EmailCampaignRequestsController {
                                     if(sheetTotalData !== totalSheetEmails){
                                         throw new Error('All contacts in email value is required. Some Contact in email value is missing.');
                                     }else{
-                                        postData.file = file.path;
+                                        if (fileExt === '.xlsx' || fileExt === '.xls') {
+                                            await this.commonFileService.dirIsExist(`${appConstant.COMUNICATION_CAMPAIGN_FILE_TEMP_PATH}`);
+                                            const jsonPath = file.path.replace(fileExt, '.json');
+                                            const excelData: any = await this.commonFileService.createJsonToFile(1, jsonPath, 'pythoncreatecsv.py');
+                                            if (excelData?.status === 'success') {
+                                                const tempCsvPath = jsonPath.replace('.json', '.csv');
+                                                tempCsvPathForCleanup = tempCsvPath;
+                                                postData.file = tempCsvPath;
+                                                await this.commonFileService.removeFileFromLocal(jsonPath);
+                                                jsonPathForCleanup = null;
+                                            } else {
+                                                throw new Error('Failed to convert file to CSV.');
+                                            }
+                                        } else {
+                                            postData.file = file.path;
+                                        }
                                         postData.sheet_header = JSON.stringify(MainheaderData);
                                         postData.test_mail_user_data = JSON.stringify(testUserData);
-                                        /* for_org_id mat overwrite - organization already extract ho chuka hai */
+                                       
                                     }
                                 }else{
                                     throw new Error('Data not found.');
@@ -547,9 +564,19 @@ export class EmailCampaignRequestsController {
                 };
                 /* WITH OPTION 0 */
                     if(postData?.with_option === '0' && file && file.fieldname === 'file' && file.filename){
-                        const fileExt = pathInfo.extname(file.originalname);
-                        await this.commonFileService.copyFiles(postData?.file, `${appConstant.COMUNICATION_CAMPAIGN_FILE_PATH}/${lastInsertId}`,`${lastInsertHash}${fileExt}`);
-                        updateData['file'] = `${lastInsertHash}${fileExt}`;
+                        const fileExt = pathInfo.extname(file.originalname).toLowerCase();
+                        const saveExt = (fileExt === '.xlsx' || fileExt === '.xls') ? '.csv' : fileExt;
+                        await this.commonFileService.copyFiles(postData?.file, `${appConstant.COMUNICATION_CAMPAIGN_FILE_PATH}/${lastInsertId}`,`${lastInsertHash}${saveExt}`);
+                        updateData['file'] = `${lastInsertHash}${saveExt}`;
+                        if (tempCsvPathForCleanup) {
+                            await this.commonFileService.removeFileFromLocal(tempCsvPathForCleanup);
+                        }
+                        if (jsonPathForCleanup) {
+                            await this.commonFileService.removeFileFromLocal(jsonPathForCleanup);
+                        }
+                        if (file.path && (fileExt === '.xlsx' || fileExt === '.xls')) {
+                            await this.commonFileService.removeFileFromLocal(file.path);
+                        }
                     }
                 /* WITH OPTION 0 */
                 /* WITH OPTION 2 */
@@ -628,6 +655,12 @@ export class EmailCampaignRequestsController {
                 file.fieldname === 'file' &&
                 file.filename
             ) {
+                if (tempCsvPathForCleanup) {
+                    await this.commonFileService.removeFileFromLocal(tempCsvPathForCleanup);
+                }
+                if (jsonPathForCleanup) {
+                    await this.commonFileService.removeFileFromLocal(jsonPathForCleanup);
+                }
                 await this.commonFileService.removeFileFromLocal(file.path);
             }
             await this.activityLogService.error_log(req.tokenUser?.id,req?.originalUrl, error?.message, error, req);
@@ -2089,6 +2122,7 @@ export class EmailCampaignRequestsController {
         AccessGuard
     )
     async update(@Req() req: Request, @Res() res: Response, @Body() postData: CreateCommunicationEmailCampaignRequestsInput, @UploadedFile() file: Express.Multer.File) {
+        let tempCsvPathForCleanupUpdate = null;
         try {
             /* organization object se for_org_id extract - edit/update ke time */
             if (postData?.organization && (!postData.for_org_id || postData.for_org_id === 0)) {
@@ -2145,7 +2179,17 @@ export class EmailCampaignRequestsController {
                         /* WITH OPTION 0 */
                             if(postData?.with_option === '0'){
                                 if(file && typeof file !== undefined && file.fieldname === 'file' && file.filename && file.originalname && file.originalname != ''){
-                                    let sheetData = await this.csvService.readCsv(file.path);
+                                    const fileExt = pathInfo.extname(file.originalname).toLowerCase();
+                                    let sheetData = [];
+                                    if (fileExt === '.csv') {
+                                        sheetData = await this.csvService.readCsv(file.path);
+                                    } else if (fileExt === '.xlsx' || fileExt === '.xls') {
+                                        const jsonFileName = await this.commonFileService.createFileToJson(file.path, 'excel_to_json.py', req);
+                                        if (jsonFileName && jsonFileName['status'] === 1) {
+                                            const jsonPath = file.path.replace(fileExt, '.json');
+                                            sheetData = await this.commonFileService.readFile(jsonPath);
+                                        }
+                                    }
                                     let sheetTotalData = sheetData.length;
                                     if(sheetTotalData > 1){
                                         if(sheetTotalData <= 2001){
@@ -2166,7 +2210,21 @@ export class EmailCampaignRequestsController {
                                                 if(sheetTotalData !== totalSheetEmails){
                                                     throw new Error('All contacts in email value is required. Some Contact in email value is missing.');
                                                 }else{
-                                                    postData.file = file.path;
+                                                    if (fileExt === '.xlsx' || fileExt === '.xls') {
+                                                        await this.commonFileService.dirIsExist(`${appConstant.COMUNICATION_CAMPAIGN_FILE_TEMP_PATH}`);
+                                                        const jsonPath = file.path.replace(fileExt, '.json');
+                                                        const excelData: any = await this.commonFileService.createJsonToFile(1, jsonPath, 'pythoncreatecsv.py');
+                                                        if (excelData?.status === 'success') {
+                                                            const tempCsvPath = jsonPath.replace('.json', '.csv');
+                                                            tempCsvPathForCleanupUpdate = tempCsvPath;
+                                                            postData.file = tempCsvPath;
+                                                            await this.commonFileService.removeFileFromLocal(jsonPath);
+                                                        } else {
+                                                            throw new Error('Failed to convert file to CSV.');
+                                                        }
+                                                    } else {
+                                                        postData.file = file.path;
+                                                    }
                                                     postData.sheet_header = JSON.stringify(MainheaderData);
                                                     postData.test_mail_user_data = JSON.stringify(testUserData);
                                                     /* for_org_id mat overwrite - organization preserve karo */
@@ -2242,9 +2300,16 @@ export class EmailCampaignRequestsController {
                         if(inProgressStatus == 0){
                             /* WITH OPTION 0 */
                                 if(postData?.with_option === '0' && file && file.fieldname === 'file' && file.filename && file.originalname){
-                                    const fileExt = pathInfo.extname(file.originalname);
-                                    await this.commonFileService.copyFiles(postData?.file, `${appConstant.COMUNICATION_CAMPAIGN_FILE_PATH}/${postData?.id}`,`${postData?.hash}${fileExt}`);
-                                    postData.file = `${postData?.hash}${fileExt}`;
+                                    const fileExt = pathInfo.extname(file.originalname).toLowerCase();
+                                    const saveExt = (fileExt === '.xlsx' || fileExt === '.xls') ? '.csv' : fileExt;
+                                    await this.commonFileService.copyFiles(postData?.file, `${appConstant.COMUNICATION_CAMPAIGN_FILE_PATH}/${postData?.id}`,`${postData?.hash}${saveExt}`);
+                                    postData.file = `${postData?.hash}${saveExt}`;
+                                    if (tempCsvPathForCleanupUpdate) {
+                                        await this.commonFileService.removeFileFromLocal(tempCsvPathForCleanupUpdate);
+                                    }
+                                    if (file.path && (fileExt === '.xlsx' || fileExt === '.xls')) {
+                                        await this.commonFileService.removeFileFromLocal(file.path);
+                                    }
                                 }
                             /* WITH OPTION 0 */
                            
@@ -2296,6 +2361,9 @@ export class EmailCampaignRequestsController {
                 file.fieldname === 'file' &&
                 file.filename
             ) {
+                if (tempCsvPathForCleanupUpdate) {
+                    await this.commonFileService.removeFileFromLocal(tempCsvPathForCleanupUpdate);
+                }
                 await this.commonFileService.removeFileFromLocal(file.path);
             }
             await this.activityLogService.error_log(req.tokenUser?.id,req?.originalUrl, error?.message, error, req);
@@ -2923,6 +2991,43 @@ export class EmailCampaignRequestsController {
             );
         }
     }
+
+    @UseGuards(AccessGuard)
+    @Post('download-sample-file')
+    async downloadSampleFile(@Req() req: Request, @Res() res: Response) {
+        try {
+            const headerRow = 'Name,Email,Mobile Number,Date of Birth,Address';
+            const sampleRow = 'Test User,testmail@mailinator.com,1234567890,11-12-2022,Test Address';
+            const csvRows = [headerRow, sampleRow];
+            const csvContent = csvRows.join('\n');
+            const base64Data = Buffer.from(csvContent, 'utf-8').toString('base64');
+
+            return res.status(HttpStatus.OK).json({
+                statusCode: 200,
+                success: 1,
+                error: 0,
+                data: {
+                    excel_data: base64Data,
+                    sheet_name: 'Campaign-Sample-csv',
+                    extension: 'csv',
+                },
+                message: 'success',
+            });
+        } catch (error) {
+            this.activityLogService.error_log(req.tokenUser?.id, req?.originalUrl, error?.message, error, req);
+            throw new HttpException(
+                {
+                    statusCode: 401,
+                    success: 0,
+                    error: 1,
+                    message: error?.message,
+                    data: null,
+                },
+                HttpStatus.BAD_REQUEST,
+            );
+        }
+    }
+
     async userFileterData(type: string, con_id: any = null, filterData: any = null, pageid: number = null, limit: number = null){
         try{
             console.log('type',type);

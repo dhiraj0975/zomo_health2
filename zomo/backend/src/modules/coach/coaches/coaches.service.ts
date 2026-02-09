@@ -382,6 +382,13 @@ export class CoachesService extends BaseService<CoachesEntity>{
                     joinTale[i].alias,
                     joinTale[i].on,
                 );
+            }else if(joinTale[i].type == 'INNERMANY'){
+                query = query.innerJoinAndMapMany(
+                    `${joinTale[i].connect}.${joinTale[i].alias}`,
+                    joinTale[i].table,
+                    joinTale[i].alias,
+                    joinTale[i].on,
+                );
             }else{
                 query = query.leftJoinAndMapOne(
                     `${joinTale[i].connect}.${joinTale[i].alias}`,

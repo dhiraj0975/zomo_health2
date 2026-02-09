@@ -606,10 +606,10 @@ export class UserChallengeHelperService {
                                 group_name: reportData?.team_details?.group_name || '',
                                 team_time: reportData?.team_details?.team_time || 0,
                                 group_id: reportData?.team_details?.group_id || null,
-                                team_total_real_steps: reportData?.team_details?.team_total_real_steps || null,
-                                team_progress: reportData?.team_details?.team_progress || null,
-                                team_member_met_goal_count: reportData?.team_details?.team_member_met_goal_count || null,
-                                team_member_count: reportData?.team_details?.team_member_count || null,
+                                team_total_real_steps: reportData?.team_details?.team_total_real_steps || 0,
+                                team_progress: reportData?.team_details?.team_progress || 0,
+                                team_member_met_goal_count: reportData?.team_details?.team_member_met_goal_count || 0,
+                                team_member_count: reportData?.team_details?.team_member_count || 0,
                             };
                         }
                     }
@@ -621,9 +621,9 @@ export class UserChallengeHelperService {
                         tempdatainfo['TEAM NAME'] = reportData?.team_name || '';
                     }
                     tempdatainfo['CAPTAIN NAME'] = reportData?.team_captain || '';
-                    tempdatainfo['TOTAL STEPS'] = reportData?.totalRealSteps || 0;
+                    tempdatainfo['TOTAL STEPS'] = this.commonArrayService.formatUSStyle(reportData?.totalRealSteps) || 0;
                     tempdatainfo['TOTAL % COMPLETION'] = reportData?.percent || '0.00%';
-                    tempdatainfo['AVERAGE STEPS'] = reportData?.realAvrageSteps || 0;
+                    tempdatainfo['AVERAGE STEPS'] = this.commonArrayService.formatUSStyle(reportData?.realAvrageSteps) || 0;
                     tempdatainfo['TIME ELAPSED DURING TURN'] = this.commonDateService.minutesToTimeWithSeconds(reportData?.user_complete_time || 0);
                     tempdatainfo['RACER NUMBER WITHIN TEAM'] = reportData?.user_order || 0;
                     tempdatainfo['RANK'] = reportData?.rank || 0;
@@ -658,13 +658,13 @@ export class UserChallengeHelperService {
                     teamReportData = Object.values(teamReportData).sort(
                         (a: any, b: any) => {
                             if (a?.team_progress == b?.team_progress) {
-                                if (a?.team_total_real_steps == b?.team_total_real_steps) {
+                                if (Number(a?.team_total_real_steps) == Number(b?.team_total_real_steps)) {
                                     if (a?.team_time == b?.team_time) {
                                         return b?.total_team_members - a?.total_team_members;
                                     }
                                     return (b?.team_time || 0) - (a?.team_time || 0);
                                 }
-                                return (b?.team_total_real_steps || 0) - (a?.team_total_real_steps || 0);
+                                return (Number(b?.team_total_real_steps) || 0) - (Number(a?.team_total_real_steps) || 0);
                             }
                             return (b?.team_progress || 0) - (a?.team_progress || 0);
                         }
@@ -701,8 +701,8 @@ export class UserChallengeHelperService {
                             const stats = groupStats.get(gid)!;
                             stats.total_teams += 1;
                             stats.total_progress += team.team_progress ?? 0;
-                            stats.group_steps += team.team_total_real_steps ?? 0;
-                            stats.group_average_steps += team.team_avg_steps ?? 0;
+                            stats.group_steps += Number(team.team_total_real_steps) ?? 0;
+                            stats.group_average_steps += Number(team.team_avg_steps) ?? 0;
                             stats.group_time += team.team_time ?? 0;
                         }
                         for (const [groupId, data] of Object.entries(groupReportDataFromResult)) {
@@ -751,9 +751,9 @@ export class UserChallengeHelperService {
                         teamTempData['TEAM NAME'] = teamData?.['team_name'] || '';
                         teamTempData['TEAM SIZE'] = teamData?.['team_size'] || 0;
                         teamTempData['TEAM MEMBERS'] = teamData?.['total_team_members'] || 0;
-                        teamTempData['TEAM TOTAL STEPS'] = teamData?.['team_total_real_steps'] || 0;
+                        teamTempData['TEAM TOTAL STEPS'] = this.commonArrayService.formatUSStyle(teamData?.['team_total_real_steps']) || 0;
                         teamTempData['TOTAL % COMPLETION'] = teamData?.['team_progress'] || 0;
-                        teamTempData['AVERAGE STEPS'] = teamData?.['team_avg_steps'] || 0;
+                        teamTempData['AVERAGE STEPS'] = this.commonArrayService.formatUSStyle(teamData?.['team_avg_steps']) || 0;
                         teamTempData['TIME ELAPSED TO COMPLETE RACE'] = this.commonDateService.minutesToTimeWithSeconds(teamData?.['team_time'] || 0);
                         teamTempData['Number of Racers that Met the Requirements'] = teamData?.['team_member_met_goal_count'] || 0;
                         teamdatainfos.push(teamTempData);
@@ -777,8 +777,8 @@ export class UserChallengeHelperService {
                         let groupTempData = Object.create(null);
                         groupTempData['RANK'] = groupData?.['rank'] || 0;
                         groupTempData['GROUP NAME'] = groupData?.['group_name'] || '';
-                        groupTempData['TOTAL STEPS'] = groupData?.['group_steps'] || 0;
-                        // groupTempData['AVERAGE STEPS'] = groupData?.['group_average_steps'] || 0;
+                        groupTempData['TOTAL STEPS'] = this.commonArrayService.formatUSStyle(groupData?.['group_steps']) || 0;
+                        // groupTempData['AVERAGE STEPS'] = this.commonArrayService.formatUSStyle(groupData?.['group_average_steps']) || 0;
                         groupTempData['TIME ELAPSED TO COMPLETE RACE'] = this.commonDateService.minutesToTimeWithSeconds(groupData?.['group_time'] || 0);
                         groupdatainfos.push(groupTempData);
                     }

@@ -2006,6 +2006,9 @@ export class UserPopupController {
                    ServeyPopup['Surveyanswer'] = [user?.answerData,...ServeyPopup['Surveyanswer']]; 
                 }
             }
+            else if(ServeyPopup && user?.answerData){
+                ServeyPopup['Surveyanswer'] = [user?.answerData];
+            }
             let SurveyRequired = 0
             let UserServeyPopupShow = 0
             let surveyQueAns = [];

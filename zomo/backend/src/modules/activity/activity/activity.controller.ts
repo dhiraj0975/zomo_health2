@@ -268,8 +268,16 @@ export class ActivityController {
                 throw new Error((await this.translatorService.frontendReadTranslation(req.lang, 'ERR_FILES_ALREADY_EXIST')).replace('%s', 'Activity'));
             }
             const recordDetails = await this.activityService.findOne({ id: postData?.id });
-            if(postData?.org_id && postData?.org_id != 0 && postData?.org_id?.toString() != recordDetails?.accebility){
-                postData.accebility = postData?.org_id;
+            if(((postData?.org_id && postData?.org_id != 0) || postData.accebility == 0) && (postData?.org_id?.toString() != recordDetails?.accebility || postData?.accebility?.toString() != recordDetails?.accebility)){
+                postData.accebility = postData?.org_id || postData?.accebility;
+                let checkWhere = { activity_name: recordDetails?.activity_name, status: Not('2'), id: Not(postData?.id) };
+                if(postData.accebility){
+                    checkWhere['accebility'] = postData.accebility;
+                }
+                const activityCheck = await this.activityService.findOne(checkWhere);
+                if (activityCheck) {
+                    throw new Error((await this.translatorService.frontendReadTranslation(req.lang, 'ERR_FILES_ALREADY_EXIST')).replace('%s', 'Activity'));
+                }
             }
             let dynamicData = Object.create(null);
             if(postData?.activity_name){

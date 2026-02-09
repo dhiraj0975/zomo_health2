@@ -307,7 +307,7 @@ export class CoachHelperService {
             }
             if(type == 'usercounter' || type == 'eventcomp'){
                 let joinTableList = [{'alias':'company', 'table' : tableConstant.COMPANIES.TBL_COMPANY, 'on' : `company.id = coach.org_id` , 'connect' : 'coach', 'type' : 'LEFT' }];
-                let Company = await this.coachesService.getAssignOrgList(`coach.user_id in(${membershipcode}) AND coach.status !=2`,['company.code','coach.org_id','coach.is_global','coach.location','coach.department','coach.state','coach.city'],joinTableList);
+                let Company = await this.coachesService.getAssignOrgList(`coach.user_id in(${membershipcode}) AND coach.status !=2`,['company.id','coach.org_id','coach.is_global','coach.location','coach.department','coach.state','coach.city'],joinTableList);
                 const assignment = {
                     org_code: {},
                     global_code: {},
@@ -317,17 +317,17 @@ export class CoachHelperService {
                     city: {}
                 };
                 for(let item of Company){
-                    assignment.global_code[item.org_id] = item['company'].code;
+                    assignment.global_code[item.org_id] = item['company'].id;
                     if (item.is_global == 1) {
-                        assignment.org_code[item.org_id] = item['company'].code;
+                        assignment.org_code[item.org_id] = item['company'].id;
                     } else if (item.location != 0) {
-                        assignment.location[item.org_id] = item['company'].code;
+                        assignment.location[item.org_id] = item['company'].id;
                     } else if (item.department != 0) {
-                        assignment.department[item.org_id] = item['company'].code;
+                        assignment.department[item.org_id] = item['company'].id;
                     } else if (item.state != '') {
-                        assignment.state[item.org_id] = item['company'].code;
+                        assignment.state[item.org_id] = item['company'].id;
                     } else if (item.city != '') {
-                        assignment.city[item.org_id] = item['company'].code;
+                        assignment.city[item.org_id] = item['company'].id;
                     }
                 }
                 const globalCodes = Object.values(assignment.global_code).map(code => `'${code}'`).join(',');
@@ -340,15 +340,15 @@ export class CoachHelperService {
                 const outer_inner_condition = "(coach.created_date >= (DATE(NOW()) - INTERVAL 30 DAY))";
                 let orCond= [];
                 if(locationCodes && locationCodes != ''){
-                    orCond.push(`(user.membership_code IN (${locationCodes}) AND coach.location = user.location AND user.location != '')`);
+                    orCond.push(`(user.org_id IN (${locationCodes}) AND coach.location = user.location AND user.location != '')`);
                 }
                 if(departmentCodes && departmentCodes != ''){
-                    orCond.push(`(user.membership_code IN (${departmentCodes}) AND coach.department = user.department_id AND user.department_id != 0)`);
+                    orCond.push(`(user.org_id IN (${departmentCodes}) AND coach.department = user.department_id AND user.department_id != 0)`);
                 }
                 if(orgCodes && orgCodes != ''){
-                    orCond.push(`(user.membership_code IN (${orgCodes}) AND user.membership_code != '')`);
+                    orCond.push(`(user.org_id IN (${orgCodes}) AND user.membership_code != '')`);
                 }
-                let inner_condition = `user.membership_code IN (${globalCodes}) 
+                let inner_condition = `user.org_id IN (${globalCodes}) 
                     AND user.status = 1 
                     AND user.role_id IN(2,16)
                 `;
@@ -357,10 +357,10 @@ export class CoachHelperService {
                 }
                 orCond= [];
                 if(stateCodes && stateCodes != ''){
-                    orCond.push(`(user.membership_code IN(${stateCodes}) AND coach.state = userSetting.state AND userSetting.city != '')`);
+                    orCond.push(`(user.org_id IN(${stateCodes}) AND coach.state = userSetting.state AND userSetting.city != '')`);
                 }
                 if(cityCodes && cityCodes != ''){
-                    orCond.push(`(user.membership_code IN(${cityCodes}) AND coach.city = userSetting.city AND userSetting.state != '')`);
+                    orCond.push(`(user.org_id IN(${cityCodes}) AND coach.city = userSetting.city AND userSetting.state != '')`);
                 }
                 let inner_condition_statecity = `userSetting.user_id = user.id `;
                 if(orCond.length){
@@ -389,17 +389,29 @@ export class CoachHelperService {
                     joinTableList = [
                         {'alias':'user', 'table' : tableConstant.TBL_USERS, 'on' : inner_condition , 'connect' : 'coach', 'type' : 'INNER' },
                         {'alias':'company', 'table' : tableConstant.COMPANIES.TBL_COMPANY, 'on' : 'company.code = user.membership_code AND user.status !=2' , 'connect' : 'coach', 'type' : 'INNER' },
-                        {'alias':'slots', 'table' : tableConstant.EVENTS.TBL_EV_SLOTS, 'on' : 'company.id = slots.organization_id' , 'connect' : 'coach', 'type' : 'INNER' },
+                        {'alias':'slots', 'table' : tableConstant.EVENTS.TBL_EV_SLOTS, 'on' : 'company.id = slots.organization_id AND slots.status != 2' , 'connect' : 'coach', 'type' : 'INNERMANY' },
                     ];
-                    let total_ev: any = Company.length ? await this.coachesService.getAssignOrgList(outer_condition,['coach.id','user.id'],joinTableList,'user.id') : [];
-                    total_ev = total_ev?.length || 0;
+                    let total_ev: any = Company.length ? await this.coachesService.getAssignOrgList(outer_condition,['coach.id','user.id','slots.ev_events_id'],joinTableList,'user.id') : [];
+                    // let total_ev: any = Company.length ? await this.coachesService.getAssignOrgList(outer_condition,['coach.id','user.id','slots.ev_events_id'],joinTableList,'slots.ev_events_id') : [];
+                    if(total_ev?.length){
+                        total_ev = new Set(total_ev.flatMap(o => o.slots || []).map(i => i.ev_events_id)).size;
+                    }else{
+                        total_ev = 0;
+                    }
+                    // total_ev = total_ev?.length || 0;
                     joinTableList = [
                         {'alias':'user', 'table' : tableConstant.TBL_USERS, 'on' : inner_condition , 'connect' : 'coach', 'type' : 'INNER' },
                         {'alias':'company', 'table' : tableConstant.COMPANIES.TBL_COMPANY, 'on' : 'company.code = user.membership_code AND user.status !=2' , 'connect' : 'coach', 'type' : 'INNER' },
-                        {'alias':'slots', 'table' : tableConstant.EVENTS.TBL_EV_SLOTS, 'on' : `company.id = slots.organization_id AND slots.end_date <='${this.commonDateService.getTodayDate().format("YYYY-MM-DD")}'` , 'connect' : 'coach', 'type' : 'INNER' },
+                        {'alias':'slots', 'table' : tableConstant.EVENTS.TBL_EV_SLOTS, 'on' : `company.id = slots.organization_id AND slots.end_date <='${this.commonDateService.getTodayDate().format("YYYY-MM-DD")}' AND slots.status != 2` , 'connect' : 'coach', 'type' : 'INNERMANY' },
                     ];
-                    let complete_ev: any = Company.length ? await this.coachesService.getAssignOrgList(outer_condition,['coach.id','user.id'],joinTableList,'user.id') : [];
-                    complete_ev = complete_ev?.length || 0;
+                    let complete_ev: any = Company.length ? await this.coachesService.getAssignOrgList(outer_condition,['coach.id','user.id','slots.ev_events_id'],joinTableList,'user.id') : [];
+                    // let complete_ev: any = Company.length ? await this.coachesService.getAssignOrgList(outer_condition,['coach.id','user.id','slots.ev_events_id'],joinTableList,'slots.ev_events_id') : [];
+                    if(complete_ev?.length){
+                        complete_ev = new Set(complete_ev.flatMap(o => o.slots || []).map(i => i.ev_events_id)).size;
+                    }else{
+                        complete_ev = 0;
+                    }
+                    // complete_ev = complete_ev?.length || 0;
                     return complete_ev == 0 ? 0 : Math.floor(total_ev !== 0 ? (complete_ev / total_ev) * 100 : 0)
                 }
             }
@@ -690,15 +702,15 @@ export class CoachHelperService {
                 }
             }
             if(user.role_id == appConstant.ROLE.GLOBALCOACH){
-                let coachData = await this.userService.listRecord(`user.role_id = 20 AND user.status = 1`,null,['user'])
+                let coachData = await this.userService.listRecord(`user.role_id = 20 AND user.status = 1`,null,['user.id']);
                 let coachCount = coachData?.length;
                 let totalAssign = 0;
                 let totalEvent = 0;
                 let totalRiskUsers = 0;
                 if(coachData && coachData?.length){
-                    const promises = coachData.map(async (user) => {
+                    const promises = coachData.map(async (coach) => {
                         const [biometricUsers]: any = await Promise.all([
-                            this.coachOrgDetails(user.id?.toString(), 'coachbioavg', req),
+                            this.coachOrgDetails(coach.id?.toString(), 'coachbioavg', req),
                             // this.coachOrgDetails(user.id?.toString(), 'eventcomp', req),
                         ]);
                         return {
@@ -707,12 +719,12 @@ export class CoachHelperService {
                         };
                     });
                     const results = await Promise.all(promises);
-                    let assignData: any = await this.coachOrgDetails(coachData.map(user => `'${user.id}'`).join(','), 'totalassign', req);
+                    totalRiskUsers = results.reduce((sum, r) => sum + r.riskUsers, 0);                    
+                    let assignData: any = await this.coachOrgDetails(coachData.map(coach => `'${coach.id}'`).join(','), 'totalassign', req);
                     totalAssign = parseInt(assignData);
-                    let eventData: any = await this.coachOrgDetails(coachData.map(user => `'${user.id}'`).join(','), 'eventcomp', req);
+                    let eventData: any = await this.coachOrgDetails(coachData.map(coach => `'${coach.id}'`).join(','), 'eventcomp', req);
                     totalEvent = parseInt(eventData);
                     // totalEvent = results.reduce((sum, r) => sum + r.event, 0);
-                    totalRiskUsers = results.reduce((sum, r) => sum + r.riskUsers, 0);                    
                 }
                 result = {
                     coach_count: coachCount,

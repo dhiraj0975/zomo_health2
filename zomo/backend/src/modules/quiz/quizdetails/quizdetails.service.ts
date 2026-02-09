@@ -42,6 +42,15 @@ export class QuizDetailsService {
             orderBy = { id: 'DESC' };
         }
         let queryResult: any = await this.readReplicaQuizDetailsRepository.createQueryBuilder('qd')
+            
+            if (tableData.includes(tableConstant.QUIZ.TBL_QZ_QUIZ_SECTIONS)) {
+                queryResult = await queryResult.leftJoin(
+                    tableConstant.QUIZ.TBL_QZ_QUIZ_SECTIONS,
+                    'qs',
+                    `qd.ques_section = qs.id AND qs.status != '2'`
+                )
+            }
+            
             if (tableData.includes(tableConstant.QUIZ.TBL_QZ_ASSIGN_QUIZ_ORG)) {
                 queryResult = await queryResult.leftJoinAndMapOne(
                     'qd.aqo',
@@ -134,7 +143,15 @@ export class QuizDetailsService {
                     `qd.id = mq.question_id AND mq.status != '2'`
                 )
             }
-        queryResult = await queryResult.where(condition).orderBy(`qd.${Object.keys(orderBy)[0]}`, orderBy[Object.keys(orderBy)[0]]);
+
+        queryResult = await queryResult.where(condition);
+        
+        if (tableData.includes(tableConstant.QUIZ.TBL_QZ_QUIZ_SECTIONS)) {
+            queryResult = await queryResult.andWhere(`(qd.ques_section IS NULL OR qs.status = '1')`);
+        }
+        
+        queryResult = await queryResult.orderBy(`qd.${Object.keys(orderBy)[0]}`, orderBy[Object.keys(orderBy)[0]]);
+
             if (tableData.includes(tableConstant.QUIZ.TBL_QZ_QUIZ_USER_DETAILS)) {
                 queryResult = await queryResult.addOrderBy('qud.id', 'DESC')
             }

@@ -99,7 +99,7 @@ export class RelayRaceChallengeReportService {
             }
             let stepsWhere: string = `food.collectionDate BETWEEN '${startdatedmy}' AND '${enddatedmy}' ${logType}`;
             let allgetteams = await this.teamsService.getTeamAllReport(
-                `team.org_id = ${schedule?.org_id} AND scj.schedule_id = ${schedule?.id} ${teamCondition != '' ? ' AND ' + teamCondition : ''} ${groupCondition != '' ? ' AND ' + groupCondition : ''}`,
+                `team.org_id = ${schedule?.org_id} AND scj.schedule_id = ${schedule?.id} AND team.status != 2 ${teamCondition != '' ? ' AND ' + teamCondition : ''} ${groupCondition != '' ? ' AND ' + groupCondition : ''}`,
                 [
                     'team.id',
                     'team.tname',

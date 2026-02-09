@@ -189,7 +189,8 @@ export class QuizDetailsController {
             let quizRecord = await this.quizDetailsService.listRecord(
                 ['qd.quiz_type AS quiz_type','qd.ques_section AS ques_section'],
                 {quiz_id: postData?.quiz_id,status: '1'},
-                {quest_order: 'ASC'}
+                {quest_order: 'ASC'},
+                [tableConstant.QUIZ.TBL_QZ_QUIZ_SECTIONS]
             );
             if (!quizRecord) {
                 let errorMessage = await this.translatorService.frontendReadTranslation(req.lang, "ERR_RECORD_NOT_FOUND");

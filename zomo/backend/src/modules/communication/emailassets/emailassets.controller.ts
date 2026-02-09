@@ -108,8 +108,8 @@ export class EmailAssetsController {
     }
     @Post('create')
     @UseInterceptors(
-        FilesInterceptor("files", 10, {
-            limits: { fileSize: (appConstant.FILE_SIZE_10MB), files: 10},
+        FilesInterceptor("files", 1, {
+            limits: { fileSize: (appConstant.FILE_SIZE_10MB), files: 1},
             storage: diskStorage({
             destination: `${appConstant.COMMUNICATION_ASSETS_TEMP_PATH}`,
             filename: fileName,

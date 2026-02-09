@@ -89,9 +89,9 @@ export class BiometricOrgSettingController {
                 where['org_id'] = postData?.org_id;
             }
             let biometricDetails = await this.biometricOrgSettingService.findOne(where);
-            if (!biometricDetails) {
-                throw new Error(await this.translatorService.frontendReadTranslation(req.lang,"ERR_RECORD_NOT_FOUND"),);
-            }
+            // if (!biometricDetails) { //ZOMO-4489
+            //     throw new Error(await this.translatorService.frontendReadTranslation(req.lang,"ERR_RECORD_NOT_FOUND"),);
+            // }
             biometricDetails = <any>(await this.commonArrayService.formatToDto(BiometricOrgSettingDto, biometricDetails, req.lang));
             if(biometricDetails?.['biometricOrg']?.length){
                 biometricDetails['biometricOrg'] = <any>(await this.commonArrayService.formatToDto(OrgBiometricDto,biometricDetails?.['biometricOrg'],req.lang));

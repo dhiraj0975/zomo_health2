@@ -1857,6 +1857,31 @@ export class UserDashboardChallengeController {
             }
             if(resultedData?.length > 0){
                 resultedData = resultedData.filter(item => item !== null)
+                for(let item of resultedData){
+                    if(item['challengeDetails']['challengeStatus'] == 1){
+                        item['sc']['joined_count'] = 0;
+                        if(item['challengeStatus'] != 2){
+                            let joinCount = await this.scheduleChallengeJoinUsersService.joinUserListRecord({schedule_id: item['sc']['id'], status: 1},null,['scj.id']);
+                            item['sc']['joined_count'] = joinCount?.length;
+                        }
+                        let start_date = this.commonDateService.getTodayDate(item['sc']['start_date']).startOf('day');
+                        let end_date = this.commonDateService.getTodayDate(item['sc']['end_date']).endOf('day');
+                        let current_date = this.commonDateService.getTodayDate().unix();
+                        let totalDays = end_date.diff(start_date, 'days') + 1;
+                        let remainingDays = 0;
+                        if (current_date >= start_date.unix() && current_date <= end_date.unix()) {
+                            remainingDays = (end_date.diff(this.commonDateService.DateTimeFormat('now'), 'days')) + 1;
+                        }
+                        else if(current_date < start_date.unix()){
+                            remainingDays = (moment.unix(end_date).diff(moment.unix(current_date), 'days')) + 1;
+                        }
+                        else if(current_date > end_date.unix()){
+                            remainingDays = 0
+                        }
+                        item['sc']['remaining_days'] = item['challengeDetails']['challengeStatus'] != 2 ? remainingDays : totalDays;
+                        item['sc']['streak_count'] = await this.userChallengeHelperService.streakIndicator({...item?.['sc'], AlreadyjoinId: item?.id, ac: item['ac'], ch: item['ch'],}, req);
+                    }
+                }
             }
             if(dashboardListData && dashboardListData == 1){
                 if(resultedData?.length > 0 && show_type == 1){

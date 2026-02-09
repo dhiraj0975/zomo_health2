@@ -922,7 +922,7 @@ export class CoachesController {
         }
     }
     @Post('dashboard-summary')
-    async CoachDashboardSammary(@Req() req: Request, @Res() res: Response) {
+    async CoachDashboardSummary(@Req() req: Request, @Res() res: Response) {
         try {
             let user = Object.create(req.tokenUser);
             if(![appConstant.ROLE.COACH,appConstant.ROLE.GLOBALCOACH].includes(user?.role_id) ){

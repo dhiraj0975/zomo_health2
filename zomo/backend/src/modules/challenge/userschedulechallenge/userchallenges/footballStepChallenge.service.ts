@@ -1152,7 +1152,8 @@ export class FootballStepChallengeService {
                                 totalweightloss = totalweightloss + diffweight;
                                 totalweightloss = parseFloat(totalweightloss.toFixed(2))
                                 let userscore = diffweight * yard;
-                                getMember.score = Math.round(userscore);
+                                // getMember.score = Math.round(userscore);//ZOMO-4440
+                                getMember.score = diffweight;
                                 teammemberscore.push(getMember);
                                 if (teamuserid != null) {
                                     if (!topusers[teamuserid]) {
@@ -1165,7 +1166,7 @@ export class FootballStepChallengeService {
                                 topusers[teamuserid]['tname'] = teamName;
                                 topusers[teamuserid]['touchdown'] = Number(((diffweight * yard) / 100).toFixed(2));
                                 topusers[teamuserid]['score'] = getMember.score;
-                                getMember['touchdown'] = Number((getMember.score / 100).toFixed(2));
+                                getMember['touchdown'] = Number(((getMember.score * yard) / 100).toFixed(2));
                                 if (teamuserid === userId) {
                                     result.lastweight = lastweight;
                                     result.weightdiff = diffweight > 0 ? `+${diffweight.toFixed(2)}` : `${diffweight.toFixed(2)}`;
@@ -1202,7 +1203,7 @@ export class FootballStepChallengeService {
                         allTeams['Teams'][teamId]['touchdown'] = Math.floor((totalweightloss / 100));
                         allTeams['Teams'][teamId]['score'] = allTeams['Teams'][teamId]['teamMember']?.reduce((sum, item) => {
                             return sum + (item?.score ?? 0);
-                        }, 0) / 100;
+                        }, 0);
                         if (allUsersIdArray.includes(userId)) {
                             result['myTeamDetails']['teamMember'] = allTeams['Teams'][teamId]['teamMember'];
                         }

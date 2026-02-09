@@ -1,34 +1,32 @@
 import {
-    CommonService,
-    CompaniesEntity,
-    IncentiveReportsEntity,
-    UserEntity,
-    CronStatus,
-    System_Type,
     ActivePluginsEntity,
-    tableConstant,
-    CommonDateService,
     appConstant,
+    CommonDateService,
     CommonFileService,
+    CommonService,
+    IncentiveReportsEntity,
+    System_Type,
+    tableConstant,
+    UserEntity
 } from '@common-constants';
 import { Controller, Inject } from '@nestjs/common';
 import { ClientProxy, MessagePattern } from '@nestjs/microservices';
+import * as moment from 'moment-timezone';
+import { lastValueFrom } from 'rxjs/internal/lastValueFrom';
+import { CommunicationTemplateTextsService } from 'src/module/communication/templatetexts/communicationtemplatetexts.service';
+import { In } from 'typeorm';
+import { cronAppConstant, CronCommonService } from '../../common';
+import { AutoReportSettingService } from '../autosetting/autoReportSettings.service';
+import { CampaignDashboardService } from '../campaign/campaigndashboard.service';
+import { FrontService } from '../campaign/front/front.service';
+import { FrontCalculationService } from '../campaign/front/frontcalculation.service';
+import { SliderSettingsService } from '../campaign/slidersettings.service';
+import { SpouseSettingsService } from '../campaign/spousesettings.service';
+import { ActivePluginService, ReportMenuSettingsService } from '../company';
 import { CompanyService } from '../company/company.service';
 import { IncentiveReportsService } from '../incentivereports/incentivereports.service';
 import { UserService } from '../user/user.service';
-import { cronAppConstant, CronCommonService } from '../../common';
-import { In } from 'typeorm';
-import { ActivePluginService, ReportMenuSettingsService } from '../company';
-import { FrontService } from '../campaign/front/front.service';
-import { SliderSettingsService } from '../campaign/slidersettings.service';
-import { SpouseSettingsService } from '../campaign/spousesettings.service';
-import { CampaignDashboardService } from '../campaign/campaigndashboard.service';
-import { FrontCalculationService } from '../campaign/front/frontcalculation.service';
-import { AutoReportSettingService } from '../autosetting/autoReportSettings.service';
-import * as moment from 'moment-timezone';
 import { IncentiveReportHelperService } from './incentiveReportHelper.service';
-import { lastValueFrom } from 'rxjs/internal/lastValueFrom';
-import { CommunicationTemplateTextsService } from 'src/module/communication/templatetexts/communicationtemplatetexts.service';
 const path = require('path');
 
 @Controller('incentive-report')
@@ -234,6 +232,7 @@ export class IncentiveReportController {
             }
             const sliderSetting = await this.sliderSettingsService.findOne({ org_id: orgId });
             const spouseSetting = await this.spouseSettingsService.findOne({ org_id: orgId });
+            campaginDatas = campaginDatas?.sort((a,b) => a?.tab_order - b?.tab_order)
             if(campaginDatas.length == 0){
                 return true;
             }else{
