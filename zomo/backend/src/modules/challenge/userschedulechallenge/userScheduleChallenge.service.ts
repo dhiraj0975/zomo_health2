@@ -86,7 +86,11 @@ export class UserScheduleChallengeService {
                             }
                             await this.teamMembersService.update({user_id: userId, id: checkUserJoins[0]['TeamMember'].id}, {status: 1});
                         }else if(checkUserJoins.length == 1){
-                            await this.teamMembersService.update({user_id: userId, id: checkUserJoins[0]['TeamMember'].id}, {status: 1});
+                            let updateValue = {status: 1};
+                            if(getTeamDetails == 0){
+                                updateValue['user_order'] = 1;
+                            }
+                            await this.teamMembersService.update({user_id: userId, id: checkUserJoins[0]['TeamMember'].id}, updateValue);
                         }
                         return formattedTeams;
                     }else{

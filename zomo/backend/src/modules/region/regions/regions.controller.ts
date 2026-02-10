@@ -308,10 +308,34 @@ export class RegionsController {
             }
             let user = Object.create(req?.tokenUser);
             let roleId : number = user?.role_id;
-            if (roleId == appConstant.ROLE.BROKERADMIN || roleId == appConstant.ROLE.REGIONALADMIN) {
+            if(roleId == appConstant.ROLE.BROKERADMIN){
                 await this.regionService.update(where,{status: 2});
                 this.activityLogService.create(recordDetails, {region_name: recordDetails}, tableConstant.REGION.REGIONS, req.tokenUser?.id, 'delete');
                 await this.stateCityService.update({region_id: postData?.id}, {status: 2});
+                this.activityLogService.create(recordDetails, {city: recordDetails}, tableConstant.REGION.REGION_STATE_CITY, req.tokenUser?.id, 'delete');
+                return res.status(HttpStatus.OK).json({
+                    statusCode: 200,
+                    success: 1,
+                    error: 0,
+                    data: null,
+                    message: 'Region has been Removed Succesfully.',
+                });
+            }
+            if ( roleId == appConstant.ROLE.REGIONALADMIN ) {
+                await this.regionService.update(
+                    where,
+                    {status: 2}
+                );
+                this.activityLogService.create(recordDetails, {region_name: recordDetails}, tableConstant.REGION.REGIONS, req.tokenUser?.id, 'delete');
+                await this.brokerService.update(
+                    {region_id: postData?.id},
+                    {status: 2}
+                );
+                this.activityLogService.create(recordDetails, {region_name: recordDetails}, tableConstant.BROKER, req.tokenUser?.id, 'delete');
+                await this.stateCityService.update(
+                    {region_id: postData?.id}, 
+                    {status: 2}
+                );
                 this.activityLogService.create(recordDetails, {city: recordDetails}, tableConstant.REGION.REGION_STATE_CITY, req.tokenUser?.id, 'delete');
                 return res.status(HttpStatus.OK).json({
                     statusCode: 200,

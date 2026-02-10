@@ -605,7 +605,8 @@ export class QuizDetailsController {
             let quizRecord = await this.quizDetailsService.listRecord(
                 ['qd.quiz_type AS quiz_type','qd.id AS id','qd.ques_section AS ques_section'],
                 {quiz_id: postData?.quiz_id,status: '1'},
-                {quest_order: 'ASC'}
+                {quest_order: 'ASC'},
+                [tableConstant.QUIZ.TBL_QZ_QUIZ_SECTIONS]
             );
             if (!quizRecord) {
                 let errorMessage = await this.translatorService.frontendReadTranslation(req.lang, "ERR_RECORD_NOT_FOUND");
@@ -667,12 +668,18 @@ export class QuizDetailsController {
                     }
                 } else {
                     /* Optimize  point => qud.correct_answer and skip enum ('0','1','2') add*/
-                    answer = quizListRecord[i]?.qud?.answer;
-                    skip = quizListRecord[i]?.qud?.skip;
-                    if (quizListRecord[i]?.qud?.correct_answer == null) {
+                    if (quizListRecord[i]?.qud) {
+                        answer = quizListRecord[i]?.qud?.answer;
+                        skip = quizListRecord[i]?.qud?.skip;
+                        if (quizListRecord[i]?.qud?.correct_answer == null) {
+                            quizListRecord[i].result = 'Unattempted';
+                        } else if (skip == '1') {
+                            quizListRecord[i].result = 'Skip';
+                        }
+                    } else {
                         quizListRecord[i].result = 'Unattempted';
-                    } else if (skip == '1') {
-                        quizListRecord[i].result = 'Skip';
+                        answer = '';
+                        skip = '';
                     }
                 }
                 switch (quizListRecord[i].quiz_type) {
@@ -1600,6 +1607,7 @@ export class QuizDetailsController {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang,'ERR_REQUIRED_PARAM_MISSING'));
             }
             let resultedData = await this.quizDetailsService.findOne({id: postData?.id, quiz_id: postData?.quiz_id});
+            console.log("resultedData", resultedData);
             if (!resultedData) {
                 let errorMessage = await this.translatorService.frontendReadTranslation(req.lang, "ERR_RECORD_NOT_FOUND");
                 return res.status(HttpStatus.OK).json({
@@ -1612,7 +1620,9 @@ export class QuizDetailsController {
             }
             if (resultedData['ques_section']) {
                 let quizSectionData = await this.quizSectionService.findOne({ id: resultedData['ques_section'],quiz_id: postData?.quiz_id,status: Not(Enum.Two) },{id: 'ASC'});
-                resultedData['section'] = {id: quizSectionData.id, name: quizSectionData.name};
+                if (quizSectionData) {
+                    resultedData['section'] = {id: quizSectionData.id, name: quizSectionData.name};
+                }
             }
             switch (resultedData.quiz_type) {
                 case 'TrueFalse':

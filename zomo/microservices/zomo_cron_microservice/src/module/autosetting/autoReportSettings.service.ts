@@ -1504,13 +1504,13 @@ export class AutoReportSettingService {
                     let ccmailtmp = [];
                     const SendMailDefaultArray = [
                         "satish.s@zomohealth.com", "sumeet.s@zomohealth.com", 
-                        "chirag.s@zomohealth.com", "nikhil.j@zomohealth.com", "dhruvit.g@zomohealth.com", 'smit.p@zomohealth.com', 
+                        "nikhil.j@zomohealth.com", "dhruvit.g@zomohealth.com", 'smit.p@zomohealth.com', 
                         "ishwar.p@zomohealth.com", "parth.s@zomohealth.com", "shruti.s@zomohealth.com", "abhay.l@zomohealth.com",
                         "sahil.s@zomohealth.com", "atul.p@zomohealth.com", "yogendra.s@zomohealth.com", "alpesh.j@zomohealth.com",
                         
                     ];
                     // i want to saperate out mail for testing purpose which include SendMailDefaultArray emails only
-                    // "chirag.s@zomohealth.com", "nikhil.j@zomohealth.com", "dhruvit.g@zomohealth.com",
+                    // "nikhil.j@zomohealth.com", "dhruvit.g@zomohealth.com",
                     finalemail = [...tomail,  'smit.p@zomohealth.com'];
                     ccmailtmp = [...ccmail];
                     // finalemail = [...SendMailDefaultArray];

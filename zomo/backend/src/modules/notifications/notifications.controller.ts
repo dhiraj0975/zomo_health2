@@ -46,8 +46,8 @@ export class NotificationsController {
             postData.user_id = req?.tokenUser?.id;
             if (postData?.user_id) {
                 where += ` AND notifications.user_id = ${postData?.user_id} `;
-                if(postData?.date && (req.tokenUser?.role_id == appConstant.ROLE.REGISTERED || req.tokenUser?.role_id == appConstant.ROLE.SPOUSE)){
-                   where += ` AND DATE(STR_TO_DATE(JSON_UNQUOTE(JSON_EXTRACT(n.metadata, '$.notification_date')),'%Y-%m-%d')) <= DATE(${this.commonDateService.getTodayDate(postData?.date ?? 'now', 'YYYY-MM-DD')})`;
+                if(req.tokenUser?.role_id == appConstant.ROLE.REGISTERED || req.tokenUser?.role_id == appConstant.ROLE.SPOUSE){
+                   where += ` AND DATE(STR_TO_DATE(JSON_UNQUOTE(JSON_EXTRACT(notifications.metadata, '$.notification_date')),'%Y-%m-%d')) <= DATE('${this.commonDateService.getTodayDate(postData?.date ?? null, 'YYYY-MM-DD')}')`;
                 }
             }
             if (postData?.search_str) {

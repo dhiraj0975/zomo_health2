@@ -199,7 +199,7 @@ export class UserChatController {
                 where,
                 {orderBy: 'id', order: 'DESC', page: postData.page, limit: postData.limit});
             if(user_chat && user_chat?.list?.length){
-                user_array = await this.chatHelperService.process_user_chat(user,user_chat?.list,user_array,true);
+                user_array = await this.chatHelperService.process_user_chat(user,user_chat?.list,user_array,true, req.lang);
                 user_array = {list: user_array?.['chat'] ?? []};
             }
             else{
@@ -278,7 +278,7 @@ export class UserChatController {
                 where,
                 {orderBy: 'id', order: 'DESC', page: postData.page, limit: postData.limit});
             if(user_chat && user_chat?.list?.length){
-                user_array = await this.chatHelperService.process_user_chat(user,user_chat?.list,user_array, true);
+                user_array = await this.chatHelperService.process_user_chat(user,user_chat?.list,user_array, true, req.lang);
                 user_array = {list: user_array?.['chat'] ?? []};
             }
             else{

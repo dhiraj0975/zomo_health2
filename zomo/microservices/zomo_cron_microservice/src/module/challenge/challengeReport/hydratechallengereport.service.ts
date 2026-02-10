@@ -418,7 +418,15 @@ export class HydrateChallengeReportService {
                     if (totalWaterDiff !== 0) {
                         return totalWaterDiff;
                     }
-                    return (b?.['user_code'] ?? 0) - (a?.['user_code'] ?? 0);
+                    const codeA = a?.['user_code'] ?? "";
+                    const codeB = b?.['user_code'] ?? "";
+                    if (codeA < codeB) {
+                        return 1;
+                    }
+                    if (codeA > codeB) {
+                        return -1;
+                    }
+                    return 0;
                 });
                 let rank = 1;
                 if (result_type == 1) {

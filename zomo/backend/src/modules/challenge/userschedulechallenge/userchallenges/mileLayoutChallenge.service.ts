@@ -390,7 +390,7 @@ export class MileLayoutChallengeService {
                                         getMember['today']['completedsteps'] = stepsdaily;
                                         let leftText = Math.abs(getMember['today']['completedsteps'] || 0).toLocaleString() + ` ${translateMC}`;
                                         if(getMember['today']['completedsteps'] > 1){
-                                            let leftText = Math.abs(getMember['today']['completedsteps'] || 0).toLocaleString() + ` ${translateMsC}`;
+                                            leftText = Math.abs(getMember['today']['completedsteps'] || 0).toLocaleString() + ` ${translateMsC}`;
                                         }
                                         getMember['today']['leftText'] = leftText;
                                         let todayremain = dailySteps - stepsdaily;
@@ -448,7 +448,7 @@ export class MileLayoutChallengeService {
                                         getMember['today']['completedsteps'] = stepsdaily;
                                         let leftText = Math.abs(getMember['today']['completedsteps'] || 0).toLocaleString() + ` ${translateMC}`;
                                         if(getMember['today']['completedsteps'] > 1){
-                                            let leftText = Math.abs(getMember['today']['completedsteps'] || 0).toLocaleString() + ` ${translateMsC}`;
+                                            leftText = Math.abs(getMember['today']['completedsteps'] || 0).toLocaleString() + ` ${translateMsC}`;
                                         }
                                         getMember['today']['leftText'] = leftText;
                                         let todayremain = dailySteps - stepsdaily;

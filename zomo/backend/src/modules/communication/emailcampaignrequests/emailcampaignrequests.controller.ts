@@ -334,7 +334,7 @@ export class EmailCampaignRequestsController {
         let tempCsvPathForCleanup = null;
         let jsonPathForCleanup = null;
         try {
-            /* organization object se for_org_id extract - draft save ke time frontend organization bhej rha */
+            
             if ((!postData.for_org_id || postData.for_org_id === 0) && postData?.organization) {
                 const org = typeof postData.organization === 'string' ? (() => { try { return JSON.parse(postData.organization); } catch { return null; } })() : postData.organization;
                 if (org && (org.id || org.for_org_id)) {
@@ -2755,6 +2755,26 @@ export class EmailCampaignRequestsController {
                     contactList['limit'] = parseInt(limit);
                 }
             }
+            if (Object.keys(contactList).length === 0) {
+                // console.log('get-email-contacts contactList is empty. Check with_option, for_org_id, file, group_id.');
+            }
+            if (contactList['list'] && Array.isArray(contactList['list']) && contactList['list'].length > 0) {
+                // console.log('[get-email-contacts] BEFORE filter | list length:', contactList['list'].length);
+                contactList['list'].forEach((record: any, index: number) => {
+                    const values = Object.values(record || {});
+                    const nonEmptyValues = values.filter((val: any) => val != null && String(val).trim() !== '');
+                   
+                });
+                contactList['list'] = contactList['list'].filter((record: any, index: number) => {
+                    const values = Object.values(record || {});
+                    const hasValidData = values.some((val: any) => val != null && String(val).trim() !== '');
+                    if (!hasValidData) {
+                        console.log(`[get-email-contacts] FILTERED OUT record ${index + 1} (all empty):`, JSON.stringify(record));
+                    }
+                    return hasValidData;
+                });
+                // console.log('get-email-contacts AFTER filter | list length:', contactList['list'].length);
+            }
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
                 success: 1,
@@ -3028,15 +3048,133 @@ export class EmailCampaignRequestsController {
         }
     }
 
+    @UseGuards(AccessGuard)
+    @Post('copy')
+    async copyCampaign(@Req() req: Request, @Res() res: Response, @Body() postData: any) {
+        try {
+            if (!postData?.id || !postData?.hash) {
+                throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_REQUIRED_PARAM_MISSING"));
+            }
+            const loged_role_id = req.tokenUser?.role_id;
+            const loged_org_id = req.tokenUser?.org_id;
+            const sourceCampaign = await lastValueFrom(this.client.send({ cmd: 'get_one_campaign_requests' }, { id: postData?.id, hash: postData?.hash }));
+            if (!sourceCampaign || sourceCampaign === null || sourceCampaign === undefined) {
+                throw new Error(await this.translatorService.frontendReadTranslation(req.lang, 'ERR_RECORD_NOT_FOUND'));
+            }
+            if (sourceCampaign.status == 2) {
+                throw new Error('Sorry! Cannot copy a deleted campaign.');
+            }
+            let campRoleIdArr = [];
+            if (loged_role_id == 40) {
+                campRoleIdArr = [loged_role_id];
+            } else if (loged_role_id == 39) {
+                campRoleIdArr = [loged_role_id, 40, 11];
+            } else if (loged_role_id == 38) {
+                campRoleIdArr = [loged_role_id, 40, 39, 11];
+            } else {
+                campRoleIdArr = [loged_role_id, 38, 39];
+            }
+            const cam_role_id = sourceCampaign['role_id'];
+            const cam_org_id = sourceCampaign['for_org_id'];
+            let accessStatus = 1;
+            if (campRoleIdArr.includes(cam_role_id)) {
+                accessStatus = 0;
+            }
+            if (loged_role_id == 11 && cam_org_id != loged_org_id) {
+                accessStatus = 1;
+            }
+            if (accessStatus == 1) {
+                throw new Error('Sorry! You are not authorized to copy this campaign.');
+            }
+            const copyData: any = {
+                campaign_title: 'Copy - ' + (sourceCampaign.campaign_title || 'Campaign'),
+                with_option: sourceCampaign.with_option,
+                for_org_id: sourceCampaign.for_org_id,
+                group_id: sourceCampaign.group_id || 0,
+                sheet_header: sourceCampaign.sheet_header,
+                org_filter_data: sourceCampaign.org_filter_data,
+                subject: sourceCampaign.subject,
+                template_content: sourceCampaign.template_content,
+                template_type: sourceCampaign.template_type || 0,
+                details_type: sourceCampaign.details_type || 0,
+                use_def_tem_id: sourceCampaign.use_def_tem_id || 0,
+                template_item_id: sourceCampaign.template_item_id || 0,
+                template_item_sub_id: sourceCampaign.template_item_sub_id || 0,
+                attachment: sourceCampaign.attachment,
+                test_mail_user_data: sourceCampaign.test_mail_user_data,
+                test_user_id: sourceCampaign.test_user_id,
+                test_user_role: sourceCampaign.test_user_role,
+                from_email_id: sourceCampaign.from_email_id,
+                interval_from: sourceCampaign.interval_from,
+                interval_to: sourceCampaign.interval_to,
+                testemail: sourceCampaign.testemail,
+                status: 1,
+                request_status: 0,
+                approval_status: 0,
+                approval_status_data: '',
+                schedule_utc_datetime: sourceCampaign.schedule_utc_datetime || String(Date.now()),
+                sendtestmailstatus: 0,
+                parent_id: 0,
+                created_by: req.tokenUser?.id,
+                role_id: req.tokenUser?.role_id,
+            };
+            const campaignDatas = await lastValueFrom(this.client.send({ cmd: 'create_campaign_requests' }, copyData));
+            if (!campaignDatas || !campaignDatas['identifiers'] || campaignDatas['identifiers'].length === 0) {
+                throw new Error('Failed to create campaign copy.');
+            }
+            const lastInsertId = campaignDatas['identifiers'][0]['id'];
+            const lastInsertHash = `${this.commonService.generateMD5(lastInsertId.toString())}`;
+            const updateData: any = { id: lastInsertId, hash: lastInsertHash };
+            if (sourceCampaign.with_option == '0' && sourceCampaign.file) {
+                const sourceFilePath = path.join(appConstant.COMUNICATION_CAMPAIGN_FILE_PATH, String(sourceCampaign.id), sourceCampaign.file);
+                const fileExt = pathInfo.extname(sourceCampaign.file).toLowerCase() || '.csv';
+                const newFileName = `${lastInsertHash}${fileExt}`;
+                const destFolder = path.join(appConstant.COMUNICATION_CAMPAIGN_FILE_PATH, String(lastInsertId));
+                const destFilePath = path.join(destFolder, newFileName);
+                try {
+                    const fsI = require('fs-extra');
+                    await fsI.ensureDir(destFolder);
+                    const copied = await this.commonFileService.copyFile(sourceFilePath, destFilePath);
+                    if (copied) {
+                        updateData['file'] = newFileName;
+                    }
+                } catch (fileErr) {
+                    // File copy failed - updateData['file'] will not be set
+                }
+            }
+            await lastValueFrom(this.client.send({ cmd: 'update_campaign_requests' }, updateData));
+            return res.status(HttpStatus.CREATED).json({
+                statusCode: 201,
+                success: 1,
+                error: 0,
+                data: { id: lastInsertId, hash: lastInsertHash, campaign_title: copyData.campaign_title },
+                message: 'Campaign copied successfully.',
+            });
+        } catch (error) {
+            this.activityLogService.error_log(req.tokenUser?.id, req?.originalUrl, error?.message, error, req);
+            throw new HttpException(
+                {
+                    statusCode: 401,
+                    success: 0,
+                    error: 1,
+                    message: error?.message,
+                    data: null,
+                },
+                HttpStatus.BAD_REQUEST,
+            );
+        }
+    }
+
     async userFileterData(type: string, con_id: any = null, filterData: any = null, pageid: number = null, limit: number = null){
         try{
-            console.log('type',type);
+            // console.log('userFileterData type:', type, '| con_id:', con_id, '| filterData:', JSON.stringify(filterData));
             if(type == 'single'){
                 let whereCon = `user.id = '${con_id}' `;
                 return await this.userService.userFilerForCampaign(type, whereCon);
             }else if(type == 'multiple' || type == 'testUser' || type == 'count' || type == 'multipleIds'){
                 const companyCode = await this.companyService.getCompanyCodeFromId(con_id);
                 let whereCon = `user.membership_code = '${companyCode}' `;
+                // console.log('userFileterData companyCode from getCompanyCodeFromId:', companyCode);
                 if(filterData && filterData !== null && filterData !== undefined){
                     if(filterData.terminated && filterData.terminated != '' && filterData.terminated !== null && filterData.terminated !== undefined && filterData.terminated == 1){
                         whereCon += ` AND user.status = 1`;
@@ -3090,8 +3228,9 @@ export class EmailCampaignRequestsController {
                 }else{
                     whereCon += ` AND user.role_id IN (2,16) `;
                 }
-            
-                return await this.userService.userFilerForCampaign(type, whereCon, pageid, limit);
+           
+                const result = await this.userService.userFilerForCampaign(type, whereCon, pageid, limit);
+                return result;
             }else if(type == 'GroupTestUser'){
                 let OrgIdArr = con_id.map(item => `'${item}'`);
                 let whereCon = `user.membership_code IN (${OrgIdArr}) AND user.role_id IN (2,16) AND user.status = 1`;

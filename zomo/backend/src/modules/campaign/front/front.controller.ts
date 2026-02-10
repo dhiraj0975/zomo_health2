@@ -636,11 +636,11 @@ export class FrontController {
                                         returnDatas['participationSummaryData']['RequiredPoints'] = totalActivityRequiredPoints;
                                         returnDatas['participationSummaryData']['CompletedPoints'] = totalActivityCompletedPoints;
                                     }
-                                    let dsahboardPointSliderData = rewardsdatas['dsahboardPointSliderData'] || [];
+                                    let dashboardPointSliderData = rewardsdatas['dsahboardPointSliderData'] || [];
                                     if(!returnDatas['PointSliderData']){
                                         returnDatas['PointSliderData'] = Object.create(null);
                                     }
-                                    returnDatas['PointSliderData'] = JSON.parse(JSON.stringify(dsahboardPointSliderData));
+                                    returnDatas['PointSliderData'] = JSON.parse(JSON.stringify(dashboardPointSliderData));
                                 }
                             }
                         }

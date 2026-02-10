@@ -118,7 +118,7 @@ export class ReportMenuSettingsController {
                             'USER_TYPE': 'USER TYPE'
                         },
                         'Event': {
-                            'User_CODE': 'USER CODE',
+                            'USER_CODE': 'USER CODE',
                             'ORGANIZATION': 'ORGANIZATION',
                             'DEPARTMENT': 'DEPARTMENT',
                             'RELATIONSHIP_ID': 'RELATIONSHIP ID',

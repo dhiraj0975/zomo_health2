@@ -57,7 +57,7 @@ export class HealthHabbitActivityChallengeService {
         private readonly activityLogService: ActivityLogService,
     ) {}
 
-    async healthyHabittotalPoint(startdate, enddate, req: Request){
+    async healthyHabitTotalPoint(startdate, enddate, req: Request){
         try{
             let HealthyHabittotalPoint = [];
             let campaign = [];
@@ -1219,8 +1219,7 @@ export class HealthHabbitActivityChallengeService {
                 acc[this.commonDateService.DateTimeFormat(item.collectionDate, 'YYYY-MM-DD').toString()] += item.steps;
                 return acc;
             }, {});
-            let HealthyHabittotalPoint = await this.healthyHabittotalPoint(this.commonDateService.getTodayDate(schedule['sc']['start_date']).format('YYYY-MM-DD'),this.commonDateService.getTodayDate(schedule['sc']['end_date']).format('YYYY-MM-DD'), req);
-
+            let HealthyHabittotalPoint = await this.healthyHabitTotalPoint(this.commonDateService.getTodayDate(schedule['sc']['start_date']).format('YYYY-MM-DD'),this.commonDateService.getTodayDate(schedule['sc']['end_date']).format('YYYY-MM-DD'), req);
             let ChallengehealthuseractivitiesTemp = await this.healthUsersActivityService.listRecord(`hua.org_id =${schedule['sc']['org_id']} AND hua.user_id =${user.id} AND hua.status = 1 AND health_activity.status = 1`,
                 null,
                 ['health_activity.avalue,hua.act_id,sum(miles) as Total','DATE_FORMAT(hua.act_date,"%Y-%m-%d") as act_date','DATE_FORMAT(hua.act_date,"%Y-%m-%d %H:%i:%s") as act_date1'],

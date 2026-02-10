@@ -731,7 +731,7 @@ export class AutoReportSettingController {
                     postData.f_module_items = [...new Set(postData?.f_module_items.filter(Boolean))];
                     reportData.f_module_items = postData?.f_module_items.join(',');
                 }
-                const ReportChaDefaultFields = reportFieldsConstant.ReportChaDefaultFields;
+                const ReportChaDefaultFields = reportFieldsConstant.PreDataFields[moduleId];
                 reportData['report_fields'] = null;
                 if (postData?.report_fields) {
                     const filteredReportBillboardsDefaultFields = Object.keys(ReportChaDefaultFields)
@@ -1267,7 +1267,7 @@ export class AutoReportSettingController {
                     postData.f_module_items = [...new Set(postData?.f_module_items.filter(Boolean))];
                     reportData.f_module_items = postData?.f_module_items.join(',');
                 }
-                const ReportChaDefaultFields = reportFieldsConstant.ReportChaDefaultFields;
+                const ReportChaDefaultFields = reportFieldsConstant.PreDataFields[moduleId];
                 reportData['report_fields'] = null;
                 if (postData?.report_fields) {
                     const filteredReportBillboardsDefaultFields = Object.keys(ReportChaDefaultFields)

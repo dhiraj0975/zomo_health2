@@ -56,7 +56,7 @@ export class ChatHelperService {
                 {id: 'ASC'}
             );
             if(user_chat && user_chat.length){
-                user_array = await this.process_user_chat(user,user_chat,user_array);
+                user_array = await this.process_user_chat(user,user_chat,user_array, null, req.lang);
             }
             if(settings){
                 if (settings['chat_with_users'] && settings['chat_with_users'] == 1) {
@@ -75,7 +75,7 @@ export class ChatHelperService {
                         {id: 'ASC'}
                     );
                     if(user_chat && user_chat.length){
-                        user_array = await this.process_user_chat(user,user_chat,user_array);
+                        user_array = await this.process_user_chat(user,user_chat,user_array, null,req.lang);
                     }
                 }
                 if (settings['chat_with_dept'] && settings['chat_with_dept'] == 1) {
@@ -212,9 +212,21 @@ export class ChatHelperService {
             throw new Error(await this.translatorService.frontendReadTranslation(req.lang, error.message));
         }
     }
-    async process_user_chat(user, user_chat, user_array, personal = false){
+    async process_user_chat(user, user_chat, user_array, personal = false, lang: string = 'en'){
         try{
             let user_id = user.id
+            let monthNames: Record<string, string> = {};
+            let timePeriodNames: Record<string, string> = {};
+            if (lang && lang !== 'en') {
+                const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+                const timePeriod = ['am','pm','AM','PM'];
+                await Promise.all(months.map(async (m) => {
+                    monthNames[m] = await this.translatorService.frontendReadTranslation(lang, m, '/LC_MESSAGES/Common/Month', 'static');
+                }));
+                await Promise.all(timePeriod.map(async (a) => {
+                    timePeriodNames[a] = await this.translatorService.frontendReadTranslation(lang, a, '/LC_MESSAGES/Common/Common', 'static');
+                }));
+            }
             for(let chat of user_chat) {
                 let image
                  if (chat['sender'] && chat?.['sender']?.['profile_image'] != '' && await lastValueFrom(this.commonMicroservice.send({cmd: 'check_file'}, {prefix: chat?.['sender']?.['profile_image']}))) {
@@ -248,12 +260,18 @@ export class ChatHelperService {
                     // ucurrentdate = moment(chat.added_date).utc().tz(timezone);
                     ucurrentdate = this.commonDateService.DateTimeFormat(chat.added_date, 'utcAndTz', '', timezone);
                     record_date = ucurrentdate.format('YYYY-MM-DD HH:mm:ss');
-                    msg_date = ucurrentdate.format('MMM D, YYYY h:mma');
+                    msg_date = ucurrentdate.format('YYYY-MM-DD HH:mm:ss');
                 } else {
                     // msg_date = moment(chat.added_date).format('MMM D, YYYY h:mma');
                     record_date = moment(chat.added_date).format('YYYY-MM-DD HH:mm:ss');
-                    msg_date = this.commonDateService.DateTimeFormat(chat.added_date,'MMM D, YYYY h:mma');
+                    msg_date = this.commonDateService.DateTimeFormat(chat.added_date,'YYYY-MM-DD HH:mm:ss');
                 }
+                let monthShort = this.commonDateService.DateTimeFormat(msg_date, 'MMM');
+                let translatedMonth = (lang && lang !== 'en') ? monthNames[monthShort] : monthShort;
+                let timePeriod = this.commonDateService.DateTimeFormat(msg_date, 'A');
+                let translatedTimePeriod = (lang && lang !== 'en') ? timePeriodNames[timePeriod] : timePeriod;
+                msg_date = `${translatedMonth} ${this.commonDateService.DateTimeFormat(msg_date, 'D')}, ${this.commonDateService.DateTimeFormat(msg_date, 'YYYY')} ${this.commonDateService.DateTimeFormat(msg_date, 'h')}:${this.commonDateService.DateTimeFormat(msg_date, 'mm')}${translatedTimePeriod}`;
+                
                 let sender = chat['sender']?.['id'];
                 let user_object = {
                     chat_id : chat.id,
@@ -566,7 +584,7 @@ export class ChatHelperService {
             let timePeriodNames: Record<string, string> = {};
             if (lang && lang !== 'en') {
                 const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-                const timePeriod = ['am','pm'];
+                const timePeriod = ['am','pm','AM','PM'];
                 await Promise.all(months.map(async (m) => {
                     monthNames[m] = await this.translatorService.frontendReadTranslation(lang, m, '/LC_MESSAGES/Common/Month', 'static');
                 }));

@@ -202,7 +202,7 @@ export class TeamsController {
                 tname: postData?.tname,schedule_id: postData?.schedule_id,status: In([0,1])
             });
             if (recordDetails) {
-                throw new Error((await this.translatorService.frontendReadTranslation(req.lang, 'Team name already exist.')));
+                throw new Error((await this.translatorService.frontendReadTranslation(req.lang, 'Team name already exist','/LC_MESSAGES/Challenge/MyChallenges')));
             }
             let join_challenge = postData?.join_challenge;
             delete postData?.join_challenge;
@@ -235,7 +235,7 @@ export class TeamsController {
                 success: 1,
                 error: 0,
                 data: null,
-                message: await this.translatorService.frontendReadTranslation(req.lang, 'Team Added Successfully.')
+                message: await this.translatorService.frontendReadTranslation(req.lang, 'Team Added Successfully.','/LC_MESSAGES/Challenge/MyChallenges')
             });
         } catch (error) {
             if (file && file.fieldname === 'logo' && file.filename) {
@@ -285,7 +285,7 @@ export class TeamsController {
                     tname: postData?.tname,schedule_id: postData?.schedule_id, id: Not(postData?.id),status: In([0,1])
                 });
                 if (recordDetails) {
-                    throw new Error((await this.translatorService.frontendReadTranslation(req.lang, 'Team name already exist.')));
+                    throw new Error((await this.translatorService.frontendReadTranslation(req.lang, 'Team name already exist','/LC_MESSAGES/Challenge/MyChallenges')));
                 }
             }
             let dynamicData = Object.create(null);
@@ -319,7 +319,7 @@ export class TeamsController {
                 success: 1,
                 error: 0,
                 data: null,
-                message: await this.translatorService.frontendReadTranslation(req.lang, message)
+                message: await this.translatorService.frontendReadTranslation(req.lang, message,'/LC_MESSAGES/Challenge/MyChallenges')
             });
         } catch (error) {
             if (file && file.fieldname === 'logo' && file.filename) {
@@ -388,7 +388,7 @@ export class TeamsController {
                 success: 1,
                 error: 0,
                 data: null,
-                message: await this.translatorService.frontendReadTranslation(req.lang, 'Team deleted successfully.'),
+                message: await this.translatorService.frontendReadTranslation(req.lang, 'Team deleted successfully.','/LC_MESSAGES/Challenge/MyChallenges'),
             });
         } catch (error) {
             this.activityLogService.error_log(req.tokenUser?.id,req?.originalUrl, error?.message, error, req);
@@ -424,7 +424,7 @@ export class TeamsController {
                 success: 1,
                 error: 0,
                 data: resultedData,
-                message: 'success',
+                message: await this.translatorService.frontendReadTranslation(req.lang, 'Team fetched successfully.','/LC_MESSAGES/Challenge/MyChallenges'),
             });
         } catch (error) {
             this.activityLogService.error_log(req.tokenUser?.id,req?.originalUrl, error?.message, error, req);

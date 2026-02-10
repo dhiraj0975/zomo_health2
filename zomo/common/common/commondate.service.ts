@@ -324,6 +324,9 @@ export class CommonDateService {
             }
             else{
                 formatDate = moment();
+                if(format){
+                    formatDate = formatDate.format(format);
+                }
             }
             return  formatDate;
         }catch(err){

@@ -728,6 +728,7 @@ export class HealthHabbitChallengeService {
                 }else{
                     if(disableactivitytempweek =='' || schedule['sc']?.is_all_activities != 1){
                         weeks[i]['weekButtonText'] = await this.translatorService.frontendReadTranslation(req.lang,'Completed', `/LC_MESSAGES/Challenge/MyChallenges`,`static`);
+                        weeks[i]['complete'] = true;
                     }
                 }
                 if(this.commonDateService.getTodayDate(current_datetime).unix() >= this.commonDateService.getTodayDate(challengeEndDate).unix()){

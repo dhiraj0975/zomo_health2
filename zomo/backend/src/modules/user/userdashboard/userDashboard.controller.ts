@@ -908,7 +908,7 @@ export class UserDashboardController {
                         let dynamicCompleteText = biometricSetting['is_complete_message'] ? await this.translatorService.frontendReadTranslation(req.lang, `complete_${biometricSetting['id']}`, `/LC_MESSAGES/Dashboard/HealthyBiometricsProgram/${orgId}`, `dynamic`) : null;
                         let dynamicInCompleteText = biometricSetting['is_incomplete_message'] ? await this.translatorService.frontendReadTranslation(req.lang, `incomplete_${biometricSetting['id']}` , `/LC_MESSAGES/Dashboard/HealthyBiometricsProgram/${orgId}`, `dynamic`) : null;
                         let dynamicOnTarckText = biometricSetting['is_ontrack_message'] ? await this.translatorService.frontendReadTranslation(req.lang, `ontrack_${biometricSetting['id']}` , `/LC_MESSAGES/Dashboard/HealthyBiometricsProgram/${orgId}`, `dynamic`) : null;
-                        let onTrackText = await this.translatorService.frontendReadTranslation(req.lang, 'On Track', `/LC_MESSAGES/Dashboard/HealthyBiometricsProgram`, `static`);
+                        let onTrackText = await this.translatorService.frontendReadTranslation(req.lang, 'Biometric_On_Track', `/LC_MESSAGES/Dashboard/HealthyBiometricsProgram`, `static`);
                         let toCompleteText = await this.translatorService.frontendReadTranslation(req.lang, 'To Complete', `/LC_MESSAGES/Dashboard/HealthyBiometricsProgram`, `static`);
                         let toQualifyText = await this.translatorService.frontendReadTranslation(req.lang, 'To Qualify', `/LC_MESSAGES/Dashboard/HealthyBiometricsProgram`, `static`);
 
@@ -1605,8 +1605,8 @@ export class UserDashboardController {
                             widgetbioTop = dynamicInCompleteText ?? `${notCompleteText} <b>${biometricText}.</b> ${seeBellowText}`;
                         }
                         let widgetbiotmpdate = await this.orgBiometricService.findOne(`orgBiometric.company_id = ${orgId} AND orgBiometric.status !=2`,{ is_optional: 'ASC' });
-                        widgetbioheader[1]['Title']= 'Complete Test 1 <br>(Results need to be from ' + this.commonDateService.getTodayDate(widgetbiotmpdate['test1_start_date']).format('MM/DD/YYYY') + ' - ' + this.commonDateService.getTodayDate(widgetbiotmpdate['test1_end_date']).format('MM/DD/YYYY')+ ')';
-                        widgetbioheader[2]['Title']= 'Complete Test 2 <br>(Results need to be from ' + this.commonDateService.getTodayDate(widgetbiotmpdate['test2_start_date']).format('MM/DD/YYYY') + ' - ' + this.commonDateService.getTodayDate(widgetbiotmpdate['test2_end_date']).format('MM/DD/YYYY')+ ')';
+                        widgetbioheader[1]['Title']= 'Complete Test 1 (Results need to be from ' + this.commonDateService.getTodayDate(widgetbiotmpdate['test1_start_date']).format('MM/DD/YYYY') + ' - ' + this.commonDateService.getTodayDate(widgetbiotmpdate['test1_end_date']).format('MM/DD/YYYY')+ ')';
+                        widgetbioheader[2]['Title']= 'Complete Test 2 (Results need to be from ' + this.commonDateService.getTodayDate(widgetbiotmpdate['test2_start_date']).format('MM/DD/YYYY') + ' - ' + this.commonDateService.getTodayDate(widgetbiotmpdate['test2_end_date']).format('MM/DD/YYYY')+ ')';
                         widgetbioheader[3]['Title'] = 'You have ' + Is_Completed  +' out of ' + biometricResult?.length  +' biometrics in range.';
                         let Number_array = {0:'Zero',1:'Only one',2:'Only two',3:'Only three',4:'Only four',5:'Only five',6:'Only six',7:'Only seven',8:'Only eight',9:'Only nine',10:'Only ten'}
                         if(!widgetbioheader[1]['Status']){

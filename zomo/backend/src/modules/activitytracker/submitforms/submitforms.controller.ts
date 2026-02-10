@@ -39,6 +39,7 @@ import { fileName, filesFilter } from "../../../utils/image-upload.utils";
 import { TranslationService } from "../../translation/translation.service";
 import { CreateFormsService } from '../createforms/createforms.service';
 import { SubmitFormsService } from './submitforms.service';
+import { UserService } from '@/modules/user/user/user.service';
 const path = require('path');
 const S3_URL =  process.env.S3_URL_PROD;
 @Controller('activitytracker/submit-forms')
@@ -62,12 +63,14 @@ export class SubmitFormsController {
         private readonly urlManageService: UrlManageService,
         private readonly companyService: CompanyService,
         private readonly notificationsController: NotificationsController,
+        private readonly userService: UserService,
     ) { }
     @UseGuards(AccessGuard)
     @Post('paginate')
     async paginate(@Req() req: Request, @Res() res: Response, @Body() postData: PaginationSubmitFormInput) {
         try {
             postData = this.commonService.sanitizePayload(postData);
+            let user = req.tokenUser;
             let where = `sf.deleted = '0'`;
             if (postData?.submitted_date) {
                 let datefield = 'added_date';
@@ -77,11 +80,23 @@ export class SubmitFormsController {
                 let startDate = this.commonDateService.getTodayDate(postData?.submitted_date).format('YYYY-MM-DD');
                 where += ` AND DATE_FORMAT(CONVERT_TZ(sf.${datefield},"UTC",CASE WHEN user.timezone != "" THEN user.timezone ELSE "UTC" END),"%Y-%m-%d") = '${startDate}'`;
             }
-            if ([appConstant.ROLE.ADMIN, appConstant.ROLE.ORGADMIN, appConstant.ROLE.GLOBALDATAMANAGER].includes(req.tokenUser?.role_id) && postData?.org_id) {
+            if ([appConstant.ROLE.ADMIN, appConstant.ROLE.ORGADMIN, appConstant.ROLE.GLOBALDATAMANAGER].includes(user?.role_id) && postData?.org_id) {
                 where += ` AND sf.org_id = ${postData?.org_id}`;
             }
-            if (appConstant.ROLE.CLIENTENGAGEMENTMANAGER == req.tokenUser?.role_id){
-                let resultedData = await this.clientManagerAssignService.listRecord({user_id: req.tokenUser?.id,status: 1},null);
+            if (user.role_id == appConstant.ROLE.WCH) {
+                let getChampaignUsers = await this.userService.usersDataWellness(
+                    user,  
+                    `user.role_id != 1 AND user.id != ${user.id} AND user.membership_code = '${user['membership_code']}' AND user.status =1`
+                );
+                if (getChampaignUsers.length > 0) {
+                    const userIdsString = getChampaignUsers.map(user => user.id).join(',');
+                    where += ` AND sf.user_id IN (${userIdsString})`;
+                } else {
+                    where += ` AND sf.user_id = 0`;
+                }
+            }
+            if (appConstant.ROLE.CLIENTENGAGEMENTMANAGER == user?.role_id){
+                let resultedData = await this.clientManagerAssignService.listRecord({user_id: user?.id,status: 1},null);
                 if(resultedData.length > 0){
                     where += `AND sf.org_id IN (${resultedData.map(ele=>ele.org_id).join(',')})`;
                 }
@@ -108,7 +123,7 @@ export class SubmitFormsController {
                 if(postData?.filter_by && postData?.filter_by != '' && postData?.filter_by.toLowerCase() == 'activity_name'){
                     postData.filter_by = 'activities';
                 }
-                if ([appConstant.ROLE.ADMIN, appConstant.ROLE.GLOBALCLIENTENGAGEMENTMANAGER, appConstant.ROLE.ORGADMIN].includes(req.tokenUser?.role_id)) {
+                if ([appConstant.ROLE.ADMIN, appConstant.ROLE.GLOBALCLIENTENGAGEMENTMANAGER, appConstant.ROLE.ORGADMIN].includes(user?.role_id)) {
                     switch (postData?.filter_by?.toLowerCase()) {
                         case 'id':
                             where += ` AND sf.id LIKE '%${this.commonFileService.quoteEscaper(postData?.search_str)}%'`;
@@ -143,7 +158,7 @@ export class SubmitFormsController {
                 postData,
             );
             resultedData['list'] = <any>(await this.commonArrayService.formatToDto(SubmitFormsDto, resultedData['list'], req.lang));
-            if(appConstant.ROLE.GLOBALDATAMANAGER == req.tokenUser?.role_id){
+            if(appConstant.ROLE.GLOBALDATAMANAGER == user?.role_id){
                 if(resultedData['list']?.length && resultedData['list'][0]?.['company']){
                     resultedData['company'] = resultedData['list'][0]?.['company'];
                 }
@@ -151,10 +166,10 @@ export class SubmitFormsController {
                     resultedData['company'] = await this.companyService.companyFindOne({ id: postData?.org_id, status: Not(2) });
                 }
             }
-            if ([appConstant.ROLE.REGISTERED, appConstant.ROLE.ORGADMIN, appConstant.ROLE.SPOUSE].includes(req.tokenUser?.role_id)) {
+            if ([appConstant.ROLE.REGISTERED, appConstant.ROLE.ORGADMIN, appConstant.ROLE.SPOUSE].includes(user?.role_id)) {
                 await Promise.all(resultedData['list'].map(async (ele) => {
                     let userTimeZone = ele.user.timezone ? ele.user.timezone : 'UTC';
-                    // if (req.tokenUser?.role_id != appConstant.ROLE.ORGADMIN) {
+                    // if (user?.role_id != appConstant.ROLE.ORGADMIN) {
                         if (ele.activity_date_copy) {
                             // let activityDate = moment.tz(ele.activity_date_copy, 'UTC').tz(userTimeZone).format('YYYY-MM-DD HH:mm:ss');
                             // ele.activity_date = ele.activity_date + ' ' + this.commonDateService.getTodayDate(activityDate).format('HH:mm');
@@ -162,7 +177,7 @@ export class SubmitFormsController {
                             let MonthName = this.commonDateService.DateTimeFormat(activityDate, 'MMMM');
                             MonthName = await this.translatorService.frontendReadTranslation(req.lang, this.commonDateService.DateTimeFormat(activityDate, 'MMM')?.toString(), `/LC_MESSAGES/Common/Month`, `static`);
                             let formatedDate = MonthName + ' ' + this.commonDateService.DateTimeFormat(activityDate, 'D') + ', ' + this.commonDateService.DateTimeFormat(activityDate, 'YYYY');
-                            if(req.tokenUser?.role_id == appConstant.ROLE.ORGADMIN){
+                            if(user?.role_id == appConstant.ROLE.ORGADMIN){
                                 ele.activity_date = formatedDate
                             }else{
                                 ele.activity_date = formatedDate + ' ' + this.commonDateService.getTodayDate(activityDate).format('HH:mm');

@@ -325,7 +325,7 @@ export class ChatController {
                 success: 1,
                 error: 0,
                 data: (Object.keys(chatData).length > 0) ? chatData : null,
-                message: 'success'
+                message: await this.translatorService.frontendReadTranslation(req.lang,'success')
             });
         } catch (error) {
             this.activityLogService.error_log(req.tokenUser?.id,req?.originalUrl, error?.message, error, req);
@@ -646,7 +646,7 @@ export class ChatController {
                 success: 1,
                 error: 0,
                 data: null,
-                message: 'Message deleted successfully',
+                message: await this.translatorService.frontendReadTranslation(req.lang,'Message deleted successfully'),
             });
         } catch (error) {
             this.activityLogService.error_log(req.tokenUser?.id,req?.originalUrl, error?.message, error, req);
@@ -1005,7 +1005,7 @@ export class ChatController {
                 {orderBy: 'id', order: 'DESC', page: postData.page, limit: postData.limit}
             );
             if(user_chat && user_chat?.list?.length){
-                support_chat_user = await this.chatHelperService.process_user_chat(user,user_chat?.list,support_chat_user, true);
+                support_chat_user = await this.chatHelperService.process_user_chat(user,user_chat?.list,support_chat_user, true, req.lang);
                 support_chat_user = {list: support_chat_user ? support_chat_user?.chat : []};
             }
             else{
@@ -1167,6 +1167,8 @@ export class ChatController {
             let user = req.tokenUser;
             let team_array = Object.create(null);            
             let team_id = postData?.team_id;
+            let org_id = postData?.org_id ?? user.org_id;
+            let schedule_id = postData?.schedule_id;
             let where =`
                 ch_chat.team_id='${team_id}' AND ch_chat.status !=2 
                 AND ch_chat.id IN (SELECT id FROM ch_chat WHERE 
@@ -1175,8 +1177,14 @@ export class ChatController {
                 OR read_by = ${user.id} 
                 OR read_by REGEXP ',${user.id},') AND status !=2
                 )`;
-            let team = await this.teamService.findOne({id: team_id},null,['team.id','team.tname','team.logo']);
+            let team = await this.teamService.findOne({id: team_id},null,['team.id','team.tname','team.logo','team.schedule_id']);
             team = <any>(await this.commonArrayService.formatToDto(TeamsDto, team, req.lang));
+            if(team && [appConstant.ROLE.REGISTERED,appConstant.ROLE.SPOUSE].includes(user?.role_id)){
+                schedule_id = schedule_id ?? team['schedule_id'];
+                let teamName = await this.translatorService.frontendReadTranslation(req.lang,`team_name_${schedule_id}_${team_id}`, `/LC_MESSAGES/Challenge/MyChallenges/${org_id}/${schedule_id}`,`dynamic`);
+                teamName = (teamName == '' || teamName == `team_name_${schedule_id}_${team_id}`) ? team['tname'] : teamName;
+                team['tname'] = teamName;
+            }
             let icons = team['logo'];
             if (!icons?.includes(S3_URL) && !await lastValueFrom(this.commonMicroservice.send({cmd: 'check_file'}, {prefix: icons}))) {
                 team['logo'] = this.commonService.getIconPath(icons,S3_URL);
@@ -1187,7 +1195,7 @@ export class ChatController {
                 {orderBy: 'id', order: 'DESC', page: postData.page, limit: postData.limit}
             );
             if(t_chat && t_chat?.list?.length){
-                team_array = await this.chatHelperService.process_user_chat(user,t_chat?.list,team_array,true);
+                team_array = await this.chatHelperService.process_user_chat(user,t_chat?.list,team_array,true, req.lang);
                 team_array = {list: team_array['chat']};
             }
             else{
