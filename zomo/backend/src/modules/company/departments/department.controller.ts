@@ -228,7 +228,6 @@ export class DepartmentController {
                     }));
                 }
                 // Debug log for email campaign filters: department dropdown shape (report type)
-                console.log('EmailCampaign Departments (report) =>', result.map((d) => ({ id: d.id, dept_name: d.dept_name })));
                 return res.status(HttpStatus.OK).json({
                     statusCode: 200,
                     success: 1,

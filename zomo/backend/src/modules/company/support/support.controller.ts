@@ -199,6 +199,9 @@ export class SupportController {
                 if(postData?.end_time === ''){
                     postData.end_time = null
                 }
+                if (postData.icon === '' || postData.icon === null || postData.icon === undefined) {
+                    postData.icon = null;
+                }
             }
             let recordDetails = await this.supportService.save(postData);
             let dynamicData = Object.create(null);
@@ -363,6 +366,9 @@ export class SupportController {
             }
             if(postData?.timezone?.toString() == '0'){
                 postData.timezone = postData?.timezone?.toString() == '0'? null : postData?.timezone
+            }
+            if(recordDetails && (postData.icon === undefined || postData.icon === null || postData.icon === '')) {
+                postData.icon = recordDetails.icon;
             }
             await this.supportService.update(where, postData);
             this.activityLogService.create(recordDetails, postData, tableConstant.COMPANIES.TBL_COMPANY_SUPPORTS, req.tokenUser?.id);

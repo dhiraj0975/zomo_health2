@@ -207,7 +207,7 @@ export class UserScheduleChallengeService {
                 tname: postData?.team_name, schedule_id: postData?.schedule_id || scheduleData.id, status: Not(2)
             });
             if (recordDetails) {
-                throw new Error((await this.translatorService.frontendReadTranslation(req.lang, 'ERR_FILES_ALREADY_EXIST')).replace('%s', 'Team Name'));
+                throw new Error((await this.translatorService.frontendReadTranslation(req.lang, 'ERR_FILES_ALREADY_EXIST')).replace('%s', await this.translatorService.frontendReadTranslation(req.lang,'Team Name', `/LC_MESSAGES/Challenge/MyChallenges`,`static`)));
             }
 
             teamData['tname'] = postData?.team_name;

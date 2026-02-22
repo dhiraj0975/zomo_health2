@@ -1,6 +1,7 @@
 import { UrlManageService } from '@/modules/common';
 import { CompanyService } from '@/modules/company/companies/company.service';
 import { NotificationsController } from '@/modules/notifications/notifications.controller';
+import { UserService } from '@/modules/user/user/user.service';
 import { appConstant, CommonArrayService, CommonDateService, CommonFileService, CommonService, SubmitFormsDto, tableConstant } from '@common-constants';
 import {
     Body,
@@ -39,7 +40,6 @@ import { fileName, filesFilter } from "../../../utils/image-upload.utils";
 import { TranslationService } from "../../translation/translation.service";
 import { CreateFormsService } from '../createforms/createforms.service';
 import { SubmitFormsService } from './submitforms.service';
-import { UserService } from '@/modules/user/user/user.service';
 const path = require('path');
 const S3_URL =  process.env.S3_URL_PROD;
 @Controller('activitytracker/submit-forms')
@@ -443,8 +443,8 @@ export class SubmitFormsController {
                     custom_cname: recordDetails?.['createForm']?.title, 
                     form_id: recordDetails?.['form_id'], 
                     activity_id: recordDetails?.['activity_id'], 
-                    title: 'Activity ' + message?.replace(' successfully',''),
-                    message: `Your ${recordDetails?.['createForm']?.title} ` + message?.replace(' successfully',''),
+                    title: 'Activity ' + (await this.translatorService.frontendReadTranslation(req.lang, message))?.replace(' successfully',''),
+                    message: `Your ${recordDetails?.['createForm']?.title?.replace('Form','')} ` + (await this.translatorService.frontendReadTranslation(req.lang, message))?.replace(' successfully',''),
                     logo, 
                     url: `https://${process.env.DOMAIN}/activity-forms?tab=1?formId=${recordDetails?.['id']}`,
                     type: 'update',

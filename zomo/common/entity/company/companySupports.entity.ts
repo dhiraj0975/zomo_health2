@@ -26,6 +26,8 @@ export class CompanySupportsEntity {
     operation: string;
     @Column('text',{default: null})
     message: string;
+    @Column('varchar',{length: 512})
+    icon: string;
     @Column()
     status: number;
     @Column({type: 'int', nullable: true })

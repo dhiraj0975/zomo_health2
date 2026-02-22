@@ -1084,4 +1084,47 @@ export class ReportController {
             );
         }
     }
+        /**
+     * API for Challenge Report
+    */
+    @Post('company-sales-report')
+    async salesReport(@Req() req: Request, @Res() res: Response, @Body() postData: ChallengeReportInput) {
+        try {
+            let user = Object.create(req?.tokenUser) || {};
+            if (![appConstant.ROLE.ADMIN].includes(user?.role_id)) {
+                throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_ACCESS_DENIED"));
+            }
+            let data = await lastValueFrom(this.cronMicroservice.send({ cmd: 'org-sales-report' }, postData?.org_id ? {org_id: postData?.org_id} : {}));
+            if ((typeof data === 'string') && data === 'Report Successfully created.') {
+                return res.status(HttpStatus.OK).json({
+                    statusCode: 200,
+                    success: 1,
+                    error: 0,
+                    data: 'Report Successfully created.',
+                    message: 'success',
+                });
+            } else if (typeof data === 'object' && data?.success === 0 && data?.error === 1 && data?.message) {
+                throw new Error(data?.message);
+            }
+            return res.status(HttpStatus.OK).json({
+                statusCode: 200,
+                success: 1,
+                error: 0,
+                data: data || [],
+                message: await this.translatorService.frontendReadTranslation(req.lang, postData?.result_type == 2 ? 'Report Generated' : 'success'),
+            });
+        } catch (error) {
+            this.activityLogService.error_log(req.tokenUser?.id, req?.originalUrl, error?.message, error, req);
+            throw new HttpException(
+                {
+                    statusCode: 401,
+                    success: 0,
+                    error: 1,
+                    message: error?.message,
+                    data: null,
+                },
+                HttpStatus.BAD_REQUEST,
+            );
+        }
+    }
 }

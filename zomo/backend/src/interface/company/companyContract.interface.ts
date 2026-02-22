@@ -1,0 +1,32 @@
+export interface CompanyContractInterface {
+    id: number;
+    org_id: number;
+    billing_frequency?: number;
+    billing_email?: string;
+    billing_name?: string;
+    engagement_manager_name?: string;
+    package?: number;
+    expense_description_amount?: string;
+    reminder_contract?: string;
+    contract_reminder_email?: string;
+    broker?: string;
+    created_by?: number;
+    updated_by?: number;
+    status?: number;
+    contract_start_date?: string;
+    contract_end_date?: string;
+    billing_start_date?: string;
+    billing_end_date?: string;
+    date_of_expense_submission?: string;
+    created?: string;
+    updated?: string;
+    billing_email_cc?: string;
+    notes_for_data_team?: string;
+    notes_for_design_team?: string;
+    branding_guideline_text?: string;
+    industry?: string;
+    csa?: string;
+    baa?: string;
+    branding_guideline_image?: string; 
+    additional_agreement?: string;
+}

@@ -154,7 +154,7 @@ export class EventUserBookingListsController {
                 success: 1,
                 error: 0,
                 data: null,
-                message: 'success',
+                message: await this.translatorService.frontendReadTranslation(req.lang,'Users has been deleted successfully.','/LC_MESSAGES/Events/Events'),
             });
         } catch (error) {
             this.activityLogService.error_log(req.tokenUser?.id,req?.originalUrl, error?.message, error, req);

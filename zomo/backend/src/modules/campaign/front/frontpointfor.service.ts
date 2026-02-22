@@ -7,6 +7,7 @@ import * as moment from 'moment-timezone';
 import { ActivityService } from 'src/modules/activity/activity/activity.service';
 import { CategoryService } from 'src/modules/activity/category/category.service';
 import { ScheduleChallengeJoinUsersService } from 'src/modules/challenge/schedulechallengejoinusers/schedulechallengejoinusers.service';
+import { UrlManageService } from 'src/modules/common';
 import { InterlinksService } from 'src/modules/company/interlinks/interlinks.service';
 import { AgeActivityService } from 'src/modules/healthcheckup/ageactivity/ageactivity.service';
 import { TranslationService } from 'src/modules/translation/translation.service';
@@ -15,7 +16,6 @@ import { FrontCalculationService } from './frontcalculation.service';
 import { FrontHealthcheckupService } from './fronthealthcheckup.service';
 import { FrontPointService } from './frontpoint.service';
 import { FrontTrackerEventMediaService } from './fronttrackermediaevent.service';
-import { UrlManageService } from 'src/modules/common';
 @Injectable()
 export class FrontPointsForService {
     constructor(
@@ -1838,7 +1838,6 @@ export class FrontPointsForService {
                 if (activityCustomPointTemp.length > 0) {
                     const activityCustomPointTemps = await this.frontPointService.groupByUserId(activityCustomPointTemp);
                     if (call_from == 11) { /* admin cohorot report */
-                        console.log('activityCustomPointTemps', activityCustomPointTemps);
                         reportUserActivitys = Object.keys(activityCustomPointTemps)
                             .reduce((acc, uid) => ({ ...acc, [uid]: null }), {});
                     } else {
@@ -1863,7 +1862,6 @@ export class FrontPointsForService {
                 if (activityDoneTemp.length > 0) {
                     const activityDoneTemps = await this.frontPointService.groupByUserId(activityDoneTemp);
                     if (call_from == 11) { /* admin cohorot report */
-                        console.log('activityDoneTemps', activityDoneTemps);
                         reportUserActivitys = Object.keys(activityDoneTemps)
                             .reduce((acc, uid) => ({ ...acc, [uid]: null }), {});
                     } else {

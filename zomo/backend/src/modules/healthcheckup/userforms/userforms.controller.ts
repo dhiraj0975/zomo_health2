@@ -252,7 +252,7 @@ export class UserFormsController {
                 let lastInsertId = await this.userFormsService.save({...postData, zip_filename : ' '});
                 if (zipPath != '') {
                     file.originalname = this.commonFileService.formatFileName(file.originalname);
-                    let fileName = `hform/subforms/${postData?.org_id.toString()}/${postData?.user_id.toString()}/${appConstant.HEALTH_FORM_DEFAULT_DATA[postData?.form_id].replace(" ","_")}_${this.commonService.generateMD5(postData?.user_id.toString())}_${new Date().getTime()}.zip`;
+                    let fileName = `hform/subforms/${postData?.org_id.toString()}/${postData?.user_id.toString()}/${appConstant.HEALTH_FORM_DEFAULT_ZIP_FILENAME_DATA[postData?.form_id].replace(" ","_")}_${this.commonService.generateMD5(postData?.user_id.toString())}_${new Date().getTime()}.zip`;
                     await lastValueFrom(this.commonMicroservice.send({cmd: 'upload_file'}, {path: path.resolve(zipPath),  filename: fileName, userBucket: 'private'}));
                     postData['zip_filename'] = fileName;
                     await this.userFormsService.update({id: lastInsertId['id']},{...postData});
@@ -418,10 +418,10 @@ export class UserFormsController {
                     id: recordDetails?.['id'], 
                     org_id: recordDetails?.['org_id'], 
                     user_id: recordDetails['user_id'], 
-                    custom_cname: formData.replace(' Forms',''), 
+                    custom_cname: formData.replace(' Form',''), 
                     form_id: recordDetails?.['form_id'], 
                     title: 'Health ' + message,
-                    message: `Your ${formData.replace(' Forms','')} ` + message,
+                    message: `Your ${formData.replace(' Form','')} ` + message,
                     logo, 
                     url: `https://${process.env.DOMAIN}/health-forms?tab=1?formId=${recordDetails?.['id']}`,
                     type: 'update',
@@ -581,6 +581,14 @@ export class UserFormsController {
             resultedData = <any>(
                 await this.commonArrayService.formatToDto(UserFormsDto, resultedData, req.lang)
             );
+            const userTimeZoneGetOne = req.tokenUser?.timezone ? req.tokenUser?.timezone : 'UTC';
+            if ((resultedData as any)?.added_date_copy) {
+                const addedDate = this.commonDateService.DateTimeFormat((resultedData as any).added_date_copy, 'utcInputToTz', 'YYYY-MM-DD HH:mm:ss', userTimeZoneGetOne);
+                let MonthName = this.commonDateService.DateTimeFormat(addedDate, 'MMMM');
+                MonthName = await this.translatorService.frontendReadTranslation(req.lang, this.commonDateService.DateTimeFormat(addedDate, 'MMM')?.toString(), `/LC_MESSAGES/Common/Month`, `static`);
+                const formatedDate = MonthName + ' ' + this.commonDateService.DateTimeFormat(addedDate, 'D') + ', ' + this.commonDateService.DateTimeFormat(addedDate, 'YYYY');
+                resultedData.added_date = formatedDate + ' ' + this.commonDateService.getTodayDate(addedDate).format('HH:mm');
+            }
             resultedData['physicianTypeList']=physicianTypeName
             if(tobacco_text != ''){
                 resultedData['tobacco_text'] = tobacco_text

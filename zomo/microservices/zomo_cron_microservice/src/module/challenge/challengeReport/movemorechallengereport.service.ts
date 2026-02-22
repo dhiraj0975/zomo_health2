@@ -112,7 +112,7 @@ export class MoveChallengeReportService {
                 {'alias':'department', 'table' : tableConstant.COMPANIES.TBL_DEPARTMENT, 'on' : `department.id = user.department_id`, 'connect' : 'user', 'type' : 'LEFT' },
                 {'alias':'Location', 'table' : tableConstant.COMPANIES.TBL_LOCATION, 'on' : `Location.id = user.location`, 'connect' : 'user', 'type' : 'LEFT' },
             ];
-            fields = ['user','Location','department.id','department.dept_name','company.id','company.company_name','companySetting.spouse_option','teamMember.id','teamMember.team_id','teamMember.user_id','teamMember.iscaptain','teamSchedule.schedule_id', 'team.id','team.tname','team.team_size','team.dept_id','team.loc_id','team.loc_id','team.status', 'group.name','scj.added_date','weekSteps.start_date','scj.schedule_id','scj.in_ranking','scj.completed_lock_locations'];
+            fields = ['user','Location','department.id','department.dept_name','company.id','company.company_name','companySetting.spouse_option','teamMember.id','teamMember.team_id','teamMember.user_id','teamMember.iscaptain','teamSchedule.schedule_id', 'team.id','team.tname','team.team_size','team.dept_id','team.loc_id','team.loc_id','team.status', 'group.name', 'group.id','scj.added_date','weekSteps.start_date','scj.schedule_id','scj.in_ranking','scj.completed_lock_locations'];
             userList = await this.userService.list(condition,null,fields,null,joinTable);
             /// captain code need to be add here team wise
             if(userList.length == 0){
@@ -196,6 +196,8 @@ export class MoveChallengeReportService {
                 if(userList.length){
                     let reportTeamsData;
                     reportTeamsData = {};
+                    let reportGroupsData;
+                    reportGroupsData = {};
                     let parkDetail = [];
                     if(move_more_display == 1 || move_more_display == 2){
                         parkDetail = await this.moveMoreParksService.GetAllParks(schedule, `mmp.schedule_id = ${schedule.id} AND mmp.status = 1`);
@@ -212,6 +214,17 @@ export class MoveChallengeReportService {
                                     };
                                 } else {
                                     reportTeamsData[teamId].TeamMembers += 1;
+                                }
+                                if(schedule.group_status === 1 && userDetailValue?.group) {
+                                    const groupId = userDetailValue?.group?.id;
+                                    if (!reportGroupsData[groupId]) {
+                                        reportGroupsData[groupId] = {
+                                            id: groupId,
+                                            name: userDetailValue?.group?.name,
+                                        };
+                                    }
+                                    reportTeamsData[teamId].group_id = groupId;
+                                    reportTeamsData[teamId].group_name = userDetailValue?.group?.name;
                                 }
                             }
 
@@ -372,6 +385,25 @@ export class MoveChallengeReportService {
                             reportTeamsData.sort((a, b) => b.teamsteps - a.teamsteps);
                         }
                     } 
+                    reportGroupsData = Object.values(reportGroupsData) ?? [];
+                    if (reportGroupsData && reportGroupsData.length > 0) {
+                        for (let i = 0; i < reportGroupsData.length; i++) {
+                            let group = reportGroupsData[i];
+                            let groupDetails = reportTeamsData?.filter(team => team?.group_id === group.id) ?? [];
+                            reportGroupsData[i]['teams'] = groupDetails.length;
+                            reportGroupsData[i]['teamsteps'] = Number(groupDetails?.reduce((sum, team) => {
+                                return sum + (team?.teamsteps || 0);
+                            }, 0).toFixed(2));
+                            reportGroupsData[i]['teamaveragestep'] = Number(groupDetails?.reduce((sum, team) => {
+                                return sum + (team?.teamaveragestep || 0);
+                            }, 0).toFixed(2));
+                        }
+                        if (schedule.rank_type === "average_steps") {
+                            reportGroupsData.sort((a, b) => b.teamaveragestep - a.teamaveragestep);
+                        } else {
+                            reportGroupsData.sort((a, b) => b.teamsteps - a.teamsteps);
+                        }
+                    } 
 
                     let rank = 1;
                     for(let item of userList)  {
@@ -388,6 +420,7 @@ export class MoveChallengeReportService {
                     }
 
                     if(result_type == 2){
+                        let companyInfo = userList[0]?.company ?? {};
                         let clm_name_arr;
                         let resultData = {};
                         if(schedule.team === 1){
@@ -407,6 +440,25 @@ export class MoveChallengeReportService {
                             );
                             let teamSheetData = [clm_name_arr, ...clm_data_team];
                             resultData['team'] = teamSheetData;
+                        }
+                        /* group processing */
+                        if(schedule?.group_status == 1){
+                            clm_name_arr =  ['RANK',...cronAppConstant.GROUP_HEADER_DATA, 'TOTAL STEPS', 'AVERAGE STEPS'];
+                            rank = 1;
+                            const clm_data_group = await Promise.all(
+                                reportGroupsData.map(async (item) => {
+                                    const row: any[] = [];
+                                    row.push(rank++)
+                                    row.push(companyInfo?.company_name ?? '')
+                                    row.push(item?.name)
+                                    row.push(item?.teams)
+                                    row.push(item?.teamsteps)
+                                    row.push(item?.teamaveragestep)
+                                    return row;
+                                }),
+                            );
+                            let groupSheetData = [clm_name_arr, ...clm_data_group];
+                            resultData['group'] = groupSheetData;
                         }
 
                         clm_name_arr = [...cronAppConstant.USER_HEADER_DATA];
@@ -468,8 +520,8 @@ export class MoveChallengeReportService {
                                             let tempcomcount = 0;
                                             for (const weeksftepsVal of weeksfteps) {
                                                 const startDate = this.commonDateService.DateTimeFormat(weeksftepsVal.start_date);
-                                                if(this.commonDateService.DateTimeFormat(weeksftepsVal.end_date).isSameOrBefore(enddate) == false){
-                                                    weeksftepsVal.end_date = enddate.format('YYYY-MM-DD')
+                                                if(this.commonDateService.DateTimeFormat(weeksftepsVal.end_date).isSameOrBefore(this.commonDateService.DateTimeFormat(enddate)) == false){
+                                                    weeksftepsVal.end_date = this.commonDateService.DateTimeFormat(enddate).format('YYYY-MM-DD')
                                                 }
                                                 const endDate = this.commonDateService.DateTimeFormat(this.commonDateService.DateTimeFormat(weeksftepsVal.end_date).format('YYYY-MM-DD') + ' 23:59:59');
                                                 const tempdata = Object.fromEntries(

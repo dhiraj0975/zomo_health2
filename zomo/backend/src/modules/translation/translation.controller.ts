@@ -1,4 +1,5 @@
-import { appConstant, CommonFileService, CacheService } from '@common-constants';
+import { CompanyService } from "@/modules/company/companies/company.service";
+import { appConstant, CacheService, CommonFileService } from '@common-constants';
 import {
     Body,
     Controller,
@@ -26,7 +27,6 @@ import { fileFilter, fileName, filesFilter } from 'src/utils/image-upload.utils'
 import { AccessGuard, RoleGuard, TokenGuard } from "../../guard";
 import { ActivityLogService } from "../master/activitylog/activitylog.service";
 import { TranslationService } from './translation.service';
-import {CompanyService} from "@/modules/company/companies/company.service";
 
 const path = require('path');
 
@@ -387,11 +387,8 @@ export class TranslationController {
                     sub_id,
                     req.tokenUser?.role_id
                 );
-                console.log('sub_id',sub_id);
                 var sourcePath = 'Locale/eng'+fileName;
                 var destinationPath = 'Locale/'+targetLang+fileName;
-                console.log('sourcePath',sourcePath);
-                console.log('destinationPath',destinationPath);
                 let translatedData = await lastValueFrom(this.commonMicroservice.send({cmd: 'lang_demo_full'}, { sourcePath: sourcePath,destinationPath: destinationPath,sourceLang: 'en', targetLang: keyOnly,type:type }));
                 if (typeof translatedData === 'string') {
                     if (translatedData.startsWith('ERROR:')) {

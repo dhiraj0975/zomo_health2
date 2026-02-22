@@ -27,6 +27,7 @@ import {
 import { CompanyService } from '../companies/company.service';
 import { FrontService } from "../front/front.service";
 import { LocationService } from './location.service';
+import { ListLocationInput } from './input/listLocation.input';
 @Controller('location')
 @UseGuards(TokenGuard, RoleGuard, AccessGuard)
 export class LocationController {
@@ -235,7 +236,7 @@ export class LocationController {
      * - can pass search_str, order_by, order
      */
     @Post('list')
-    async list(@Req() req: Request, @Res() res: Response, @Body() postData: any) {
+    async list(@Req() req: Request, @Res() res: Response, @Body() postData: ListLocationInput) {
         try {
             if (!postData?.company_id) {
                 throw new Error(
@@ -328,6 +329,12 @@ export class LocationController {
                             StateFullName: '',
                         };
                         locationResult.unshift(allLocationsOption);
+                    }
+                    if (postData?.country && postData?.country != '') {
+                        locationResult = locationResult.filter((ele) => ele?.country == postData?.country);
+                    }
+                    if (postData?.StateFullName && postData?.StateFullName != '') {
+                        locationResult = locationResult.filter((ele) => ele?.['StateFullName'] == postData?.StateFullName);
                     }
                     if (locationResult && locationResult.length && req.lang != 'eng') {
                         await Promise.all(locationResult.map(async (ele) => {

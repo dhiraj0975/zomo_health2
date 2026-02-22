@@ -200,7 +200,17 @@ export class UserController {
                         where += this.commonService.generateDynamicSearchQuery(postData?.search_str ?? '', 'settings.coach_area', false);
                     }
                 } else {
-                    where += this.commonService.generateDynamicSearchQuery(postData?.search_str, ['full_name', 'user.username']);
+                    if (
+                        (
+                            appConstant.ROLE.BROKERADMIN == req.tokenUser?.role_id ||
+                            appConstant.ROLE.BROKER == req.tokenUser?.role_id ||
+                            appConstant.ROLE.REGIONALADMIN == req.tokenUser?.role_id
+                        ) && postData?.call_type == 'brokers'
+                    ) {
+                        where += this.commonService.generateDynamicSearchQuery(postData?.search_str, ['full_name', 'user.username', 'user.code']);
+                    } else {
+                        where += this.commonService.generateDynamicSearchQuery(postData?.search_str, ['full_name', 'user.username']);
+                    }
                 }
             }
             if (postData?.role_id) {
@@ -971,7 +981,7 @@ export class UserController {
                 postData.on_insurance_plan =
                     YesNo[postData?.on_insurance_plan.toUpperCase()];
             }
-            postData.date_of_hire = (postData.date_of_hire === '' || postData.date_of_hire === 'undefined' || postData.date_of_hire === undefined || postData.date_of_hire === 'null' || postData.date_of_hire === null || (typeof postData.date_of_hire === 'string' && postData.date_of_hire.trim() === '')) ? recordDetails?.date_of_hire ?? null : postData.date_of_hire;
+            postData.date_of_hire = (postData.date_of_hire === '' || postData.date_of_hire === 'undefined' || postData.date_of_hire === undefined || (typeof postData.date_of_hire === 'string' && postData.date_of_hire.trim() === '')) ? recordDetails?.date_of_hire ?? null : postData.date_of_hire;
             if (file && file.fieldname === 'profile_image' && file.filename) {
                 await lastValueFrom(this.commonMicroservice.send({ cmd: 'delete_file' }, { prefix: recordDetails.profile_image }));
                 file.originalname = this.commonFileService.formatFileName(file.originalname);

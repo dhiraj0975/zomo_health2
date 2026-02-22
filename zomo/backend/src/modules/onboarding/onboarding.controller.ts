@@ -137,7 +137,6 @@ export class OnboardingController {
             }else{*/
                 this.validateStepAccess(step, stepsData, agreementHardGate);
             /*}*/
-            console.log(step);
             if(step==='getinternalLink'){
                 let resultedData: any = await this.interlinksService.listRecord({status: 1},{ ['id']: 'ASC'}, ['id','linktitle']);
                 resultedData = <any>(

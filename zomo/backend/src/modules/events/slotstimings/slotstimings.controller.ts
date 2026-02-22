@@ -157,7 +157,7 @@ export class EventSlotsTimingsController {
                 success: 1,
                 error: 0,
                 data: null,
-                message: 'success',
+                message: await this.translatorService.frontendReadTranslation(req.lang, 'Slot has been successfully deleted', `/LC_MESSAGES/Events/Events`, `static`)+`.`,
             });
         } catch (error) {
             this.activityLogService.error_log(req.tokenUser?.id,req?.originalUrl, error?.message, error, req);

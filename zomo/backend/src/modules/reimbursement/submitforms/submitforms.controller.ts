@@ -495,7 +495,6 @@ export class SubmitFormsController {
             if (resultedData?.notes) {
                 let customName = await this.translatorService.frontendReadTranslation(req.lang,`notes_${resultedData.id}`, `/LC_MESSAGES/Reimbursements/SubmittedForms/${resultedData.org_id}/${resultedData.form_id}/${resultedData.user_id}`,`dynamic`);
                 if (!customName.includes('notes_')) {
-                    console.log(customName);
                     resultedData.notes = customName;
                 }
             }

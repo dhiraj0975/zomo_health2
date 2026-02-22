@@ -1,11 +1,13 @@
 import {
     appConstant,
+    BioHealthRequestDto,
+    BiometricHealthRequestEntity,
     CommonArrayService,
     CommonDateService,
     CommonFileService, CommonService,
+    SortDirection,
     Status,
-    tableConstant,
-    UserEntity, BiometricHealthRequestEntity, SortDirection, BioHealthRequestDto,
+    tableConstant
 } from '@common-constants';
 import {
     Body,
@@ -20,27 +22,27 @@ import {
     UseGuards,
     UseInterceptors,
 } from '@nestjs/common';
-import {Request, Response} from "express";
-import * as path from 'path';
-import {ActivityLogService} from '../../master/activitylog/activitylog.service';
-import {In, Not} from 'typeorm';
-import {RoleGuard, TokenGuard} from '../../../guard';
+import { Request, Response } from "express";
 import * as md5 from 'md5';
+import * as path from 'path';
+import { In, Not } from 'typeorm';
+import { RoleGuard, TokenGuard } from '../../../guard';
+import { ActivityLogService } from '../../master/activitylog/activitylog.service';
 
 
-import {BiometricHealthRequestService} from "./biometric-health-request.service";
-import {TranslationService} from "../../translation/translation.service";
-import {UserService} from "../../user/user/user.service";
-import { MappingHealthRequestInput, RequestDeleteInput, healthUploadInput} from "./inputs";
-import {CompanyService} from "@/modules/company/companies/company.service";
-import {FileInterceptor} from "@nestjs/platform-express";
-import {diskStorage} from "multer";
-import {fileFilter, fileName} from "@/utils/image-upload.utils";
-import {RateLimiterMiddleware} from "@/middleware/rate-limiter.middleware";
-import {lastValueFrom} from "rxjs";
-import {ClientProxy} from "@nestjs/microservices";
-import {PaginateInput} from "@/input";
-import {BiometricsService} from "@/modules/healthcheckup/biometrics/biometrics.service";
+import { PaginateInput } from "@/input";
+import { RateLimiterMiddleware } from "@/middleware/rate-limiter.middleware";
+import { CompanyService } from "@/modules/company/companies/company.service";
+import { BiometricsService } from "@/modules/healthcheckup/biometrics/biometrics.service";
+import { fileFilter, fileName } from "@/utils/image-upload.utils";
+import { ClientProxy } from "@nestjs/microservices";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { diskStorage } from "multer";
+import { lastValueFrom } from "rxjs";
+import { TranslationService } from "../../translation/translation.service";
+import { UserService } from "../../user/user/user.service";
+import { BiometricHealthRequestService } from "./biometric-health-request.service";
+import { healthUploadInput, MappingHealthRequestInput, RequestDeleteInput } from "./inputs";
 
 const S3_URL =  process.env.S3_URL_PROD
 @Controller('health-checkup/health-request')
@@ -130,6 +132,7 @@ export class BiometricHealthRequestController {
                     status: Status.Zero,
                     mail_status: postData.mail_status === 1 ? Status.One : Status.Zero,
                     request_date: await this.commonDateService.DateTimeFormat('now', 'YYYY-MM-DD HH:mm:ss'),
+                    hash: '',
                 }
                 let createdRequest: BiometricHealthRequestEntity = await this.biometricHealthRequestService.create(requestData);
                 if(createdRequest){
@@ -393,7 +396,6 @@ export class BiometricHealthRequestController {
             }
             let fileData = await lastValueFrom(this.commonMicroservice.send({cmd: 'get_file'}, {path: `${recordDetails['success_file'].replace(/\.[^/.]+$/, '.json')}`, userBucket: 'private'}));
             let JsonData: any = JSON.parse(Buffer.from(fileData?.Body, 'base64').toString('utf-8'));
-            console.log("JsonData",JsonData);
             if (!JsonData.length) {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_DATA_NOT_FOUND"));
             }

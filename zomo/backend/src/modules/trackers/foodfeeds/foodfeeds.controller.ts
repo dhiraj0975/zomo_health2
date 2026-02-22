@@ -532,10 +532,10 @@ export class FoodFeedsController {
                     let totalMinutes = (hours + minutes);
                     let message ='';
                     if(totalMinutes >= 1440){
-                        message = `Error! ${await this.translatorService.frontendReadTranslation(req.lang, "Already completed 24 hours for the day")}`;
+                        message = `${await this.translatorService.frontendReadTranslation(req.lang,'Error!')} ${await this.translatorService.frontendReadTranslation(req.lang, "Already completed 24 hours for the day")}`;
                     }
                     else{
-                        message = `Error! ${await this.translatorService.frontendReadTranslation(req.lang, "You have Remain")} ${await this.commonDateService.convertToHoursAndMinutes(1440 - totalMinutes,req)}`;
+                        message = `${await this.translatorService.frontendReadTranslation(req.lang,'Error!')} ${await this.translatorService.frontendReadTranslation(req.lang, "You have Remain")} ${await this.commonDateService.convertToHoursAndMinutes(1440 - totalMinutes,req)}`;
                     }
                     return res.status(HttpStatus.BAD_REQUEST).json({
                         statusCode: 200,

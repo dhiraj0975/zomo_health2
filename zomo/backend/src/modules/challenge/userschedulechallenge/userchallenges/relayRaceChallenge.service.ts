@@ -907,7 +907,7 @@ export class RelayRaceChallengeHelperService {
                                         buttonText1 = await this.translatorService.frontendReadTranslation(req.lang,'Back To Challenge', `/LC_MESSAGES/Challenge/MyChallenges`,`static`);
                                     }
                                 }
-                                else if (complete_race_user[userId] && array_complete_race !== array_teammember && !relay_race_detail?.passbaton) 
+                                else if (complete_race_user[userId] && array_complete_race !== array_teammember && relay_race_detail?.passbaton) 
                                 {
                                     showPopup = 1;
                                     let translation = await this.translatorService.frontendReadTranslation(req.lang,`The baton has been passed to`, `/LC_MESSAGES/Challenge/MyChallenges`,`static`);

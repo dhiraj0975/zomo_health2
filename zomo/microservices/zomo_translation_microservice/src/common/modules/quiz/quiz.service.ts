@@ -1,23 +1,23 @@
+import {
+    appConstant,
+    CompaniesEntity,
+    QuizAssignQuizOrgEntity,
+    QuizCategoriesEntity,
+    QuizDetailsEntity,
+    QuizFillUpQuestionEntity,
+    QuizMatchingDragDropQuestionEntity,
+    QuizMatchingDropDownQuestionEntity,
+    QuizMultipleChoiceQuestionEntity,
+    QuizMultipleQuestionEntity,
+    QuizMultipleResponseQuestionEntity,
+    QuizQuizzesEntity,
+    QuizSectionEntity,
+} from '@common-constants';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Not, Repository } from 'typeorm';
 import { BaseModuleService } from '../shared/base.service';
 import { EntityKeyMap, FieldDataResult } from '../shared/types';
-import {
-    appConstant,
-    QuizQuizzesEntity,
-    QuizCategoriesEntity,
-    QuizAssignQuizOrgEntity,
-    QuizSectionEntity,
-    QuizDetailsEntity,
-    QuizMultipleQuestionEntity,
-    QuizMultipleChoiceQuestionEntity,
-    QuizMultipleResponseQuestionEntity,
-    QuizMatchingDropDownQuestionEntity,
-    QuizMatchingDragDropQuestionEntity,
-    QuizFillUpQuestionEntity,
-    CompaniesEntity,
-} from '@common-constants';
 @Injectable()
 export class QuizModuleService extends BaseModuleService {
     constructor(
@@ -157,7 +157,6 @@ export class QuizModuleService extends BaseModuleService {
                 where: { id: parseInt(quizId, 10), quiz_type: 'Normal' },
                 select: ['id', 'quiz_name', 'quiz_description'],
             });
-            console.log('id', parseInt(quizId, 10));
             if (!quiz) return [{}, {}];
 
             const selectOrgFieldList = orgId ? parseInt(orgId, 10) : 0;

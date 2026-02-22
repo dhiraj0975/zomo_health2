@@ -1,3 +1,4 @@
+import { BiometricHealthRequestService } from "@/modules/healthcheckup/health-request/biometric-health-request.service";
 import {
     BiometricHealthRequestEntity,
     HealthRequestEntity,
@@ -23,9 +24,8 @@ import { TranslationService } from "src/modules/translation/translation.service"
 import { AccessGuard, RoleGuard, TokenGuard } from '../../../guard';
 import { CustomPointService } from "../../campaign/custompoint/custompoint.service";
 import { HealthRequestService } from "../../challenge/healthrequest/healthrequest.service";
+import { WeightRequestService } from "../../challenge/weight-request/weight-request.service";
 import { ActivityLogService } from "../activitylog/activitylog.service";
-import {WeightRequestService} from "../../challenge/weight-request/weight-request.service";
-import {BiometricHealthRequestService} from "@/modules/healthcheckup/health-request/biometric-health-request.service";
 @UseGuards(TokenGuard, RoleGuard, AccessGuard)
 @Controller('custom-point')
 export class CustomPointController {
@@ -322,7 +322,6 @@ export class CustomPointController {
             }
             const where = { hash: postData?.hash, status: Status.Three };
             let recordDetails: BiometricHealthRequestEntity | null = await this.biometricHealthRequestService.getOne(where,['id','original_file','org_sheet_header','mapped_header','status']);
-            console.log("recordDetails",recordDetails);
             if (!recordDetails) {
                 let errorMessage = await this.translatorService.frontendReadTranslation(req?.lang, "ERR_RECORD_NOT_FOUND");
                 return res.status(HttpStatus.OK).json({
@@ -343,7 +342,6 @@ export class CustomPointController {
                 });
             } else {
                 let response = await lastValueFrom(this.client.send({cmd: 'biometric_health_request'}, { data: recordDetails }));
-                console.log("response",response);
                 if (response?.activity == 1) {
                     this.activityLogService.error_log(req.tokenUser?.id,req?.originalUrl, response?.message, JSON.stringify({stack:response}), req);
                     return res.status(HttpStatus.OK).json({

@@ -36,7 +36,7 @@ import { EventGlobalEventsService } from 'src/modules/events/globalevents/global
 import { QuizAssignQuizOrgService } from 'src/modules/quiz/assignquizorgs/assignquizorgs.service';
 import { TranslationService } from 'src/modules/translation/translation.service';
 import { UserService } from 'src/modules/user/user/user.service';
-import { attchamentFileFileter, datafileFilter, fileName } from 'src/utils/image-upload.utils';
+import { attachmentFileFilter, datafileFilter, fileName } from 'src/utils/image-upload.utils';
 import { Not } from 'typeorm';
 import { AccessGuard, RoleGuard, TokenGuard } from '../../../guard';
 import { ActivityLogService } from "../../master/activitylog/activitylog.service";
@@ -684,7 +684,7 @@ export class EmailCampaignRequestsController {
                 destination: `${appConstant.COMUNICATION_CAMPAIGN_FILE_TEMP_PATH}`,
                 filename: fileName,
             }),
-            fileFilter: attchamentFileFileter,
+            fileFilter: attachmentFileFilter,
         }),
         AccessGuard
     )
@@ -1007,7 +1007,7 @@ export class EmailCampaignRequestsController {
                 destination: `${appConstant.COMUNICATION_CAMPAIGN_FILE_TEMP_PATH}`,
                 filename: fileName,
             }),
-            fileFilter: attchamentFileFileter,
+            fileFilter: attachmentFileFilter,
         }),
         AccessGuard
     )
@@ -2465,6 +2465,7 @@ export class EmailCampaignRequestsController {
     @Post('request-verify-status')
     async requestVerifyStatus(@Req() req: Request, @Res() res: Response, @Body() postData: any) {
         try {
+            // console.log('[request-verify-status] hit', { id: postData?.id, hash: postData?.hash, role_id: req.tokenUser?.role_id, source: postData?.source, status: postData?.status });
             if (!postData?.id && !postData?.hash) {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_REQUIRED_PARAM_MISSING"));
             }
@@ -2489,7 +2490,11 @@ export class EmailCampaignRequestsController {
                 const cam_role_id = campaignRequests['role_id'];
                 if(campRoleIdArr.includes(cam_role_id)){
                     accessStatus = 0;
-                } 
+                }
+                // Only role 38 (GLOBALMARKETINGMANAGER) can approve/reject campaign requests
+                if(accessStatus == 0 && loged_role_id != 38){
+                    throw new Error('Only Global Marketing Manager can approve or reject campaign requests.');
+                }
                 if(accessStatus == 0){
                     let verifyStatusArray = null;
                     if(campaignRequests.approval_status_data !== '' && campaignRequests.approval_status_data !== null){
@@ -2545,18 +2550,13 @@ export class EmailCampaignRequestsController {
                     }
                     postData.updated_by = req.tokenUser?.id;
                     let resMessage = '';
-                    if(postData?.status === '2'){
-                        if(postData?.source == 'all'){
-                            resMessage = 'Campaign request approved successfully.';
-                        }else{
-                            resMessage = 'Campaign request item approved successfully.';
-                        }
-                    }else if(postData?.status === '3'){
-                        if(postData?.source == 'all'){
-                            resMessage = 'Campaign request rejected successfully.';
-                        }else{
-                            resMessage = 'Campaign request item rejected successfully.';
-                        }
+                    const statusVal = postData?.status != null ? String(postData.status) : '';
+                    if(statusVal === '2'){
+                        resMessage = postData?.source == 'all' ? 'Campaign request approved successfully.' : 'Campaign request item approved successfully.';
+                    } else if(statusVal === '3'){
+                        resMessage = postData?.source == 'all' ? 'Campaign request rejected successfully.' : 'Campaign request item rejected successfully.';
+                    } else {
+                        resMessage = 'Campaign request verification updated successfully.';
                     }
                     delete(postData?.status);
                     delete(postData?.types);
@@ -2756,10 +2756,10 @@ export class EmailCampaignRequestsController {
                 }
             }
             if (Object.keys(contactList).length === 0) {
-                // console.log('get-email-contacts contactList is empty. Check with_option, for_org_id, file, group_id.');
+               
             }
             if (contactList['list'] && Array.isArray(contactList['list']) && contactList['list'].length > 0) {
-                // console.log('[get-email-contacts] BEFORE filter | list length:', contactList['list'].length);
+               
                 contactList['list'].forEach((record: any, index: number) => {
                     const values = Object.values(record || {});
                     const nonEmptyValues = values.filter((val: any) => val != null && String(val).trim() !== '');
@@ -2769,11 +2769,11 @@ export class EmailCampaignRequestsController {
                     const values = Object.values(record || {});
                     const hasValidData = values.some((val: any) => val != null && String(val).trim() !== '');
                     if (!hasValidData) {
-                        console.log(`[get-email-contacts] FILTERED OUT record ${index + 1} (all empty):`, JSON.stringify(record));
+                       
                     }
                     return hasValidData;
                 });
-                // console.log('get-email-contacts AFTER filter | list length:', contactList['list'].length);
+                
             }
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
@@ -3167,14 +3167,14 @@ export class EmailCampaignRequestsController {
 
     async userFileterData(type: string, con_id: any = null, filterData: any = null, pageid: number = null, limit: number = null){
         try{
-            // console.log('userFileterData type:', type, '| con_id:', con_id, '| filterData:', JSON.stringify(filterData));
+            
             if(type == 'single'){
                 let whereCon = `user.id = '${con_id}' `;
                 return await this.userService.userFilerForCampaign(type, whereCon);
             }else if(type == 'multiple' || type == 'testUser' || type == 'count' || type == 'multipleIds'){
                 const companyCode = await this.companyService.getCompanyCodeFromId(con_id);
                 let whereCon = `user.membership_code = '${companyCode}' `;
-                // console.log('userFileterData companyCode from getCompanyCodeFromId:', companyCode);
+                
                 if(filterData && filterData !== null && filterData !== undefined){
                     if(filterData.terminated && filterData.terminated != '' && filterData.terminated !== null && filterData.terminated !== undefined && filterData.terminated == 1){
                         whereCon += ` AND user.status = 1`;

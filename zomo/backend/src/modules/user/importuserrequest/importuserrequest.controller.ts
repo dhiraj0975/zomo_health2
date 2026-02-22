@@ -356,7 +356,7 @@ export class ImportUserRequestController {
                 if (requestId['id']) {
                     let updateData = {hash: md5(requestId['id'])}
                     if (file && file.filename && file.fieldname === 'origional_file') {
-                        let companyData = await this.companyService.companyFindOne({id: postData?.org_id},["company_name"]);
+                        // let companyData = await this.companyService.companyFindOne({id: postData?.org_id},["company_name"]);
                         file.originalname = this.commonFileService.formatFileName(file.originalname);
                         let filename = `userimport/${postData?.org_id}/${requestId['id']}/${companyData['company_name'].replace(/\s/g, "_")}/_${this.commonService.generateMD5(requestId['id'].toString())}.${file.originalname.split('.')[file.originalname.split('.').length - 1]}`;
                         await lastValueFrom(this.commonMicroservice.send({cmd: 'upload_file'}, {path: path.resolve(file.path),  filename: filename, userBucket: 'private'}));

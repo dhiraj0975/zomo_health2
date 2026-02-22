@@ -2,10 +2,10 @@ import { CommonDateService, CommonHealthService } from '@common-constants';
 import { Injectable } from '@nestjs/common';
 import { Request } from "express";
 import * as moment from 'moment-timezone';
+import { SortingService, UrlManageService } from 'src/modules/common';
 import { TranslationService } from 'src/modules/translation/translation.service';
 import { SliderSettingsService } from '../slidersettings/slidersettings.service';
 import { FrontPointsForService } from './frontpointfor.service';
-import { UrlManageService, SortingService } from 'src/modules/common';
 @Injectable()
 export class FrontCampaginSummaryService {
     constructor(
@@ -443,7 +443,7 @@ export class FrontCampaginSummaryService {
                         if((quentity * point_for_each) <= actPoints){
                             if(sliderSetting && sliderSetting['hide'] && sliderSetting['hide'] == 1 && rewData['is_display_status'] != 1 && userAData['is_display_status'] != 1){
                                 dashStatus = await this.translatorService.frontendReadTranslation(req.lang,'Point', `/LC_MESSAGES/Dashboard/ParticipationSummary`,`static`);
-                                if(actPoints > 1){
+                                if(actPoints > 1 || actPoints == 0){
                                     dashStatus = await this.translatorService.frontendReadTranslation(req.lang,'Points', `/LC_MESSAGES/Dashboard/ParticipationSummary`,`static`);
                                 }
                                 dashStatus = actPoints + ' '+ dashStatus;
@@ -453,7 +453,7 @@ export class FrontCampaginSummaryService {
                         }else if(actPoints > 0){
                             if(sliderSetting && sliderSetting['hide'] && sliderSetting['hide'] == 1 && rewData['is_display_status'] != 1 && userAData['is_display_status'] != 1){
                                 dashStatus = await this.translatorService.frontendReadTranslation(req.lang,'Point', `/LC_MESSAGES/Dashboard/ParticipationSummary`,`static`);
-                                if(actPoints > 1){
+                                if(actPoints > 1 || actPoints == 0){
                                     dashStatus = await this.translatorService.frontendReadTranslation(req.lang,'Points', `/LC_MESSAGES/Dashboard/ParticipationSummary`,`static`);
                                 }
                                 dashStatus = actPoints + ' '+ dashStatus;
@@ -469,7 +469,7 @@ export class FrontCampaginSummaryService {
                         if((quentity * point_for_each) <= actPoints){
                             if(sliderSetting && sliderSetting['hide'] && sliderSetting['hide'] == 1 && rewData['is_display_status'] != 1){
                                 dashStatus = await this.translatorService.frontendReadTranslation(req.lang,'Point', `/LC_MESSAGES/Dashboard/ParticipationSummary`,`static`);
-                                if(actPoints > 1){
+                                if(actPoints > 1 || actPoints == 0){
                                     dashStatus = await this.translatorService.frontendReadTranslation(req.lang,'Points', `/LC_MESSAGES/Dashboard/ParticipationSummary`,`static`);
                                 }
                                 dashStatus = actPoints + ' '+ dashStatus;
@@ -479,7 +479,7 @@ export class FrontCampaginSummaryService {
                         }else if(actPoints > 0){
                             if(sliderSetting && sliderSetting['hide'] && sliderSetting['hide'] == 1 && rewData['is_display_status'] != 1){
                                 dashStatus = await this.translatorService.frontendReadTranslation(req.lang,'Point', `/LC_MESSAGES/Dashboard/ParticipationSummary`,`static`);
-                                if(actPoints > 1){
+                                if(actPoints > 1 || actPoints == 0){
                                     dashStatus = await this.translatorService.frontendReadTranslation(req.lang,'Points', `/LC_MESSAGES/Dashboard/ParticipationSummary`,`static`);
                                 }
                                 dashStatus = actPoints + ' '+ dashStatus;
@@ -836,9 +836,9 @@ export class FrontCampaginSummaryService {
                         }
                         returnFinalData[`${rewardId}`][`${rewardKey}`]['rewards'][`"${subRewardsIds}"`]['row1']['leftText'] = subRewData['name'];
                         returnFinalData[`${rewardId}`][`${rewardKey}`]['rewards'][`"${subRewardsIds}"`]['row1']['rightText'] = nameRightText;
-                        returnFinalData[`${rewardId}`][`${rewardKey}`]['rewards'][`"${subRewardsIds}"`]['row2']['leftText'] = await this.translatorService.frontendReadTranslation(req.lang, 'Total Points Required', `/LC_MESSAGES/Dashboard/ParticipationSummary`, `static`);
+                        returnFinalData[`${rewardId}`][`${rewardKey}`]['rewards'][`"${subRewardsIds}"`]['row2']['leftText'] = await this.translatorService.frontendReadTranslation(req.lang, reqPoint > 1 || reqPoint == 0 ? 'Total Points Required' : 'Total Point Required', `/LC_MESSAGES/Dashboard/ParticipationSummary`, `static`);
                         returnFinalData[`${rewardId}`][`${rewardKey}`]['rewards'][`"${subRewardsIds}"`]['row2']['rightText'] = (typeof reqPoint === 'string') ? parseFloat(reqPoint) : reqPoint;
-                        returnFinalData[`${rewardId}`][`${rewardKey}`]['rewards'][`"${subRewardsIds}"`]['row3']['leftText'] = await this.translatorService.frontendReadTranslation(req.lang, 'Completed All Requirements', `/LC_MESSAGES/Dashboard/ParticipationSummary`, `static`);
+                        returnFinalData[`${rewardId}`][`${rewardKey}`]['rewards'][`"${subRewardsIds}"`]['row3']['leftText'] = await this.translatorService.frontendReadTranslation(req.lang, 'Completed All Requirements & Points', `/LC_MESSAGES/Dashboard/ParticipationSummary`, `static`);//ZOMO-3863
                         returnFinalData[`${rewardId}`][`${rewardKey}`]['rewards'][`"${subRewardsIds}"`]['row3']['rightText'] = await this.translatorService.frontendReadTranslation(req.lang, `${eligible}`, `/LC_MESSAGES/Dashboard/ParticipationSummary`, `static`);
                         if(eligible == 'Yes'){
                             if(rewardComDate != ''){
@@ -1202,14 +1202,14 @@ export class FrontCampaginSummaryService {
                                 pointCompleted = total_achive_points || 0;
                             }
                         }
-                        sSubRewData['total_archive_points'] =  (total_achive_points > 1) ? total_achive_points+' '+transPTS : total_achive_points+' '+transPT;
+                        sSubRewData['total_archive_points'] =  (total_achive_points > 1 || total_achive_points == 0) ? total_achive_points+' '+transPTS : total_achive_points+' '+transPT;
                         sSubRewData['total_archive_points_num'] =  total_achive_points ?? 0;
                         sSubRewData['startPoint'] = '0 '+transPT;
                         sSubRewData['startPoint_num'] = 0;
-                        sSubRewData['required_point'] = (final_value > 1) ? final_value+' '+ transPTRS : final_value+' '+ transPTR;
+                        sSubRewData['required_point'] = (final_value > 1 || final_value == 0) ? final_value+' '+ transPTRS : final_value+' '+ transPTR;
                         sSubRewData['required_point_num'] = final_value ?? 0;
                         sSubRewData['avg_total_complete_point'] = avg_total_complete;
-                        sSubRewData['pointCompleted'] = (pointCompleted > 1) ? pointCompleted+' '+ transPTCS : pointCompleted+' '+ transPTC;
+                        sSubRewData['pointCompleted'] = (pointCompleted > 1 || pointCompleted == 0) ? pointCompleted+' '+ transPTCS : pointCompleted+' '+ transPTC;
                         sSubRewData['pointCompleted_num'] = pointCompleted ?? 0;
                     }
                     if(!returnFinalData[`${rewardId}`][`${currentPointKey}`]){

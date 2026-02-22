@@ -3,8 +3,10 @@ import {
     ActivityEntity,
     ActivityFeedsEntity,
     AgeActivityEntity,
+    AssessmentCohortReportsEntity,
     AssessmentEmotionalAssessmentAnswerEntity,
     AssessmentEmotionalAssessmentEntity,
+    AssessmentHaOptionsEntity,
     AssessmentHaQuestionsEntity,
     AssessmentHraBiometricEntity,
     AssessmentOptionsEntity,
@@ -14,9 +16,12 @@ import {
     AssessmentsEntity,
     AuthorizationsEntity,
     AutoReportSettingsEntity,
+    BillboardReportEntity,
     BioWeightEntity,
     BiometricEntity,
+    BiometricHealthRequestEntity,
     BiometricOrgSettingEntity,
+    BiometricReportsEntity,
     BiometricsEntity,
     BodyFeedsEntity,
     CacheService,
@@ -40,10 +45,13 @@ import {
     CommonService,
     CommunicationTemplateTextsEntity,
     CompaniesEntity,
+    CompanyDashboardClickEntity,
+    CompanyDashboardEntity,
     CompanyMasscommunicationEntity,
     CompanyNumberOfLiveReportsEntity,
-    CompanySettingsEntity,
     CompanyReportMenuSettingsEntity,
+    CompanySalesEntity,
+    CompanySettingsEntity,
     CovidQuestionsEntity,
     CovidReportEntity,
     CustomPointEntity,
@@ -70,6 +78,7 @@ import {
     FormSendRequestUserEntity,
     FtBiometricsEntity,
     HealthActivityEntity,
+    HealthReReportEntity,
     HealthRequestEntity,
     HealthUsersActivityEntity,
     ImportUserRequestEntity,
@@ -137,12 +146,7 @@ import {
     ZipDownloadsEntity,
     activityReportEntity,
     appConstant,
-    emotionalwellbeingReportsEntity,
-    CompanyDashboardClickEntity,
-    CompanyDashboardEntity,
-    BillboardReportEntity, AssessmentHaOptionsEntity, AssessmentCohortReportsEntity,
-    HealthReReportEntity,
-    BiometricHealthRequestEntity, BiometricReportsEntity
+    emotionalwellbeingReportsEntity
 } from '@common-constants';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -165,11 +169,15 @@ import {
     AssessmentResultsService,
     AssessmentService, AssessmentTabsService,
     BioWeightService,
-    BiometricOrgSettingService, BiometricService,
+    BiometricOrgSettingService,
+    BiometricReportsService,
+    BiometricService,
     CampaignAnnualReportController,
+    CampaignReportController,
     CampaignService,
     ChallengeExternalLinkService,
     ChallengeService,
+    CohortReportController,
     CommitmentLevelsService,
     CommunicationTemplateTextsService,
     CompanyService,
@@ -190,10 +198,13 @@ import {
     FormInstructionsService,
     FtBiometricsService,
     HealthActivityService,
+    HealthReportService,
     HealthRequestService,
     HealthUsersActivityService,
+    HraOptionsService,
     HraQuestionsService,
     ImportUserRequestService,
+    IncentiveReportController,
     IncentiveReportsService,
     LocationCronService,
     LocationService,
@@ -210,18 +221,17 @@ import {
     MyPlanJoinUserPlanService,
     MyPlanPlansService,
     MyPlanReportController,
-    IncentiveReportController,
-    OrgCensusReportController,
-    OrgCensusReportsService,
-    CampaignReportController,
-    CohortReportController,
     OptometristsService,
     OrgBiometricService,
+    OrgCensusReportController,
+    OrgCensusReportsService,
+    PhysicianTempsService,
     QuestionsService,
     QuickLinkClicksService,
     QuickLinkReportService,
     QuickLinkService,
     QuizQuizzesService,
+    ReportMenuSettingsService,
     ScheduleChallengeJoinUsersService,
     ScheduleChallengeService,
     SettingsService,
@@ -238,8 +248,7 @@ import {
     WeeksUsersService,
     WeightCustomPointUploadService,
     WeightRequestService,
-    WellBeingCategoryService,
-    ReportMenuSettingsService, HealthReportService, HraOptionsService, BiometricReportsService, PhysicianTempsService
+    WellBeingCategoryService
 } from './module';
 import { ActivityService } from './module/acitivity/activity.service';
 import { CategoryService } from './module/acitivity/category.service';
@@ -270,6 +279,7 @@ import { HydrateChallengeReportService } from './module/challenge/challengeRepor
 import { OlympicsChallengeReportService } from "./module/challenge/challengeReport/olympics-challenge-report.service";
 import { RandomactkindnessChallengeReportService } from "./module/challenge/challengeReport/randomactkindnesschallengereport.service";
 import { RecipeChallengeReportService } from './module/challenge/challengeReport/recipechallengereport.service';
+import { RelayRaceChallengeReportService } from './module/challenge/challengeReport/relayracechallengereport.service';
 import { SleepChallengeReportService } from './module/challenge/challengeReport/sleepchallengereport.service';
 import { WeightChallengeReportService } from './module/challenge/challengeReport/weightchallengereport.service';
 import { RecipeService } from './module/challenge/recipe/recipe.service';
@@ -278,10 +288,13 @@ import { SquareUsersService } from './module/challenge/squareusers/squareusers.s
 import { TeamsService } from './module/challenge/team/teams.service';
 import { TokensService } from './module/challenge/tokens/tokens.service';
 import { UserChallengeHelperService } from './module/challenge/userChallengeHelper.service';
-import { IncentiveReportHelperService } from './module/incentivereports/incentiveReportHelper.service';
 import { WeekStepsService } from './module/challenge/week/weeksteps.service';
+import { CohortReportsService } from './module/cohortreports/cohortreports.service';
 import { SortingService, UrlManageService } from './module/common';
 import { ActivePluginService, WellnessAssignmentService } from './module/company';
+import { BillboardReportService } from './module/company/billboard-report/billboard-report.service';
+import { DashboardClickService } from './module/company/billboard-report/dashboard-click.service';
+import { DashboardService } from './module/company/billboard-report/dashboard.service';
 import { InterlinksService } from './module/company/interlinks.service';
 import { LocationServices } from './module/company/location.service';
 import { MassCommunicationService } from './module/company/masscomunication.service';
@@ -298,11 +311,15 @@ import {
 } from './module/events';
 import { EventService } from './module/events/events.service';
 import { AgeActivityService } from './module/healthcheckup/ageactivity/ageactivity.service';
+import { AggregateReportService } from './module/healthcheckup/aggregatereport/aggregatereport.service';
 import { AuthorizationsService } from './module/healthcheckup/authorizations/authorizations.service';
+import { BiometricHealthRequestAddService, BiometricHealthRequestService } from "./module/healthcheckup/biometric-health-request";
 import { BiometricsService } from './module/healthcheckup/biometrics/biometrics.service';
 import { EngagementService } from './module/healthcheckup/engagement/engagement.service';
+import { HealthReReportService } from './module/healthcheckup/healthrereport.service';
 import { HippaReportService } from './module/healthcheckup/hippareport/hippareport.service';
 import { TobaccoUsesService } from './module/healthcheckup/tobacco-uses/tobacco-uses.service';
+import { IncentiveReportHelperService } from './module/incentivereports/incentiveReportHelper.service';
 import { QuizReportService } from './module/quiz/quiz-report/quizreport.service';
 import { QuizReportHelperService } from './module/quiz/quizreporthelper.service';
 import { ReimbursementService } from './module/reimbursement/reimbusement.service';
@@ -312,19 +329,12 @@ import { BiometricResultReportService } from "./module/reports/biometric-result-
 import { CampaignDataHelperService } from './module/reports/campaign-annual-report/campaigndatahelper.service';
 import { HraDetailReportService } from "./module/reports/hra-detail-report/hra-detail-report.service";
 import { MyPlanReportService } from './module/reports/my-plan-report/my-plan-report.service';
+import { OrgSalesReportsService } from './module/reports/org-sales-report/orgsalesreports.service';
 import { SurveyQuestionsService } from './module/survey/surveyquestion.service';
 import { SurveyReportService } from './module/survey/surveyreport.service';
 import { SurveyUserAnswersService } from './module/survey/surveyuseranswers.service';
 import { BodyFeedService } from './module/tracker/body-feeds/body-feeds.service';
 import { UserLoginService } from './module/user';
-import { BillboardReportService } from './module/company/billboard-report/billboard-report.service';
-import { DashboardService } from './module/company/billboard-report/dashboard.service';
-import { DashboardClickService } from './module/company/billboard-report/dashboard-click.service';
-import { AggregateReportService } from './module/healthcheckup/aggregatereport/aggregatereport.service';
-import { RelayRaceChallengeReportService } from './module/challenge/challengeReport/relayracechallengereport.service';
-import { CohortReportsService } from './module/cohortreports/cohortreports.service';
-import { HealthReReportService } from './module/healthcheckup/healthrereport.service';
-import {BiometricHealthRequestAddService, BiometricHealthRequestService} from "./module/healthcheckup/biometric-health-request";
 
 @Module({
     imports: [
@@ -496,6 +506,7 @@ import {BiometricHealthRequestAddService, BiometricHealthRequestService} from ".
                 HealthReReportEntity,
                 BiometricHealthRequestEntity,
                 BiometricReportsEntity,
+                CompanySalesEntity
             ],
             appConstant.READ_REPLICA.toLowerCase(),
         ),
@@ -642,6 +653,7 @@ import {BiometricHealthRequestAddService, BiometricHealthRequestService} from ".
                 HealthReReportEntity,
                 BiometricHealthRequestEntity,
                 BiometricReportsEntity,
+                CompanySalesEntity
             ],
             appConstant.MAIN.toLowerCase(),
         ),
@@ -842,6 +854,7 @@ import {BiometricHealthRequestAddService, BiometricHealthRequestService} from ".
         BiometricHealthRequestAddService,
         BiometricReportsService,
         PhysicianTempsService,
+        OrgSalesReportsService,
         {
             provide: 'POSTCODES_SERVICE',
             inject: [ConfigService],

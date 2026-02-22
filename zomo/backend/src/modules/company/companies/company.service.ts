@@ -1,11 +1,11 @@
 import {
-    appConstant,
-    BaseService,
-    CommonArrayService,
-    CommonFileService,
-    CommonService,
-    CompaniesEntity,
-    tableConstant
+  appConstant,
+  BaseService,
+  CommonArrayService,
+  CommonFileService,
+  CommonService,
+  CompaniesEntity,
+  tableConstant
 } from '@common-constants';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
@@ -605,8 +605,6 @@ export class CompanyService extends BaseService<CompaniesEntity> {
           }
         }
       }
-      console.log("Condition:", condition);
-      console.log("Fields:", fields);
 
       query = query.where(condition).select(fields);
       query = query.orderBy('company.id', 'ASC');

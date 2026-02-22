@@ -583,7 +583,7 @@ export class FrontController {
                                     }
                                 }
                                 const dueDateTextData = await this.metaService.findOne({org_id: company_id});
-                                let dueDateText = dueDateTextData?.due_date_text || 'Due Date';
+                                let dueDateText = dueDateTextData?.due_date_text || 'Last Date'; //ZOMO-3863
                                 returnDatas['spouseSetting'] = (spouseSetting && spouseSetting?.hide && spouseSetting.hide === 1) ? 0 : 1;
                                 returnDatas['spouse_option'] = req?.tokenUser?.company?.setting?.spouse_option || 0;
                                 returnDatas['userTabName'] = await this.translatorService.frontendReadTranslation(req.lang, 'My Summary', `/LC_MESSAGES/Dashboard/ParticipationSummary`, `static`);
@@ -1192,15 +1192,17 @@ export class FrontController {
                             }
                         }else{
                             let specificUser = returnDatasSort.find(user => user.id === user_id);
-                            const specificUserIndex = returnDatasSort.findIndex(user => user.id === user_id);
-                            if(!specificUser['rank']){
-                                specificUser['rank'] = 0;
+                            if(specificUser){
+                                const specificUserIndex = returnDatasSort.findIndex(user => user.id === user_id);
+                                if(!specificUser['rank']){
+                                    specificUser['rank'] = 0;
+                                }
+                                specificUser['rank'] = specificUserIndex + 1;
                             }
-                            specificUser['rank'] = specificUserIndex + 1;
                             for (let t9user of top9Users) {
                                 t9user['rank'] = returnDatasSort.findIndex(user => user.id === t9user.id) + 1;
                             }
-                            top9Users.splice(10, 0, specificUser);
+                            specificUser ? top9Users.splice(10, 0, specificUser) : top9Users.splice(10, 0);
                         }
                         if(!returnDatas['users']){
                             returnDatas['users'] = [];

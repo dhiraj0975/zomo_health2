@@ -858,7 +858,7 @@ export class UserDashboardChallengeController {
                                             statusCode = 401;
                                             error = 1;
                                             success = 0;
-                                            message = await this.translatorService.frontendReadTranslation(req.lang, 'Team is not created so try again leter', `/LC_MESSAGES/Challenge/MyChallenges`,`static`);
+                                            message = await this.translatorService.frontendReadTranslation(req.lang, 'Team is not created so try again later', `/LC_MESSAGES/Challenge/MyChallenges`,`static`);
                                             joinAccessStatus = false;
                                         }
                                     }
@@ -1818,12 +1818,12 @@ export class UserDashboardChallengeController {
                                         resultedData[index]['data'] = await this.bingoChallengeService.bingoChallenge(schedule, req, show_type);         
                                     }
         
-                                    let templinks = await this.interlinksService.listRecord({}); 
-                                    const combinedLinks = templinks.reduce((acc, link) => {
-                                        acc[link.id] = link; 
-                                        return acc;
-                                    }, {});
-                                    resultedData[index]['data']['templinks'] = combinedLinks;
+                                    // let templinks = await this.interlinksService.listRecord({}); ZOMO-4934
+                                    // const combinedLinks = templinks.reduce((acc, link) => {
+                                    //     acc[link.id] = link; 
+                                    //     return acc;
+                                    // }, {});
+                                    // resultedData[index]['data']['templinks'] = combinedLinks;
                                 }else if (schedule['ch']['bio_challenge_type'] == "Healthy_habit_activity_layout") {
                                     resultedData[index]['data'] = await this.healthHabbitActivityChallengeService.healthyHabitActivityChallenge(schedule, req, show_type);         
                                 }else if (schedule['sc']['is_all_activities'] == 1) {
@@ -1858,29 +1858,28 @@ export class UserDashboardChallengeController {
             if(resultedData?.length > 0){
                 resultedData = resultedData.filter(item => item !== null)
                 for(let item of resultedData){
+                    let start_date = this.commonDateService.getTodayDate(item['sc']['start_date']).startOf('day');
+                    let end_date = this.commonDateService.getTodayDate(item['sc']['end_date']).endOf('day');
+                    let current_date = this.commonDateService.getTodayDate().unix();
+                    let totalDays = end_date.diff(start_date, 'days') + 1;
+                    let remainingDays = 0;
+                    if (current_date >= start_date.unix() && current_date <= end_date.unix()) {
+                        remainingDays = (end_date.diff(this.commonDateService.DateTimeFormat('now'), 'days')) + 1;
+                    }
+                    else if(current_date < start_date.unix()){
+                        remainingDays = (moment.unix(end_date).diff(moment.unix(current_date), 'days')) + 1;
+                    }
+                    else if(current_date > end_date.unix()){
+                        remainingDays = 0
+                    }
+                    item['sc']['joined_count'] = 0;
+                    let joinCount = await this.scheduleChallengeJoinUsersService.joinUserListRecord({schedule_id: item['sc']['id'], status: 1},null,['scj.id']);
+                    item['sc']['joined_count'] = joinCount?.length;
+                    
                     if(item['challengeDetails']['challengeStatus'] == 1){
-                        item['sc']['joined_count'] = 0;
-                        if(item['challengeStatus'] != 2){
-                            let joinCount = await this.scheduleChallengeJoinUsersService.joinUserListRecord({schedule_id: item['sc']['id'], status: 1},null,['scj.id']);
-                            item['sc']['joined_count'] = joinCount?.length;
-                        }
-                        let start_date = this.commonDateService.getTodayDate(item['sc']['start_date']).startOf('day');
-                        let end_date = this.commonDateService.getTodayDate(item['sc']['end_date']).endOf('day');
-                        let current_date = this.commonDateService.getTodayDate().unix();
-                        let totalDays = end_date.diff(start_date, 'days') + 1;
-                        let remainingDays = 0;
-                        if (current_date >= start_date.unix() && current_date <= end_date.unix()) {
-                            remainingDays = (end_date.diff(this.commonDateService.DateTimeFormat('now'), 'days')) + 1;
-                        }
-                        else if(current_date < start_date.unix()){
-                            remainingDays = (moment.unix(end_date).diff(moment.unix(current_date), 'days')) + 1;
-                        }
-                        else if(current_date > end_date.unix()){
-                            remainingDays = 0
-                        }
-                        item['sc']['remaining_days'] = item['challengeDetails']['challengeStatus'] != 2 ? remainingDays : totalDays;
                         item['sc']['streak_count'] = await this.userChallengeHelperService.streakIndicator({...item?.['sc'], AlreadyjoinId: item?.id, ac: item['ac'], ch: item['ch'],}, req);
                     }
+                    item['sc']['remaining_days'] = item['challengeDetails']['challengeStatus'] != 2 ? remainingDays : totalDays;
                 }
             }
             if(dashboardListData && dashboardListData == 1){

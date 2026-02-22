@@ -917,7 +917,6 @@ export class AppService {
             await this.updateMenuStatus(this.bucket, targetMenu, 3);
 
             const dynamicFilePath = `${this.path}/cron/${parent_val}/${sidebar_value}/all_translation_status.json`;
-            console.log('dynamicFilePath', dynamicFilePath);
             const translation_status_json_decode =
                 await this.getTranslationFileData(dynamicFilePath);
 

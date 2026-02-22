@@ -1604,6 +1604,10 @@ export class UserDashboardController {
                             widgetbioTopColor = regionColor['Very High risk'];
                             widgetbioTop = dynamicInCompleteText ?? `${notCompleteText} <b>${biometricText}.</b> ${seeBellowText}`;
                         }
+                        if(Is_Completed < Is_Required && Date2Comp =='' && Date1Comp ==''){
+                            widgetbioTopColor = regionColor['Very High risk'];
+                            widgetbioTop = dynamicInCompleteText ?? `${notCompleteText} <br>${biometricText}. ${seeBellowText}`;
+                        }
                         let widgetbiotmpdate = await this.orgBiometricService.findOne(`orgBiometric.company_id = ${orgId} AND orgBiometric.status !=2`,{ is_optional: 'ASC' });
                         widgetbioheader[1]['Title']= 'Complete Test 1 (Results need to be from ' + this.commonDateService.getTodayDate(widgetbiotmpdate['test1_start_date']).format('MM/DD/YYYY') + ' - ' + this.commonDateService.getTodayDate(widgetbiotmpdate['test1_end_date']).format('MM/DD/YYYY')+ ')';
                         widgetbioheader[2]['Title']= 'Complete Test 2 (Results need to be from ' + this.commonDateService.getTodayDate(widgetbiotmpdate['test2_start_date']).format('MM/DD/YYYY') + ' - ' + this.commonDateService.getTodayDate(widgetbiotmpdate['test2_end_date']).format('MM/DD/YYYY')+ ')';

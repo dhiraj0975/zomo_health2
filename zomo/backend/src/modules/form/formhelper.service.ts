@@ -183,17 +183,24 @@ export class FormHelperService {
                 } else {
                     formKey = userFormData?.form_id;
                 }
-                let formData = JSON.parse(
-                    JSON.stringify(appConstant.HEALTH_FORM_DEFAULT_DATA[formKey])
-                );
+                let formDefaultData = appConstant.HEALTH_FORM_DEFAULT_DATA[formKey];
+                if(!formDefaultData){
+                    if(postData?.stepType && postData.stepType == 'optometrists-confirm'){
+                        formKey = 3;
+                    }
+                    if(postData?.stepType && postData.stepType == 'dental-confirm'){
+                        formKey = 2;
+                    }
+                }
+                let formData = JSON.parse(JSON.stringify(appConstant.HEALTH_FORM_DEFAULT_DATA[formKey]));
                 this.addNotification({
                     id: userFormData?.id, 
                     org_id: userFormData?.org_id || userFormData?.company_id,
                     user_id: userFormData['user_id'], 
-                    custom_cname: formData.replace(' Forms',''), 
+                    custom_cname: formData.replace(' Form',''), 
                     form_id: userFormData?.form_id, 
                     title: 'Health ' + message,
-                    message: `Your ${formData.replace(' Forms','')} ` + message,
+                    message: `Your ${formData.replace(' Form','')} ` + message,
                     logo, 
                     url: `https://${process.env.DOMAIN}/health-forms?tab=1?formId=${userFormData?.id}`,
                     type: 'update',

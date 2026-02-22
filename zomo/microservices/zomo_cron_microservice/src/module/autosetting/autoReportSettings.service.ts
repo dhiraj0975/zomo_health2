@@ -309,36 +309,57 @@ export class AutoReportSettingService {
                         item.module_id.toString() === '2' ||
                         item.module_id.toString() === '4'
                     ) {
-                        conditionData += ` AND User.location IN ([${item.f_location}])`;
+                        let allLocationIds = this.commonArrayService.transformToArray(item.f_location, ',');
+                        if (allLocationIds && allLocationIds.length > 0) {
+                            conditionData += ` AND User.location IN ( ${allLocationIds.join(',')} )`;
+                        } else {
+                            conditionData += ` AND User.location IN ( null )`;
+                        }
                     } else {
-                        let locations = await this.locationService.listRecord(
-                            ['lname', 'id'],
-                            {
-                                deleted: 0,
-                                id: In([44, 45, 46, 57, 68, 70, 76, 200, 201]),
-                            },
-                        );
-                        let allFilerLocation = [];
-                        if (locations && Object.keys(locations).length > 0) {
-                            let locationName = locations.map(
-                                (item) => item.lname,
-                            );
-                            let locationsSame =
-                                await this.locationService.listRecord(
-                                    ['lname', 'id'],
-                                    { deleted: 0, lname: In(locationName) },
+                        const enggLocationIds = this.commonArrayService.transformToArray
+                            (
+                                item.f_location,
+                                ',',
+                                'number'
+                            ) as number[];
+                        if (enggLocationIds.length > 0) {
+                            let allFilterLocation =
+                                [
+                                    ...enggLocationIds
+                                ];
+                            const locations = await this.locationService.listRecord
+                                (
+                                    [
+                                        'lname',
+                                        'id'
+                                    ],
+                                    {
+                                        deleted: 0,
+                                        id: In(enggLocationIds),
+                                    }
                                 );
-                            if (
-                                locationsSame &&
-                                Object.keys(locationsSame).length > 0
-                            ) {
-                                allFilerLocation = locationsSame.map(
-                                    (id) => id.id,
+                            if (locations && locations.length > 0) {
+                                const locationNames = locations.map(
+                                    loc =>
+                                        loc.lname
                                 );
+                                const locationsSame = await this.locationService.listRecord(
+                                    [
+                                        'id'
+                                    ],
+                                    {
+                                        deleted: 0,
+                                        lname: In(locationNames),
+                                        company_id: seOId
+                                    }
+                                );
+                                if (locationsSame && locationsSame.length > 0) {
+                                    allFilterLocation = locationsSame.map(loc => loc.id);
+                                }
                             }
-                            let filterLocId = allFilerLocation;
-                            if (filterLocId && filterLocId.length > 0) {
-                                conditionData += `AND User.location IN (${filterLocId})`;
+                            const validLocIds = allFilterLocation.filter(id => id);
+                            if (validLocIds.length > 0) {
+                                conditionData += ` AND User.location IN (${validLocIds.join(',')})`;
                             }
                         }
                     }
@@ -397,15 +418,35 @@ export class AutoReportSettingService {
                     requestData['is_range'] = 1;
                 }
                 requestData['start_date_range'] = item.f_from_date
-                    ? moment(item.f_from_date.replace(/-/g, '/'), 'DD/MM/YYYY').format(
-                          'YYYY-MM-DD',
-                      ) + ' 00:00:00'
+                    ? moment(item.f_from_date.replace(/-/g, '/'), 'MM/DD/YYYY').format(
+                        'YYYY-MM-DD',
+                    ) + ' 00:00:00'
                     : '';
+                if (requestData['start_date_range'] && requestData['start_date_range'].toLowerCase() == 'invalid date 00:00:00') {
+                    requestData['start_date_range'] = item.f_from_date
+                        ? moment(item.f_from_date.replace(/-/g, '/'), 'DD/MM/YYYY').format(
+                            'YYYY-MM-DD',
+                        ) + ' 00:00:00'
+                        : '';
+                    if (requestData['start_date_range'] && requestData['start_date_range'].toLowerCase() == 'invalid date 00:00:00') {
+                        requestData['start_date_range'] = '';
+                    }
+                }
                 requestData['end_date_range'] = item.f_to_date
-                    ? moment(item.f_to_date.replace(/-/g, '/'), 'DD/MM/YYYY').format(
-                          'YYYY-MM-DD',
-                      ) + ' 23:59:59'
+                    ? moment(item.f_to_date.replace(/-/g, '/'), 'MM/DD/YYYY').format(
+                        'YYYY-MM-DD',
+                    ) + ' 23:59:59'
                     : '';
+                if (requestData['end_date_range'] && requestData['end_date_range'].toLowerCase() == 'invalid date 23:59:59') {
+                    requestData['end_date_range'] = item.f_to_date
+                        ? moment(item.f_to_date.replace(/-/g, '/'), 'DD/MM/YYYY').format(
+                            'YYYY-MM-DD',
+                        ) + ' 23:59:59'
+                        : '';
+                    if (requestData['end_date_range'] && requestData['end_date_range'].toLowerCase() == 'invalid date 23:59:59') {
+                        requestData['end_date_range'] = '';
+                    }
+                }
                 requestData['status'] = 0;
                 requestData['engagement_report'] = 0;
                 if (item.f_engagement_report) {
@@ -1594,8 +1635,6 @@ export class AutoReportSettingService {
                     emailNotSendCount += 1;
                 }
             }
-            console.log(emailSendCount,'report mail send successfully');
-            console.log(emailNotSendCount,'report mail not send');
             return 'Success';
         } catch (error) {
             console.log('error:', error);

@@ -265,12 +265,11 @@ export class MilesCustomPointUploadService {
                 const requestId = recordDetails['id'];
                 const createdBy = recordDetails['created_by'];
                 let checkScheduleChallengeDateValidation: ScheduleChallengeEntity =
-                    await this.scheduleChallengeService.findOneChallenge(
-                        ['start_date', 'end_date'],
-                        {
+                    await this.scheduleChallengeService.commonQueryBuilder(
+                        ["DATE_FORMAT(start_date, '%Y-%m-%d %H:%i:%s') as start_date", "DATE_FORMAT(end_date, '%Y-%m-%d %H:%i:%s') as end_date"],{
                             id: recordDetails?.['schedule_id'],
                             org_id: recordDetails?.['org_id'],
-                        },
+                        },{},[],'getRawOne'
                     );
                 if (!checkScheduleChallengeDateValidation) {
                     return {
@@ -375,7 +374,7 @@ export class MilesCustomPointUploadService {
                                     activityData[activityName]['act_date'] =
                                         this.commonDateService.DateTimeFormat(
                                             cell,
-                                            'YYYY-MM-DD',
+                                            'YYYY-MM-DD','MM-DD-YYYY'
                                         );
                                 }
                                 activityData[activityName]['act_name'] =
@@ -400,7 +399,7 @@ export class MilesCustomPointUploadService {
                                         this.commonDateService.DateTimeFormat(
                                             sheetDate,
                                             'timestamp',
-                                            'YYYY-MM-DD',
+                                            'YYYY-DD-MM',
                                         );
 
                                     if (
@@ -565,7 +564,6 @@ export class MilesCustomPointUploadService {
                         message: 'ERR_ADD_AT_LEAST_ONE_POINT',
                     };
                 }
-
                 if (recordDetails) {
                     let currentDatetime =
                         await this.commonDateService.DateTimeFormat(
@@ -652,7 +650,13 @@ export class MilesCustomPointUploadService {
                                 message: `An error occurred: ${err}`,
                             };
                         }
-                        rFileName = rFileName.replace('.json', '');
+                        if (rFileName) {
+                            await this.commonFileService.removeFolderFromLocal(
+                                path.resolve(
+                                    `${filePathDir}/${rFileName}`,
+                                )
+                            );
+                        }
                     }
                     if (successSheetArray.length > 0) {
                         const jsonStringS = JSON.stringify(
@@ -827,14 +831,18 @@ export class MilesCustomPointUploadService {
                                 message: `An error occurred: ${err}`,
                             };
                         }
+                        if (sFileName) {
+                            await this.commonFileService.removeFolderFromLocal(
+                                path.resolve(
+                                    `${filePathDir}/${sFileName}`,
+                                )
+                            );
+                        }
                     }
                     updateRequestData['status'] = 1;
                     await this.healthRequestService.update(
                         { id: recordDetails['id'] },
                         updateRequestData,
-                    );
-                    await this.commonFileService.removeFolderFromLocal(
-                        filePathDir,
                     );
                     return {
                         success: 1,

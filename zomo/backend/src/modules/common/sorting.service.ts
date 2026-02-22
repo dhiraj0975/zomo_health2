@@ -25,8 +25,11 @@ export class SortingService {
                     if (b[fieldOne] !== a[fieldOne]) {
                         return b[fieldOne] - a[fieldOne];
                     }
-                    if(fieldTwo == 'tab_titled' || fieldTwo == 'full_name'){
+                    if(fieldTwo == 'tab_titled'){
                         return b[fieldTwo].localeCompare(a[fieldTwo]);
+                    }
+                    else if(fieldTwo == 'full_name'){
+                        return a[fieldTwo].localeCompare(b[fieldTwo]);
                     }else{
                         if(fieldTwo != null){
                             return b[fieldTwo] - a[fieldTwo];

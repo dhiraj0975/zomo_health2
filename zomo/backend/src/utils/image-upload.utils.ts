@@ -176,7 +176,7 @@ export const xlsxFileFilter = (req: Request, file: any, callback: any) => {
     }
     callback(null, true);
 };
-export const attchamentFileFileter = (req: Request, file: any, callback: any) => {
+export const attachmentFileFilter = (req: Request, file: any, callback: any) => {
     const allowedMimes = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
     if (!allowedMimes.includes(file.mimetype)) {
         const errorMessage = translator.translate(req.lang, "ERR_DATA_ATTCHAMENT_FILE_TYPE");

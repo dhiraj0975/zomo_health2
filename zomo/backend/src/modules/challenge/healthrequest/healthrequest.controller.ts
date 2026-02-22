@@ -593,6 +593,7 @@ export class HealthRequestController {
                     const fieldName = defaultHeader[key];
                     let cellValue = sheetData[i]?.[key];
                     if (fieldName.toLowerCase().includes('_date')) {
+                        // cellValue = await this.commonDateService.DateTimeFormat(cellValue, 'YYYY-MM-DD','DD-MM-YYYY');
                         const monthName = await this.commonDateService.DateTimeFormat(cellValue, 'MMMM');
                         const translatedMonth = await this.translatorService.frontendReadTranslation(req?.lang, monthName.toString(), `/LC_MESSAGES/Common/Month`, `static`);
                         cellValue = `${translatedMonth.toString().substring(0, 3)} ${await this.commonDateService.DateTimeFormat(cellValue, 'D, YYYY')}`;

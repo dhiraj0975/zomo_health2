@@ -178,6 +178,13 @@ export class AssessmentHaQuestionsController {
             ) {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_REQUIRED_PARAM_MISSING"));
             }
+            if (postData?.company_id == '0') {
+                let companiesData = await this.companyService.companyListRecord(['id'], { status: 1, deleted: 0 });
+                if (companiesData) {
+                    let ids = companiesData.map(company => company.id);
+                    postData.company_id = ids.join(",");
+                }
+            }
             const assessmentQuestionsOrder = await this.frontService.assessmentHaQuestionsFindOne(['order'],{ questioncat_id: postData?.questioncat_id, status: Not(2) },{order:'DESC'});
             /*TODO: order to order_id db field change*/
             postData['order'] = assessmentQuestionsOrder && assessmentQuestionsOrder['order'] ? assessmentQuestionsOrder['order'] + 1 : 1;

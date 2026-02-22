@@ -637,8 +637,8 @@ export class QuizAssignQuizOrgController {
             }
             else if (!wasWebinar && !isWebinar) {
                 postData.webinar_id = 0;
-                postData.vlink = postData.vlink ?? '';
-                postData.vmsg = postData.vmsg ?? '';
+                postData.vlink = postData.vlink ? postData.vlink : recordDetails.vlink;
+                postData.vmsg = postData.vmsg ? postData.vmsg : recordDetails.vmsg;
                 postData.quiz_type = 0;
             }
             else if (isWebinar || (wasWebinar && postData?.webinar_id && Number(postData?.webinar_id) > 0 && Number(postData?.webinar_id) !== recordDetails?.webinar_id)) {
@@ -1257,7 +1257,7 @@ export class QuizAssignQuizOrgController {
                     notificationData['metadata']['notification_date'] = startDate;
                     notificationData['metadata']['start_date'] = startDate;
                     notificationData['metadata']['notification_sent'] = 0;
-                    notificationData['message'] = message + ' starts Today';
+                    notificationData['message'] = message + ' Start Today';
                     await this.notificationsController.sendNotification(0, notificationData, req);
                     
                     if(quizData?.end_date){
@@ -1267,7 +1267,7 @@ export class QuizAssignQuizOrgController {
                         notificationData['metadata']['notification_sent'] = endDate;
                         notificationData['metadata']['notification_sent'] = 1;
                         notificationData['metadata']['end_date'] = endDate;
-                        notificationData['message'] = message + ' ends Today';
+                        notificationData['message'] = message + ' End Today';
                         await this.notificationsController.sendNotification(0, notificationData, req);
                     }
                 }   

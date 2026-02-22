@@ -416,7 +416,11 @@ export class UserEventController {
             if(usersDataWellness){
                 usersDataWellness = usersDataWellness.map((user: any) => user.id).join(',');
             }
-            let globalEventList = await this.eventGlobalService.listRecord(["ge.id", "ge.event_id", "ge.orderid"], `ge.organization_id = ${user.org_id} and ge.status != 2`,);
+            let globalEventWhere = `ge.organization_id = ${user.org_id} and ge.status != 2`;
+            if(postData?.search_str) {
+                globalEventWhere += ` AND (ev.event_name LIKE '%${postData.search_str}%' OR ev.event_description LIKE '%${postData.search_str}%') `;
+            } 
+            let globalEventList = await this.eventGlobalService.listRecord(["ge.id", "ge.event_id", "ge.orderid"], globalEventWhere, null,[tableConstant.EVENTS.TBL_EV_EVENTS]);
             globalEventList = globalEventList.length ? globalEventList?.reduce((accumulator, item) => {
                 const key = item.event_id;
                 const value = item;
@@ -452,7 +456,10 @@ export class UserEventController {
                 OR event.start_date IS NULL 
                 OR event.end_date IS NULL
                 )`;
-            }            
+            } 
+            if(postData?.search_str) {
+                wellnessEventCond += ` AND (event.event_name LIKE '%${postData.search_str}%' OR event.event_description LIKE '%${postData.search_str}%') `;
+            }          
             if (usersDataWellness) {
                 wellnessEventCond += ` AND event.created_by_user_id NOT IN (${usersDataWellness}) `;
                 wellnessLotCon += ` AND es.created_by NOT IN (${usersDataWellness}) `;
@@ -479,7 +486,11 @@ export class UserEventController {
             if(!postData?.hasOwnProperty('category_id')) {
                 const categoryData = eventData
                 .filter(event => event?.category_id);
-                let categoryList = categoryData.length > 0 ? await this.eventCategoryService.listRecord(['e_category.id', 'e_category.category_name', 'e_category.c_companies_id', 'e_category.order_no'], `e_category.status = 1 AND e_category.id in(${categoryData.map(event => event.category_id).join(',')})`, { order_no: 'ASC' }) : [];    
+                let categoryWhere = `e_category.status = 1 AND e_category.id in(${categoryData.map(event => event.category_id).join(',')})`;
+                if(postData?.search_str) {
+                    categoryWhere += ` AND e_category.category_name LIKE '%${postData.search_str}%' `;
+                }
+                let categoryList = categoryData.length > 0 ? await this.eventCategoryService.listRecord(['e_category.id', 'e_category.category_name', 'e_category.c_companies_id', 'e_category.order_no'], categoryWhere, { order_no: 'ASC' }) : [];    
                 if(categoryList.length){
                     eventData = eventData.filter(event => !categoryList.map(category=> category.id).includes(event?.category_id));
                     total_events += eventData.length;
@@ -654,11 +665,13 @@ export class UserEventController {
                                 }
                             }
                         }
-                        let userBookingList = await this.eventUserBookingListsService.listRecord(`eubl.ev_slots_id in(${ele.slot.map(slot=> slot.id).join(',')}) AND eubl.ev_user_id = ${user.id} AND eubl.status = 1`,{ id: 'ASC' },['eubl','slotTiming']);
+                        // let userBookingList = await this.eventUserBookingListsService.listRecord(`eubl.ev_slots_id in(${ele.slot.map(slot=> slot.id).join(',')}) AND eubl.ev_user_id = ${user.id} AND eubl.status = 1`,{ id: 'ASC' },['eubl','slotTiming']);
+                        let userBookingList = await this.eventUserBookingListsService.listRecord(`eubl.ev_slots_id in(${ele.slot.map(slot=> slot.id).join(',')}) AND eubl.ev_user_id = ${user.id} AND eubl.status = 1 AND(eubl.slot_selected != 0 AND slotTiming.status = 1)`,{ id: 'ASC' },['eubl','slotTiming']);
                         ele.userBookingList = userBookingList;
                     }
                     if(eventsIdList.length > 0 && ele?.event_type === 3 && eventsIdListUserBookingList[ele.id]){
-                        let userBookingList = await this.eventUserBookingListsService.listRecord(`eubl.ev_events_id = ${ele.id} AND eubl.ev_user_id = ${user.id} AND eubl.status = 1`,{ id: 'ASC' },['eubl','slotTiming']);
+                        // let userBookingList = await this.eventUserBookingListsService.listRecord(`eubl.ev_events_id = ${ele.id} AND eubl.ev_user_id = ${user.id} AND eubl.status = 1`,{ id: 'ASC' },['eubl','slotTiming']);
+                        let userBookingList = await this.eventUserBookingListsService.listRecord(`eubl.ev_events_id = ${ele.id} AND eubl.ev_user_id = ${user.id} AND eubl.status = 1 AND(eubl.slot_selected != 0 AND slotTiming.status = 1)`,{ id: 'ASC' },['eubl','slotTiming']);
                         ele.userBookingList = userBookingList;
                     }
                     if(ele.event_type === 0 && !ele.start_date) {
@@ -828,7 +841,7 @@ export class UserEventController {
                                 date = registration_user_start_date_slot.format('DD');
                                 year = registration_user_start_date_slot.format('YYYY');
                                 userBooking['registration_date_user_slot'] = `${date} ${monthname} ${year} - ${moment(registration_user_start_date_slot).format('hh:mm')} ${periodIndicatorStart} to ${moment(registration_user_end_date_slot).format('hh:mm')} ${periodIndicatorEnd}`
-                            }                                
+                            }                              
                             if (ele.event_type == 3) {
                                 let registration_date_slot = moment(userBooking.registration_date);
                                 let registration_date_user_slot = moment(userBooking.registration_date);
@@ -959,8 +972,9 @@ export class UserEventController {
                 }));
             }
             if([appConstant.ROLE.REGISTERED,appConstant.ROLE.SPOUSE].includes(user?.role_id)){
-                const deviceDetails = this.commonService.getClientIPAndDeviceDetails(req);
-                if(['Android','IOS','iOS','ios','Mac'].includes(deviceDetails?.os_name) && deviceDetails?.client_type != 'browser'){
+                // const deviceDetails = this.commonService.getClientIPAndDeviceDetails(req);
+                // if(['Android','IOS','iOS','ios','Mac'].includes(deviceDetails?.os_name) && deviceDetails?.client_type != 'browser' && postData?.filters){ // removed for new design
+                if(postData?.filters){
                     let filters = postData?.filters || {};
                     const filterStart = postData?.from_date ? moment(postData.from_date) : null;
                     const filterEnd = postData?.to_date ? moment(postData.to_date) : null;

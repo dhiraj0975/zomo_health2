@@ -15,6 +15,7 @@ import { AssessmentHraBiometricService } from 'src/modules/healthassessment/asse
 import {Between, Repository} from 'typeorm';
 import { FtBiometricsService } from "../../trackers/biometrics/biometrics.service";
 import {BiometricData, ProcessedBiometricData} from "@/interface";
+import {TranslationService} from "@/modules/translation/translation.service";
 @Injectable()
 export class BiometricsService extends BaseService<BiometricsEntity> {
     constructor(
@@ -28,6 +29,7 @@ export class BiometricsService extends BaseService<BiometricsEntity> {
         private readonly commonFileService: CommonFileService,
         private readonly assessmentHraBiometricsService: AssessmentHraBiometricService,
         private readonly ftBiometricsService: FtBiometricsService,
+        private readonly translatorService: TranslationService,
     ) {
         super(readReplicaBiometricsRepository,writeReplicaBiometricsRepository,'biometrics',commonArrayService);
     }
@@ -278,21 +280,24 @@ export class BiometricsService extends BaseService<BiometricsEntity> {
           }
           resultedData = this.commonService.dynamicSort(resultedData, (a, b) => new Date(b['created']).getTime() - new Date(a['created']).getTime());
           if (paginationParam.page && paginationParam.limit) {
-
+              let userEntered = await this.translatorService.frontendReadTranslation(paginationParam.lang, 'User Entered', `/LC_MESSAGES/MyHealth/HealthData`, `static`);
+              let physicianEntered = await this.translatorService.frontendReadTranslation(paginationParam.lang, 'Physician Entered', `/LC_MESSAGES/MyHealth/HealthData`, `static`);
+              let adminEntered = await this.translatorService.frontendReadTranslation(paginationParam.lang, 'Admin Entered', `/LC_MESSAGES/MyHealth/HealthData`, `static`);
+              let noDataEntered = await this.translatorService.frontendReadTranslation(paginationParam.lang, 'No Data Entered', `/LC_MESSAGES/MyHealth/HealthData`, `static`);
               const getUserType = (source: number, enterBy: number): string => {
                   const userTypeMap: { [key: number]: string } = {
-                      1: 'User Entered',
-                      13: 'User Entered',
-                      14: 'User Entered',
-                      15: 'User Entered',
-                      3: 'Physician Entered',
-                      11: 'Physician Entered',
-                      12: 'Physician Entered',
+                      1: userEntered,
+                      13: userEntered,
+                      14: userEntered,
+                      15: userEntered,
+                      3: physicianEntered,
+                      11: physicianEntered,
+                      12: physicianEntered,
                   };
                   if (source === 2) {
-                      return enterBy === 0 ? 'Admin Entered' : 'Physician Entered';
+                      return enterBy === 0 ? adminEntered : physicianEntered;
                   }
-                  return userTypeMap[source] || 'Physician Entered';
+                  return userTypeMap[source] || physicianEntered;
               };
 
               const processBiometricData = (resultedData: BiometricData[]): ProcessedBiometricData[] => {
@@ -304,21 +309,21 @@ export class BiometricsService extends BaseService<BiometricsEntity> {
                           id: row.id,
                           height: row.height,
                           weight: row.weight,
-                          bmi: row.bmi && row.bmi !== '0' ? row.bmi : 'No Data Entered',
-                          systolic: row.systolic || 'No Data Entered',
-                          diastolic: row.diastolic || 'No Data Entered',
-                          blood_glucose: row.blood_glucose || 'No Data Entered',
-                          alc: row.alc || 'No Data Entered',
-                          total_cholesterol: row.total_cholesterol || 'No Data Entered',
-                          hdl: row.hdl || 'No Data Entered',
-                          ldl: row.ldl || 'No Data Entered',
-                          triglycerides: row.triglycerides || 'No Data Entered',
-                          waist: row.waist || 'No Data Entered',
+                          bmi: row.bmi && row.bmi !== '0' ? row.bmi : noDataEntered,
+                          systolic: row.systolic || noDataEntered,
+                          diastolic: row.diastolic || noDataEntered,
+                          blood_glucose: row.blood_glucose || noDataEntered,
+                          alc: row.alc || noDataEntered,
+                          total_cholesterol: row.total_cholesterol || noDataEntered,
+                          hdl: row.hdl || noDataEntered,
+                          ldl: row.ldl || noDataEntered,
+                          triglycerides: row.triglycerides || noDataEntered,
+                          waist: row.waist || noDataEntered,
                           user_type: getUserType(row.source, row.enter_by),
                           source: row.source,
                           frm: row.frm,
                           enter_by: row.enter_by,
-                          created: row.created || 'No Data Entered',
+                          created: row.created || noDataEntered,
                       };
                       processedData.push(processedRow);
                   }

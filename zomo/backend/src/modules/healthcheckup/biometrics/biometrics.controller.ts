@@ -344,6 +344,7 @@ export class BiometricsController {
     async healthData(@Req() req: Request, @Res() res: Response, @Body() postData: any) {
         try {
             postData.user_id = postData?.user_id ?? req.tokenUser?.id;
+            postData['lang'] = req.lang;
             if (!postData?.user_id || !postData?.org_id) {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang,'ERR_REQUIRED_PARAM_MISSING'));
             }

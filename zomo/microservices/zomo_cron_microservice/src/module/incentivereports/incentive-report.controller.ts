@@ -1665,13 +1665,20 @@ export class IncentiveReportController {
                     let bgColorRaw = [];
                     
                     if(campaignRewardsArray && Object.keys(campaignRewardsArray).length > 0){
-                        for (let [key, campaignRaw] of Object.entries(campaignRewardsArray)) {
-                            let campID = campaignRaw['campaign_id'] ? campaignRaw['campaign_id'] : 0;
+                        let campaignRewardData = campaignRewardsArray;
+                        for (let campRw of campaignRewardData) {
+                           let campID = campRw['campaign_id'] ? campRw['campaign_id'] : 0;
                             let campaignDatas = campaignData[campID] ?? {};
                             let campaignDetails = campaignDatas['campaign'] ? campaignDatas['campaign'] : {};
-                            let campaignName = campaignDetails['campaign_name'] ? campaignDetails['campaign_name'] : '';
-                            let campaignStartDate = campaignDetails['start_date'] ? await this.commonDateService.DateTimeFormat(campaignDetails['start_date'], 'MM-DD-YYYY', 'YYYY-MM-DD HH:mm:ss') : '';
-                            let campaignEndDate = campaignDetails['end_date'] ? await this.commonDateService.DateTimeFormat(campaignDetails['end_date'], 'MM-DD-YYYY', 'YYYY-MM-DD HH:mm:ss') : '';
+                            campRw['campaignName'] = campaignDetails['campaign_name'] ? campaignDetails['campaign_name'] : '';
+                            campRw['campaignStartDate'] = campaignDetails['start_date'] ? this.commonDateService.getTodayDate(campaignDetails['start_date']) : '';
+                            campRw['campaignEndDate'] = campaignDetails['end_date'] ? this.commonDateService.getTodayDate(campaignDetails['end_date']) : ''; 
+                        }
+                        campaignRewardData = campaignRewardData?.sort((a,b) => a?.['campaignEndDate'].valueOf() - b?.['campaignEndDate'].valueOf());
+                        for (let campaignRaw of campaignRewardData) {
+                            let campaignName = campaignRaw['campaignName'] ?? '';
+                            let campaignStartDate = campaignRaw['campaignStartDate'] ? campaignRaw['campaignStartDate'].format('MM-DD-YYYY') : '';
+                            let campaignEndDate = campaignRaw['campaignEndDate'] ? campaignRaw['campaignEndDate'].format('MM-DD-YYYY') : '';
                             firstSheetData.push(['Campaign name:', campaignName,'','','', [1,2]]);
                             if (campaignRaw?.['Rewards']?.length > 0) {
                                 for (const rewd of campaignRaw['Rewards']) {

@@ -1197,20 +1197,20 @@ export class UserChallengeHelperService {
                             notificationData['metadata']['notification_date'] = startDate;
                             notificationData['metadata']['notification_sent'] = 0;
                             notificationData['metadata']['reg_start_date'] = startDate;
-                            notificationData['message'] = message + ' Registration starts Today';
+                            notificationData['message'] = message + ' Registration Start Today';
                             await this.notificationsController.sendNotification(0, notificationData, req);
 
                             notificationData['metadata']['notification_date'] = endDate;
                             notificationData['metadata']['reg_start_date_before'] = endDate;
-                            notificationData['message'] = message + ' Registration starts Yesterday';
+                            notificationData['message'] = message + ' Registration Start Yesterday';
                             await this.notificationsController.sendNotification(0, notificationData, req);
                         }
                         if(challengeData?.reg_end_date){
-                            endDate = this.commonDateService.getTodayDate(challengeData?.reg_start_date).subtract(1, 'days').format('YYYY-MM-DD');
+                            endDate = this.commonDateService.getTodayDate(challengeData?.reg_end_date).subtract(1, 'days').format('YYYY-MM-DD');
                             notificationData['metadata']['notification_date'] = endDate;
                             notificationData['metadata']['notification_sent'] = 1;
                             notificationData['metadata']['reg_end_date'] = endDate;
-                            notificationData['message'] = message + ' Registration ends Today';
+                            notificationData['message'] = message + ' Registration End Today';
                             await this.notificationsController.sendNotification(0,notificationData, req);
                         }
                     }
@@ -1219,7 +1219,7 @@ export class UserChallengeHelperService {
                         notificationData['metadata']['notification_date'] = startDate;
                         notificationData['metadata']['start_date'] = startDate;
                         notificationData['metadata']['notification_sent'] = 0;
-                        notificationData['message'] = message + ' starts Today';
+                        notificationData['message'] = message + ' Start Today';
                         await this.notificationsController.sendNotification(0, notificationData, req);
                         
                         if(challengeData?.end_date){
@@ -1229,7 +1229,7 @@ export class UserChallengeHelperService {
                             notificationData['metadata']['notification_sent'] = endDate;
                             notificationData['metadata']['notification_sent'] = 1;
                             notificationData['metadata']['end_date'] = endDate;
-                            notificationData['message'] = message + ' ends Today';
+                            notificationData['message'] = message + ' End Today';
                             await this.notificationsController.sendNotification(0, notificationData, req);
 
                             endDate = this.commonDateService.getTodayDate(challengeData?.end_date).subtract(1, 'days').format('YYYY-MM-DD');
@@ -1447,7 +1447,7 @@ export class UserChallengeHelperService {
                     }
                     else if (challengeData['is_all_activities'] == 1) { // need to apply proper conditions 
                         const weekData = await this.weeksUsersService.list(`cwu.challenge_id = ${challengeData['ch']['id']} AND cwu.schedule_id = ${schedule_join_id} AND cwu.user_id = ${req.tokenUser?.id} AND cwu.status = 1`,{ id: 'DESC' });
-                        let daysData = await this.daysUsersService.listRecord(`du.challenge_id = ${challengeData['ch']['id']} AND du.schedule_id = ${schedule_join_id} AND du.user_id = ${user_id} AND du.status != 2`,
+                        let daysData = await this.daysUsersService.listRecord(`du.challenge_id = ${challengeData['ch']['id']} AND du.schedule_id = ${schedule_join_id} AND du.user_id = ${user_id} AND du.status = 1`,
                             {day_id : 'ASC'},
                             ['du','ac.activity_name','days.site_activity_desc','days.manual_activity','days.manual_desc','days.logofile','days.manuallink','days.m_long','days.m_yesno','days.m_short','days.m_numeric']
                         );  
@@ -1455,7 +1455,7 @@ export class UserChallengeHelperService {
                     }
                     else {  // need to apply proper conditions //ZOMO-4387
                         const weekData = await this.weeksUsersService.list(`cwu.challenge_id = ${challengeData['ch']['id']} AND cwu.schedule_id = ${schedule_join_id} AND cwu.user_id = ${req.tokenUser?.id} AND cwu.status = 1`,{ id: 'DESC' });
-                        let daysData = await this.daysUsersService.listRecord(`du.challenge_id = ${challengeData['ch']['id']} AND du.schedule_id = ${schedule_join_id} AND du.user_id = ${user_id} AND du.status != 2`,
+                        let daysData = await this.daysUsersService.listRecord(`du.challenge_id = ${challengeData['ch']['id']} AND du.schedule_id = ${schedule_join_id} AND du.user_id = ${user_id} AND du.status = 1`,
                             {day_id : 'ASC'},
                             ['du','ac.activity_name','days.site_activity_desc','days.manual_activity','days.manual_desc','days.logofile','days.manuallink','days.m_long','days.m_yesno','days.m_short','days.m_numeric']
                         );  
@@ -1501,6 +1501,9 @@ export class UserChallengeHelperService {
                 }
                 else if (row?.collectionDate) {
                     row.day = this.commonDateService.getTodayDate(row.collectionDate).format('YYYY-MM-DD');
+                }
+                else if (row?.act_date) {
+                    row.day = this.commonDateService.getTodayDate(row.act_date).format('YYYY-MM-DD');
                 }
                 if (row.day === expectedDate) {
                     streak++;

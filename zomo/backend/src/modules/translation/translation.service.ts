@@ -643,8 +643,6 @@ export class TranslationService {
                     });
                 }
             }
-
-            console.log(`Transformed ${transformedArray.length} translation entries`);
             return transformedArray;
 
         } catch (error) {

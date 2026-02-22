@@ -2,10 +2,9 @@ import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import {
     EmailService,
-    S3FileUploader,
     InitializeTranslateClient,
+    S3FileUploader,
 } from './common';
-import * as process from 'node:process';
 
 @Controller()
 export class AppController {
@@ -110,7 +109,6 @@ export class AppController {
 
     @MessagePattern({ cmd: 'copy_directory' })
     copyDirectory(postData: any) {
-        console.log('postData', postData);
         return this.fileUploadService.copyS3Directory(
             postData?.from,
             postData?.to,

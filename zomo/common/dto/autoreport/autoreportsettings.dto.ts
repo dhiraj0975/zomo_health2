@@ -61,6 +61,8 @@ export class AutoreportsettingsDto {
                     return Array.isArray(obj?.fitnessVideoName) ? obj.fitnessVideoName : [];
                 case 8:
                     return Array.isArray(obj?.eventName) ? obj.eventName : [];
+                case 10:
+                    return Array.isArray(obj?.userNames) ? obj.userNames : [];
                 case 11:
                     return Array.isArray(obj?.quizName) ? obj.quizName : [];
                 case 15:

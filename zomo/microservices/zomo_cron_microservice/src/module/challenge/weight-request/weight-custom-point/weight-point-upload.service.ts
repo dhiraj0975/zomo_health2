@@ -329,7 +329,13 @@ export class WeightCustomPointUploadService {
                                 message: `An error occurred: ${err}`,
                             };
                         }
-                        rFileName = rFileName.replace('.json', '');
+                        if (rFileName) {
+                            await this.commonFileService.removeFolderFromLocal(
+                                path.resolve(
+                                    `${filePathDir}/${rFileName}`,
+                                )
+                            );
+                        }
                     }
                     if (successSheetArray.length > 0) {
                         const jsonStringS = JSON.stringify(successSheetArray,null,2);
@@ -422,10 +428,16 @@ export class WeightCustomPointUploadService {
                                 message: `An error occurred: ${err}`,
                             };
                         }
+                        if (sFileName) {
+                            await this.commonFileService.removeFolderFromLocal(
+                                path.resolve(
+                                    `${filePathDir}/${sFileName}`,
+                                )
+                            );
+                        }
                     }
                     updateRequestData['status'] = Status.One;
                     await this.weightRequestService.updateRecord({ id: recordDetails['id'] },updateRequestData);
-                    await this.commonFileService.removeFolderFromLocal(filePathDir);
                     return {
                         success: 1,
                         error: 0,

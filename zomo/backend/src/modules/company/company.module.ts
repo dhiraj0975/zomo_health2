@@ -7,15 +7,16 @@ import {
     CensusFrequencyEntity,
     ClientManagerAssignEntity,
     CompaniesEntity,
-    CompanyDashboardClickEntity,
     CompanyCEMInfoEntity,
     CompanyContractEntity,
+    CompanyDashboardClickEntity,
     CompanyDashboardEntity,
     CompanyLanguagesEntity,
     CompanyMasscommunicationEntity,
     CompanyMetaEntity,
     CompanyNumberOfLiveReportsEntity,
     CompanyReportMenuSettingsEntity,
+    CompanySalesEntity,
     CompanySettingsEntity,
     CompanySideMenuSettingsEntity, CompanySupportsEntity,
     CompanyTypesEntity,
@@ -26,9 +27,9 @@ import {
     LocationsEntity,
     MediaCategoryEntity,
     MembershipPlanEntity,
+    OrgCensusReportEntity,
     PhysicianTempsEntity,
     WellnessAssignmentEntity,
-    OrgCensusReportEntity,
 } from '@common-constants';
 import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -58,9 +59,9 @@ import { CompanyTypesController } from './companytypes/companytypes.controller';
 import { CompanyTypesService } from './companytypes/companytypes.service';
 import { ContractController } from './contract/contract.controller';
 import { ContractService } from './contract/contract.service';
+import { DashboardClickService } from './dashboard/dashboard-click.service';
 import { dashboardsController } from './dashboard/dashboard.controller';
 import { DashboardService } from './dashboard/dashboard.service';
-import { DashboardClickService } from './dashboard/dashboard-click.service';
 import { DepartmentController } from './departments/department.controller';
 import { DepartmentService } from './departments/department.service';
 import { FrontService } from "./front/front.service";
@@ -80,10 +81,16 @@ import { MembershipPlanController } from './membershipplan/membershipplan.contro
 import { MembershipPlanService } from './membershipplan/membershipplan.service';
 import { MetaController } from './meta/meta.controller';
 import { MetaService } from './meta/meta.service';
+import { CompanyNumberOfLiveReportController } from './numberoflivereport/numberOfLiveReport.controller';
+import { CompanyNumberOfLiveReportsService } from './numberoflivereport/numberOfLiveReport.service';
+import { OrgCensusReportController } from './orgcensusreport/orgcensusreport.controller';
+import { OrgCensusReportService } from './orgcensusreport/orgcensusreport.service';
 import { PhysicianTempController } from './physiciantemp/physiciantemp.controller';
 import { PhysicianTempService } from './physiciantemp/physiciantemp.service';
 import { ReportMenuSettingsController } from './reportmenusettings/reportMenuSettings.controller';
 import { ReportMenuSettingsService } from './reportmenusettings/reportMenuSettings.service';
+import { SalesController } from './sales/sales.controller';
+import { SalesService } from './sales/sales.service';
 import { SettingsController } from './settings/settings.controller';
 import { SettingsService } from './settings/settings.service';
 import { SideMenuSettingsController } from './sidemenusettings/sideMenuSettings.controller';
@@ -92,18 +99,14 @@ import { SupportController } from "./support/support.controller";
 import { SupportService } from "./support/support.service";
 import { WellnessAssignmentController } from "./wellnessassignment/wellnessAssignment.controller";
 import { WellnessAssignmentService } from "./wellnessassignment/wellnessAssignment.service";
-import { CompanyNumberOfLiveReportsService } from './numberoflivereport/numberOfLiveReport.service';
-import { CompanyNumberOfLiveReportController } from './numberoflivereport/numberOfLiveReport.controller';
-import { OrgCensusReportService } from './orgcensusreport/orgcensusreport.service';
-import { OrgCensusReportController } from './orgcensusreport/orgcensusreport.controller';
 @Module({
     imports: [
         TypeOrmModule.forFeature([CompanyTypesEntity, CompaniesEntity, CompanyDashboardClickEntity, DepartmentsEntity, LocationsEntity, KeyContactsEntity, ActivePluginsEntity, AssignBrokerEntity, CensusCustomFieldsEntity, CensusCustomFieldsValuesEntity,
             CensusFrequencyEntity, CompanyDashboardEntity, InterlinksEntity, PhysicianTempsEntity, CompanyContractEntity, CompanyMetaEntity, CompanySettingsEntity, CompanyReportMenuSettingsEntity,
-            CompanySideMenuSettingsEntity, CompanySupportsEntity, WellnessAssignmentEntity, CompanyLanguagesEntity, AssignEngagementManagerEntity, GlobalAccessEntity, ClientManagerAssignEntity, cCompanySupport, MembershipPlanEntity, MediaCategoryEntity,CompanyMasscommunicationEntity,CompanyCEMInfoEntity,CompanyNumberOfLiveReportsEntity,OrgCensusReportEntity,], appConstant.READ_REPLICA.toLowerCase()),
+            CompanySideMenuSettingsEntity, CompanySupportsEntity, WellnessAssignmentEntity, CompanyLanguagesEntity, AssignEngagementManagerEntity, GlobalAccessEntity, ClientManagerAssignEntity, cCompanySupport, MembershipPlanEntity, MediaCategoryEntity,CompanyMasscommunicationEntity,CompanyCEMInfoEntity,CompanyNumberOfLiveReportsEntity,OrgCensusReportEntity,CompanySalesEntity,], appConstant.READ_REPLICA.toLowerCase()),
         TypeOrmModule.forFeature([CompanyTypesEntity, CompaniesEntity, CompanyDashboardClickEntity, DepartmentsEntity, LocationsEntity, KeyContactsEntity, ActivePluginsEntity, AssignBrokerEntity, CensusCustomFieldsEntity, CensusCustomFieldsValuesEntity,
             CensusFrequencyEntity, CompanyDashboardEntity, InterlinksEntity, PhysicianTempsEntity, CompanyContractEntity, CompanyMetaEntity, CompanySettingsEntity, CompanyReportMenuSettingsEntity,
-            CompanySideMenuSettingsEntity, CompanySupportsEntity, WellnessAssignmentEntity, CompanyLanguagesEntity, AssignEngagementManagerEntity, GlobalAccessEntity, ClientManagerAssignEntity, cCompanySupport, MembershipPlanEntity, MediaCategoryEntity,CompanyMasscommunicationEntity,CompanyCEMInfoEntity,CompanyNumberOfLiveReportsEntity,], appConstant.MAIN.toLowerCase()),
+            CompanySideMenuSettingsEntity, CompanySupportsEntity, WellnessAssignmentEntity, CompanyLanguagesEntity, AssignEngagementManagerEntity, GlobalAccessEntity, ClientManagerAssignEntity, cCompanySupport, MembershipPlanEntity, MediaCategoryEntity,CompanyMasscommunicationEntity,CompanyCEMInfoEntity,CompanyNumberOfLiveReportsEntity,CompanySalesEntity,], appConstant.MAIN.toLowerCase()),
     ],
     providers: [
         CompanyTypesService,
@@ -138,6 +141,7 @@ import { OrgCensusReportController } from './orgcensusreport/orgcensusreport.con
         CEMInfoService,
         CompanyNumberOfLiveReportsService,
         OrgCensusReportService,
+        SalesService,
         {
             provide: 'COMMON_SERVICE',
             inject: [ConfigService],
@@ -209,6 +213,7 @@ import { OrgCensusReportController } from './orgcensusreport/orgcensusreport.con
         CEMInfoController,
         CompanyNumberOfLiveReportController,
         OrgCensusReportController,
+        SalesController,
     ],
     exports: [
         CompanyTypesService,
@@ -243,6 +248,7 @@ import { OrgCensusReportController } from './orgcensusreport/orgcensusreport.con
         CEMInfoService,
         CompanyNumberOfLiveReportsService,
         OrgCensusReportService,
+        SalesService,
     ],
 })
 export class CompanyModule {}

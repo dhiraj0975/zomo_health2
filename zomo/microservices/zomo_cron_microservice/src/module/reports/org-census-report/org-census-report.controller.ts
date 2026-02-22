@@ -1,26 +1,21 @@
 import {
+    appConstant,
+    CommonDateService,
+    CommonFileService,
     CommonService,
     CompaniesEntity,
-    UserEntity,
-    CronStatus,
-    System_Type,
-    ActivePluginsEntity,
-    tableConstant,
-    CommonDateService,
-    appConstant,
-    CommonFileService,
+    tableConstant
 } from '@common-constants';
 import { Controller, Inject } from '@nestjs/common';
 import { ClientProxy, MessagePattern } from '@nestjs/microservices';
-import { CompanyService } from '../../company/company.service';
-import { OrgCensusReportsService } from './orgcensusreports.service';
-import { UserService } from '../../user/user.service';
-import { CronCommonService } from '../../../common';
-import { In } from 'typeorm';
-import { ActivePluginService } from '../../company';
-import { IncentiveReportHelperService } from '../../incentivereports/incentiveReportHelper.service';
-import { CompanyNumberOfLiveReportsService } from '../../company/numberOfLiveReport.service';
 import { lastValueFrom } from 'rxjs';
+import { CronCommonService } from '../../../common';
+import { ActivePluginService } from '../../company';
+import { CompanyService } from '../../company/company.service';
+import { CompanyNumberOfLiveReportsService } from '../../company/numberOfLiveReport.service';
+import { IncentiveReportHelperService } from '../../incentivereports/incentiveReportHelper.service';
+import { UserService } from '../../user/user.service';
+import { OrgCensusReportsService } from './orgcensusreports.service';
 const path = require('path');
 
 @Controller('org-census-report')

@@ -8,6 +8,7 @@ export class CreateCompanySupportInput {
     @Allow() ph_number: string;
     @Allow() operation: string;
     @Allow() message: string;
+    @Allow() icon: string;
     @Allow() status: number;
     @Allow() start_day: number;
     @Allow() end_day: number;

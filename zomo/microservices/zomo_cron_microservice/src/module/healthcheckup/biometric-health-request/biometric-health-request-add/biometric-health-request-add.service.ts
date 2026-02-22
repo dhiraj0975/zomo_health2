@@ -13,17 +13,18 @@ import { ClientProxy } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as path from 'path';
 import { lastValueFrom } from 'rxjs';
+import { CronCommonService } from 'src/common';
+import { CommunicationTemplateTextsService } from 'src/module/communication/templatetexts/communicationtemplatetexts.service';
+import { In, Not } from 'typeorm';
+import { ActivityService } from "../../../acitivity/activity.service";
+import { UserChallengeHelperService } from "../../../challenge/userChallengeHelper.service";
+import { PhysicianTempsService } from "../../../company";
+import { CompanyService } from "../../../company/company.service";
 import { UserService } from '../../../user/user.service';
-import fs from 'fs';
-import {In, Not} from 'typeorm';
-import {BiometricHealthRequestService} from "../biometric-health-request.service";
-import {CompanyService} from "../../../company/company.service";
-import {OptometristsService} from "../../optometrists/optometrists.service";
-import {DentistsService} from "../../dentists/dentists.service";
-import {UserChallengeHelperService} from "../../../challenge/userChallengeHelper.service";
-import {ActivityService} from "../../../acitivity/activity.service";
-import {BiometricsService} from "../../biometrics/biometrics.service";
-import {PhysicianTempsService} from "../../../company";
+import { BiometricsService } from "../../biometrics/biometrics.service";
+import { DentistsService } from "../../dentists/dentists.service";
+import { OptometristsService } from "../../optometrists/optometrists.service";
+import { BiometricHealthRequestService } from "../biometric-health-request.service";
 
 @Injectable()
 export class BiometricHealthRequestAddService {
@@ -43,6 +44,8 @@ export class BiometricHealthRequestAddService {
         private readonly biometricsService: BiometricsService,
         private readonly physicianTempsService: PhysicianTempsService,
         private readonly userChallengeHelperService: UserChallengeHelperService,
+        private readonly communicationTemplateTextService: CommunicationTemplateTextsService,
+        private readonly cronCommonService: CronCommonService,
         @Inject('COMMON_SERVICE')
         private readonly commonMicroservice: ClientProxy,
     ) {}
@@ -97,7 +100,7 @@ export class BiometricHealthRequestAddService {
             const userCodes = sheetData.map(row => row[headerIndices['userId']]).filter(Boolean);
             let organizationCode: CompaniesEntity[] = await this.companyService.getAll(
                 { code: In(organizationIds) },
-                ['code']
+                ['code','id']
             );
             const existOrganizationCode = organizationCode.map(x => x.code);
             const optometristIDs = sheetData.map(row => row[headerIndices['optometristID']]).filter(Boolean);
@@ -105,7 +108,7 @@ export class BiometricHealthRequestAddService {
             const dentistIDs = sheetData.map(row => row[headerIndices['dentistID']]).filter(Boolean);
             let usersData = await this.userService.getAll(
                 { code: In([...optometristIDs, ...physicianIDs, ...dentistIDs,...userCodes]), status: Not(2) },
-                ['id', 'code','role_id']
+                ['id', 'code','role_id','email','first_name','last_name']
             );
 
             const codeToUserIdMap = new Map<string, number>();
@@ -251,16 +254,32 @@ export class BiometricHealthRequestAddService {
 
 
                                     let saveData = [];
+                                    let emailTemplateWhere ={ type: 45 };
+                                    if(organizationCode.length > 0){
+                                        if(organizationCode.length === 1){
+                                            emailTemplateWhere['org_id'] = In([organizationCode[0]['id'],0]);
+                                        }
+                                        else{
+                                            emailTemplateWhere['org_id'] = In([0]);
+                                        }
+                                    }
+                                    else{
+                                        emailTemplateWhere['org_id'] = In([0]);
+                                    }
+                                    const templateText = await this.communicationTemplateTextService.findOne(emailTemplateWhere);
+                                    let templateNewText = await this.cronCommonService.onmapUrlContent(templateText?.['new_text'],'mailTemplate') || templateText?.['text'];
                                     if (processResult.records.length > 0) {
                                         /* TODO: subject and template text change */
                                         if (recordDetails?.mail_status === '1') {
                                             for (const [email, records] of processResult.emailStorageData) {
+                                                let userDetails = usersData?.find(u => u.email === email);
                                                 let emailData = {
                                                     sender: ``,
+                                                    type: 6,
                                                     receiver: email,
                                                     subject: 'Your health request Completed.',
-                                                    content: {},
-                                                    template: `successfully`,
+                                                    content: userDetails ?? {},
+                                                    template: templateNewText,
                                                 };
                                                 await lastValueFrom(
                                                     this.commonMicroservice.send(

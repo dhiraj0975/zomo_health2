@@ -1,13 +1,13 @@
 import { appConstant, AssessmentsEntity, BiometricsEntity, CommonArrayService, CommonDateService, CommonFileService, CommonHealthService, CommonService, DentistsEntity, OptometristsEntity, TobaccoUsesEntity } from '@common-constants';
 import { Injectable } from '@nestjs/common';
-import { CompanyService } from 'src/module/company/company.service';
-import { UserService } from 'src/module/user/user.service';
-import { EngagementReportInput } from './input/engagementreport.input';
-import { ActivePluginService } from 'src/module/company';
-import { In, Repository } from 'typeorm';
-import { FormInstructionsService } from '../forminstructions.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CronCommonService } from 'src/common';
+import { ActivePluginService } from 'src/module/company';
+import { CompanyService } from 'src/module/company/company.service';
+import { UserService } from 'src/module/user/user.service';
+import { In, Repository } from 'typeorm';
+import { FormInstructionsService } from '../forminstructions.service';
+import { EngagementReportInput } from './input/engagementreport.input';
 const moment = require('moment-timezone');
 const path = require('path');
 @Injectable()
@@ -198,7 +198,6 @@ export class EngagementService {
                 'company.company_name', 'department.dept_name',
                 'Location.lname', 'Location.address1', 'Location.city', 'Location.state', 'Location.zip', 'Location.country',
             ]
-            console.time('[Engagement report]: resultDetails user time');
             let resultDetails: any = await this.userService.userCDLSList(
                 condition,
                 fields,
@@ -206,7 +205,6 @@ export class EngagementService {
                 'list',
                 { 'User.last_name': 'DESC' }
             );
-            console.timeEnd('[Engagement report]: resultDetails user time');
             if (!resultDetails) {
                 throw new Error('No record found');
             }
@@ -227,7 +225,6 @@ export class EngagementService {
             }
             let resultUserList = (requestfor == 1 && resultDetails?.['list']) ? resultDetails?.['list'] : resultDetails;
             const userIds = resultUserList.map(user => user.id);
-            console.time('[Engagement report]: Bulk data fetch');
             const [biometricsMap, dentalMap, optometristMap, tobaccoMap, hraMap] = await Promise.all([
                 this.getBulkBiometrics(userIds),
                 this.getBulkDental(userIds),
@@ -235,8 +232,6 @@ export class EngagementService {
                 this.getBulkTobacco(userIds),
                 this.getBulkHra(userIds)
             ]);
-            console.timeEnd('[Engagement report]: Bulk data fetch');
-            console.time('[Engagement report]: user loop time');
             const filteredUsers = [];
             for (const userData of resultUserList) {
                 let progCount = 0;
@@ -362,8 +357,6 @@ export class EngagementService {
                     filteredUsers.push(userData);
                 }
             }
-            console.timeEnd('[Engagement report]: user loop time');
-            console.time('[Engagement report]: result process time');
             const finalResults = postData?.report_type ? filteredUsers : resultUserList;
             if (finalResults.length === 0) {
                 throw new Error('No record found');
@@ -372,7 +365,6 @@ export class EngagementService {
             if (requestfor == 2) {
                 resultDetails = await this.engagementReportXLSXs(resultDetails, clmNameArr, postData?.report_type);
             }
-            console.timeEnd('[Engagement report]: result process time');
             return resultDetails;
         }
         catch (error) {

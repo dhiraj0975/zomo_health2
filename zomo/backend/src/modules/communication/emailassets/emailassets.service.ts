@@ -104,7 +104,7 @@ export class EmailAssetsService {
             const safeKey = key || '';
             const parts = safeKey.split('/');
             const fileName = parts[parts.length - 1] || '';
-            console.log("fileName",fileName );
+            // console.log("fileName",fileName );
 
             return {
                 Key: safeKey,

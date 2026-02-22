@@ -3,6 +3,7 @@ import { MessagePattern } from '@nestjs/microservices';
 import { CronService, tableConstant } from './module';
 import { AutoReportSettingService } from './module/autosetting/autoReportSettings.service';
 import { MyPlanReportService } from './module/reports/my-plan-report/my-plan-report.service';
+import { OrgSalesReportsService } from './module/reports/org-sales-report/orgsalesreports.service';
 
 @Controller()
 export class AppController {
@@ -10,6 +11,7 @@ export class AppController {
         private readonly cronService: CronService,
         private readonly autoReportSettingService: AutoReportSettingService,
         private readonly myPlanReportService: MyPlanReportService,
+        private readonly orgSalesReportsService: OrgSalesReportsService,
     ) {}
 
     @MessagePattern({ cmd: 'manual_cron_start' })
@@ -109,6 +111,11 @@ export class AppController {
             ],
             { created: 'DESC', id: 'DESC' },
         );
+    }
+
+    @MessagePattern({ cmd: 'org-sales-report' })
+    async orgCensusReport(postData: any) {
+        return await this.orgSalesReportsService.orgSalesReport(postData);
     }
 
     @MessagePattern({ cmd: 'test' })

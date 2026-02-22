@@ -1,10 +1,10 @@
-import { appConstant, CampaignActivityEntity, CommonArrayService, CampaignCategoryEntity, CampaignChallengeEntity, CampaignEntity, CampaignRewardEntity, CashRewardEntity, InsuranceRewardEntity, OtherRewardEntity, tableConstant, UserEntity } from '@common-constants';
+import { appConstant, CampaignActivityEntity, CampaignCategoryEntity, CampaignChallengeEntity, CampaignEntity, CampaignRewardEntity, CashRewardEntity, CommonArrayService, InsuranceRewardEntity, OtherRewardEntity, tableConstant, UserEntity } from '@common-constants';
 import { Injectable } from '@nestjs/common';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { TranslationService } from 'src/modules/translation/translation.service';
 import { DataSource, Repository } from 'typeorm';
-import { FrontPointsForService } from '../front/frontpointfor.service';
 import { PaginateWithReportInput } from "../../../input";
+import { FrontPointsForService } from '../front/frontpointfor.service';
 @Injectable()
 export class CampaignDashboardService {
     constructor(
@@ -139,6 +139,29 @@ export class CampaignDashboardService {
                 .where(condition)
                 .orderBy('otherreward.order_id', 'ASC')
                 .getMany();
+            }else if(type == 'campaign_activity'){
+                let condition = rewardData;
+                let query = this.readReplicaCampaignActivityRepository.createQueryBuilder('campaignactivity')
+                .leftJoinAndMapOne(
+                    'campaignactivity.activity',
+                    tableConstant.ACTIVITIES.TBL_ACTIVITIES,
+                    'activity',
+                    `activity.id = campaignactivity.activity_id AND activity.status = 1`,
+                )
+                .leftJoinAndMapOne(
+                    'campaignactivity.category',
+                    tableConstant.ACTIVITIES.TBL_CATEGORIES,
+                    'category',
+                    `category.id = activity.category_id AND category.status = 1`,
+                );
+                query = query.where(condition)
+                .orderBy('campaignactivity.order_id', 'ASC')
+                .addOrderBy('campaignactivity.required_by_spouse', 'DESC')
+                .addOrderBy('campaignactivity.required_by_user', 'DESC')
+                .addOrderBy('campaignactivity.end_date', 'ASC')
+                .addOrderBy('campaignactivity.cust_name', 'ASC')
+                .addOrderBy('activity.activity_name', 'ASC');
+                return await query.getMany();
             }
         }catch (error) {
             throw new Error(error.message); 
@@ -162,6 +185,8 @@ export class CampaignDashboardService {
                     spouseSetting = {}
                 } = Object.assign({}, ...otherDatas);
             let myHireData = {};
+            let cashTransName = await this.translatorService.frontendReadTranslation(req.lang,`Cash`, `/LC_MESSAGES/Dashboard/CurrentPoints`,`static`);
+            let otherTransName = await this.translatorService.frontendReadTranslation(req.lang,`Other`, `/LC_MESSAGES/Dashboard/CurrentPoints`,`static`);
             for (let element of rewards) {
                 const rewardId = element['id'];
                 const isDefaultReward = element?.['isDefaultReward'] || 0;
@@ -224,7 +249,7 @@ export class CampaignDashboardService {
                         let newInsRewardArray = {};
                         for (let insData of insRewardData) {
                             let insRewardId = insData['id'];
-			    let insRewardIdStr = 'I'+insData['id'];
+			                let insRewardIdStr = 'I'+insData['id'];
                             let transName = await this.translatorService.frontendReadTranslation(req.lang,`ins_reward_name_${rewardId}_${insRewardId}`, `/LC_MESSAGES/Campaign/Campaigns/${company_id}/${campaignId}`,`dynamic`);
                             if(insData['cust_name'] && insData['cust_name'] != ''){
                                 transName = (transName == '' || transName == `ins_reward_name_${rewardId}_${insRewardId}`) ? insData['cust_name'] : transName;
@@ -263,8 +288,7 @@ export class CampaignDashboardService {
                                 transName = await this.translatorService.frontendReadTranslation(req.lang,`cash_reward_name_${rewardId}_${cashRewardId}`, `/LC_MESSAGES/Campaign/Campaigns/${company_id}/${campaignId}`,`dynamic`);
                                 transName = (transName == '' || transName == `cash_reward_name_${rewardId}_${cashRewardId}`) ? cashData['cust_name'] : transName;
                             }else{
-                                transName = await this.translatorService.frontendReadTranslation(req.lang,`Cash`, `/LC_MESSAGES/Dashboard/CurrentPoints`,`static`);
-                                transName = (transName == '' || transName == `Cash`) ? 'Cash' : transName;
+                                transName = (cashTransName == '' || cashTransName == `Cash`) ? 'Cash' : cashTransName;
                             }
                             if(!newCashRewardArray[cashRewardIdStr]){
                                 newCashRewardArray[cashRewardIdStr] = {};
@@ -298,8 +322,7 @@ export class CampaignDashboardService {
                                 transName = await this.translatorService.frontendReadTranslation(req.lang,`other_reward_name_${rewardId}_${otherRewardId}`, `/LC_MESSAGES/Campaign/Campaigns/${company_id}/${campaignId}`,`dynamic`);
                                 transName = (transName == '' || transName == `other_reward_name_${rewardId}_${otherRewardId}`) ? otherData['cust_name'] : transName;
                             }else{
-                                transName = await this.translatorService.frontendReadTranslation(req.lang,`Other`, `/LC_MESSAGES/Dashboard/CurrentPoints`,`static`);
-                                transName = (transName == '' || transName == `Other`) ? 'Other' : transName;
+                                transName = (otherTransName == '' || otherTransName == `Other`) ? 'Other' : otherTransName;
                             }
                             if(!newOtherRewardArray[otherRewardIdStr]){
                                 newOtherRewardArray[otherRewardIdStr] = {};

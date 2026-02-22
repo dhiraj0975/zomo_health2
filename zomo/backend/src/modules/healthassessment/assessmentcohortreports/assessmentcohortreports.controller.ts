@@ -25,17 +25,17 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { Request, Response } from "express";
 import * as moment from 'moment-timezone';
 import { diskStorage } from "multer";
+import { CampaignDashboardService } from 'src/modules/campaign/campaigndashboard/campaigndashboard.service';
 import { ClientManagerAssignService } from "src/modules/company/clientmanagerassign/clientmanagerassign.service";
 import { ActivityLogService } from "src/modules/master/activitylog/activitylog.service";
+import { In, Not } from "typeorm";
 import { AccessGuard, RoleGuard, TokenGuard } from "../../../guard";
 import { CreateAssessmentCohortReportsInput, PaginateWithHealthAssessmentInput } from "../../../input";
 import { fileName, imgFilter } from "../../../utils/image-upload.utils";
+import { FrontCalculationService } from '../../campaign/front/frontcalculation.service';
+import { FrontPointsForService } from '../../campaign/front/frontpointfor.service';
 import { TranslationService } from "../../translation/translation.service";
 import { AssessmentCohortReportsService } from "./assessmentcohortreports.service";
-import {In, Not} from "typeorm";
-import { CampaignDashboardService } from 'src/modules/campaign/campaigndashboard/campaigndashboard.service';
-import { FrontPointsForService } from '../../campaign/front/frontpointfor.service';
-import { FrontCalculationService } from '../../campaign/front/frontcalculation.service';
 @Controller('health-assessment/cohort-reports')
 @UseGuards(TokenGuard, RoleGuard)
 export class AssessmentCohortReportsController {
@@ -480,9 +480,9 @@ export class AssessmentCohortReportsController {
             if (!campaign) return {};
             const { rewardsIds, activitiesIds } = this.parseCampaignActivities(report.Campaignactivity);
 
-            const conditions: any = { status: '1', campaign_id: report.campaign_id };
+            let conditions: any = `campaignactivity.status = 1 AND campaignactivity.campaign_id = ${report.campaign_id}`;
             if (activitiesIds.length > 0) {
-                conditions.id = activitiesIds;
+                conditions += ` AND campaignactivity.id IN (${activitiesIds.join(',')})`;
             }
 
             const activities = await this.campaignDashboardService.rewardItemGetDetails('campaign_activity', conditions);
@@ -613,10 +613,8 @@ export class AssessmentCohortReportsController {
         const rewardWiseUsers = Array.isArray(rewardWiseUserDatas) ? rewardWiseUserDatas : Object.values(rewardWiseUserDatas);
         for (const userId in allUsersInfo) {
             if (this.isUserEligibleForReward(userId, allUsersInfo[userId], rewardWiseUsers)) {
-                console.log('eligibleUsers',userId);
                 eligibleUsers.push(parseInt(userId));
             }
-            return;
         }
         return eligibleUsers;
     }
@@ -627,7 +625,6 @@ export class AssessmentCohortReportsController {
                 const r = rw.Rewards[myid];
 
                 if (!r.complete) r.complete = 0;
-                console.log('rw',rw);
                 const uTotalAct = rw.userActivityTotal?.[userInfo.User.id]?.Total || 0;
                 let totalP = rw.userPointsTotal?.[userInfo.User.id]?.Total || 0;
                 totalP = Math.round(totalP);
@@ -646,9 +643,6 @@ export class AssessmentCohortReportsController {
                 const totalActivity = actRoleId == 2 ? rw.totalActivity : rw.totalActivityS;
 
                 if ((targetPoint != '' && targetPoint != 0) || totalP != 0) {
-                    //console.log('targetPoint',targetPoint);
-                    console.log('totalP',totalP);
-                    //console.log('r.consider_require',r.consider_require);
                     const metCondition = (totalActivity == 0 || r.consider_require == 0) && totalP >= targetPoint ||
                         (totalActivity <= uTotalAct || r.consider_require == 0) && totalP >= targetPoint;
 

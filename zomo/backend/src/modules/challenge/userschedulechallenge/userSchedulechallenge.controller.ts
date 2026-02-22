@@ -404,7 +404,7 @@ export class UserScheduleChallengeController {
                 if(getScheduleDetails['ch']['bio_challenge_type'] == 'Random_Acts_of_Kindness' && search_for == 'send search'){
                     let is_search_type = getScheduleDetails['whocanreceiveatoken'];
                     if(is_team == 'no'){
-                        users = await this.userService.usersList(`user.role_id IN (2,16) AND user.id != ${user_id} AND user.org_id = ${org_id} AND user.status = 1 AND user.membership_code = '${membershipcode}' AND (user.first_name LIKE '%${search}%' OR user.last_name LIKE '%${search}%' OR user.email LIKE '%${search}%' OR user.code LIKE '%${search}%')`,['id','CONCAT(COALESCE(user.first_name, ""), " ", COALESCE(user.last_name, "")) AS name','email','code']);
+                        users = await this.userService.usersList(`user.role_id IN (2,16) AND user.id != ${user_id} AND user.org_id = ${org_id} AND user.status = 1 AND user.membership_code = '${membershipcode}' AND (user.first_name LIKE '%${search}%' OR user.last_name LIKE '%${search}%' OR user.email LIKE '%${search}%' OR user.code LIKE '%${search}%')`,['id','CONCAT(COALESCE(user.first_name, ""), " ", COALESCE(user.last_name, "")) AS name','email','code', 'profile_image']);
                     }else{
                         let check_team: any = '';
                         if(schedule_id && schedule_id != ''){
@@ -419,7 +419,7 @@ export class UserScheduleChallengeController {
                         }else{
                             condition = `user.role_id IN (2,16) AND user.org_id = ${org_id} AND user.id NOT IN (${check_team}) AND user.status = 1 AND user.membership_code = '${membershipcode}' AND (user.first_name LIKE '%${search}%' OR user.last_name LIKE '%${search}%' OR CONCAT(COALESCE(user.first_name, ""), " ", COALESCE(user.last_name, "")) LIKE '%${search}%' OR user.email LIKE '%${search}%' OR user.code LIKE '%${search}%')`
                         }
-                        users = await this.userService.usersList(condition,['id','CONCAT(COALESCE(user.first_name, ""), " ", COALESCE(user.last_name, "")) AS name','email','code']);
+                        users = await this.userService.usersList(condition,['id','CONCAT(COALESCE(user.first_name, ""), " ", COALESCE(user.last_name, "")) AS name','email','code','profile_image']);
                     }
                 }else{
                     let userIds: any[] = [];
@@ -444,7 +444,7 @@ export class UserScheduleChallengeController {
                     }
                     if([2,16,11].includes(role_id)){
                         let createdBy = getScheduleDetails['created_by'];
-                        const getUserDetails = await this.userService.findUserFullRecord(`user.id = ${createdBy}`,['user.id','user.role_id','user.org_id','user.membership_code']);
+                        const getUserDetails = await this.userService.findUserFullRecord(`user.id = ${createdBy}`,['user.id','user.role_id','user.org_id','user.membership_code','profile_image']);
                         if(getUserDetails && getUserDetails['role_id'] == 12){
                             const usersDataWellness = await this.userService.userChallengeData(getUserDetails);
                             if(usersDataWellness){
@@ -458,12 +458,21 @@ export class UserScheduleChallengeController {
                             }
                         }
                     }
-                    users = await this.userService.usersList(condition,['id','CONCAT(COALESCE(user.first_name, ""), " ", COALESCE(user.last_name, "")) AS name','email','code']);
+                    users = await this.userService.usersList(condition,['id','CONCAT(COALESCE(user.first_name, ""), " ", COALESCE(user.last_name, "")) AS name','email','code','profile_image']);
                 }
             }
             if(users?.length){
                 await Promise.all(users.map(async (ele)=>{
                     ele['code_full_name'] = ele['code'] + ' - ' + ele['name'];
+                    if(ele?.['profile_image']){
+                        let fileData = await lastValueFrom(this.commonMicroservice.send({cmd: 'check_file'}, {prefix: ele?.['profile_image'] }));
+                        if(!fileData){
+                            ele['profile_image'] = S3_URL + 'comn/img/avatar_0001.png';
+                        }
+                    }
+                    else{
+                        ele['profile_image'] = S3_URL + 'comn/img/avatar_0001.png';
+                    }
                 }));
             }
             return res.status(HttpStatus.OK).json({
@@ -868,6 +877,27 @@ export class UserScheduleChallengeController {
                                     const updateJoinUser = await this.scheduleChallengeJoinUsersService.update({ id: join_id, schedule_id: schedule_id, user_id: user_id, status: 1 }, { relay_race_detail : JSON.stringify(popupStatusArray) });
                                 }
                             }
+                        }else if(action == 'join'){
+                            message = 'Your have join successfully';
+                            let popupDetails = (getMemberDetails?.['scheduleJoin']?.['relay_race_detail']) ? JSON.parse(getMemberDetails['scheduleJoin']['relay_race_detail']) : Object.create(null);
+                            let popupStatusArray:any = Object.create(null);
+                            if(popupDetails == null || Object.keys(popupDetails).length == 0){
+                                popupStatusArray['join'] = 1;
+                                popupStatusArray['passbaton'] = '';
+                                popupStatusArray['completeteam'] = '';                    
+                                popupStatusArray['accept'] =  1 ;                    
+                                popupStatusArray['current'] = '';    
+                                popupStatusArray['next'] = '';    
+                                popupStatusArray['beginning_mail'] = '';    
+                            }else{
+                                if ('join' in popupDetails) {
+                                    popupStatusArray = JSON.parse(JSON.stringify(popupDetails));
+                                    popupStatusArray.join = 1;
+                                }
+                            }    
+                            if(Object.keys(popupStatusArray).length > 0){
+                                await this.scheduleChallengeJoinUsersService.update({ id: join_id, schedule_id: schedule_id, user_id: user_id, status: 1 }, { relay_race_detail : JSON.stringify(popupStatusArray) });
+                            }
                         }
                     }else if(baton_status == 2){
                         if(action == 'complete'){
@@ -903,6 +933,27 @@ export class UserScheduleChallengeController {
                                 turnComplete[team_id]['schedule_id'] = schedule_id;
                                 turnComplete[team_id]['userData'].push(getCompleteMemberDetails);
                                 await this.userScheduleChallengeService.portionCompleteEmail(turnComplete[team_id], req);
+                            }
+                        }else if(action == 'join'){
+                            message = 'Your have join successfully';
+                            let popupDetails = (getMemberDetails?.['scheduleJoin']?.['relay_race_detail']) ? JSON.parse(getMemberDetails['scheduleJoin']['relay_race_detail']) : Object.create(null);
+                            let popupStatusArray:any = Object.create(null);
+                            if(popupDetails == null || Object.keys(popupDetails).length == 0){
+                                popupStatusArray['join'] = 1;
+                                popupStatusArray['passbaton'] = '';
+                                popupStatusArray['completeteam'] = '';                    
+                                popupStatusArray['accept'] =  1 ;                    
+                                popupStatusArray['current'] = '';    
+                                popupStatusArray['next'] = '';    
+                                popupStatusArray['beginning_mail'] = '';    
+                            }else{
+                                if ('join' in popupDetails) {
+                                    popupStatusArray = JSON.parse(JSON.stringify(popupDetails));
+                                    popupStatusArray.join = 1;
+                                }
+                            }    
+                            if(Object.keys(popupStatusArray).length > 0){
+                                await this.scheduleChallengeJoinUsersService.update({ id: join_id, schedule_id: schedule_id, user_id: user_id, status: 1 }, { relay_race_detail : JSON.stringify(popupStatusArray) });
                             }
                         }
                     }else if(baton_status == 3 && getMemberList?.length > 0 && getScheduleDetails?.teamsize !== getMemberList?.length){

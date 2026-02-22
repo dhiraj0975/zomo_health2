@@ -225,8 +225,6 @@ export class HealthyhabitreqbasedChallengeReportService {
             const uid = user.id;
             const rec = scheduleMap.get(uid) || { weeks: [], days: [] };
 
-            console.log(`=== User: ${user.username} Calculation Start ===`);
-
             let compweekcount = 0;
             let compdaycount = 0;
 
@@ -339,8 +337,8 @@ export class HealthyhabitreqbasedChallengeReportService {
             user.Completedweeks = compweekcount;
             user.Completeddays = compdaycount;
             user.Totaldays = totalDays;
-            console.log(`Total week = ${user.TotalWeeks} | totalDays=${totalDays}`);
-            console.log(`=== User: ${user.username} Calculation End ===`);
+            // console.log(`Total week = ${user.TotalWeeks} | totalDays=${totalDays}`);
+            // console.log(`=== User: ${user.username} Calculation End ===`);
             /*console.log(`=== Final Summary for ${user.username} | CompletedWeeks=${compweekcount} | CompletedDays=${compdaycount} ===`);*/
 
             const total = user.TotalWeeks === 0 ? 1 : user.TotalWeeks;

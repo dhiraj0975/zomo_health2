@@ -8,6 +8,7 @@ export class CompanySupportDto {
     @Expose() cname: string;
     @Expose() email: string;
     @Expose() message: string;
+    @Expose() icon: string;
     @Expose() ph_number: string;
     @Expose() operation: string;
     @Expose() operation_week_day: string;

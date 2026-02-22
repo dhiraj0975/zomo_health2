@@ -721,29 +721,35 @@ export class ScheduleChallengeController {
             }
             await this.translatorService.DynamicEngJsonData('Challenge',postData?.org_id ?? recordDetails['org_id'],dynamicData,'Edit','MyChallenges',recordDetails['id']);
             this.activityLogService.create(recordDetails, postData, tableConstant.CHALLENGE.TBL_CH_SCHEDULE_CHALLENGE, req.tokenUser?.id);
-            if(postData?.start_date || postData?.end_date || postData?.reg_start_date || postData?.reg_end_date){
-                let notificationData = {
-                    schedule_id: recordDetails?.id, 
-                    org_id: recordDetails?.org_id, 
-                    custom_cname: recordDetails?.custom_cname, 
-                    challenge_id: recordDetails?.challenge_id,
-                    logo: recordDetails?.['custom_logo'] && recordDetails?.['custom_logo'] != '' ? S3_URL + recordDetails?.['custom_logo'] : this.commonService.getIconPath(recordDetails['challenge']['logo'],S3_URL), 
-                    type: 'update',
-                    url: `https://${process.env.DOMAIN}/my-challenges/${recordDetails['id']}`,
-                };
-                if(postData?.start_date){
-                    notificationData['start_date'] = postData?.start_date;
+            if((postData?.start_date || postData?.end_date || postData?.reg_start_date || postData?.reg_end_date)){
+                const recordDates = [this.commonDateService.getTodayDate(recordDetails?.start_date).format('YYYY-MM-DD') + ' 00:00:00', this.commonDateService.getTodayDate(recordDetails?.end_date).format('YYYY-MM-DD') + ' 00:00:00', this.commonDateService.getTodayDate(recordDetails?.reg_start_date).format('YYYY-MM-DD') + ' 00:00:00', this.commonDateService.getTodayDate(recordDetails?.reg_end_date).format('YYYY-MM-DD') + ' 00:00:00'];
+                const datesToCheck = [postData?.start_date, postData?.end_date, postData?.reg_start_date, postData?.reg_end_date].filter(Boolean);
+                const allValid = datesToCheck.every(date =>
+                    this.commonDateService.isNotBeforeToday(date)
+                );
+                const isAnyDateSame = datesToCheck.some(
+                    (date, index) => date !== recordDates[index]
+                );
+                if (allValid && isAnyDateSame) {
+                    let notificationData: any = {
+                        schedule_id: recordDetails?.id,
+                        org_id: recordDetails?.org_id,
+                        custom_cname: recordDetails?.custom_cname,
+                        challenge_id: recordDetails?.challenge_id,
+                        logo: recordDetails?.['custom_logo'] && recordDetails?.['custom_logo'] != ''
+                        ? S3_URL + recordDetails?.['custom_logo']
+                        : this.commonService.getIconPath(recordDetails['challenge']['logo'], S3_URL),
+                        type: 'update',
+                        url: `https://${process.env.DOMAIN}/my-challenges/${recordDetails['id']}`,
+                    };
+
+                    if (postData?.start_date) notificationData.start_date = postData.start_date;
+                    if (postData?.end_date) notificationData.end_date = postData.end_date;
+                    if (postData?.reg_start_date) notificationData.reg_start_date = postData.reg_start_date;
+                    if (postData?.reg_end_date) notificationData.reg_end_date = postData.reg_end_date;
+
+                    this.userChallengeHelperService.addNotification(notificationData, req);
                 }
-                if(postData?.end_date){
-                    notificationData['end_date'] = postData?.end_date;                    
-                }
-                if(postData?.reg_start_date){
-                    notificationData['reg_start_date'] = postData?.reg_start_date;
-                }
-                if(postData?.reg_end_date){
-                    notificationData['reg_end_date'] = postData?.reg_end_date;                    
-                }
-                this.userChallengeHelperService.addNotification(notificationData, req);
             }
             let message;
             if(postData?.hasOwnProperty('updateType') && postData?.updateType == '2'){
@@ -2445,3 +2451,4 @@ export class ScheduleChallengeController {
         });
     }
 }
+

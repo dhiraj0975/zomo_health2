@@ -374,7 +374,7 @@ export class NotificationsController {
                 where += ` AND JSON_EXTRACT(notifications.metadata, '$.activity_id') = ${postData?.activity_id}`;
             }
             const notificationCheck = await this.notificationsService.listRecord(['notifications.id','notifications.status'],where);
-            this.notificationsService.removeEntry(where);
+            await this.notificationsService.removeEntry(where);
             notificationCheck?.map(ele=>this.activityLogService.create(ele, {status: 2}, tableConstant.TBL_USERS_NOTIFICATIONS, req.tokenUser?.id, postData?.type == 1 ? 'notification updated' : 'notification delete'));
         }
         catch (error) {
@@ -386,9 +386,10 @@ export class NotificationsController {
         try{
             if(postData?.user_id){
                 let notificationData = await this.notificationsService.save({ ...postData, created_by: req.tokenUser?.id, updated_by: req.tokenUser?.id });
-                postData.metadata['id'] = notificationData?.['id'];
                 if(send_type == 1){
-                    let sentNotification = await this.sendNotificationImmediate({ user_id: postData?.user_id, payload: postData?.metadata, title: postData?.title, body: postData?.message });
+                    let sendData = { user_id: postData?.user_id, payload: JSON.parse(JSON.stringify(postData?.metadata)), title: postData?.title, body: postData?.message };
+                    sendData.payload['id'] = notificationData?.['id'];
+                    let sentNotification = await this.sendNotificationImmediate(sendData);
                     if(!sentNotification){
                         await this.notificationsService.update({id: notificationData?.['id']},{metadata: {...notificationData?.['metadata'], notification_sent: 0}})
                     }

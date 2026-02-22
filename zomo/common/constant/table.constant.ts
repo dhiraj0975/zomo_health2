@@ -63,6 +63,7 @@ export const tableConstant = {
         TBL_C_MASSCOMMUNICATIONS: 'c_masscommunications',
         TBL_COMPANY_CEM_INFO: 'c_company_cem_info',
         TBL_COMPANY_NUMBER_OF_LIVE_REPORTS: 'c_number_of_live_reports',
+        TBL_COMPANY_SALES: 'c_company_sales',
     },
     THEMES: {
         TBL_THEMES_CORE: 'tm_themes_core',

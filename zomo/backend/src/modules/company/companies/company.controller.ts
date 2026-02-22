@@ -1,4 +1,5 @@
 import { SliderSettingsService } from '@/modules/campaign/slidersettings/slidersettings.service';
+import { SideMenuSettingsService } from "@/modules/company/sidemenusettings/sideMenuSettings.service";
 import {
     AssessmentHaQuestionsService
 } from "@/modules/healthassessment/assessmenthaquestions/assessmenthaquestions.service";
@@ -55,7 +56,6 @@ import { MetaService } from '../meta/meta.service';
 import { SettingsService } from '../settings/settings.service';
 import { CompanyService } from './company.service';
 import { ListCompanyInput } from './input';
-import {SideMenuSettingsService} from "@/modules/company/sidemenusettings/sideMenuSettings.service";
 const path = require('path');
 @Controller('organization')
 export class CompanyController {
@@ -504,7 +504,6 @@ export class CompanyController {
                 }
             }));
 
-            console.log('EmailCampaign Orgs =>', result.map((c) => ({ id: c.id, company_name: c.company_name })));
             return res.status(HttpStatus.OK).json({
                 statusCode: 200,
                 success: 1,

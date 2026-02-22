@@ -1,9 +1,9 @@
 import { Controller, Inject } from '@nestjs/common';
 import { ClientProxy, MessagePattern, Payload } from '@nestjs/microservices';
+import { lastValueFrom } from 'rxjs';
 import { processStepUpdate } from '../../common/commonFunctions';
 import { OnboardingService } from '../registration/onboarding.service';
 import { InvitationsService } from './invitations.service';
-import { lastValueFrom } from 'rxjs';
 
 interface InvitationData {
     user: any;
@@ -135,7 +135,6 @@ export class InvitationsController {
                                 )
                                 .toPromise();
 
-                            console.log(`Email sent to ${Email}`);
                         } catch (error) {
                             console.error(
                                 `Failed to send email to ${Email}:`,

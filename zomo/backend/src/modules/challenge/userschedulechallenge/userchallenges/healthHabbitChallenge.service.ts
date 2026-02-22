@@ -40,7 +40,7 @@ export class HealthHabbitChallengeService {
             let scheduleuserid = schedule['id'];
             let user = Object.create(req.tokenUser);
             let weeks = await this.weeksService.listRecordHealthyHabit({challenge_id: challenge_id},null,user.id,challenge_id,scheduleuserid,);
-            let current_datetime = this.commonDateService.DateTimeFormat('now', 'YYYY-MM-DD HH:mm:ss','',user['timeZone']);
+            let current_datetime = this.commonDateService.DateTimeFormat('now', 'YYYY-MM-DD HH:mm:ss','',user['timezone']);
             let dataenddate = this.commonDateService.getTodayDate(schedule['sc']['start_date']).subtract(1, 'days').format('YYYY-MM-DD');
             let daydataenddate = this.commonDateService.getTodayDate(schedule['sc']['start_date']).subtract(1, 'days').format('YYYY-MM-DD');
             let tempdata;
@@ -98,7 +98,7 @@ export class HealthHabbitChallengeService {
             let scheduleid = schedule['id'];
             let requirementBased = schedule['ch']['requirementbased'];
             let totalweekactivities = schedule['sc']['enteratotalactivity'] ?? 0;
-            let current_datetime = this.commonDateService.DateTimeFormat('now', 'YYYY-MM-DD HH:mm:ss','',user['timeZone']);
+            let current_datetime = this.commonDateService.DateTimeFormat('now', 'YYYY-MM-DD HH:mm:ss','',user['timezone']);
             let weeks = await this.scheduleChallengeJoinUsersService.healthyHabbitAllActivity(
                 `scj.challenge_id=${id} AND scj.schedule_id=${schedule_id} AND scj.user_id=${user.id}`
             );  
@@ -423,7 +423,7 @@ export class HealthHabbitChallengeService {
                 result['all'][i]['Total'] = numberofday;
                 result['all'][i]['Progress'] = CustomtotalWeekpercantage;            
                 let disableactivitytempweek = '';
-                let timezone = user['timeZone'] ? user['timeZone'].trim() : 'UTC';
+                let timezone = user['timezone'] ? user['timezone'].trim() : 'UTC';
                 weeks[i]['start_date_comp'] = weeks[i]['start_date'];
                 if(timezone.trim() != ""){
                     if(timezone.trim() == "Pacific Standard Time (PST)"){
@@ -470,7 +470,7 @@ export class HealthHabbitChallengeService {
                     }
 
                     let disableactivitytemp = '';
-                    let timezoneUser = user['timeZone'] ? user['timeZone'].trim() : '';                    
+                    let timezoneUser = user['timezone'] ? user['timezone'].trim() : '';                    
                     if(timezoneUser.trim() != ""){
                         if(timezone.trim() == "Pacific Standard Time (PST)"){
                             timezone = "America/Los_Angeles";

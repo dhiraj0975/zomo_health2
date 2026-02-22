@@ -3,6 +3,7 @@ import { SchedulerRegistry } from '@nestjs/schedule';
 import { CronJob } from 'cron';
 import { CohortReportController, IncentiveReportController, MyPlanReportController, OrgCensusReportController } from './module';
 import { CampaignAnnualReportController } from './module/reports/campaign-annual-report/campaign-annual-report.controller';
+import { OrgSalesReportsService } from './module/reports/org-sales-report/orgsalesreports.service';
 @Injectable()
 export class AppService {
     private runningJobs: Map<string, boolean> = new Map();
@@ -14,6 +15,7 @@ export class AppService {
         private readonly incentiveReportController: IncentiveReportController,
         private readonly cohortReportController: CohortReportController,
         private readonly orgCensusReportController: OrgCensusReportController,
+        private readonly orgSalesReportsService: OrgSalesReportsService,
     ) {
         // if(!process.env.DB_HOST_PROD_MAIN.includes('localhost')){
         this.myPlanReportCronJobs();

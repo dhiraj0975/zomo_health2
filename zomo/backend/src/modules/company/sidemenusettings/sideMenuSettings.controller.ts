@@ -239,11 +239,21 @@ export class SideMenuSettingsController {
                     let showMenu = JSON.parse(postData.showmenulist);
                     const updateIconsRecursively = (node: any) => {
                         if (!node || typeof node !== 'object') return;
+                        const shouldUpdate = (value: any, titleKey: string) => {
+                            const navIcon = iconLookup[titleKey];
+                            const isNullValue = value === null || value === undefined || String(value).toLowerCase() === 'null';
+                            const isFoldersValue = String(value) === 'Folders';
+                            return ( (isNullValue || isFoldersValue) && navIcon !== null && navIcon !== undefined );
+                        };
                         if (node.Mainmenuname && iconLookup[node.Mainmenuname]) {
-                            node.Newiconmenus = iconLookup[node.Mainmenuname];
+                            if (shouldUpdate(node.Newiconmenus, node.Mainmenuname)) {
+                                node.Newiconmenus = iconLookup[node.Mainmenuname];
+                            }
                         }
                         if (node.Submenuname && iconLookup[node.Submenuname]) {
-                            node.Newiconmenus = iconLookup[node.Submenuname];
+                            if (shouldUpdate(node.Newiconmenus, node.Submenuname)) {
+                                node.Newiconmenus = iconLookup[node.Submenuname];
+                            }
                         }
                         if (Array.isArray(node.Submenus)) {
                             node.Submenus.forEach((child: any) => updateIconsRecursively(child));
@@ -259,10 +269,35 @@ export class SideMenuSettingsController {
                     console.error('Error updating Newiconmenus:', err);
                 }
             }
-
-            console.log('update side menu settings postData', postData.showmenulist);
-
             if (postData?.datasettingmenu) {
+                try {
+                    const navIconNameList = appConstant.NAV_ICON_NAME_LIST;
+                    const iconLookup = navIconNameList.reduce((acc, cur) => {
+                        if (
+                            cur.icon !== null &&
+                            cur.icon !== undefined &&
+                            String(cur.icon).toLowerCase() !== 'null'
+                        ) {
+                            acc[cur.orgKey] = cur.icon;
+                        }
+                        return acc;
+                    }, {} as Record<string, string>);
+                    let datasettingmenu = JSON.parse(postData?.datasettingmenu);
+                    Object.keys(datasettingmenu).forEach((key) => {
+                        if (!key.startsWith('NewIcon_')) return;
+                        const currentValue = datasettingmenu[key];
+                        const navIcon = iconLookup[key];
+                        const isNullValue = currentValue === null || currentValue === undefined || String(currentValue).toLowerCase() === 'null';
+                        const isFoldersValue = String(currentValue) === 'Folders';
+                        if ((isNullValue || isFoldersValue) && navIcon) {
+                            datasettingmenu[key] = navIcon;
+                        }
+                    });
+                    postData.datasettingmenu = JSON.stringify(datasettingmenu);
+                } catch (err) {
+                    console.error('Error updating datasettingmenu NewIcon keys:', err);
+                }
+
                 let sideMenuSettingObj = {
                     'showmenulist': JSON.parse(postData?.showmenulist),
                     'datasettingmenu': JSON.parse(postData?.datasettingmenu),
@@ -283,18 +318,19 @@ export class SideMenuSettingsController {
                 statusCode: 200,
                 success: 1,
                 error: 0,
-                data: postData,
+                data: null,
                 message: 'The Organization menu setting has been updated successfully.',
             });
         } catch (error) {
-            this.activityLogService.error_log(req.tokenUser?.id,req?.originalUrl, error?.message, error, req);
+            console.error('Error in update side menu settings:', error);
+            this.activityLogService.error_log(req.tokenUser?.id, req?.originalUrl, error?.message, error, req);
             throw new HttpException(
                 {
-                  statusCode: 401,
-                  success: 0,
-                  error: 1,
-                  message: error?.message,
-                  data: null,
+                    statusCode: 401,
+                    success: 0,
+                    error: 1,
+                    message: error?.message,
+                    data: null,
                 },
                 HttpStatus.BAD_REQUEST,
             );

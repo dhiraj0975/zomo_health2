@@ -1369,7 +1369,7 @@ export class HealthHabbitActivityChallengeService {
                         if(tempdataTotal >= ChallengehealthactivitiesData['amax']){
                             ChallengehealthactivitiesData['complete'] = 1;
                             ChallengehealthactivitiesData['Miles'] = tempdataTotal;
-                            ChallengehealthactivitiesData['acprogress'] = ((tempdataTotal*100)/ChallengehealthactivitiesData['amax']);
+                            ChallengehealthactivitiesData['acprogress'] = parseFloat(((tempdataTotal*100)/ChallengehealthactivitiesData['amax']).toFixed(2));
                             if(ChallengehealthactivitiesData['acprogress'] > 100){
                                 ChallengehealthactivitiesData['acprogress'] = 100;
                             }
@@ -1395,7 +1395,7 @@ export class HealthHabbitActivityChallengeService {
                             ChallengehealthactivitiesData['complete'] = 0;
                             ChallengehealthactivitiesData['Miles'] = tempdataTotal;
                             EarnProgressData += tempdataTotal; 
-                            ChallengehealthactivitiesData['acprogress'] = ((tempdataTotal*100)/ChallengehealthactivitiesData['amax']);
+                            ChallengehealthactivitiesData['acprogress'] = parseFloat(((tempdataTotal*100)/ChallengehealthactivitiesData['amax']).toFixed(2));
                             if (frequincy === 0) {
                                 const todayKey = this.commonDateService.DateTimeFormat('now', 'YYYY-MM-DD').toString();
                                 if (tempdata[todayKey] !== undefined) {
@@ -1433,14 +1433,14 @@ export class HealthHabbitActivityChallengeService {
                     delete(result['total_complete'])
                 }
                 if(result['Challengehealthactivities']){
-                    result['Challengehealthactivities'] = result['Challengehealthactivities'].map(({created,updated,avalue,atype,amax,frequency,is_track,today_remain,complete_date,created_by,updated_by,org_id,schedule_id,status,...rest})=>rest);
+                    result['Challengehealthactivities'] = result['Challengehealthactivities'].map(({created,updated,atype,frequency,is_track,today_remain,created_by,updated_by,org_id,schedule_id,status,...rest})=>rest);
                     
                     const completed = result['Challengehealthactivities'].filter(item => parseFloat(item.acprogress) === 100);
                     const notStarted = result['Challengehealthactivities'].filter(item => parseFloat(item.acprogress) === 0);
                     const sortedCompleted = completed.sort((a, b) => a.complete_date_TS - b.complete_date_TS);
 
                     let inProgress = result['Challengehealthactivities'].filter(item => {
-                    const progress = parseFloat(item.acprogress);
+                        const progress = parseFloat(item.acprogress);
                         return progress > 0 && progress < 100;
                     });
                     if (inProgress.length < 5 && notStarted.length > 0) {
@@ -1712,7 +1712,7 @@ export class HealthHabbitActivityChallengeService {
                 }
                 let days = await this.daysUsersService.listRecord(`du.week_id = ${wid} AND du.challenge_id = ${id} AND du.schedule_id = ${scheduleid} AND du.user_id = ${user.id} AND du.status != 2`,
                     {day_id : 'ASC'},
-                    ['du','ac.activity_name','days.site_activity_desc','days.manual_activity','days.manual_desc','days.logofile','days.manuallink']);
+                    ['du','ac.activity_name','days.site_activity_desc','days.manual_activity','days.manual_desc','days.logofile','days.manuallink','days.m_numeric','days.m_short','days.m_long','days.m_yesno']);
                 result['all'][i] = weeks[i];
                 let totaldays = days?.length;
                 let d = days;
@@ -1732,13 +1732,13 @@ export class HealthHabbitActivityChallengeService {
                         if(ele.manual_desc){
                             ele.manual_desc = translationMessage.find((ele)=> ele.type == `week_days_description_${ele['challenge_id']}_${ele['week_id']}_${ele['day_id']}`)?.['translate'] ?? ele.manual_desc;
                         }
-                        if(ele['days'].manual_activity){
+                        if(ele?.['days']?.manual_activity){
                             ele['days'].manual_activity = translationMessage.find((ele)=> ele.type == `week_days_activity_name_${ele['challenge_id']}_${ele['week_id']}_${ele['day_id']}`)?.['translate'] ?? ele['days'].manual_activity;
                         }
-                        if(ele['days'].site_activity_desc){
+                        if(ele?.['days']?.site_activity_desc){
                             ele['days'].site_activity_desc = translationMessage.find((ele)=> ele.type == `week_days_activity_description_${ele['challenge_id']}_${ele['week_id']}_${ele['day_id']}`)?.['translate'] ?? ele['days'].site_activity_desc;
                         }
-                        if(ele['days'].manual_desc){
+                        if(ele?.['days']?.manual_desc){
                             ele['days'].manual_desc = translationMessage.find((ele)=> ele.type == `week_days_description_${ele['challenge_id']}_${ele['week_id']}_${ele['day_id']}`)?.['translate'] ?? ele['days'].manual_desc;
                         }
                     }

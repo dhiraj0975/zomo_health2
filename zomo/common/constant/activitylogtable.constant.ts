@@ -8,6 +8,7 @@ export const activityTableConstant = {
     TBL_COMPANY_REPORT_MENU_SETTINGS: 'c_reportmenusettings',
     TBL_COMPANY_SIDE_MENU_SETTINGS: 'c_sidemenusettings',
     TBL_COMPANY_SUPPORTS: 'c_supports',
+    TBL_COMPANY_SALES: 'c_sales',
     TBL_COMPANY_DEPARTMENT_AND_LOCATION: 'company_department_location',
     TBL_COMPANY_CLIENT_MANAGER_ASSIGN: 'company_client_manager_assign',
     TBL_CENSUS: 'census',

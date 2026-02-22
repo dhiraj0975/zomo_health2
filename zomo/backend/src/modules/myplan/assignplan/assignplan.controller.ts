@@ -211,7 +211,7 @@ export class MyPlanAssignPlanController {
                             plan_id: planIds[i], 
                             logo: null, 
                             type: 'add',
-                            url: `https://${process.env.DOMAIN}/plans/${saveData?.['id']}`,
+                            url: `https://${process.env.DOMAIN}/plans/${planIds[i]}`,
                             start_date: postData?.startdate,
                             end_date: postData?.enddate
                         }, req);
@@ -332,18 +332,20 @@ export class MyPlanAssignPlanController {
                         data[i].enddate = `${await this.commonDateService.DateTimeFormat(data[i].enddate,'YYYY-MM-DD','MMMM D, YYYY')} 23:59:59`;
                     }
                     await this.myPlanAssignPlanService.update({id: data[i].id,plan_id:data[i].plan_id},{name: data[i].name,startdate: data[i].startdate,enddate: data[i].enddate});
-                    this.addNotification({
-                        id: data[i].id, 
-                        org_id: data[i].org_id, 
-                        user_id: 0, 
-                        custom_cname: data[i].name, 
-                        plan_id: data[i].plan_id, 
-                        logo: null, 
-                        type: 'add',
-                        url: `https://${process.env.DOMAIN}/plans/${data[i].id}`,
-                        start_date: data[i].startdate,
-                        end_date: data[i].enddate
-                    }, req);
+                    if(data[i].startdate && data[i].enddate){
+                        this.addNotification({
+                            id: data[i].id, 
+                            org_id: data[i].org_id, 
+                            user_id: 0, 
+                            custom_cname: data[i].name, 
+                            plan_id: data[i].plan_id, 
+                            logo: null, 
+                            type: 'update',
+                            url: `https://${process.env.DOMAIN}/plans/${data[i].plan_id}`,
+                            start_date: data[i].startdate,
+                            end_date: data[i].enddate
+                        }, req);
+                    }
                     if(data[i]?.name){
                         let name:string = `plan_name_${data[i].id}_${data[i].org_id}`
                         dynamicDataAssignPlan[`${name}`]= data[i].name;
@@ -398,7 +400,7 @@ export class MyPlanAssignPlanController {
                         org_id: recordDetails?.org_id, 
                         id: recordDetails?.id,
                         type: 'update',
-                        url: `https://${process.env.DOMAIN}/plans/${recordDetails.id}`,
+                        url: `https://${process.env.DOMAIN}/plans/${recordDetails?.plan_id}`,
                     };
                     if(postData?.startdate){
                         notificationData['start_date'] = postData?.startdate;
@@ -519,7 +521,7 @@ export class MyPlanAssignPlanController {
                             org_id: recordDetails?.org_id, 
                             id: recordDetails?.id,
                             type: 'update',
-                            url: `https://${process.env.DOMAIN}/plans/${recordDetails.id}`,
+                            url: `https://${process.env.DOMAIN}/plans/${recordDetails?.plan_id}`,
                         };
                         if(postData?.startdate){
                             notificationData['start_date'] = postData?.startdate;
@@ -771,7 +773,7 @@ export class MyPlanAssignPlanController {
                     notificationData['metadata']['notification_date'] = startDate;
                     notificationData['metadata']['start_date'] = startDate;
                     notificationData['metadata']['notification_sent'] = 0;
-                    notificationData['message'] = message + ' starts Today';
+                    notificationData['message'] = message + ' Start Today';
                     await this.notificationsController.sendNotification(0, notificationData, req);
                     
                     if(planData?.end_date){
@@ -781,7 +783,7 @@ export class MyPlanAssignPlanController {
                         notificationData['metadata']['notification_sent'] = endDate;
                         notificationData['metadata']['notification_sent'] = 1;
                         notificationData['metadata']['end_date'] = endDate;
-                        notificationData['message'] = message + ' ends Today';
+                        notificationData['message'] = message + ' End Today';
                         await this.notificationsController.sendNotification(0, notificationData, req);
                     }
                 }   

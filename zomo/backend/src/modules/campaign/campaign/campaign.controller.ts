@@ -1095,7 +1095,7 @@ export class CampaignController {
                     notificationData['metadata']['notification_date'] = startDate;
                     notificationData['metadata']['start_date'] = startDate;
                     notificationData['metadata']['notification_sent'] = 0;
-                    notificationData['message'] = message + ' starts Today';
+                    notificationData['message'] = message + ' Start Today';
                     await this.notificationsController.sendNotification(0, notificationData, req);
                     
                     if(campaignData?.end_date){
@@ -1105,7 +1105,7 @@ export class CampaignController {
                         notificationData['metadata']['notification_sent'] = endDate;
                         notificationData['metadata']['notification_sent'] = 1;
                         notificationData['metadata']['end_date'] = endDate;
-                        notificationData['message'] = message + ' ends Today';
+                        notificationData['message'] = message + ' End Today';
                         await this.notificationsController.sendNotification(0, notificationData, req);
                     }
                 }   

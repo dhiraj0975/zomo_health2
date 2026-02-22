@@ -1607,7 +1607,6 @@ export class QuizDetailsController {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang,'ERR_REQUIRED_PARAM_MISSING'));
             }
             let resultedData = await this.quizDetailsService.findOne({id: postData?.id, quiz_id: postData?.quiz_id});
-            console.log("resultedData", resultedData);
             if (!resultedData) {
                 let errorMessage = await this.translatorService.frontendReadTranslation(req.lang, "ERR_RECORD_NOT_FOUND");
                 return res.status(HttpStatus.OK).json({

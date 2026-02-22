@@ -469,7 +469,48 @@ export class CommonDateService {
             throw new Error(err.message);
         }
     }
-  
+    normalizeDate(
+        dateStr: string | null | undefined,
+        targetFormat: string = 'MM-DD-YYYY',
+        sourceFormat?: string
+    ): string | null {
+        if (!dateStr || typeof dateStr !== 'string' || dateStr.trim() === '') {
+            return null;
+        }
+        const trimmed = dateStr.trim();
+        if (sourceFormat) {
+            const m = moment(trimmed, sourceFormat, true);
+            if (m.isValid()) {
+                return sourceFormat === targetFormat ? trimmed : m.format(targetFormat);
+            }
+            return null;
+        }
+        let possibleInputFormats = [
+            'MM-DD-YYYY',
+            'DD-MM-YYYY',
+            'YYYY-MM-DD',
+            'DD/MM/YYYY',
+            'MM/DD/YYYY',
+            'YYYY/MM/DD',
+            'MMM D, YYYY',
+            'MMMM D, YYYY',
+            'D MMM YYYY',
+            'D MMMM YYYY'
+        ];
+        if (possibleInputFormats.includes(targetFormat)) {
+            possibleInputFormats = [
+                targetFormat,
+                ...possibleInputFormats.filter(f => f !== targetFormat)
+            ];
+        }
+        for (const inputFormat of possibleInputFormats) {
+            const m = moment(trimmed, inputFormat, true);
+            if (m.isValid()) {
+                return inputFormat === targetFormat ? trimmed : m.format(targetFormat);
+            }
+        }
+        return null;
+    }
     formatTime(milliseconds) {
         try{
             const hours = Math.floor(milliseconds / 3600000);
@@ -1466,5 +1507,11 @@ export class CommonDateService {
             throw new Error(`Invalid timezone or input: ${err.message}`);
         }
     }
+    isNotBeforeToday(inputDate: string | Date): boolean {
+    const today = moment().startOf('day');
+    const givenDate = moment(inputDate).startOf('day');
+
+    return givenDate.isSameOrAfter(today);
+}
 
 }

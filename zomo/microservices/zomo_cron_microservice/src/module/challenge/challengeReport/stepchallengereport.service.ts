@@ -286,7 +286,12 @@ export class StepsChallengeReportService {
                         tempTotalTeamMember++;
                         let percentage = 0;
                         if (totalSteps !== 0) {
-                            percentage = parseFloat(((stepsWalks * 100) / totalSteps).toFixed(2));
+                            if (schedule['ch'].bio_challenge_type === "Mile_layout") {
+                                percentage = parseFloat(((stepsWalks * 100) / totalSteps).toFixed(2));
+                                percentage = this.commonArrayService.verifyPercentage(percentage);
+                            } else {
+                                percentage = parseFloat(((stepsWalks * 100) / totalSteps).toFixed(2));
+                            }
                         }
                         if (percentage >= 100) {
                             percentage = 100;
@@ -296,6 +301,10 @@ export class StepsChallengeReportService {
                         } else {
                             // averageStep = uptoDays != 0 ? Math.round(stepsWalks / uptoDays) : 0;
                             averageStep = totalDays != 0 ? Math.round(stepsWalks / totalDays) : 0;
+                        }
+                        if (schedule['ch'].bio_challenge_type === "Mile_layout") {
+                            realStepsWalks = Number(realStepsWalks.toFixed(2));
+                            stepsWalks = Number(stepsWalks.toFixed(2));
                         }
                         teamData.push({
                             userId: userid,
@@ -384,8 +393,8 @@ export class StepsChallengeReportService {
                     if (schedule.group_status === 1) {
                         if (!allGroups[groupKey]) {
                             allGroups[groupKey] = {
-                            groupname: getTeam.group.name,
-                            companyname: getTeam.company.company_name,
+                            groupname: getTeam?.group?.name || '',
+                            companyname: getTeam?.company?.company_name || '',
                             totalstepscompleted: 0,
                             remainsteps: 0,
                             progress: 0,
@@ -394,8 +403,8 @@ export class StepsChallengeReportService {
                             };
                         }
                         allGroups[groupKey].Teams[key] = {
-                            groupname: getTeam.group.name,
-                            companyname: getTeam.company.company_name,
+                            groupname: getTeam?.group?.name || '',
+                            companyname: getTeam?.company?.company_name || '',
                             totalstepscompleted: tempAllCompetedSteps,
                             remainsteps: teamRemain,
                             progress: teamProgress,
@@ -797,7 +806,12 @@ export class StepsChallengeReportService {
                         }
                         let percentage = 0;
                         if (totalSteps !== 0) {
-                            percentage = Math.round(stepsWalks * 100 / totalSteps ) || 0;
+                            if (schedule['ch'].bio_challenge_type === "Mile_layout") {
+                                percentage = parseFloat(((stepsWalks * 100) / totalSteps).toFixed(2));
+                                percentage = this.commonArrayService.verifyPercentage(percentage);
+                            } else {
+                                percentage = Math.round(stepsWalks * 100 / totalSteps) || 0;
+                            }
                         }
                         if (percentage > 100) {
                             percentage = 100;

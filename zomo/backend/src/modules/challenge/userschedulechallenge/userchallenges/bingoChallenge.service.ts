@@ -198,10 +198,32 @@ export class BingoChallengeService {
                 weeksArray.splice(lastWeekIndex, 1);
             }
         /* Last Week Grase Day */
-
+        const translatedMonth = await this.commonDateService.readTranslation(req.lang, `/LC_MESSAGES/Common/Month/static.json`);
         for (const cards of weeksArray) {
+            cards['week_no'] = cards['id'];
+            cards['week_status'] = 0;
+            const startDate = this.commonDateService.getTodayDate(cards.start_date);
+            const endDate = this.commonDateService.getTodayDate(cards.end_date);
+            if (moment(startDate).isSame(endDate, 'year')) {
+                let monthName = endDate.format('MMM');
+                monthName = translatedMonth.find(item => item.type == monthName)?.['translate'];
+                cards['week_date'] =   `${startDate.format('DD')} ${monthName} - ${endDate.format('DD')} ${monthName} ${endDate.format('YYYY')}`;
+            }
+            else{
+                let startMonthName = startDate.format('MMM');
+                startMonthName = translatedMonth.find(item => item.type == startMonthName)?.['translate'];
+                let endMonthName = endDate.format('MMM');
+                endMonthName = translatedMonth.find(item => item.type == endMonthName)?.['translate'];
+                cards['week_date'] =   `${startDate.format('DD')} ${startMonthName} ${startDate.format('YYYY')} - ${endDate.format('DD')} ${endMonthName} ${endDate.format('YYYY')}`;
+
+            }
             if(cards.carddata){
+                let completeCount = 0;
                 for (const squares of cards.carddata) {
+                    squares['card_status'] = 0;
+                    if(completedCard.find(ele => ele.id == squares.id)){
+                        squares['card_status'] = 1;
+                    }
                     if(squares?.square.length){
                         for (let square of squares.square) {
                             if(square.name){
@@ -213,6 +235,7 @@ export class BingoChallengeService {
                                 square.description = (customName == '' || customName == `square_description_${square.schedule_id}_${square['id']}`) ? square['description'] : customName;
                             }
                             if (squareusers[square['card_id']] && squareusers[square['card_id']][square['id']]) {
+                                completeCount += 1;
                                 square['square_status'] = 2;
                                 square['copletedDate'] = await this.commonDateService.DateTimeFormat(squareusers[square['card_id']][square['id']]['created_date'], 'YYYY-MM-DD HH:mm:ss');
                                 square['copletedDateTS'] = await this.commonDateService.DateTimeFormat(squareusers[square['card_id']][square['id']]['created_date'], 'timestamp');
@@ -235,6 +258,9 @@ export class BingoChallengeService {
                             }
                         }
                     }
+                }
+                if(schedule['sc']['square_complete_limit'] && completeCount >= schedule['sc']['square_complete_limit']){
+                    cards['week_status'] = 1;
                 }
             }
         }
@@ -347,6 +373,7 @@ export class BingoChallengeService {
             let weeksarray = [];
             const compCurrentDate = moment.tz(this.commonDateService.getTodayDate(), user['timeZone']).format('YYYY-MM-DD HH:mm:ss');
             const checkEndDate = this.commonDateService.getTodayDate(schedule.sc.end_date).format('YYYY-MM-DD');
+            const translatedMonth = await this.commonDateService.readTranslation(req.lang, `/LC_MESSAGES/Common/Month/static.json`);
             
             let weeklabels: any = await this.bingoWeekLabelsService.listRecord({schedule_id: schedule['sc']['id'], status: 1})
             await Promise.all(weeklabels.map(async (ele) => {
@@ -403,9 +430,29 @@ export class BingoChallengeService {
             }
             
             let square_complete_limit = schedule['sc']['square_complete_limit'];
+            let card_complete_limit = schedule['sc']['card_complete_limit'];
             result['currentweek']=currentweek;
             result['weekinfo']= Object.values(weeksarray);
             result['weekinfo']= result['weekinfo'].sort((a, b) => a['id'] - b['id']);
+            for (const week of result['weekinfo']) {
+                week['week_no'] = week['id'];
+                week['week_status'] = 0;
+                const startDate = this.commonDateService.getTodayDate(week.start_date);
+                const endDate = this.commonDateService.getTodayDate(week.end_date);
+                if (moment(startDate).isSame(endDate, 'year')) {
+                    let monthName = endDate.format('MMM');
+                    monthName = translatedMonth.find(item => item.type == monthName)?.['translate'];
+                    week['week_date'] =   `${startDate.format('DD')} ${monthName} - ${endDate.format('DD')} ${monthName} ${endDate.format('YYYY')}`;
+                }
+                else{
+                    let startMonthName = startDate.format('MMM');
+                    startMonthName = translatedMonth.find(item => item.type == startMonthName)?.['translate'];
+                    let endMonthName = endDate.format('MMM');
+                    endMonthName = translatedMonth.find(item => item.type == endMonthName)?.['translate'];
+                    week['week_date'] =   `${startDate.format('DD')} ${startMonthName} ${startDate.format('YYYY')} - ${endDate.format('DD')} ${endMonthName} ${endDate.format('YYYY')}`;
+
+                }
+            }
 
             let cards = await this.cardsService.listRecord({org_id: schedule['sc']['org_id'], schedule_id: schedule['sc']['id'], status: 1},{ order_no: 'ASC'});
             const completedCard = [];
@@ -495,8 +542,10 @@ export class BingoChallengeService {
                 
                 allSquare = [...allSquare,...tempSquare];
                 
+                card['card_status'] = 0;
                 if ((square_complete_limit !== 0 && squareUsers.length >= square_complete_limit) || (square_complete_limit === 0 && squareUsers.length >= card['square'].length)) {
                     cards[index].status = 2;
+                    card['card_status'] = 1;
                     completedCard.push(card);
                 }
                 

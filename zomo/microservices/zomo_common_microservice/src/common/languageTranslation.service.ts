@@ -238,22 +238,29 @@ export class InitializeTranslateClient {
         if (!hasHTML) {
             return { clean: str, tags: { open: '', close: '' } };
         }
-
-        const openTagMatch = str.match(/^(<[^>]+>)+/);
-        const openTag = openTagMatch ? openTagMatch[0] : '';
-
-        const closeTagMatch = str.match(/(<\/[^>]+>)+$/);
-        const closeTag = closeTagMatch ? closeTagMatch[0] : '';
-
-        const clean = str.replace(/<[^>]+>/g, '').trim();
-
-        return { clean, tags: { open: openTag, close: closeTag } };
+        const outerMatch = str.match(/^<([a-zA-Z0-9]+)(\s[^>]*)?>([\s\S]*)<\/\1>$/);
+        if (!outerMatch) {
+            return { clean: str, tags: { open: '', close: '' } };
+        }
+        const tagName = outerMatch[1];
+        const attributes = outerMatch[2] || '';
+        const innerContent = outerMatch[3];
+        return {
+            clean: innerContent,
+            tags: {
+                open: `<${tagName}${attributes}>`,
+                close: `</${tagName}>`,
+            },
+        };
     }
     private wrapWithHTML(text: string, tags: { open: string; close: string }): string {
         if (!tags.open && !tags.close) {
             return text;
         }
-        return `${tags.open}${text}${tags.close}`;
+        if (text.startsWith(tags.open) && text.endsWith(tags.close)) {
+        return text;
+        }
+        return `${tags.open || ''}${text}${tags.close || ''}`;
     }
     private async translateSingleText(
         text: string,

@@ -170,13 +170,16 @@ export class FitnessVideoClickService extends BaseService<MediaFitnessVideoClick
                 if (reportRequest?.['start_date_range'] && reportRequest?.['end_date_range'] && reportRequest['start_date_range'] !== '' && reportRequest['end_date_range'] !== '') {
                     const startDate = this.commonDateService.DateTimeFormat(reportRequest['start_date_range'], 'YYYY-MM-DD HH:mm:ss', 'YYYY-MM-DD');
                     const endDate = this.commonDateService.DateTimeFormat(reportRequest['end_date_range'], 'YYYY-MM-DD HH:mm:ss', 'YYYY-MM-DD');
-                    condition += ` AND (DATE_FORMAT(mediafodvideoClick.created, '%Y-%m-%d') BETWEEN '${startDate}' AND '${endDate}')`;
+                    // condition += ` AND (DATE_FORMAT(mediafodvideoClick.created, '%Y-%m-%d') BETWEEN '${startDate}' AND '${endDate}')`;
+                    condition += ` AND ( mediafodvideoClick.created BETWEEN '${startDate}' AND '${endDate}')`;
                 } else if (reportRequest?.['start_date_range'] && reportRequest['start_date_range'] !== '') {
                     const startDate = this.commonDateService.DateTimeFormat(reportRequest['start_date_range'], 'YYYY-MM-DD HH:mm:ss', 'YYYY-MM-DD');
-                    condition += ` AND (DATE_FORMAT(mediafodvideoClick.created, '%Y-%m-%d') >= '${startDate}')`;
+                    // condition += ` AND (DATE_FORMAT(mediafodvideoClick.created, '%Y-%m-%d') >= '${startDate}')`;
+                    condition += ` AND ( mediafodvideoClick.created >= '${startDate}')`;
                 } else if (reportRequest?.['end_date_range'] && reportRequest['end_date_range'] !== '') {
                     const endDate = this.commonDateService.DateTimeFormat(reportRequest['end_date_range'], 'YYYY-MM-DD HH:mm:ss', 'YYYY-MM-DD');
-                    condition += ` AND (DATE_FORMAT(mediafodvideoClick.created, '%Y-%m-%d') <= '${endDate}')`;
+                    // condition += ` AND (DATE_FORMAT(mediafodvideoClick.created, '%Y-%m-%d') <= '${endDate}')`;
+                    condition += ` AND ( mediafodvideoClick.created <= '${endDate}')`;
                 }
             }
             if (autoRequest === 0) {
@@ -246,7 +249,9 @@ export class FitnessVideoClickService extends BaseService<MediaFitnessVideoClick
                 condition,
                 requestfor === 1 ? paginate : null,
             );
-            if (resultDetails) {
+            let totalRecords = 0;
+            totalRecords = requestfor === 1 ? resultDetails.total : (resultDetails.length);
+            if (totalRecords && totalRecords > 0) {
                 resultDetails = await this.mapFodData(resultDetails, requestfor);
                 if (requestfor === 2 && autoRequest == 0) {
                     resultDetails = await this.fodReportXLSX(resultDetails, org_id, clmNameArr);

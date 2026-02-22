@@ -1,7 +1,7 @@
 import { SortingService } from '@/modules/common';
 import { DepartmentService } from '@/modules/company/departments/department.service';
 import { LocationService } from '@/modules/company/locations/location.service';
-import { appConstant, campaignConstant, CommonDateService, CommonHealthService, tableConstant, SortDirection } from '@common-constants';
+import { appConstant, campaignConstant, CommonDateService, CommonHealthService, SortDirection, tableConstant } from '@common-constants';
 import {
     Body,
     Controller,
@@ -19,8 +19,8 @@ import { ActivePluginService } from "../../company/activeplugins/activeplugin.se
 import { ActivityLogService } from "../../master/activitylog/activitylog.service";
 import { FrontCalculationService } from "../front/frontcalculation.service";
 import { SliderSettingsService } from '../slidersettings/slidersettings.service';
-import { CampaignDashboardService } from "./campaigndashboard.service";
 import { SpouseSettingsService } from '../spousesettings/spousesettings.service';
+import { CampaignDashboardService } from "./campaigndashboard.service";
 const S3_URL = process.env.S3_URL_PROD;
 @Controller('campaign/front')
 @UseGuards(TokenGuard, RoleGuard, AccessGuard)
@@ -346,7 +346,6 @@ export class CampaignDashboardController {
                     /* New End */
                 }
             }
-
             const getCampaignDatas = await this.campaignDataCalculation('normal', postData, req, commonDatas);
             regularDatas = getCampaignDatas;
             (regularDatas as any).range = [

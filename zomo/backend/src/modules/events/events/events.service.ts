@@ -604,12 +604,12 @@ export class EventService {
                     notificationData['metadata']['notification_date'] = startDate;
                     notificationData['metadata']['notification_sent'] = 0;
                     notificationData['metadata']['reg_start_date'] = startDate;
-                    notificationData['message'] = message + ' Registration starts Today';
+                    notificationData['message'] = message + ' Registration Start Today';
                     await this.notificationsController.sendNotification(0, notificationData, req as any);
 
                     notificationData['metadata']['notification_date'] = endDate;
                     notificationData['metadata']['reg_start_date_before'] = endDate;
-                    notificationData['message'] = message + ' Registration starts Yesterday';
+                    notificationData['message'] = message + ' Registration Start Yesterday';
                     await this.notificationsController.sendNotification(0, notificationData, req as any);
                 }
                 if(eventslotData?.end_date){
@@ -619,7 +619,7 @@ export class EventService {
                     notificationData['metadata']['notification_sent'] = endDate;
                     notificationData['metadata']['notification_sent'] = 1;
                     notificationData['metadata']['end_date'] = endDate;
-                    notificationData['message'] = message + ' ends Today';
+                    notificationData['message'] = message + ' End Today';
                     await this.notificationsController.sendNotification(0, notificationData, req as any);
 
                     endDate = this.commonDateService.getTodayDate(eventslotData?.end_date).subtract(1, 'days').format('YYYY-MM-DD');

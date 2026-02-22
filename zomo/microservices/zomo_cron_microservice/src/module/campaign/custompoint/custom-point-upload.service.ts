@@ -144,6 +144,7 @@ export class CustomPointUploadService {
                 let getActivities =
                     await this.campaignActivityService.campaignActivityData(
                         [
+                            'ca.id',
                             'ca.cust_name',
                             'activity.id',
                             'activity.activity_name',
@@ -178,7 +179,7 @@ export class CustomPointUploadService {
                         const tempMap = {
                             [col1]: `${label}`,
                             [col2]: `${label}`,
-                            [`$${col1}$`]: `${activity?.['activity']?.id}`,
+                            [`$${col1}$`]: `${activity?.id}`,
                             [`#${col1}#`]: `point`,
                             [`$#${col2}#$`]: `date`,
                         };
@@ -675,7 +676,13 @@ export class CustomPointUploadService {
                                 message: `An error occurred: ${err}`,
                             };
                         }
-                        rFileName = rFileName.replace('.json', '');
+                        if (rFileName) {
+                            await this.commonFileService.removeFolderFromLocal(
+                                path.resolve(
+                                    `${filePathDir}/${rFileName}`,
+                                )
+                            );
+                        }
                     }
                     if (successSheetArray.length > 0) {
                         const jsonStringS = JSON.stringify(
@@ -851,14 +858,18 @@ export class CustomPointUploadService {
                                 message: `An error occurred: ${err}`,
                             };
                         }
+                        if (sFileName) {
+                            await this.commonFileService.removeFolderFromLocal(
+                                path.resolve(
+                                    `${filePathDir}/${sFileName}`,
+                                )
+                            );
+                        }
                     }
                     updateRequestData['status'] = 1;
                     await this.customPointRequestService.update(
                         { id: recordDetails['id'] },
                         updateRequestData,
-                    );
-                    await this.commonFileService.removeFolderFromLocal(
-                        filePathDir,
                     );
                     return {
                         success: 1,
