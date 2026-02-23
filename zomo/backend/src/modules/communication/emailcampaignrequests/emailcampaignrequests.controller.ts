@@ -2465,7 +2465,7 @@ export class EmailCampaignRequestsController {
     @Post('request-verify-status')
     async requestVerifyStatus(@Req() req: Request, @Res() res: Response, @Body() postData: any) {
         try {
-            // console.log('[request-verify-status] hit', { id: postData?.id, hash: postData?.hash, role_id: req.tokenUser?.role_id, source: postData?.source, status: postData?.status });
+           
             if (!postData?.id && !postData?.hash) {
                 throw new Error(await this.translatorService.frontendReadTranslation(req.lang, "ERR_REQUIRED_PARAM_MISSING"));
             }
@@ -3026,11 +3026,7 @@ export class EmailCampaignRequestsController {
                 statusCode: 200,
                 success: 1,
                 error: 0,
-                data: {
-                    excel_data: base64Data,
-                    sheet_name: 'Campaign-Sample-csv',
-                    extension: 'csv',
-                },
+                data: {excel_data: base64Data,sheet_name: 'Campaign-Sample-csv',extension: 'csv',},
                 message: 'success',
             });
         } catch (error) {
@@ -3139,7 +3135,6 @@ export class EmailCampaignRequestsController {
                         updateData['file'] = newFileName;
                     }
                 } catch (fileErr) {
-                    // File copy failed - updateData['file'] will not be set
                 }
             }
             await lastValueFrom(this.client.send({ cmd: 'update_campaign_requests' }, updateData));
@@ -3252,7 +3247,7 @@ export class EmailCampaignRequestsController {
             });
             return result;
         }catch(err){
-            console.log('err',err);
+           
             throw new Error(err.message);
         }
     }

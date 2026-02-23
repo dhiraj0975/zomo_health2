@@ -514,7 +514,13 @@ export class RelayRaceChallengeHelperService {
                                         teamCompletedSteps += getMember['completedSteps'];
                                     }
                                     getteam['completedSteps'] = teamCompletedSteps;
-                                    teamAvarageSteps = parseFloat((teamCompletedSteps / getteam['teamMember']?.length).toFixed(2));
+                                    const memberCount = getteam['teamMember']?.length || 0;
+                                    const totalDays = totaldays || 0;
+                                    if (memberCount > 0 && totalDays > 0) {
+                                        teamAvarageSteps = Math.round((teamCompletedSteps / memberCount) / totalDays);
+                                    } else {
+                                        teamAvarageSteps = 0;
+                                    }
                                     getteam['avarageSteps'] = teamAvarageSteps;
                                     if(allUsersIdArray.includes(userId)){
                                         result['myTeamDetails']['completedSteps'] = teamCompletedSteps;
